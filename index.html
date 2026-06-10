@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f6f4ef">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Читальня</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CjxyZWN0IHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgcng9IjE0IiBmaWxsPSIjOGE1YTJiIi8+CjxwYXRoIGQ9Ik0zMSAxOSBDMjYgMTYgMTkgMTYuNSAxNSAxOCBMMTUgNDQgQzE5IDQyLjUgMjYgNDIgMzEgNDUgWiIgZmlsbD0iI2ZkZjdlYyIvPgo8cGF0aCBkPSJNMzMgMTkgQzM4IDE2IDQ1IDE2LjUgNDkgMTggTDQ5IDQ0IEM0NSA0Mi41IDM4IDQyIDMzIDQ1IFoiIGZpbGw9IiNmZGY3ZWMiLz4KPGcgc3Ryb2tlPSIjYzlhMDZhIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIj4KPGxpbmUgeDE9IjE5IiB5MT0iMjMuMiIgeDI9IjI4IiB5Mj0iMjQiLz48bGluZSB4MT0iMTkiIHkxPSIyOC4yIiB4Mj0iMjgiIHkyPSIyOSIvPjxsaW5lIHgxPSIxOSIgeTE9IjMzLjIiIHgyPSIyOCIgeTI9IjM0Ii8+CjxsaW5lIHgxPSIzNiIgeTE9IjI0IiB4Mj0iNDUiIHkyPSIyMy4yIi8+PGxpbmUgeDE9IjM2IiB5MT0iMjkiIHgyPSI0NSIgeTI9IjI4LjIiLz48bGluZSB4MT0iMzYiIHkxPSIzNCIgeDI9IjQ1IiB5Mj0iMzMuMiIvPgo8L2c+PC9zdmc+">
@@ -231,8 +232,15 @@
   .c-card.done{opacity:.55}
   .c-tag{display:inline-block; font-size:10.5px; text-transform:uppercase; letter-spacing:.4px;
     color:var(--accent); background:var(--accent-soft); border-radius:8px; padding:1px 7px; margin:0 6px 6px 0}
-  .c-author{display:inline-block; font-size:10.5px; color:var(--muted); border:1px solid var(--line);
-    border-radius:8px; padding:1px 7px; margin:0 0 6px 0}
+  .c-author{display:inline-block; font-size:11px; color:var(--accent); border:1px solid var(--accent);
+    background:var(--accent-soft); border-radius:8px; padding:1px 7px; margin:0 6px 6px 0; font-weight:600}
+  .c-meta{display:flex; flex-wrap:wrap; align-items:center}
+  .c-card.foreign{border-left:3px solid var(--accent)}
+  .c-thread{margin:8px 0 2px; padding-left:10px; border-left:2px solid var(--line)}
+  .c-reply{font-size:13px; line-height:1.45; color:var(--read); margin:0 0 5px; position:relative; padding-right:14px}
+  .c-reply-who{color:var(--muted); font-weight:600}
+  .c-reply-del{position:absolute; right:0; top:0; color:var(--muted); cursor:pointer; font-size:14px; line-height:1}
+  .c-reply-del:hover{color:#b23b3b}
   mark.hl.done{background:transparent; box-shadow:inset 0 -2px 0 var(--hl-edge); opacity:.65}
   #searchResults{max-height:50vh; overflow:auto; margin-top:12px}
   .sr{padding:10px 12px; border:1px solid var(--line); border-radius:10px; margin-bottom:8px;
@@ -382,6 +390,14 @@
   <div class="body"><div id="archList"></div></div>
   <div class="foot"><div class="spacer"></div><button class="btn" id="archClose">Закрыть</button></div>
 </div>
+<div class="modal" id="replyModal" style="width:480px">
+  <h3>Ответить на комментарий</h3>
+  <div class="body">
+    <div class="q" id="replyQuote"></div>
+    <textarea id="replyText" placeholder="Ваш ответ…"></textarea>
+  </div>
+  <div class="foot"><div class="spacer"></div><button class="btn" id="replyCancel">Отмена</button><button class="btn primary" id="replySave">Отправить</button></div>
+</div>
 <div class="modal" id="pwdModal" style="width:440px">
   <h3>Сменить пароль</h3>
   <div class="body">
@@ -484,7 +500,7 @@
       start:r.start_off, end:r.end_off, quote:r.quote||'',
       before:r.ctx_before||'', after:r.ctx_after||'', note:r.note||'',
       status:r.status||'open', tag:r.tag||'', kind:r.kind||'fragment',
-      email:r.user_email||'', mine:!!(USER && r.user_id===USER.id),
+      email:r.user_email||'', mine:!!(USER && r.user_id===USER.id), replies:[],
       ts:r.updated_at? Date.parse(r.updated_at): Date.now() };
   }
   // comments[] holds only the ACTIVE set: rows whose stored version matches the
@@ -496,6 +512,20 @@
     if(res.error){ toast('Не удалось загрузить правки: '+res.error.message); return; }
     (res.data||[]).forEach(function(r){
       if(BYID[r.chapter_id] && r.chapter_version===BYID[r.chapter_id].ver){ comments.push(mapRow(r)); }
+    });
+    await loadReplies();
+  }
+  async function loadReplies(){
+    comments.forEach(function(c){ c.replies=[]; });
+    if(!SB || !USER) return;
+    var byId={}; comments.forEach(function(c){ byId[c.id]=c; });
+    var rr;
+    try{ rr=await SB.from('replies').select('*').order('created_at',{ascending:true}); }catch(e){ return; }
+    if(rr.error) return; // таблицы replies может не быть (до миграции) — просто без ответов
+    (rr.data||[]).forEach(function(r){
+      var c=byId[r.comment_id]; if(!c) return;
+      c.replies.push({ id:r.id, email:r.user_email||'', note:r.note||'',
+        mine:!!(USER && r.user_id===USER.id), ts:r.created_at?Date.parse(r.created_at):Date.now() });
     });
   }
 
@@ -818,35 +848,53 @@
       var g=document.createElement('div'); g.className='c-group';
       var gh=document.createElement('div'); gh.className='gh'; gh.textContent=ch.title; g.appendChild(gh);
       cs.forEach(function(c){
-        var card=document.createElement('div'); card.className='c-card'+(c.status==='done'?' done':'');
-        var meta=document.createElement('div');
+        var foreign=!c.mine;
+        var card=document.createElement('div'); card.className='c-card'+(c.status==='done'?' done':'')+(foreign?' foreign':'');
+        var meta=document.createElement('div'); meta.className='c-meta';
+        if(foreign){ var au=document.createElement('span'); au.className='c-author'; au.textContent='👤 '+(c.email||'другой автор'); meta.appendChild(au); }
         if(c.tag){ var tg=document.createElement('span'); tg.className='c-tag'; tg.textContent=c.tag; meta.appendChild(tg); }
-        if(!c.mine){ var au=document.createElement('span'); au.className='c-author'; au.textContent=c.email||'другой автор'; meta.appendChild(au); }
         if(meta.childNodes.length) card.appendChild(meta);
         var q=document.createElement('div'); q.className='c-quote';
         q.textContent = c.kind==='chapter' ? '— вся глава —' : '«'+c.quote.replace(/\s+/g,' ').trim()+'»';
         q.onclick=function(){ jumpTo(c); };
         var note=document.createElement('div'); note.className='c-note';
         note.textContent=c.note||'(без текста)';
+        card.appendChild(q); card.appendChild(note);
+        if(c.replies && c.replies.length){
+          var th=document.createElement('div'); th.className='c-thread';
+          c.replies.forEach(function(r){
+            var ri=document.createElement('div'); ri.className='c-reply';
+            var who=document.createElement('span'); who.className='c-reply-who'; who.textContent=(r.mine?'вы':(r.email||'ответ'))+': ';
+            ri.appendChild(who); ri.appendChild(document.createTextNode(r.note));
+            if(r.mine || isAdmin){ var rd=document.createElement('a'); rd.className='c-reply-del'; rd.textContent='×'; rd.title='удалить ответ';
+              rd.onclick=async function(){ if(SB){ var d=await SB.from('replies').delete().eq('id',r.id); if(d.error){ toast('Ошибка: '+d.error.message); return; } } await loadComments(); refreshPanel(); };
+              ri.appendChild(rd); }
+            th.appendChild(ri);
+          });
+          card.appendChild(th);
+        }
         var act=document.createElement('div'); act.className='c-actions';
-        var go=document.createElement('a'); go.textContent='к месту'; go.onclick=function(){ jumpTo(c); };
-        act.appendChild(go);
+        var go=document.createElement('a'); go.textContent='к месту'; go.onclick=function(){ jumpTo(c); }; act.appendChild(go);
+        var rep=document.createElement('a'); rep.textContent='ответить'; rep.onclick=function(){ openReply(c); }; act.appendChild(rep);
         if(c.mine){
           var ed=document.createElement('a'); ed.textContent='изменить'; ed.onclick=function(){ editingId=c.id; pendingRange=null; openEditor(c.kind==='chapter'?'__chapter__':c.quote, c.note, c.tag, false); };
-          var del=document.createElement('a'); del.textContent='удалить'; del.onclick=async function(){
-            comments=comments.filter(function(x){return x.id!==c.id;});
-            if(SB){ var d=await SB.from('comments').delete().eq('id',c.id); if(d.error) toast('Ошибка удаления: '+d.error.message); }
-            renderChapter(); renderTOC(); refreshPanel(); updateCount();
-          };
+          act.appendChild(ed);
+        }
+        if(c.mine || isAdmin){
           var st=document.createElement('a'); st.textContent = c.status==='done' ? 'вернуть' : 'готово';
           st.onclick=async function(){
             var ns = c.status==='done' ? 'open' : 'done'; c.status=ns;
             if(SB){ var u=await SB.from('comments').update({status:ns}).eq('id',c.id); if(u.error) toast('Ошибка: '+u.error.message); }
             renderChapter(); renderTOC(); refreshPanel(); updateCount();
           };
-          act.appendChild(ed); act.appendChild(del); act.appendChild(st);
+          var del=document.createElement('a'); del.textContent='удалить'; del.onclick=async function(){
+            comments=comments.filter(function(x){return x.id!==c.id;});
+            if(SB){ var d=await SB.from('comments').delete().eq('id',c.id); if(d.error) toast('Ошибка удаления: '+d.error.message); }
+            renderChapter(); renderTOC(); refreshPanel(); updateCount();
+          };
+          act.appendChild(st); act.appendChild(del);
         }
-        card.appendChild(q); card.appendChild(note); card.appendChild(act);
+        card.appendChild(act);
         g.appendChild(card);
       });
       list.appendChild(g);
@@ -1123,13 +1171,22 @@
       : SB.auth.signInWithPassword({ email:email, password:pass });
     op.then(function(res){
       btn.disabled=false;
-      if(res.error){ msg.textContent='Ошибка: '+res.error.message; return; }
+      if(res.error){ msg.textContent=authErr(res.error.message); return; }
       if(authMode==='signup' && !(res.data && res.data.session)){
         msg.textContent='Аккаунт создан, но включено подтверждение email. Выключите «Confirm email» в настройках Supabase (см. инструкцию) и войдите по паролю.';
         return;
       }
       // успех → onAuthStateChange продолжит
-    }).catch(function(err){ btn.disabled=false; msg.textContent='Ошибка: '+((err&&err.message)||err); });
+    }).catch(function(err){ btn.disabled=false; msg.textContent=authErr((err&&err.message)||err); });
+  }
+  function authErr(m){
+    m=String(m||'');
+    if(/Invalid login credentials/i.test(m)) return 'Неверный email или пароль. Впервые здесь? Нажмите «Первый раз? Создать пароль».';
+    if(/Email not confirmed/i.test(m)) return 'Email не подтверждён. Админу нужно выключить «Confirm email» в Supabase (шаг 1.4 инструкции), затем войдите.';
+    if(/already registered/i.test(m)) return 'Аккаунт уже есть — входите по паролю (без «создать»).';
+    if(/rate limit|Too many|For security/i.test(m)) return 'Слишком много попыток, подождите минуту и повторите.';
+    if(/Failed to fetch|NetworkError|timeout|timed out|fetch/i.test(m)) return 'Нет связи с базой. Возможно, проект Supabase «уснул» — откройте его панель и нажмите Resume, затем повторите.';
+    return 'Ошибка: '+m;
   }
   async function checkMember(){
     if(!SB || !USER) return false;
@@ -1208,6 +1265,27 @@
     }).catch(function(err){ b.disabled=false; msg.textContent='Ошибка: '+((err&&err.message)||err); });
   };
   document.getElementById('pwdNew').addEventListener('keydown', function(e){ if(e.key==='Enter') document.getElementById('pwdSave').click(); });
+  var replyTo=null;
+  function openReply(c){
+    replyTo=c;
+    document.getElementById('replyQuote').textContent = c.kind==='chapter' ? '— вся глава —' : '«'+(c.quote||'').replace(/\s+/g,' ').trim()+'»';
+    document.getElementById('replyText').value='';
+    showModal('replyModal'); setTimeout(function(){ document.getElementById('replyText').focus(); },50);
+  }
+  document.getElementById('replyCancel').onclick=closeModals;
+  document.getElementById('replySave').onclick=async function(){
+    if(!replyTo) return;
+    var t=(document.getElementById('replyText').value||'').trim();
+    if(!t){ toast('Пустой ответ'); return; }
+    var b=document.getElementById('replySave'); b.disabled=true;
+    if(SB){
+      var r=await SB.from('replies').insert({ comment_id:replyTo.id, note:t, user_email:(USER&&USER.email?USER.email.toLowerCase():'') });
+      b.disabled=false;
+      if(r.error){ toast('Ошибка: '+r.error.message); return; }
+    } else b.disabled=false;
+    closeModals(); await loadComments(); refreshPanel(); renderChapter();
+  };
+  document.getElementById('replyText').addEventListener('keydown', function(e){ if(e.key==='Enter' && (e.metaKey||e.ctrlKey)) document.getElementById('replySave').click(); });
   document.getElementById('btnLogout').onclick=logout;
   document.getElementById('authLogout2').onclick=logout;
 
