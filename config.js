@@ -10,5 +10,5 @@
     Ключ service_role сюда вставлять НЕЛЬЗЯ.)
    ============================================================ */
 
-window.SUPABASE_URL      = "ВСТАВЬТЕ_PROJECT_URL";
-window.SUPABASE_ANON_KEY = "ВСТАВЬТЕ_ANON_KEY";
+window.SUPABASE_URL      = "https://wsnqmjzmtjpezkzlzhra.supabase.co";
+window.SUPABASE_ANON_KEY = "sb_publishable_E3jUKYIQAvt5ilMkvZvy0g_tv3g2vpD";
