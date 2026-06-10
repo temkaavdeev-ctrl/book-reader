@@ -6,13 +6,13 @@
 <meta name="theme-color" content="#f6f4ef">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>Управляя поведением — читалка</title>
+<title>Читальня</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   /* ===== НАСТРОЙКА: впишите два значения из Supabase (Project Settings → API) ===== */
-  window.SUPABASE_URL      = "https://temkaavdeev-ctrl.github.io";   /* напр. https://abcdxyz.supabase.co  */
-  window.SUPABASE_ANON_KEY = "sb_publishable_E3jUKYIQAvt5ilMkvZvy0g_tv3g2vpD";      /* длинный ключ, начинается на eyJ...   */
+  window.SUPABASE_URL      = "ВСТАВЬТЕ_PROJECT_URL";   /* напр. https://abcdxyz.supabase.co  */
+  window.SUPABASE_ANON_KEY = "ВСТАВЬТЕ_ANON_KEY";      /* длинный ключ, начинается на eyJ...   */
   /* ============================================================================== */
 </script>
 <style>
@@ -251,8 +251,8 @@
 <div id="app">
   <aside id="sidebar">
     <div class="side-head">
-      <div class="t">Управляя поведением</div>
-      <div class="s" id="sideSub">Иллюзии нерациональных агентов</div>
+      <div class="t">Читальня</div>
+      <div class="s" id="sideSub">чтение и правки</div>
     </div>
     <nav id="toc"></nav>
     <div id="userBox" style="display:none">
@@ -374,7 +374,7 @@
 <input type="file" id="fileInput" accept="application/json,.json" style="display:none">
 <div id="authGate">
   <div class="auth-card">
-    <div class="auth-title">Управляя поведением</div>
+    <div class="auth-title">Добро пожаловать в «Читальню»</div>
     <div id="authForm">
       <div class="auth-sub">Вход по ссылке на почту. Правки сохраняются за вашим аккаунтом и доступны с любого устройства.</div>
       <input id="authEmail" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com">
@@ -425,10 +425,13 @@
   // ---------- Supabase ----------
   function initSB(){
     try{
-      if(!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) return null;
-      if(/ВСТАВЬ|ВАШ/i.test(window.SUPABASE_URL+window.SUPABASE_ANON_KEY)) return null;
+      var rawUrl=window.SUPABASE_URL, rawKey=window.SUPABASE_ANON_KEY;
+      if(!rawUrl || !rawKey) return null;
+      if(/ВСТАВЬ|ВАШ/i.test(String(rawUrl)+String(rawKey))) return null;
       if(!window.supabase || !window.supabase.createClient) return null;
-      SB = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+      var url=String(rawUrl).trim().replace(/\s+/g,'').replace(/\/+$/,'');  // снять любые пробелы/переносы и хвостовой /
+      var key=String(rawKey).replace(/\s+/g,'');
+      SB = window.supabase.createClient(url, key);
       return SB;
     }catch(e){ return null; }
   }
@@ -1061,12 +1064,16 @@
     if(!email || email.indexOf('@')<1){ msg.textContent='Введите корректный email.'; return; }
     if(!SB){ msg.textContent='Подключение к Supabase не настроено.'; return; }
     var btn=document.getElementById('authBtn'); btn.disabled=true; msg.textContent='Отправляю…';
-    SB.auth.signInWithOtp({ email:email, options:{ emailRedirectTo: location.origin+location.pathname } })
-      .then(function(res){
-        btn.disabled=false;
-        if(res.error) msg.textContent='Ошибка: '+res.error.message;
-        else msg.textContent='Письмо отправлено на '+email+'. Откройте ссылку из него на этом устройстве.';
-      });
+    var redirect=(location.origin+location.pathname).trim();
+    try{
+      SB.auth.signInWithOtp({ email:email, options:{ emailRedirectTo: redirect } })
+        .then(function(res){
+          btn.disabled=false;
+          if(res.error) msg.textContent='Ошибка: '+res.error.message;
+          else msg.textContent='Письмо отправлено на '+email+'. Откройте ссылку из него на этом устройстве.';
+        })
+        .catch(function(err){ btn.disabled=false; msg.textContent='Ошибка отправки: '+((err&&err.message)||err); });
+    }catch(err){ btn.disabled=false; msg.textContent='Ошибка: '+((err&&err.message)||err); }
   }
   async function checkMember(){
     if(!SB || !USER) return false;
