@@ -7,14 +7,14 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Читальня</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CjxyZWN0IHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgcng9IjE0IiBmaWxsPSIjOGE1YTJiIi8+CjxwYXRoIGQ9Ik0zMSAxOSBDMjYgMTYgMTkgMTYuNSAxNSAxOCBMMTUgNDQgQzE5IDQyLjUgMjYgNDIgMzEgNDUgWiIgZmlsbD0iI2ZkZjdlYyIvPgo8cGF0aCBkPSJNMzMgMTkgQzM4IDE2IDQ1IDE2LjUgNDkgMTggTDQ5IDQ0IEM0NSA0Mi41IDM4IDQyIDMzIDQ1IFoiIGZpbGw9IiNmZGY3ZWMiLz4KPGcgc3Ryb2tlPSIjYzlhMDZhIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIj4KPGxpbmUgeDE9IjE5IiB5MT0iMjMuMiIgeDI9IjI4IiB5Mj0iMjQiLz48bGluZSB4MT0iMTkiIHkxPSIyOC4yIiB4Mj0iMjgiIHkyPSIyOSIvPjxsaW5lIHgxPSIxOSIgeTE9IjMzLjIiIHgyPSIyOCIgeTI9IjM0Ii8+CjxsaW5lIHgxPSIzNiIgeTE9IjI0IiB4Mj0iNDUiIHkyPSIyMy4yIi8+PGxpbmUgeDE9IjM2IiB5MT0iMjkiIHgyPSI0NSIgeTI9IjI4LjIiLz48bGluZSB4MT0iMzYiIHkxPSIzNCIgeDI9IjQ1IiB5Mj0iMzMuMiIvPgo8L2c+PC9zdmc+">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Читальня">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-  /* ===== НАСТРОЙКА: впишите два значения из Supabase (Project Settings → API) ===== */
-  window.SUPABASE_URL      = "https://wsnqmjzmtjpezkzlzhra.supabase.co";   /* напр. https://abcdxyz.supabase.co  */
-  window.SUPABASE_ANON_KEY = "sb_publishable_E3jUKYIQAvt5ilMkvZvy0g_tv3g2vpD";      /* длинный ключ, начинается на eyJ...   */
-  /* ============================================================================== */
-</script>
+<!-- Ключи Supabase лежат в отдельном файле config.js рядом с index.html.
+     Его заполняют один раз; при обновлениях index.html этот файл не трогаем. -->
+<script src="config.js"></script>
 <style>
   :root{
     --bg:#f6f4ef; --panel:#fffdf9; --ink:#23211c; --muted:#8a857a;
@@ -244,6 +244,11 @@
   .toc-item .tick{color:var(--accent); font-size:11px; margin-left:6px; flex:0 0 auto}
   #archList{max-height:52vh; overflow:auto}
   .exp-opts{display:flex; align-items:center; gap:8px; margin-bottom:10px; font-size:13.5px; color:var(--read)}
+  .sk{background:linear-gradient(90deg, var(--line) 25%, var(--card) 37%, var(--line) 63%);
+    background-size:400% 100%; animation:shimmer 1.4s ease infinite; border-radius:6px; margin:0 0 14px}
+  .sk-h{height:28px; width:58%; margin-bottom:26px}
+  .sk-l{height:15px}
+  @keyframes shimmer{0%{background-position:100% 0} 100%{background-position:-100% 0}}
 
   @media(max-width:820px){
     #sidebar{position:fixed; top:0; left:0; height:100%; box-shadow:var(--shadow)}
@@ -399,7 +404,7 @@
       <div id="authMsg"></div>
     </div>
     <div id="authConfig" style="display:none">
-      <div class="auth-sub">Подключение к базе не настроено.<br>Впишите <b>SUPABASE_URL</b> и <b>SUPABASE_ANON_KEY</b> в начале файла (см. инструкцию).</div>
+      <div class="auth-sub">Подключение к базе не настроено.<br>Откройте файл <b>config.js</b> рядом с index.html и впишите в него <b>SUPABASE_URL</b> и <b>SUPABASE_ANON_KEY</b> (см. инструкцию).</div>
     </div>
     <div id="authNomember" style="display:none">
       <div class="auth-sub">Вы вошли, но доступ к книге ещё не открыт.<br>Попросите администратора добавить ваш email в список доступа.</div>
@@ -429,6 +434,28 @@
     var dg=await SB.from('diagrams').select('*');
     DIAGS={};
     if(!dg.error){ (dg.data||[]).forEach(function(d){ DIAGS[d.name]={caption:d.caption||'', src:svgToSrc(d.svg||'')}; }); }
+    saveContentCache();
+  }
+  function contentSig(){ return BOOK.map(function(c){ return c.id+':'+c.ver; }).join(','); }
+  function saveContentCache(){
+    try{ lsSet('bp_content', JSON.stringify({ v:1, book:BOOK, diags:DIAGS })); }catch(e){}
+  }
+  function loadContentCache(){
+    try{
+      var raw=lsGet('bp_content'); if(!raw) return false;
+      var d=JSON.parse(raw); if(!d || !d.book || !d.book.length) return false;
+      BOOK=d.book; BYID={}; BOOK.forEach(function(c){ BYID[c.id]=c; });
+      DIAGS=d.diags||{}; _ptCache={};
+      return true;
+    }catch(e){ return false; }
+  }
+  function showSkeleton(){
+    var sk='<div class="sk sk-h"></div>';
+    var w=[88,72,95,66,90,80,58,93,70];
+    for(var i=0;i<w.length;i++) sk+='<div class="sk sk-l" style="width:'+w[i]+'%"></div>';
+    document.getElementById('content').innerHTML=sk;
+    document.getElementById('topTitle').textContent='';
+    document.getElementById('chapNav').innerHTML='';
   }
 
   // ---------- state ----------
@@ -1113,26 +1140,52 @@
   async function logout(){
     if(SB){ try{ await SB.auth.signOut(); }catch(e){} }
     USER=null; isAdmin=false; isMember=false; comments=[]; BOOK=[]; BYID={};
+    loadedUserId=null; authInFlight=null;
+    try{ localStorage.removeItem('bp_content'); }catch(e){}
     document.getElementById('btnAdmin').style.display='none';
     document.getElementById('userBox').style.display='none';
     renderChapter(); renderTOC(); refreshPanel(); updateCount();
     showGate('login');
   }
+  var loadedUserId=null, authInFlight=null;
   async function onAuth(session){
     USER = session ? session.user : null;
-    if(!USER){ isAdmin=isMember=false; updateAuthUI(); showGate('login'); return; }
+    if(!USER){ isAdmin=isMember=false; loadedUserId=null; updateAuthUI(); showGate('login'); return; }
+    if(loadedUserId===USER.id && BOOK.length){           // уже загружено для этого пользователя — не перезагружаем
+      document.getElementById('authGate').style.display='none'; updateAuthUI(); return;
+    }
+    if(authInFlight===USER.id) return;                    // загрузка уже идёт
     isAdmin = (USER.email||'').toLowerCase()===ADMIN;
     document.getElementById('btnAdmin').style.display = isAdmin? 'inline-flex':'none';
     isMember = isAdmin || await checkMember();
     if(!isMember){ document.getElementById('nomemberEmail').textContent='Вы вошли как '+USER.email; showGate('nomember'); return; }
-    document.getElementById('authGate').style.display='none';
-    updateAuthUI();
-    document.getElementById('content').innerHTML='<p style="color:var(--muted)">Загружаю книгу…</p>';
-    await loadContent();
-    if(!state.chapter || !BYID[state.chapter]) state.chapter = BOOK.length? BOOK[0].id : null;
-    renderTOC(); renderChapter();
-    var sc=document.getElementById('scroller'); sc.scrollTop=state.scroll[state.chapter]||0;
-    await loadComments(); renderChapter(); renderTOC(); refreshPanel(); updateCount();
+    document.getElementById('authGate').style.display='none'; updateAuthUI();
+    authInFlight=USER.id;
+    try{
+      // 1) мгновенная отрисовка из кэша, иначе скелет
+      if(!BOOK.length){
+        if(loadContentCache()){
+          if(!state.chapter || !BYID[state.chapter]) state.chapter=BOOK[0].id;
+          renderTOC(); renderChapter();
+          document.getElementById('scroller').scrollTop=state.scroll[state.chapter]||0;
+        } else { showSkeleton(); }
+      }
+      // 2) комментарии (не кэшируются)
+      await loadComments();
+      if(BOOK.length){ renderChapter(); renderTOC(); refreshPanel(); updateCount(); }
+      // 3) фоновое обновление контента из базы
+      var sig=contentSig();
+      await loadContent();
+      if(!state.chapter || !BYID[state.chapter]) state.chapter = BOOK.length? BOOK[0].id : null;
+      if(contentSig()!==sig){                              // контент реально изменился (или это первая загрузка)
+        await loadComments();
+        renderTOC(); renderChapter(); refreshPanel(); updateCount();
+        document.getElementById('scroller').scrollTop=state.scroll[state.chapter]||0;
+      } else {
+        renderTOC();
+      }
+      loadedUserId=USER.id;
+    } finally { authInFlight=null; }
   }
   document.getElementById('authBtn').onclick=doAuth;
   document.getElementById('authSwitch').onclick=function(){ setAuthMode(authMode==='signin'?'signup':'signin'); };
@@ -1336,10 +1389,17 @@
     document.getElementById('scroller').addEventListener('touchend', function(){ setTimeout(onSelect,30); });
 
     if(!SB){ showGate('config'); return; }
-    showGate('login');
+    // мгновенно показать книгу из кэша (если есть) — чтобы возврат в приложение не мигал экраном входа
+    if(loadContentCache()){
+      if(!state.chapter || !BYID[state.chapter]) state.chapter = BOOK.length? BOOK[0].id : null;
+      renderTOC(); renderChapter();
+      document.getElementById('scroller').scrollTop = state.scroll[state.chapter]||0;
+    }
     SB.auth.onAuthStateChange(function(ev, session){ onAuth(session); });
     var got=await SB.auth.getSession();
-    await onAuth(got.data && got.data.session);
+    var sess = got.data && got.data.session;
+    if(!sess){ showGate('login'); }   // вход показываем только если сессии действительно нет
+    await onAuth(sess);
   })();
 
 })();
