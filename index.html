@@ -367,6 +367,24 @@ table.dash td, table.dash th{padding:7px 6px; font-size:12.5px}
 .book-title{font-weight:600; font-size:14.5px; line-height:1.3}
 .book-sub{font-size:12px; color:var(--muted); margin-top:3px}
 .shelf-note{margin-top:28px; font-size:13px; color:var(--muted); text-align:center}
+
+/* supplements + chapter info + dashboard summary (Ф3b) */
+#suppBox{max-width:760px; margin:6px auto 0; padding:14px 0 4px; border-top:1px dashed var(--line)}
+.supp-h{font-size:12px; text-transform:uppercase; letter-spacing:.4px; color:var(--muted); margin-bottom:8px}
+.supp-row{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; padding:5px 0; font-size:14px}
+.supp-kind{font-size:11px; color:var(--accent); border:1px solid var(--accent); border-radius:7px; padding:0 6px; white-space:nowrap}
+.supp-title{color:var(--ink); font-weight:600; text-decoration:none}
+a.supp-title:hover{color:var(--accent); text-decoration:underline}
+.supp-note{color:var(--muted); font-size:13px}
+.supp-del{margin-left:auto; color:var(--muted); cursor:pointer}
+.supp-del:hover{color:#b23b3b}
+.supp-add{display:inline-block; margin-top:8px; font-size:13px; color:var(--accent); cursor:pointer}
+.dash-sum{font-size:13px; color:var(--read); background:var(--accent-soft); border-radius:9px; padding:10px 12px; margin-bottom:12px; line-height:1.6}
+.ci-cur{font-size:14px; margin-bottom:6px}
+.ci-h{font-size:12px; text-transform:uppercase; letter-spacing:.4px; color:var(--muted); margin:14px 0 8px}
+.ci-row{padding:8px 0; border-bottom:1px solid var(--line)}
+.ci-date{font-size:13px; margin-bottom:2px}
+.ci-log{font-size:13.5px; color:var(--read); white-space:pre-wrap}
 </style>
 </head>
 <body>
@@ -404,6 +422,7 @@ table.dash td, table.dash th{padding:7px 6px; font-size:12.5px}
     <div id="scroller">
       <div id="content"></div>
       <div id="reactBar"></div>
+      <div id="suppBox" style="display:none"></div>
       <div id="chapNav"></div>
     </div>
     <button id="floatAdd">＋ Добавить комментарий</button>
@@ -492,6 +511,7 @@ table.dash td, table.dash th{padding:7px 6px; font-size:12.5px}
     <div style="font-size:13px; color:var(--muted); line-height:1.5; margin-bottom:10px">
       Загрузите <b>content.json</b> (его собирает Claude из ваших md-файлов). Изменённые главы получат новую версию — их правки обнулятся, нетронутые сохранятся.
     </div>
+    <input id="uploadChangelog" class="adm-in" placeholder="Что изменилось (чейнджлог для обновлённых глав)" style="width:100%; margin-bottom:8px">
     <button class="btn" id="contentUpload">Выбрать content.json</button>
     <div id="contentMsg" style="font-size:13px; margin-top:10px; color:var(--muted)"></div>
     <hr style="border:none; border-top:1px solid var(--line); margin:20px 0">
@@ -523,6 +543,26 @@ table.dash td, table.dash th{padding:7px 6px; font-size:12.5px}
   <h3 id="archTitle">Архив правок</h3>
   <div class="body"><div id="archList"></div></div>
   <div class="foot"><div class="spacer"></div><button class="btn" id="archClose">Закрыть</button></div>
+</div>
+<div class="modal" id="suppModal" style="width:480px">
+  <h3>Дополнение к главе</h3>
+  <div class="body">
+    <select id="suppKind" class="adm-in" style="width:100%; margin-bottom:8px">
+      <option value="book">книга</option>
+      <option value="article" selected>статья</option>
+      <option value="theory">теория</option>
+      <option value="other">ссылка</option>
+    </select>
+    <input id="suppTitle" class="adm-in" placeholder="Название" style="width:100%; margin-bottom:8px">
+    <input id="suppUrl" class="adm-in" placeholder="Ссылка (необязательно)" style="width:100%; margin-bottom:8px">
+    <input id="suppNote" class="adm-in" placeholder="Короткая заметка (необязательно)" style="width:100%">
+  </div>
+  <div class="foot"><div class="spacer"></div><button class="btn" id="suppCancel">Отмена</button><button class="btn primary" id="suppSave">Добавить</button></div>
+</div>
+<div class="modal" id="chinfoModal" style="width:520px">
+  <h3 id="ciTitle">О главе</h3>
+  <div class="body"><div id="ciBody"></div></div>
+  <div class="foot"><div class="spacer"></div><button class="btn" id="ciClose">Закрыть</button></div>
 </div>
 <div id="shelf" style="display:none">
   <div class="shelf-inner">
@@ -871,7 +911,7 @@ table.dash td, table.dash th{padding:7px 6px; font-size:12.5px}
     if(!c){ cont.innerHTML='<p style="color:var(--muted)">'+(BOOK.length?'Выберите главу слева.':'Контент ещё не загружен.')+'</p>'; document.getElementById('topTitle').textContent=''; document.getElementById('chapNav').innerHTML=''; var rb=document.getElementById('reactBar'); if(rb){rb.style.display='none';rb.innerHTML='';} return; }
     cont.innerHTML = renderMd(c.md);
     document.getElementById('topTitle').textContent = c.title;
-    fillFigures(); highlightChapter(); renderChapNav(); renderReactBar();
+    fillFigures(); highlightChapter(); renderChapNav(); renderReactBar(); renderSupp();
   }
 
   function openChapter(id, scrollToTop){
@@ -1561,11 +1601,30 @@ table.dash td, table.dash th{padding:7px 6px; font-size:12.5px}
   (function(){ var b=document.getElementById('wcClose'); if(b) b.onclick=function(){ closeModals(); if(onboarding){ onboarding=false; showShelf(); } }; })();
 
   // chapter info (version + date)
-  function showChapterInfo(){
+  async function showChapterInfo(){
     var c=BYID[state.chapter]; if(!c) return;
-    var when=c.updated? new Date(c.updated).toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'}) : '—';
-    toast('Версия '+(c.ver||'?')+' · обновлена '+when);
+    document.getElementById('ciTitle').textContent='О главе · '+c.title;
+    var box=document.getElementById('ciBody'); box.innerHTML='Загрузка…';
+    showModal('chinfoModal');
+    var when=c.updated? new Date(c.updated).toLocaleString('ru-RU') : '—';
+    var html='<div class="ci-cur"><b>Текущая версия:</b> '+(c.ver||'?').slice(0,7)+' · '+when+'</div>';
+    box.innerHTML=html;
+    var vr=await SB.from('chapter_versions').select('ver,changelog,created_at').eq('chapter_id',c.id).order('created_at',{ascending:false});
+    if(!vr.error && vr.data && vr.data.length){
+      var h=document.createElement('div'); h.className='ci-h'; h.textContent='История изменений'; box.appendChild(h);
+      vr.data.forEach(function(v){
+        var row=document.createElement('div'); row.className='ci-row';
+        var d=document.createElement('div'); d.className='ci-date';
+        d.innerHTML='<b>'+(v.ver||'?').slice(0,7)+'</b> · '+new Date(v.created_at).toLocaleDateString('ru-RU')+(v.ver===c.ver?' <span class="muted">(текущая)</span>':'');
+        var cl=document.createElement('div'); cl.className='ci-log'; cl.textContent=v.changelog||'—';
+        row.appendChild(d); row.appendChild(cl); box.appendChild(row);
+      });
+    } else {
+      var e=document.createElement('div'); e.className='muted'; e.style.marginTop='10px'; e.style.fontSize='13px';
+      e.textContent='История появится после следующих обновлений главы.'; box.appendChild(e);
+    }
   }
+  (function(){ var b=document.getElementById('ciClose'); if(b) b.onclick=closeModals; })();
   (function(){ var b=document.getElementById('btnInfo'); if(b) b.onclick=showChapterInfo; })();
 
   // ---------- shelf (multi-book) ----------
@@ -1696,15 +1755,17 @@ table.dash td, table.dash th{padding:7px 6px; font-size:12.5px}
       var chs=data.chapters||[], dgs=data.diagrams||[];
       if(!chs.length){ msg.textContent='В файле нет глав.'; return; }
       var oldVers={}; BOOK.forEach(function(b){ oldVers[b.id]=b.ver; });   // версии до загрузки
+      var changelog=(document.getElementById('uploadChangelog')&&document.getElementById('uploadChangelog').value||'').trim();
       var changed=0;
       for(var i=0;i<chs.length;i++){
         var c=chs[i];
         var r=await SB.from('chapters').upsert({ id:c.id, book_id:currentBook(), ord:c.ord||0, file:c.file||'', part:c.part||'', title:c.title||'', ver:c.ver||'', md:c.md||'', figs:c.figs||[] }, {onConflict:'id'});
         if(r.error){ msg.textContent='Ошибка главы '+c.id+': '+r.error.message; return; }
         // архивируем эту версию (старый текст не теряется)
-        await SB.from('chapter_versions').upsert({ chapter_id:c.id, book_id:currentBook(), ver:c.ver||'', title:c.title||'', md:c.md||'' }, {onConflict:'chapter_id,ver', ignoreDuplicates:true });
+        var changedThis = oldVers[c.id] && oldVers[c.id]!==(c.ver||'');
+        await SB.from('chapter_versions').upsert({ chapter_id:c.id, book_id:currentBook(), ver:c.ver||'', title:c.title||'', md:c.md||'', changelog:(changedThis?changelog:'') }, {onConflict:'chapter_id,ver', ignoreDuplicates:true });
         // если версия сменилась — закрываем правки к старой версии (авторы получат уведомление)
-        if(oldVers[c.id] && oldVers[c.id]!==(c.ver||'')){
+        if(changedThis){
           changed++;
           await SB.from('comments').update({status:'done'}).eq('chapter_id',c.id).eq('chapter_version',oldVers[c.id]).neq('status','done');
         }
@@ -1894,7 +1955,7 @@ table.dash td, table.dash th{padding:7px 6px; font-size:12.5px}
     if(!SB || !USER) return;
     try{ var d=await SB.from('discussions').select('*').order('created_at',{ascending:true}); if(!d.error) DISCALL=d.data||[]; }catch(e){}
     try{ var r=await SB.from('ratings').select('*'); if(!r.error) RATEALL=r.data||[]; }catch(e){}
-    await loadReactions(); await loadVersions();
+    await loadReactions(); await loadVersions(); await loadSupp();
   }
   async function loadVersions(){
     CVALL=[]; MYCHS={};
@@ -2057,6 +2118,62 @@ table.dash td, table.dash th{padding:7px 6px; font-size:12.5px}
     }
   }
 
+  // ---------- supplements (chapter links) ----------
+  var SUPPALL=[];
+  var SUPP_KINDS={book:'книга', article:'статья', theory:'теория', other:'ссылка'};
+  async function loadSupp(){ SUPPALL=[]; if(!SB||!USER) return; try{ var r=await SB.from('chapter_links').select('*').order('created_at',{ascending:true}); if(!r.error) SUPPALL=r.data||[]; }catch(e){} }
+  function renderSupp(){
+    var box=document.getElementById('suppBox'); if(!box) return;
+    var ch=BYID[state.chapter];
+    if(!ch){ box.style.display='none'; box.innerHTML=''; return; }
+    var items=SUPPALL.filter(function(x){return x.chapter_id===ch.id;});
+    if(!items.length && !canContribute()){ box.style.display='none'; box.innerHTML=''; return; }
+    box.style.display=''; box.innerHTML='';
+    var h=document.createElement('div'); h.className='supp-h'; h.textContent='Дополнения к главе'; box.appendChild(h);
+    items.forEach(function(it){
+      var row=document.createElement('div'); row.className='supp-row';
+      var k=document.createElement('span'); k.className='supp-kind'; k.textContent=SUPP_KINDS[it.kind]||'ссылка'; row.appendChild(k);
+      var a=document.createElement(it.url?'a':'span'); a.className='supp-title'; a.textContent=it.title||it.url||'(без названия)';
+      if(it.url){ a.href=it.url; a.target='_blank'; a.rel='noopener'; } row.appendChild(a);
+      if(it.note){ var n=document.createElement('span'); n.className='supp-note'; n.textContent='— '+it.note; row.appendChild(n); }
+      if((USER && it.user_id===USER.id) || canModerate()){ var d=document.createElement('a'); d.className='supp-del'; d.textContent='×'; d.title='удалить'; d.onclick=function(){ delSupp(it.id); }; row.appendChild(d); }
+      box.appendChild(row);
+    });
+    if(canContribute()){
+      var add=document.createElement('a'); add.className='supp-add'; add.textContent='+ добавить дополнение';
+      add.onclick=function(){ openSupp(ch.id); };
+      box.appendChild(add);
+    }
+  }
+  function openSupp(chId){
+    document.getElementById('suppKind').value='article';
+    document.getElementById('suppTitle').value='';
+    document.getElementById('suppUrl').value='';
+    document.getElementById('suppNote').value='';
+    document.getElementById('suppModal').dataset.ch=chId;
+    showModal('suppModal'); setTimeout(function(){ document.getElementById('suppTitle').focus(); },50);
+  }
+  async function addSupp(){
+    var chId=document.getElementById('suppModal').dataset.ch; if(!chId||!SB) return;
+    var rec={ chapter_id:chId, kind:document.getElementById('suppKind').value,
+      title:(document.getElementById('suppTitle').value||'').trim(),
+      url:(document.getElementById('suppUrl').value||'').trim(),
+      note:(document.getElementById('suppNote').value||'').trim(),
+      added_by:(USER&&USER.email?USER.email.toLowerCase():'') };
+    if(!rec.title && !rec.url){ toast('Нужно название или ссылка'); return; }
+    var r=await SB.from('chapter_links').insert(rec).select().single();
+    if(r.error){ toast('Ошибка: '+r.error.message); return; }
+    SUPPALL.push(r.data); closeModals(); renderSupp();
+  }
+  async function delSupp(id){
+    if(!SB) return;
+    var d=await SB.from('chapter_links').delete().eq('id',id);
+    if(d.error){ toast('Ошибка: '+d.error.message); return; }
+    SUPPALL=SUPPALL.filter(function(x){return x.id!==id;}); renderSupp();
+  }
+  (function(){ var s1=document.getElementById('suppSave'); if(s1) s1.onclick=addSupp;
+    var s2=document.getElementById('suppCancel'); if(s2) s2.onclick=closeModals; })();
+
   // ---------- author dashboard ----------
   function chapterStats(chId){
     var edits=comments.filter(function(c){return c.ch===chId;});
@@ -2070,30 +2187,39 @@ table.dash td, table.dash th{padding:7px 6px; font-size:12.5px}
     var started=0, finished=0, sumf=0;
     ps.forEach(function(p){ if(p.max_frac>0.05){ started++; sumf+=p.max_frac; if(p.max_frac>=0.9) finished++; } });
     var avgf = started? (sumf/started) : 0;
+    var likes=0, last=0;
+    edits.forEach(function(c){ likes+=likeInfo(c.id).count; if(c.ts>last) last=c.ts; });
+    DISCALL.forEach(function(d){ if(d.chapter_id===chId){ var t=Date.parse(d.created_at); if(t>last) last=t; } });
     return {edits:edits.length, open:open, done:edits.length-open, ravg:ravg, rn:rs.length, disc:disc, rx:rx,
-            started:started, finished:finished, avgf:avgf};
+            started:started, finished:finished, avgf:avgf, likes:likes, last:last};
   }
   function isWeak(st){ return (st.rn>0 && st.ravg<3) || (st.rx.confused+st.rx.drag>=2) || (st.started>=2 && st.avgf<0.6); }
   function openDashboard(){
     var body=document.getElementById('dashBody'); body.innerHTML='';
+    // сводка
+    var totOpen=0, weak=0, nstart=0, sumf=0, totDisc=0, totLikes=0, totRn=0;
+    BOOK.forEach(function(ch){ var st=chapterStats(ch.id); totOpen+=st.open; totDisc+=st.disc; totLikes+=st.likes; totRn+=st.rn; if(isWeak(st)) weak++; if(st.started){ nstart++; sumf+=st.avgf; } });
+    var sum=document.createElement('div'); sum.className='dash-sum';
+    sum.innerHTML='Глав: <b>'+BOOK.length+'</b> · требуют внимания: <b>'+weak+'</b> · открытых правок: <b>'+totOpen+'</b> · ♥ <b>'+totLikes+'</b> · сообщений в обсуждениях: <b>'+totDisc+'</b> · средняя дочит.: <b>'+(nstart?Math.round(sumf/nstart*100):0)+'%</b>';
+    body.appendChild(sum);
     var tbl=document.createElement('table'); tbl.className='dash';
-    tbl.innerHTML='<thead><tr><th>Глава</th><th>Дочит.</th><th>Оценка</th><th>Реакции</th><th>Правки</th><th>Обсужд.</th></tr></thead>';
+    tbl.innerHTML='<thead><tr><th>Глава</th><th>Версия</th><th>Дочит.</th><th>Оценка</th><th>Реакции</th><th>Правки</th><th>Обсужд.</th><th>Активн.</th></tr></thead>';
     var tb=document.createElement('tbody');
     BOOK.forEach(function(ch){
       var st=chapterStats(ch.id);
       var tr=document.createElement('tr'); if(isWeak(st)) tr.className='weak';
       var td1=document.createElement('td'); td1.className='ch'; td1.textContent=ch.title; tr.appendChild(td1);
+      var tdV=document.createElement('td'); tdV.className='dash-x';
+      tdV.innerHTML='<span class="muted">'+(ch.ver||'?').slice(0,7)+'</span>'+(ch.updated?('<br><span class="muted" style="font-size:11px">'+new Date(ch.updated).toLocaleDateString('ru-RU')+'</span>'):''); tr.appendChild(tdV);
       var tdR=document.createElement('td'); tdR.className='dash-x';
-      if(st.started){
-        var pct=Math.round(st.avgf*100);
-        tdR.innerHTML = st.finished+'/'+st.started+' <span class="muted">· ~'+pct+'%</span>';
-      } else tdR.innerHTML='<span class="muted">—</span>';
+      if(st.started){ var pct=Math.round(st.avgf*100); tdR.innerHTML = st.finished+'/'+st.started+' <span class="muted">· ~'+pct+'%</span>'; } else tdR.innerHTML='<span class="muted">—</span>';
       tr.appendChild(tdR);
       var td2=document.createElement('td'); td2.innerHTML = st.rn? ('★ '+st.ravg.toFixed(1)+' <span class="muted">('+st.rn+')</span>') : '<span class="muted">—</span>'; tr.appendChild(td2);
       var td3=document.createElement('td'); td3.className='dash-x';
       td3.innerHTML='\u{1F914} '+st.rx.confused+'  \u{1F634} '+st.rx.drag+'  \u{1F525} '+st.rx.strong; tr.appendChild(td3);
-      var td4=document.createElement('td'); td4.innerHTML = st.edits? (st.open+' откр. <span class="muted">/ '+st.done+' гот.</span>') : '<span class="muted">—</span>'; tr.appendChild(td4);
+      var td4=document.createElement('td'); td4.innerHTML = st.edits? (st.open+'/'+st.done+' <span class="muted">о/г</span>'+(st.likes?(' · ♥'+st.likes):'')) : (st.likes?('♥'+st.likes):'<span class="muted">—</span>'); tr.appendChild(td4);
       var td5=document.createElement('td'); td5.innerHTML = st.disc? String(st.disc) : '<span class="muted">—</span>'; tr.appendChild(td5);
+      var td6=document.createElement('td'); td6.className='dash-x'; td6.innerHTML = st.last? ('<span class="muted">'+fmtTime(st.last)+'</span>') : '<span class="muted">—</span>'; tr.appendChild(td6);
       tr.style.cursor='pointer';
       tr.onclick=function(){ closeModals(); if(BYID[ch.id]) openChapter(ch.id); };
       tb.appendChild(tr);
