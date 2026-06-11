@@ -352,6 +352,21 @@ table.dash td, table.dash th{padding:7px 6px; font-size:12.5px}
 .ver-show{color:var(--accent); cursor:pointer; white-space:nowrap}
 .ver-md{white-space:pre-wrap; font-size:13px; line-height:1.55; color:var(--read); margin-top:12px; max-height:60vh; overflow:auto;
   background:var(--card); border:1px solid var(--line); border-radius:10px; padding:14px}
+
+/* shelf (Ф3) */
+#shelf{position:fixed; inset:0; z-index:60; background:var(--bg); display:flex; align-items:flex-start; justify-content:center; overflow:auto}
+.shelf-inner{width:100%; max-width:720px; padding:32px 24px 60px}
+.shelf-top{display:flex; align-items:center; justify-content:space-between; margin-bottom:24px}
+.shelf-top h2{font-size:24px; margin:0}
+.shelf-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:18px}
+.book-card{cursor:pointer; border:1px solid var(--line); border-radius:14px; padding:16px; background:var(--card); transition:.15s; text-align:center}
+.book-card:hover{border-color:var(--accent); transform:translateY(-2px)}
+.book-card.current{border-color:var(--accent)}
+.book-cover{height:120px; border-radius:10px; background:linear-gradient(135deg,var(--accent),#b98a4e); color:#fff;
+  display:flex; align-items:center; justify-content:center; font-size:44px; font-weight:700; margin-bottom:12px; font-family:Georgia,serif}
+.book-title{font-weight:600; font-size:14.5px; line-height:1.3}
+.book-sub{font-size:12px; color:var(--muted); margin-top:3px}
+.shelf-note{margin-top:28px; font-size:13px; color:var(--muted); text-align:center}
 </style>
 </head>
 <body>
@@ -373,6 +388,7 @@ table.dash td, table.dash th{padding:7px 6px; font-size:12.5px}
     <div id="progress"></div>
     <div id="topbar">
       <button class="iconbtn" id="btnMenu" title="Оглавление">☰</button>
+      <button class="iconbtn" id="btnShelf" title="Полка">📚</button>
       <div id="topTitle"></div>
       <button class="iconbtn" id="btnSearch" title="Поиск по книге">🔍</button>
       <button class="iconbtn" id="btnMarkers" title="Показать редакционные маркеры">⟦⟧ Маркеры</button>
@@ -479,6 +495,14 @@ table.dash td, table.dash th{padding:7px 6px; font-size:12.5px}
     <button class="btn" id="contentUpload">Выбрать content.json</button>
     <div id="contentMsg" style="font-size:13px; margin-top:10px; color:var(--muted)"></div>
     <hr style="border:none; border-top:1px solid var(--line); margin:20px 0">
+    <div class="adm-h">Книги (полка)</div>
+    <div id="bookList" style="font-size:13px"></div>
+    <div style="display:flex; gap:8px; margin-top:8px">
+      <input id="bookId" class="adm-in" placeholder="id (напр. b2_…)" style="width:130px">
+      <input id="bookTitle" class="adm-in" placeholder="Название книги" style="flex:1">
+      <button class="btn" id="bookAdd">Добавить</button>
+    </div>
+    <div style="font-size:12px; color:var(--muted); margin:6px 0 18px">Чтобы загрузить главы новой книги — откройте её на полке (📚) и загрузите content.json: главы привяжутся к ней. Id глав должны быть уникальны между книгами.</div>
     <div class="adm-h">Имена участников</div>
     <div style="font-size:13px; color:var(--muted); line-height:1.5; margin-bottom:10px">
       Задайте отображаемые имена — они показываются в правках и обсуждении вместо почты. Появляются здесь после первого входа человека.
@@ -499,6 +523,13 @@ table.dash td, table.dash th{padding:7px 6px; font-size:12.5px}
   <h3 id="archTitle">Архив правок</h3>
   <div class="body"><div id="archList"></div></div>
   <div class="foot"><div class="spacer"></div><button class="btn" id="archClose">Закрыть</button></div>
+</div>
+<div id="shelf" style="display:none">
+  <div class="shelf-inner">
+    <div class="shelf-top"><h2>Полка</h2><button class="iconbtn" id="shelfClose" title="Закрыть">✕</button></div>
+    <div id="shelfList" class="shelf-grid"></div>
+    <div class="shelf-note">Со временем здесь появятся и другие книги.</div>
+  </div>
 </div>
 <div class="modal" id="welcomeModal" style="width:440px">
   <h3 id="wcHi">Добро пожаловать!</h3>
@@ -577,7 +608,8 @@ table.dash td, table.dash th{padding:7px 6px; font-size:12.5px}
   function svgToSrc(svg){ return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg||''); }
   async function loadContent(){
     if(!SB) return;
-    var ch=await SB.from('chapters').select('*').order('ord');
+    var ch=await SB.from('chapters').select('*').eq('book_id', currentBook()).order('ord');
+    if(ch.error){ ch=await SB.from('chapters').select('*').order('ord'); }   // до миграции v9 нет book_id — грузим без фильтра
     if(ch.error){ toast('Ошибка загрузки книги: '+ch.error.message); return; }
     BOOK=(ch.data||[]).map(function(r){ return {id:r.id, file:r.file||(r.id+'.md'), part:r.part||'', title:r.title||r.id, ver:r.ver||'', updated:r.updated_at||null, md:r.md||'', figs:r.figs||[]}; });
     BYID={}; BOOK.forEach(function(c){ BYID[c.id]=c; });
@@ -589,11 +621,11 @@ table.dash td, table.dash th{padding:7px 6px; font-size:12.5px}
   }
   function contentSig(){ return BOOK.map(function(c){ return c.id+':'+c.ver; }).join(','); }
   function saveContentCache(){
-    try{ lsSet('bp_content', JSON.stringify({ v:1, book:BOOK, diags:DIAGS })); }catch(e){}
+    try{ lsSet('bp_content:'+currentBook(), JSON.stringify({ v:1, book:BOOK, diags:DIAGS })); }catch(e){}
   }
   function loadContentCache(){
     try{
-      var raw=lsGet('bp_content'); if(!raw) return false;
+      var raw=lsGet('bp_content:'+currentBook()); if(!raw) return false;
       var d=JSON.parse(raw); if(!d || !d.book || !d.book.length) return false;
       BOOK=d.book; BYID={}; BOOK.forEach(function(c){ BYID[c.id]=c; });
       DIAGS=d.diags||{}; _ptCache={};
@@ -611,7 +643,9 @@ table.dash td, table.dash th{padding:7px 6px; font-size:12.5px}
 
   // ---------- state ----------
   var comments = [];            // {id, ch, start, end, quote, note, ts}
-  var state = { chapter: null, markers:false, scroll:{}, theme:'light', fontSize:1, read:{} };
+  var state = { chapter: null, book:'main', markers:false, scroll:{}, theme:'light', fontSize:1, read:{} };
+  var BOOKS=[];
+  function currentBook(){ return state.book||'main'; }
   var pendingRange = null;      // {ch,start,end,quote,before,after} when adding
   var editingId = null;
   var _ptCache = {};            // chapter id -> plain text (markers off)
@@ -1384,7 +1418,7 @@ table.dash td, table.dash th{padding:7px 6px; font-size:12.5px}
     if(SB){ try{ await SB.auth.signOut(); }catch(e){} }
     USER=null; isAdmin=false; isMember=false; comments=[]; BOOK=[]; BYID={};
     loadedUserId=null; authInFlight=null;
-    try{ localStorage.removeItem('bp_content'); }catch(e){}
+    try{ localStorage.removeItem('bp_content:'+currentBook()); }catch(e){}
     document.getElementById('btnAdmin').style.display='none';
     document.getElementById('userBox').style.display='none';
     renderChapter(); renderTOC(); refreshPanel(); updateCount();
@@ -1432,6 +1466,7 @@ table.dash td, table.dash th{padding:7px 6px; font-size:12.5px}
       await loadProfiles();
       prevSeen = (PROFILES[USER.id] && PROFILES[USER.id].last_seen)? Date.parse(PROFILES[USER.id].last_seen) : 0;
       await loadSocial(); await loadProgress(); await loadLikes();
+      await loadBooks(); setBookTitle();
       startPresence(); updateBell(); renderReactBar(); applyRoleUI();
       if(panelOpen()) renderPanel();
       maybeWelcome();
@@ -1487,7 +1522,7 @@ table.dash td, table.dash th{padding:7px 6px; font-size:12.5px}
   }
   function maybeWelcome(){
     if(welcomeShown) return; welcomeShown=true;
-    if(!prevSeen){ showWelcome(true, []); return; }            // первый визит — онбординг
+    if(!prevSeen){ onboarding=true; showWelcome(true, []); return; }   // первый визит — онбординг
     if(Date.now()-prevSeen < 8*3600*1000) return;              // меньше 8 часов — не беспокоим
     var items=[];
     var nUpd=BOOK.filter(function(b){ return b.updated && Date.parse(b.updated)>prevSeen; }).length;
@@ -1523,7 +1558,7 @@ table.dash td, table.dash th{padding:7px 6px; font-size:12.5px}
     }
     showModal('welcomeModal');
   }
-  (function(){ var b=document.getElementById('wcClose'); if(b) b.onclick=closeModals; })();
+  (function(){ var b=document.getElementById('wcClose'); if(b) b.onclick=function(){ closeModals(); if(onboarding){ onboarding=false; showShelf(); } }; })();
 
   // chapter info (version + date)
   function showChapterInfo(){
@@ -1532,6 +1567,64 @@ table.dash td, table.dash th{padding:7px 6px; font-size:12.5px}
     toast('Версия '+(c.ver||'?')+' · обновлена '+when);
   }
   (function(){ var b=document.getElementById('btnInfo'); if(b) b.onclick=showChapterInfo; })();
+
+  // ---------- shelf (multi-book) ----------
+  var onboarding=false;
+  function bookName(id){ for(var i=0;i<BOOKS.length;i++){ if(BOOKS[i].id===id) return BOOKS[i].title; } return 'книга'; }
+  function setBookTitle(){ var el=document.getElementById('sideSub'); if(el) el.textContent=bookName(currentBook()); }
+  async function loadBooks(){ BOOKS=[]; if(!SB) return; try{ var r=await SB.from('books').select('*').order('sort'); if(!r.error) BOOKS=r.data||[]; }catch(e){} }
+  function renderShelf(){
+    var box=document.getElementById('shelfList'); box.innerHTML='';
+    if(!BOOKS.length){ box.innerHTML='<div class="d-empty">Книг пока нет.</div>'; return; }
+    BOOKS.forEach(function(b){
+      var card=document.createElement('div'); card.className='book-card'+(b.id===currentBook()?' current':'');
+      var cov=document.createElement('div'); cov.className='book-cover'; cov.textContent=(b.title||'?').slice(0,1).toUpperCase();
+      var ti=document.createElement('div'); ti.className='book-title'; ti.textContent=b.title;
+      card.appendChild(cov); card.appendChild(ti);
+      if(b.subtitle){ var su=document.createElement('div'); su.className='book-sub'; su.textContent=b.subtitle; card.appendChild(su); }
+      card.onclick=function(){ openBook(b.id); };
+      box.appendChild(card);
+    });
+  }
+  function showShelf(){ renderShelf(); document.getElementById('shelf').style.display='flex'; }
+  function hideShelf(){ document.getElementById('shelf').style.display='none'; }
+  async function openBook(id){
+    hideShelf();
+    if(state.book!==id){ state.book=id; state.chapter=null; }
+    BOOK=[]; BYID={}; showSkeleton(); saveState();
+    await loadContent();
+    if(!state.chapter || !BYID[state.chapter]) state.chapter = BOOK.length? BOOK[0].id : null;
+    saveState(); setBookTitle();
+    renderTOC(); renderChapter();
+    document.getElementById('scroller').scrollTop = state.scroll[state.chapter]||0;
+    await loadComments(); await loadVersions();
+    renderTOC(); renderChapter(); refreshPanel(); updateCount(); renderReactBar(); applyRoleUI();
+  }
+  (function(){ var b=document.getElementById('btnShelf'); if(b) b.onclick=showShelf;
+    var c=document.getElementById('shelfClose'); if(c) c.onclick=hideShelf; })();
+
+  // admin: books
+  async function refreshBooksAdmin(){
+    var box=document.getElementById('bookList'); if(!box) return;
+    await loadBooks(); box.innerHTML='';
+    BOOKS.forEach(function(b){
+      var row=document.createElement('div'); row.className='wl-row';
+      var t=document.createElement('span'); t.style.flex='1'; t.textContent=b.title+'  ('+b.id+')';
+      row.appendChild(t); box.appendChild(row);
+    });
+  }
+  (function(){
+    var add=document.getElementById('bookAdd');
+    if(add) add.onclick=async function(){
+      var id=(document.getElementById('bookId').value||'').trim();
+      var ti=(document.getElementById('bookTitle').value||'').trim();
+      if(!id || !ti){ toast('Заполните id и название'); return; }
+      var r=await SB.from('books').insert({ id:id, title:ti, sort:BOOKS.length });
+      if(r.error){ toast('Ошибка: '+r.error.message); return; }
+      document.getElementById('bookId').value=''; document.getElementById('bookTitle').value='';
+      toast('Книга добавлена'); refreshBooksAdmin();
+    };
+  })();
   var replyTo=null;
   function openReply(c){
     replyTo=c;
@@ -1591,7 +1684,7 @@ table.dash td, table.dash th{padding:7px 6px; font-size:12.5px}
     document.getElementById('wlEmail').value=''; refreshWhitelist();
   };
   document.getElementById('wlEmail').addEventListener('keydown', function(e){ if(e.key==='Enter') document.getElementById('wlAdd').click(); });
-  document.getElementById('btnAdmin').onclick=function(){ refreshWhitelist(); refreshProfiles(); document.getElementById('contentMsg').textContent=''; showModal('adminModal'); };
+  document.getElementById('btnAdmin').onclick=function(){ refreshWhitelist(); refreshProfiles(); refreshBooksAdmin(); document.getElementById('contentMsg').textContent=''; showModal('adminModal'); };
   document.getElementById('adminClose').onclick=closeModals;
   document.getElementById('contentUpload').onclick=function(){ document.getElementById('contentInput').click(); };
   document.getElementById('contentInput').onchange=function(e){
@@ -1606,10 +1699,10 @@ table.dash td, table.dash th{padding:7px 6px; font-size:12.5px}
       var changed=0;
       for(var i=0;i<chs.length;i++){
         var c=chs[i];
-        var r=await SB.from('chapters').upsert({ id:c.id, ord:c.ord||0, file:c.file||'', part:c.part||'', title:c.title||'', ver:c.ver||'', md:c.md||'', figs:c.figs||[] }, {onConflict:'id'});
+        var r=await SB.from('chapters').upsert({ id:c.id, book_id:currentBook(), ord:c.ord||0, file:c.file||'', part:c.part||'', title:c.title||'', ver:c.ver||'', md:c.md||'', figs:c.figs||[] }, {onConflict:'id'});
         if(r.error){ msg.textContent='Ошибка главы '+c.id+': '+r.error.message; return; }
         // архивируем эту версию (старый текст не теряется)
-        await SB.from('chapter_versions').upsert({ chapter_id:c.id, ver:c.ver||'', title:c.title||'', md:c.md||'' }, {onConflict:'chapter_id,ver', ignoreDuplicates:true });
+        await SB.from('chapter_versions').upsert({ chapter_id:c.id, book_id:currentBook(), ver:c.ver||'', title:c.title||'', md:c.md||'' }, {onConflict:'chapter_id,ver', ignoreDuplicates:true });
         // если версия сменилась — закрываем правки к старой версии (авторы получат уведомление)
         if(oldVers[c.id] && oldVers[c.id]!==(c.ver||'')){
           changed++;
@@ -1627,7 +1720,7 @@ table.dash td, table.dash th{padding:7px 6px; font-size:12.5px}
       if(!state.chapter || !BYID[state.chapter]) state.chapter = BOOK.length? BOOK[0].id : null;
       renderTOC(); renderChapter(); await loadComments(); renderChapter(); renderTOC(); refreshPanel(); updateCount();
       await loadVersions();
-      msg.textContent='Готово: глав '+chs.length+', схем '+dgs.length+(changed?(' · обновлено '+changed+', правки к старым версиям закрыты'):'')+'.';
+      msg.textContent='Загружено в «'+bookName(currentBook())+'»: глав '+chs.length+', схем '+dgs.length+(changed?(' · обновлено '+changed):'')+'.';
     };
     fr.readAsText(f); e.target.value='';
   };
@@ -2125,7 +2218,7 @@ table.dash td, table.dash th{padding:7px 6px; font-size:12.5px}
   (async function init(){
     initSB();
     var sRaw=lsGet('bp_state');
-    if(sRaw){ try{ var s=JSON.parse(sRaw); if(s){ state.markers=!!s.markers; state.scroll=s.scroll||{}; if(s.theme) state.theme=s.theme; if(s.chapter) state.chapter=s.chapter; if(typeof s.fontSize==='number') state.fontSize=s.fontSize; state.read=s.read||{}; } }catch(e){} }
+    if(sRaw){ try{ var s=JSON.parse(sRaw); if(s){ state.markers=!!s.markers; state.scroll=s.scroll||{}; if(s.theme) state.theme=s.theme; if(s.book) state.book=s.book; if(s.chapter) state.chapter=s.chapter; if(typeof s.fontSize==='number') state.fontSize=s.fontSize; state.read=s.read||{}; } }catch(e){} }
     else if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches){ state.theme='dark'; }
     applyTheme(); applyFont();
     if(window.innerWidth<=820) document.getElementById('sidebar').classList.add('collapsed');
