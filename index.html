@@ -341,6 +341,17 @@
 ul.wc-digest{margin:4px 0 0; padding-left:18px}
 ul.wc-digest li{margin-bottom:5px; font-size:14px; color:var(--read)}
 #welcomeModal h3{font-size:20px}
+
+/* dashboard fit (Ф1 fix) */
+#dashBody{max-height:62vh; overflow:auto}
+table.dash td, table.dash th{padding:7px 6px; font-size:12.5px}
+
+/* version history (Ф2) */
+.arch-h{font-size:12px; text-transform:uppercase; letter-spacing:.4px; color:var(--muted); margin:4px 0 8px}
+.ver-row{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:7px 0; border-bottom:1px solid var(--line); font-size:13px}
+.ver-show{color:var(--accent); cursor:pointer; white-space:nowrap}
+.ver-md{white-space:pre-wrap; font-size:13px; line-height:1.55; color:var(--read); margin-top:12px; max-height:60vh; overflow:auto;
+  background:var(--card); border:1px solid var(--line); border-radius:10px; padding:14px}
 </style>
 </head>
 <body>
@@ -494,7 +505,7 @@ ul.wc-digest li{margin-bottom:5px; font-size:14px; color:var(--read)}
   <div class="body"><div id="wcBody"></div></div>
   <div class="foot"><div class="spacer"></div><button class="btn primary" id="wcClose">Читать</button></div>
 </div>
-<div class="modal" id="dashModal" style="width:720px">
+<div class="modal" id="dashModal" style="width:min(760px,94vw)">
   <h3>Дашборд глав</h3>
   <div class="body">
     <div class="dash-legend">Карта слабых мест. <span class="dash-weak-key">Жёлтым</span> — главы, которым стоит уделить внимание (низкая оценка или много «запутался/затянуто»).</div>
@@ -963,7 +974,12 @@ ul.wc-digest li{margin-bottom:5px; font-size:14px; color:var(--read)}
   document.getElementById('editCancel').onclick=closeModals;
 
   // ---------- comments panel ----------
-  function updateCount(){ var n=0; comments.forEach(function(c){ if(c.status!=='done') n++; }); document.getElementById('cCount').textContent=n; }
+  function updateCount(){
+    var el=document.getElementById('cCount');
+    if(!canContribute()){ el.textContent=''; el.style.display='none'; return; }
+    el.style.display='';
+    var n=0; comments.forEach(function(c){ if(c.status!=='done') n++; }); el.textContent=n;
+  }
   function refreshPanel(){
     var list=document.getElementById('cList'); list.innerHTML='';
     if(comments.length===0){
@@ -1321,6 +1337,7 @@ ul.wc-digest li{margin-bottom:5px; font-size:14px; color:var(--read)}
     return 'Ошибка: '+m;
   }
   var myRole='reader', prevSeen=0, welcomeShown=false, LIKEALL=[];
+  var CVALL=[], MYCHS={};   // история версий глав; главы, где у меня есть правки
   function canContribute(){ return isAdmin || myRole==='contributor' || myRole==='editor'; }
   function canModerate(){ return isAdmin || myRole==='editor'; }
   function applyRoleUI(){
@@ -1331,6 +1348,8 @@ ul.wc-digest li{margin-bottom:5px; font-size:14px; color:var(--read)}
     show('btnDash', mod, 'inline-flex');
     ['btnCopyAll','btnSaveJson','btnLoadJson','btnArchive'].forEach(function(id){ show(id, mod); });
     show('btnChapterNote', contrib);
+    show('btnMarkers', mod);
+    if(!mod && state.markers){ state.markers=false; document.getElementById('btnMarkers').classList.remove('on'); renderChapter(); }
     if(!contrib && panelTab==='edits') setPanelTab('disc');
   }
   async function checkMember(){
@@ -1583,10 +1602,19 @@ ul.wc-digest li{margin-bottom:5px; font-size:14px; color:var(--read)}
       var data; try{ data=JSON.parse(fr.result); }catch(_){ msg.textContent='Это не JSON.'; return; }
       var chs=data.chapters||[], dgs=data.diagrams||[];
       if(!chs.length){ msg.textContent='В файле нет глав.'; return; }
+      var oldVers={}; BOOK.forEach(function(b){ oldVers[b.id]=b.ver; });   // версии до загрузки
+      var changed=0;
       for(var i=0;i<chs.length;i++){
         var c=chs[i];
         var r=await SB.from('chapters').upsert({ id:c.id, ord:c.ord||0, file:c.file||'', part:c.part||'', title:c.title||'', ver:c.ver||'', md:c.md||'', figs:c.figs||[] }, {onConflict:'id'});
         if(r.error){ msg.textContent='Ошибка главы '+c.id+': '+r.error.message; return; }
+        // архивируем эту версию (старый текст не теряется)
+        await SB.from('chapter_versions').upsert({ chapter_id:c.id, ver:c.ver||'', title:c.title||'', md:c.md||'' }, {onConflict:'chapter_id,ver', ignoreDuplicates:true });
+        // если версия сменилась — закрываем правки к старой версии (авторы получат уведомление)
+        if(oldVers[c.id] && oldVers[c.id]!==(c.ver||'')){
+          changed++;
+          await SB.from('comments').update({status:'done'}).eq('chapter_id',c.id).eq('chapter_version',oldVers[c.id]).neq('status','done');
+        }
         msg.textContent='Главы: '+(i+1)+'/'+chs.length;
       }
       for(var j=0;j<dgs.length;j++){
@@ -1598,7 +1626,8 @@ ul.wc-digest li{margin-bottom:5px; font-size:14px; color:var(--read)}
       await loadContent();
       if(!state.chapter || !BYID[state.chapter]) state.chapter = BOOK.length? BOOK[0].id : null;
       renderTOC(); renderChapter(); await loadComments(); renderChapter(); renderTOC(); refreshPanel(); updateCount();
-      msg.textContent='Готово: глав '+chs.length+', схем '+dgs.length+'.';
+      await loadVersions();
+      msg.textContent='Готово: глав '+chs.length+', схем '+dgs.length+(changed?(' · обновлено '+changed+', правки к старым версиям закрыты'):'')+'.';
     };
     fr.readAsText(f); e.target.value='';
   };
@@ -1682,13 +1711,29 @@ ul.wc-digest li{margin-bottom:5px; font-size:14px; color:var(--read)}
     var ch=BYID[state.chapter];
     if(!ch){ toast('Сначала откройте главу'); return; }
     if(!SB){ toast('Нет подключения к базе'); return; }
-    document.getElementById('archTitle').textContent='Архив правок · '+ch.title;
+    document.getElementById('archTitle').textContent='История версий · '+ch.title;
     var box=document.getElementById('archList'); box.innerHTML='Загрузка…';
     showModal('archModal');
-    var r=await SB.from('comments').select('*').eq('chapter_id',ch.id).neq('chapter_version',ch.ver).order('created_at',{ascending:false});
-    if(r.error){ box.textContent='Ошибка: '+r.error.message; return; }
+    // история версий (текст) — для редактора/админа
     box.innerHTML='';
-    if(!r.data || !r.data.length){ box.innerHTML='<div class="empty">Архив пуст — правок из прошлых версий этой главы нет.</div>'; return; }
+    if(canModerate()){
+      var vr=await SB.from('chapter_versions').select('*').eq('chapter_id',ch.id).order('created_at',{ascending:false});
+      if(!vr.error && vr.data && vr.data.length){
+        var vh=document.createElement('div'); vh.className='arch-h'; vh.textContent='Версии главы'; box.appendChild(vh);
+        vr.data.forEach(function(v){
+          var row=document.createElement('div'); row.className='ver-row';
+          var lab=document.createElement('span');
+          lab.innerHTML='<b>'+(v.ver||'?').slice(0,7)+'</b> · '+new Date(v.created_at).toLocaleString('ru-RU')+(v.ver===ch.ver?' <span class="muted">(текущая)</span>':'');
+          var a=document.createElement('a'); a.textContent='показать текст'; a.className='ver-show';
+          a.onclick=function(){ showVersionText(v); };
+          row.appendChild(lab); row.appendChild(a); box.appendChild(row);
+        });
+        var ch2=document.createElement('div'); ch2.className='arch-h'; ch2.style.marginTop='16px'; ch2.textContent='Правки из прошлых версий'; box.appendChild(ch2);
+      }
+    }
+    var r=await SB.from('comments').select('*').eq('chapter_id',ch.id).neq('chapter_version',ch.ver).order('created_at',{ascending:false});
+    if(r.error){ var er=document.createElement('div'); er.className='empty'; er.textContent='Ошибка: '+r.error.message; box.appendChild(er); return; }
+    if(!r.data || !r.data.length){ var ep=document.createElement('div'); ep.className='empty'; ep.textContent='Правок из прошлых версий нет.'; box.appendChild(ep); return; }
     r.data.forEach(function(row){
       var c=mapRow(row);
       var card=document.createElement('div'); card.className='c-card';
@@ -1705,6 +1750,12 @@ ul.wc-digest li{margin-bottom:5px; font-size:14px; color:var(--read)}
       card.appendChild(q); card.appendChild(note);
       box.appendChild(card);
     });
+  }
+  function showVersionText(v){
+    document.getElementById('archTitle').textContent='Версия '+(v.ver||'?').slice(0,7)+' · '+new Date(v.created_at).toLocaleDateString('ru-RU');
+    var box=document.getElementById('archList'); box.innerHTML='';
+    var back=document.createElement('a'); back.textContent='← к истории версий'; back.className='ver-show'; back.onclick=openArchive; box.appendChild(back);
+    var pre=document.createElement('div'); pre.className='ver-md'; pre.textContent=v.md||'(пусто)'; box.appendChild(pre);
   }
   document.getElementById('btnArchive').onclick=openArchive;
   document.getElementById('archClose').onclick=closeModals;
@@ -1750,7 +1801,13 @@ ul.wc-digest li{margin-bottom:5px; font-size:14px; color:var(--read)}
     if(!SB || !USER) return;
     try{ var d=await SB.from('discussions').select('*').order('created_at',{ascending:true}); if(!d.error) DISCALL=d.data||[]; }catch(e){}
     try{ var r=await SB.from('ratings').select('*'); if(!r.error) RATEALL=r.data||[]; }catch(e){}
-    await loadReactions();
+    await loadReactions(); await loadVersions();
+  }
+  async function loadVersions(){
+    CVALL=[]; MYCHS={};
+    if(!SB || !USER) return;
+    try{ var v=await SB.from('chapter_versions').select('chapter_id,ver,title,created_at').order('created_at',{ascending:false}); if(!v.error) CVALL=v.data||[]; }catch(e){}
+    try{ var m=await SB.from('comments').select('chapter_id').eq('user_id',USER.id); if(!m.error){ (m.data||[]).forEach(function(x){ MYCHS[x.chapter_id]=1; }); } }catch(e){}
   }
   function fmtTime(ts){
     var d=new Date(ts), now=new Date();
@@ -1936,7 +1993,7 @@ ul.wc-digest li{margin-bottom:5px; font-size:14px; color:var(--read)}
       var tdR=document.createElement('td'); tdR.className='dash-x';
       if(st.started){
         var pct=Math.round(st.avgf*100);
-        tdR.innerHTML = st.finished+'/'+st.started+' <span class="muted">дочит.</span><br><span class="muted" style="font-size:11px">обрыв ~'+pct+'%</span>';
+        tdR.innerHTML = st.finished+'/'+st.started+' <span class="muted">· ~'+pct+'%</span>';
       } else tdR.innerHTML='<span class="muted">—</span>';
       tr.appendChild(tdR);
       var td2=document.createElement('td'); td2.innerHTML = st.rn? ('★ '+st.ravg.toFixed(1)+' <span class="muted">('+st.rn+')</span>') : '<span class="muted">—</span>'; tr.appendChild(td2);
@@ -1995,6 +2052,16 @@ ul.wc-digest li{margin-bottom:5px; font-size:14px; color:var(--read)}
         var ts=Date.parse(d.created_at); if(ts>seen) out.push({ts:ts, who:nameFor(d.user_id,d.user_email), what:'ответ в обсуждении', ch:d.chapter_id, snippet:d.body});
       }
     });
+    // обновления глав, где у меня есть правки (после моего notif_seen) — одно на главу
+    var perCh={};
+    CVALL.forEach(function(v){
+      if(!MYCHS[v.chapter_id]) return;
+      var ts=v.created_at?Date.parse(v.created_at):0;
+      if(ts>seen && (!perCh[v.chapter_id] || ts>perCh[v.chapter_id])) perCh[v.chapter_id]=ts;
+    });
+    Object.keys(perCh).forEach(function(chId){
+      out.push({ts:perCh[chId], who:'', what:'глава обновлена — ваши правки учтены', ch:chId, snippet:''});
+    });
     out.sort(function(a,b){return b.ts-a.ts;}); return out;
   }
   function updateBell(){
@@ -2010,12 +2077,14 @@ ul.wc-digest li{margin-bottom:5px; font-size:14px; color:var(--read)}
     list.forEach(function(nf){
       var el=document.createElement('div'); el.className='nf';
       var t=document.createElement('div'); t.className='nf-t';
-      var who=document.createElement('b'); who.textContent=nf.who; t.appendChild(who); t.appendChild(document.createTextNode(' — '+nf.what));
+      if(nf.who){ var who=document.createElement('b'); who.textContent=nf.who; t.appendChild(who); t.appendChild(document.createTextNode(' — '+nf.what)); }
+      else { var w2=document.createElement('b'); w2.textContent='📘 '+nf.what.charAt(0).toUpperCase()+nf.what.slice(1); t.appendChild(w2); }
       var sub=document.createElement('div'); sub.className='nf-sub';
       var chTitle=BYID[nf.ch]?BYID[nf.ch].title:nf.ch;
       sub.textContent=chTitle+' · '+fmtTime(nf.ts)+(nf.snippet?(' · '+nf.snippet.slice(0,50)):'');
       el.appendChild(t); el.appendChild(sub);
-      el.onclick=function(){ closeModals(); if(state.chapter!==nf.ch && BYID[nf.ch]) openChapter(nf.ch); togglePanel(true); setPanelTab('disc'); };
+      var isUpd=!nf.who;
+      el.onclick=function(){ closeModals(); if(state.chapter!==nf.ch && BYID[nf.ch]) openChapter(nf.ch); if(!isUpd){ togglePanel(true); setPanelTab('disc'); } };
       box.appendChild(el);
     });
     showModal('notifModal'); markNotifsSeen();
