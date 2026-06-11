@@ -241,6 +241,74 @@
   .c-reply-who{color:var(--muted); font-weight:600}
   .c-reply-del{position:absolute; right:0; top:0; color:var(--muted); cursor:pointer; font-size:14px; line-height:1}
   .c-reply-del:hover{color:#b23b3b}
+  /* presence + names */
+  .person{display:inline-flex; align-items:center; gap:5px}
+  .dot{width:7px; height:7px; border-radius:50%; background:var(--line); flex:0 0 auto}
+  .dot.on{background:#2faa55; box-shadow:0 0 0 2px rgba(47,170,85,.18)}
+  /* panel tabs */
+  .ptabs{display:flex; gap:6px; margin-bottom:10px}
+  .ptab{flex:1; padding:8px 6px; border:1px solid var(--line); background:var(--card); color:var(--muted);
+    border-radius:9px; font-size:13px; font-weight:600; cursor:pointer}
+  .ptab.on{border-color:var(--accent); color:var(--accent); background:var(--accent-soft)}
+  /* bell */
+  #btnBell{position:relative}
+  .bell-badge{position:absolute; top:-4px; right:-4px; min-width:16px; height:16px; padding:0 4px;
+    background:#d9534f; color:#fff; border-radius:9px; font-size:10px; line-height:16px; text-align:center; font-weight:700}
+  /* discussion */
+  #discWrap{padding:0 16px 16px}
+  #discRate{display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:12px 0; border-bottom:1px solid var(--line); margin-bottom:12px}
+  .stars{display:inline-flex; gap:2px; font-size:22px; line-height:1; cursor:pointer}
+  .star{color:var(--line)} .star.fill{color:#e0a92e}
+  .rate-info{font-size:12.5px; color:var(--muted)}
+  .d-post{padding:10px 0; border-bottom:1px solid var(--line)}
+  .d-head{display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--muted); margin-bottom:4px}
+  .d-head .person{color:var(--ink); font-weight:600}
+  .d-time{font-size:11px; color:var(--muted)}
+  .d-body{font-size:14px; line-height:1.5; color:var(--read); white-space:pre-wrap}
+  .d-acts{margin-top:5px; display:flex; gap:14px}
+  .d-acts a{font-size:12px; color:var(--muted); cursor:pointer}
+  .d-acts a:hover{color:var(--accent)}
+  .d-replies{margin:8px 0 0 14px; padding-left:10px; border-left:2px solid var(--line)}
+  .d-reply{margin-bottom:8px}
+  .d-replybox{margin:8px 0 0 14px; display:none}
+  .d-replybox.show{display:block}
+  #discInput, .d-replybox textarea{width:100%; min-height:60px; resize:vertical; padding:10px;
+    border:1px solid var(--line); border-radius:9px; font-family:inherit; font-size:14px; background:var(--card); color:var(--ink)}
+  #discNew{margin-top:14px}
+  #discInput{margin-bottom:8px}
+  .d-empty{color:var(--muted); font-size:13px; padding:14px 0}
+  /* profiles list (admin) */
+  .pf-row{display:flex; align-items:center; gap:8px; padding:8px 0; border-bottom:1px solid var(--line)}
+  .pf-row:last-child{border-bottom:none}
+  .pf-mail{flex:1; font-size:12.5px; color:var(--muted); overflow:hidden; text-overflow:ellipsis}
+  .pf-name{width:130px; padding:7px 9px; border:1px solid var(--line); border-radius:8px; font-size:13px; background:var(--card); color:var(--ink)}
+  .pf-name:focus{outline:none; border-color:var(--accent)}
+  /* notifications */
+  .nf{padding:10px 0; border-bottom:1px solid var(--line); cursor:pointer}
+  .nf:last-child{border-bottom:none}
+  .nf:hover{background:var(--accent-soft)}
+  .nf-t{font-size:13.5px; color:var(--read)} .nf-t b{color:var(--ink)}
+  .nf-sub{font-size:11.5px; color:var(--muted); margin-top:2px}
+  /* reaction bar */
+  #reactBar{max-width:760px; margin:8px auto 0; display:flex; flex-wrap:wrap; align-items:center; gap:8px;
+    padding:14px 0 4px; border-top:1px dashed var(--line)}
+  .rb-label{font-size:13px; color:var(--muted); margin-right:2px}
+  .rb-btn{border:1px solid var(--line); background:var(--card); color:var(--read); border-radius:16px;
+    padding:6px 12px; font-size:13px; cursor:pointer; transition:.12s}
+  .rb-btn:hover{border-color:var(--accent)}
+  .rb-btn.on{border-color:var(--accent); background:var(--accent-soft); color:var(--accent)}
+  .rb-btn b{margin-left:3px}
+  /* dashboard */
+  .dash-legend{font-size:12.5px; color:var(--muted); line-height:1.5; margin-bottom:12px}
+  .dash-weak-key{background:#fbeec2; color:#7a5b00; padding:0 5px; border-radius:4px}
+  table.dash{width:100%; border-collapse:collapse; font-size:13px}
+  table.dash th{ text-align:left; font-weight:600; color:var(--muted); font-size:11.5px; text-transform:uppercase;
+    letter-spacing:.3px; padding:6px 8px; border-bottom:1px solid var(--line)}
+  table.dash td{padding:8px; border-bottom:1px solid var(--line); vertical-align:middle}
+  table.dash tr.weak td{background:rgba(224,169,46,.10)}
+  table.dash .ch{font-weight:600; color:var(--ink)}
+  table.dash .muted{color:var(--muted)}
+  .dash-x{white-space:nowrap}
   mark.hl.done{background:transparent; box-shadow:inset 0 -2px 0 var(--hl-edge); opacity:.65}
   #searchResults{max-height:50vh; overflow:auto; margin-top:12px}
   .sr{padding:10px 12px; border:1px solid var(--line); border-radius:10px; margin-bottom:8px;
@@ -288,7 +356,9 @@
       <div id="topTitle"></div>
       <button class="iconbtn" id="btnSearch" title="Поиск по книге">🔍</button>
       <button class="iconbtn" id="btnMarkers" title="Показать редакционные маркеры">⟦⟧ Маркеры</button>
-      <button class="iconbtn" id="btnPanel" title="Все комментарии">💬 <span id="cCount">0</span></button>
+      <button class="iconbtn" id="btnDash" title="Дашборд глав" style="display:none">📊</button>
+      <button class="iconbtn" id="btnBell" title="Уведомления" style="display:none">🔔<span id="bellBadge" class="bell-badge" style="display:none">0</span></button>
+      <button class="iconbtn" id="btnPanel" title="Панель">💬 <span id="cCount">0</span></button>
       <button class="iconbtn" id="btnExport" title="Экспорт правок">⇪ Экспорт</button>
       <button class="iconbtn" id="btnAdmin" style="display:none" title="Админка">⚙ Админ</button>
       <button class="iconbtn" id="btnTheme" title="Тема">☾</button>
@@ -296,6 +366,7 @@
     </div>
     <div id="scroller">
       <div id="content"></div>
+      <div id="reactBar"></div>
       <div id="chapNav"></div>
     </div>
     <button id="floatAdd">＋ Добавить комментарий</button>
@@ -306,10 +377,14 @@
 <div id="panel">
   <div class="panel-head">
     <div class="row">
-      <h3>Комментарии</h3>
+      <h3 id="panelTitle">Панель</h3>
       <button class="iconbtn" id="btnPanelClose">✕</button>
     </div>
-    <div class="panel-tools">
+    <div class="ptabs">
+      <button class="ptab on" id="tabEdits">✎ Правки</button>
+      <button class="ptab" id="tabDisc">💬 Обсуждение</button>
+    </div>
+    <div class="panel-tools" id="editTools">
       <button class="ptool primary" id="btnCopyAll">⇪ Скопировать всё для модели</button>
       <button class="ptool" id="btnSaveJson">Сохранить .json</button>
       <button class="ptool" id="btnLoadJson">Загрузить .json</button>
@@ -318,6 +393,14 @@
     </div>
   </div>
   <div id="cList"></div>
+  <div id="discWrap" style="display:none">
+    <div id="discRate"></div>
+    <div id="discList"></div>
+    <div id="discNew">
+      <textarea id="discInput" placeholder="Написать в обсуждение этой главы…"></textarea>
+      <div style="text-align:right"><button class="ptool primary" id="discPost">Отправить</button></div>
+    </div>
+  </div>
 </div>
 
 <!-- comment editor -->
@@ -374,6 +457,12 @@
     </div>
     <button class="btn" id="contentUpload">Выбрать content.json</button>
     <div id="contentMsg" style="font-size:13px; margin-top:10px; color:var(--muted)"></div>
+    <hr style="border:none; border-top:1px solid var(--line); margin:20px 0">
+    <div class="adm-h">Имена участников</div>
+    <div style="font-size:13px; color:var(--muted); line-height:1.5; margin-bottom:10px">
+      Задайте отображаемые имена — они показываются в правках и обсуждении вместо почты. Появляются здесь после первого входа человека.
+    </div>
+    <div id="profList"></div>
   </div>
   <div class="foot"><div class="spacer"></div><button class="btn" id="adminClose">Закрыть</button></div>
 </div>
@@ -389,6 +478,19 @@
   <h3 id="archTitle">Архив правок</h3>
   <div class="body"><div id="archList"></div></div>
   <div class="foot"><div class="spacer"></div><button class="btn" id="archClose">Закрыть</button></div>
+</div>
+<div class="modal" id="dashModal" style="width:720px">
+  <h3>Дашборд глав</h3>
+  <div class="body">
+    <div class="dash-legend">Карта слабых мест. <span class="dash-weak-key">Жёлтым</span> — главы, которым стоит уделить внимание (низкая оценка или много «запутался/затянуто»).</div>
+    <div id="dashBody"></div>
+  </div>
+  <div class="foot"><button class="btn" id="dashBackup">⤓ Скачать весь фидбэк</button><div class="spacer"></div><button class="btn" id="dashClose">Закрыть</button></div>
+</div>
+<div class="modal" id="notifModal" style="width:480px">
+  <h3>Уведомления</h3>
+  <div class="body"><div id="notifList"></div></div>
+  <div class="foot"><div class="spacer"></div><button class="btn" id="notifClose">Закрыть</button></div>
 </div>
 <div class="modal" id="replyModal" style="width:480px">
   <h3>Ответить на комментарий</h3>
@@ -500,7 +602,7 @@
       start:r.start_off, end:r.end_off, quote:r.quote||'',
       before:r.ctx_before||'', after:r.ctx_after||'', note:r.note||'',
       status:r.status||'open', tag:r.tag||'', kind:r.kind||'fragment',
-      email:r.user_email||'', mine:!!(USER && r.user_id===USER.id), replies:[],
+      email:r.user_email||'', uid:r.user_id, mine:!!(USER && r.user_id===USER.id), replies:[],
       ts:r.updated_at? Date.parse(r.updated_at): Date.now() };
   }
   // comments[] holds only the ACTIVE set: rows whose stored version matches the
@@ -524,7 +626,7 @@
     if(rr.error) return; // таблицы replies может не быть (до миграции) — просто без ответов
     (rr.data||[]).forEach(function(r){
       var c=byId[r.comment_id]; if(!c) return;
-      c.replies.push({ id:r.id, email:r.user_email||'', note:r.note||'',
+      c.replies.push({ id:r.id, email:r.user_email||'', uid:r.user_id, note:r.note||'',
         mine:!!(USER && r.user_id===USER.id), ts:r.created_at?Date.parse(r.created_at):Date.now() });
     });
   }
@@ -699,10 +801,10 @@
   function renderChapter(){
     var cont=document.getElementById('content');
     var c=BYID[state.chapter];
-    if(!c){ cont.innerHTML='<p style="color:var(--muted)">'+(BOOK.length?'Выберите главу слева.':'Контент ещё не загружен.')+'</p>'; document.getElementById('topTitle').textContent=''; document.getElementById('chapNav').innerHTML=''; return; }
+    if(!c){ cont.innerHTML='<p style="color:var(--muted)">'+(BOOK.length?'Выберите главу слева.':'Контент ещё не загружен.')+'</p>'; document.getElementById('topTitle').textContent=''; document.getElementById('chapNav').innerHTML=''; var rb=document.getElementById('reactBar'); if(rb){rb.style.display='none';rb.innerHTML='';} return; }
     cont.innerHTML = renderMd(c.md);
     document.getElementById('topTitle').textContent = c.title;
-    fillFigures(); highlightChapter(); renderChapNav();
+    fillFigures(); highlightChapter(); renderChapNav(); renderReactBar();
   }
 
   function openChapter(id, scrollToTop){
@@ -716,6 +818,8 @@
     sc.scrollTop = (scrollToTop===false && state.scroll[id])? state.scroll[id] : 0;
     saveState();
     updateProgress();
+    if(panelOpen() && panelTab==='disc') renderDisc();
+    flushProgress();
   }
 
   function updateProgress(){
@@ -851,7 +955,7 @@
         var foreign=!c.mine;
         var card=document.createElement('div'); card.className='c-card'+(c.status==='done'?' done':'')+(foreign?' foreign':'');
         var meta=document.createElement('div'); meta.className='c-meta';
-        if(foreign){ var au=document.createElement('span'); au.className='c-author'; au.textContent='👤 '+(c.email||'другой автор'); meta.appendChild(au); }
+        if(foreign){ var au=document.createElement('span'); au.className='c-author'; au.appendChild(personSpan(c.uid, c.email)); meta.appendChild(au); }
         if(c.tag){ var tg=document.createElement('span'); tg.className='c-tag'; tg.textContent=c.tag; meta.appendChild(tg); }
         if(meta.childNodes.length) card.appendChild(meta);
         var q=document.createElement('div'); q.className='c-quote';
@@ -864,7 +968,7 @@
           var th=document.createElement('div'); th.className='c-thread';
           c.replies.forEach(function(r){
             var ri=document.createElement('div'); ri.className='c-reply';
-            var who=document.createElement('span'); who.className='c-reply-who'; who.textContent=(r.mine?'вы':(r.email||'ответ'))+': ';
+            var who=document.createElement('span'); who.className='c-reply-who'; who.textContent=(r.mine?'вы':nameFor(r.uid,r.email))+': ';
             ri.appendChild(who); ri.appendChild(document.createTextNode(r.note));
             if(r.mine || isAdmin){ var rd=document.createElement('a'); rd.className='c-reply-del'; rd.textContent='×'; rd.title='удалить ответ';
               rd.onclick=async function(){ if(SB){ var d=await SB.from('replies').delete().eq('id',r.id); if(d.error){ toast('Ошибка: '+d.error.message); return; } } await loadComments(); refreshPanel(); };
@@ -1082,7 +1186,7 @@
     var p=document.getElementById('panel');
     if(open===undefined) open=!p.classList.contains('open');
     p.classList.toggle('open', open);
-    if(open) refreshPanel();
+    if(open) renderPanel();
   }
   function toggleSidebar(open){
     var s=document.getElementById('sidebar'), bd=document.getElementById('backdrop');
@@ -1135,6 +1239,7 @@
         var frac=Math.min(1,(sc2.scrollTop+sc2.clientHeight)/sc2.scrollHeight);
         if(!(state.read[key]>=frac)){ state.read[key]=frac; renderTOC(); }
       }
+      flushProgress();
       saveState();
     },400);
   });
@@ -1214,6 +1319,7 @@
     if(authInFlight===USER.id) return;                    // загрузка уже идёт
     isAdmin = (USER.email||'').toLowerCase()===ADMIN;
     document.getElementById('btnAdmin').style.display = isAdmin? 'inline-flex':'none';
+    document.getElementById('btnDash').style.display = isAdmin? 'inline-flex':'none';
     isMember = isAdmin || await checkMember();
     if(!isMember){ document.getElementById('nomemberEmail').textContent='Вы вошли как '+USER.email; showGate('nomember'); return; }
     document.getElementById('authGate').style.display='none'; updateAuthUI();
@@ -1242,6 +1348,8 @@
         renderTOC();
       }
       loadedUserId=USER.id;
+      await loadProfiles(); await loadSocial(); await loadProgress(); startPresence(); updateBell(); renderReactBar();
+      if(panelOpen()) renderPanel();
     } finally { authInFlight=null; }
   }
   document.getElementById('authBtn').onclick=doAuth;
@@ -1316,7 +1424,7 @@
     document.getElementById('wlEmail').value=''; refreshWhitelist();
   };
   document.getElementById('wlEmail').addEventListener('keydown', function(e){ if(e.key==='Enter') document.getElementById('wlAdd').click(); });
-  document.getElementById('btnAdmin').onclick=function(){ refreshWhitelist(); document.getElementById('contentMsg').textContent=''; showModal('adminModal'); };
+  document.getElementById('btnAdmin').onclick=function(){ refreshWhitelist(); refreshProfiles(); document.getElementById('contentMsg').textContent=''; showModal('adminModal'); };
   document.getElementById('adminClose').onclick=closeModals;
   document.getElementById('contentUpload').onclick=function(){ document.getElementById('contentInput').click(); };
   document.getElementById('contentInput').onchange=function(e){
@@ -1452,6 +1560,349 @@
   }
   document.getElementById('btnArchive').onclick=openArchive;
   document.getElementById('archClose').onclick=closeModals;
+
+  // ---------- profiles, presence, names ----------
+  var PROFILES={};            // user_id -> {email,name,last_seen,notif_seen}
+  var DISCALL=[];             // все обсуждения
+  var RATEALL=[];             // все оценки
+  var panelTab='edits';
+  var heartbeatTimer=null, presenceTimer=null;
+
+  function nameFor(uid, email){ var pr=uid && PROFILES[uid]; if(pr && pr.name) return pr.name; return email || 'аноним'; }
+  function isOnline(uid){ var pr=uid && PROFILES[uid]; if(!pr || !pr.last_seen) return false; return (Date.now()-Date.parse(pr.last_seen))<90000; }
+  function personSpan(uid, email){
+    var sp=document.createElement('span'); sp.className='person';
+    var d=document.createElement('span'); d.className='dot'+(isOnline(uid)?' on':'');
+    sp.appendChild(d); sp.appendChild(document.createTextNode(nameFor(uid,email)));
+    return sp;
+  }
+  function panelOpen(){ return document.getElementById('panel').classList.contains('open'); }
+
+  async function loadProfiles(){
+    if(!SB) return;
+    try{ var r=await SB.from('profiles').select('*'); if(r.error) return;
+      PROFILES={}; (r.data||[]).forEach(function(pr){ PROFILES[pr.user_id]={email:pr.email||'', name:pr.name||'', last_seen:pr.last_seen, notif_seen:pr.notif_seen}; });
+    }catch(e){}
+  }
+  async function touchPresence(){
+    if(!SB || !USER) return;
+    try{ await SB.from('profiles').upsert({ user_id:USER.id, email:(USER.email||'').toLowerCase(), last_seen:new Date().toISOString() }, {onConflict:'user_id'}); }catch(e){}
+  }
+  function startPresence(){
+    touchPresence();
+    if(heartbeatTimer) clearInterval(heartbeatTimer);
+    heartbeatTimer=setInterval(function(){ if(document.visibilityState==='visible') touchPresence(); }, 45000);
+    if(presenceTimer) clearInterval(presenceTimer);
+    presenceTimer=setInterval(function(){ if(document.visibilityState==='visible'){ loadProfiles().then(function(){ if(panelOpen()&&panelTab==='disc') renderDisc(); updateBell(); }); } }, 60000);
+  }
+
+  // ---------- discussions + ratings ----------
+  async function loadSocial(){
+    DISCALL=[]; RATEALL=[];
+    if(!SB || !USER) return;
+    try{ var d=await SB.from('discussions').select('*').order('created_at',{ascending:true}); if(!d.error) DISCALL=d.data||[]; }catch(e){}
+    try{ var r=await SB.from('ratings').select('*'); if(!r.error) RATEALL=r.data||[]; }catch(e){}
+    await loadReactions();
+  }
+  function fmtTime(ts){
+    var d=new Date(ts), now=new Date();
+    if(d.toDateString()===now.toDateString()) return d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+    return d.toLocaleDateString('ru-RU',{day:'numeric',month:'short'});
+  }
+  function renderRate(){
+    var box=document.getElementById('discRate'); box.innerHTML='';
+    var ch=BYID[state.chapter]; if(!ch) return;
+    var mine=null, sum=0, n=0;
+    RATEALL.forEach(function(r){ if(r.chapter_id===ch.id){ sum+=r.score; n++; if(USER && r.user_id===USER.id) mine=r.score; } });
+    var stars=document.createElement('div'); stars.className='stars';
+    for(var i=1;i<=5;i++){ (function(i){ var st=document.createElement('span'); st.className='star'+(mine>=i?' fill':''); st.textContent='★'; st.onclick=function(){ setRating(i); }; stars.appendChild(st); })(i); }
+    box.appendChild(stars);
+    var info=document.createElement('span'); info.className='rate-info';
+    info.textContent = n? ('средняя '+(sum/n).toFixed(1)+' · оценок '+n) : 'оценок пока нет';
+    box.appendChild(info);
+  }
+  async function setRating(score){
+    var ch=BYID[state.chapter]; if(!ch||!SB) return;
+    var prev=RATEALL.filter(function(r){return r.chapter_id===ch.id && USER && r.user_id===USER.id;})[0];
+    if(prev) prev.score=score; else RATEALL.push({user_id:USER.id, chapter_id:ch.id, score:score});
+    renderRate();
+    try{ var r=await SB.from('ratings').upsert({ user_id:USER.id, chapter_id:ch.id, score:score, updated_at:new Date().toISOString() }, {onConflict:'user_id,chapter_id'}); if(r.error) toast('Ошибка оценки: '+r.error.message); }catch(e){}
+  }
+  function renderDisc(){
+    renderRate();
+    var box=document.getElementById('discList'); box.innerHTML='';
+    var ch=BYID[state.chapter];
+    if(!ch){ box.innerHTML='<div class="d-empty">Откройте главу.</div>'; return; }
+    var posts=DISCALL.filter(function(d){return d.chapter_id===ch.id && !d.parent_id;}).sort(function(a,b){return Date.parse(a.created_at)-Date.parse(b.created_at);});
+    if(!posts.length){ box.innerHTML='<div class="d-empty">Пока тихо. Начните обсуждение этой главы.</div>'; return; }
+    posts.forEach(function(pp){ box.appendChild(discPostEl(pp, ch)); });
+  }
+  function delLink(id){ var a=document.createElement('a'); a.textContent='удалить'; a.onclick=function(){ delDisc(id); }; return a; }
+  function discPostEl(pp, ch){
+    var wrap=document.createElement('div'); wrap.className='d-post';
+    var head=document.createElement('div'); head.className='d-head';
+    head.appendChild(personSpan(pp.user_id, pp.user_email));
+    var tm=document.createElement('span'); tm.className='d-time'; tm.textContent=fmtTime(Date.parse(pp.created_at)); head.appendChild(tm);
+    wrap.appendChild(head);
+    var body=document.createElement('div'); body.className='d-body'; body.textContent=pp.body; wrap.appendChild(body);
+    var acts=document.createElement('div'); acts.className='d-acts';
+    var rep=document.createElement('a'); rep.textContent='ответить';
+    var rbox=document.createElement('div'); rbox.className='d-replybox';
+    var rta=document.createElement('textarea'); rta.placeholder='Ответ…'; rbox.appendChild(rta);
+    var rbtn=document.createElement('button'); rbtn.className='ptool primary'; rbtn.textContent='Отправить'; rbtn.style.marginTop='6px';
+    rbox.appendChild(rbtn);
+    rep.onclick=function(){ rbox.classList.toggle('show'); if(rbox.classList.contains('show')) rta.focus(); };
+    rbtn.onclick=function(){ var t=(rta.value||'').trim(); if(!t) return; postDisc(ch.id, t, pp.id); };
+    acts.appendChild(rep);
+    if((USER && pp.user_id===USER.id) || isAdmin) acts.appendChild(delLink(pp.id));
+    wrap.appendChild(acts); wrap.appendChild(rbox);
+    var reps=DISCALL.filter(function(d){return d.parent_id===pp.id;}).sort(function(a,b){return Date.parse(a.created_at)-Date.parse(b.created_at);});
+    if(reps.length){
+      var rc=document.createElement('div'); rc.className='d-replies';
+      reps.forEach(function(r){
+        var ri=document.createElement('div'); ri.className='d-reply';
+        var rh=document.createElement('div'); rh.className='d-head';
+        rh.appendChild(personSpan(r.user_id, r.user_email));
+        var rt=document.createElement('span'); rt.className='d-time'; rt.textContent=fmtTime(Date.parse(r.created_at)); rh.appendChild(rt);
+        if((USER && r.user_id===USER.id) || isAdmin){ var rd=document.createElement('a'); rd.textContent='×'; rd.style.cssText='margin-left:auto;color:var(--muted);cursor:pointer'; rd.onclick=function(){ delDisc(r.id); }; rh.appendChild(rd); }
+        var rb=document.createElement('div'); rb.className='d-body'; rb.textContent=r.body;
+        ri.appendChild(rh); ri.appendChild(rb); rc.appendChild(ri);
+      });
+      wrap.appendChild(rc);
+    }
+    return wrap;
+  }
+  async function postDisc(chId, body, parentId){
+    if(!SB){ return; }
+    var r=await SB.from('discussions').insert({ chapter_id:chId, parent_id:parentId||null, body:body, user_email:(USER&&USER.email?USER.email.toLowerCase():'') }).select().single();
+    if(r.error){ toast('Ошибка: '+r.error.message); return; }
+    DISCALL.push(r.data); renderDisc();
+  }
+  async function delDisc(id){
+    if(!SB) return;
+    var d=await SB.from('discussions').delete().eq('id',id);
+    if(d.error){ toast('Ошибка: '+d.error.message); return; }
+    DISCALL=DISCALL.filter(function(x){return x.id!==id && x.parent_id!==id;}); renderDisc();
+  }
+  document.getElementById('discPost').onclick=function(){
+    var t=(document.getElementById('discInput').value||'').trim();
+    if(!t){ toast('Пустое сообщение'); return; }
+    var ch=BYID[state.chapter]; if(!ch) return;
+    document.getElementById('discInput').value=''; postDisc(ch.id, t, null);
+  };
+
+  // ---------- reading progress (analytics) ----------
+  var PROGALL=[];          // admin: все строки; читатель: только свои
+  var progSent={};         // chapter_id -> последняя отправленная доля
+  async function loadProgress(){
+    PROGALL=[]; progSent={};
+    if(!SB || !USER) return;
+    try{
+      var r=await SB.from('progress').select('*');
+      if(!r.error){ PROGALL=r.data||[];
+        PROGALL.forEach(function(p){ if(USER && p.user_id===USER.id) progSent[p.chapter_id]=p.max_frac; });
+      }
+    }catch(e){}
+  }
+  var progT=null;
+  function flushProgress(){
+    if(!SB || !USER) return;
+    var ch=BYID[state.chapter]; if(!ch) return;
+    var frac=state.read[ch.id+':'+ch.ver]; if(typeof frac!=='number') return;
+    if(frac <= (progSent[ch.id]||0) + 0.02) return;     // пишем только заметный прирост
+    progSent[ch.id]=frac;
+    clearTimeout(progT);
+    progT=setTimeout(function(){
+      SB.from('progress').upsert({ user_id:USER.id, chapter_id:ch.id, max_frac:frac, updated_at:new Date().toISOString() }, {onConflict:'user_id,chapter_id'})
+        .then(function(){}, function(){});
+      // локально поддерживаем PROGALL (для админ-сводки в этой сессии)
+      var found=null; for(var i=0;i<PROGALL.length;i++){ if(PROGALL[i].user_id===USER.id && PROGALL[i].chapter_id===ch.id){ found=PROGALL[i]; break; } }
+      if(found) found.max_frac=frac; else PROGALL.push({user_id:USER.id, chapter_id:ch.id, max_frac:frac});
+    }, 1500);
+  }
+
+  // ---------- tap reactions ----------
+  var REACTKINDS=[{id:'confused',emoji:'\u{1F914}',label:'Запутался'},{id:'drag',emoji:'\u{1F634}',label:'Затянуто'},{id:'strong',emoji:'\u{1F525}',label:'Сильно'}];
+  var REACTALL=[]; var reactionsAvailable=false;
+  async function loadReactions(){
+    REACTALL=[]; reactionsAvailable=false;
+    if(!SB || !USER) return;
+    try{ var r=await SB.from('reactions').select('*'); if(!r.error){ REACTALL=r.data||[]; reactionsAvailable=true; } }catch(e){}
+  }
+  function renderReactBar(){
+    var bar=document.getElementById('reactBar'); if(!bar) return;
+    var ch=BYID[state.chapter];
+    if(!ch || !reactionsAvailable){ bar.style.display='none'; bar.innerHTML=''; return; }
+    bar.style.display=''; bar.innerHTML='';
+    var label=document.createElement('span'); label.className='rb-label'; label.textContent='Как глава?'; bar.appendChild(label);
+    REACTKINDS.forEach(function(k){
+      var mine=REACTALL.some(function(x){return x.chapter_id===ch.id && x.kind===k.id && USER && x.user_id===USER.id;});
+      var cnt=REACTALL.filter(function(x){return x.chapter_id===ch.id && x.kind===k.id;}).length;
+      var b=document.createElement('button'); b.className='rb-btn'+(mine?' on':'');
+      b.innerHTML=k.emoji+' '+k.label+(cnt?' <b>'+cnt+'</b>':'');
+      b.onclick=function(){ toggleReaction(k.id); };
+      bar.appendChild(b);
+    });
+  }
+  async function toggleReaction(kind){
+    var ch=BYID[state.chapter]; if(!ch||!SB||!USER) return;
+    var idx=-1;
+    for(var i=0;i<REACTALL.length;i++){ var x=REACTALL[i]; if(x.chapter_id===ch.id && x.kind===kind && x.user_id===USER.id){ idx=i; break; } }
+    if(idx>=0){
+      REACTALL.splice(idx,1); renderReactBar();
+      var d=await SB.from('reactions').delete().eq('chapter_id',ch.id).eq('kind',kind).eq('user_id',USER.id);
+      if(d.error){ toast('Ошибка: '+d.error.message); }
+    } else {
+      REACTALL.push({user_id:USER.id, chapter_id:ch.id, kind:kind}); renderReactBar();
+      var ins=await SB.from('reactions').insert({chapter_id:ch.id, kind:kind});
+      if(ins.error){ toast('Ошибка: '+ins.error.message); }
+    }
+  }
+
+  // ---------- author dashboard ----------
+  function chapterStats(chId){
+    var edits=comments.filter(function(c){return c.ch===chId;});
+    var open=0; edits.forEach(function(c){ if(c.status!=='done') open++; });
+    var rs=RATEALL.filter(function(r){return r.chapter_id===chId;});
+    var ravg=rs.length? rs.reduce(function(a,b){return a+b.score;},0)/rs.length : 0;
+    var disc=DISCALL.filter(function(d){return d.chapter_id===chId;}).length;
+    var rx={confused:0,drag:0,strong:0};
+    REACTALL.forEach(function(x){ if(x.chapter_id===chId && rx[x.kind]!=null) rx[x.kind]++; });
+    var ps=PROGALL.filter(function(p){return p.chapter_id===chId;});
+    var started=0, finished=0, sumf=0;
+    ps.forEach(function(p){ if(p.max_frac>0.05){ started++; sumf+=p.max_frac; if(p.max_frac>=0.9) finished++; } });
+    var avgf = started? (sumf/started) : 0;
+    return {edits:edits.length, open:open, done:edits.length-open, ravg:ravg, rn:rs.length, disc:disc, rx:rx,
+            started:started, finished:finished, avgf:avgf};
+  }
+  function isWeak(st){ return (st.rn>0 && st.ravg<3) || (st.rx.confused+st.rx.drag>=2) || (st.started>=2 && st.avgf<0.6); }
+  function openDashboard(){
+    var body=document.getElementById('dashBody'); body.innerHTML='';
+    var tbl=document.createElement('table'); tbl.className='dash';
+    tbl.innerHTML='<thead><tr><th>Глава</th><th>Дочит.</th><th>Оценка</th><th>Реакции</th><th>Правки</th><th>Обсужд.</th></tr></thead>';
+    var tb=document.createElement('tbody');
+    BOOK.forEach(function(ch){
+      var st=chapterStats(ch.id);
+      var tr=document.createElement('tr'); if(isWeak(st)) tr.className='weak';
+      var td1=document.createElement('td'); td1.className='ch'; td1.textContent=ch.title; tr.appendChild(td1);
+      var tdR=document.createElement('td'); tdR.className='dash-x';
+      if(st.started){
+        var pct=Math.round(st.avgf*100);
+        tdR.innerHTML = st.finished+'/'+st.started+' <span class="muted">дочит.</span><br><span class="muted" style="font-size:11px">обрыв ~'+pct+'%</span>';
+      } else tdR.innerHTML='<span class="muted">—</span>';
+      tr.appendChild(tdR);
+      var td2=document.createElement('td'); td2.innerHTML = st.rn? ('★ '+st.ravg.toFixed(1)+' <span class="muted">('+st.rn+')</span>') : '<span class="muted">—</span>'; tr.appendChild(td2);
+      var td3=document.createElement('td'); td3.className='dash-x';
+      td3.innerHTML='\u{1F914} '+st.rx.confused+'  \u{1F634} '+st.rx.drag+'  \u{1F525} '+st.rx.strong; tr.appendChild(td3);
+      var td4=document.createElement('td'); td4.innerHTML = st.edits? (st.open+' откр. <span class="muted">/ '+st.done+' гот.</span>') : '<span class="muted">—</span>'; tr.appendChild(td4);
+      var td5=document.createElement('td'); td5.innerHTML = st.disc? String(st.disc) : '<span class="muted">—</span>'; tr.appendChild(td5);
+      tr.style.cursor='pointer';
+      tr.onclick=function(){ closeModals(); if(BYID[ch.id]) openChapter(ch.id); };
+      tb.appendChild(tr);
+    });
+    tbl.appendChild(tb); body.appendChild(tbl);
+    showModal('dashModal');
+  }
+  function downloadFeedback(){
+    var reps=[]; comments.forEach(function(c){ (c.replies||[]).forEach(function(r){ reps.push({comment_id:c.id, email:r.email, note:r.note, ts:r.ts}); }); });
+    var data={ book:'upravlyaya-povedeniem', exported:nowStr(),
+      comments:comments.map(function(c){ return {id:c.id, ch:c.ch, kind:c.kind, tag:c.tag, status:c.status, email:c.email, quote:c.quote, note:c.note}; }),
+      replies:reps, discussions:DISCALL, ratings:RATEALL, reactions:REACTALL };
+    var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    a.download='feedback_'+nowStr().replace(/[: ]/g,'-')+'.json'; a.click();
+    setTimeout(function(){URL.revokeObjectURL(a.href);},2000);
+    toast('Весь фидбэк сохранён в файл');
+  }
+  document.getElementById('btnDash').onclick=openDashboard;
+  document.getElementById('dashClose').onclick=closeModals;
+  document.getElementById('dashBackup').onclick=downloadFeedback;
+
+  // ---------- panel tabs ----------
+  function setPanelTab(t){
+    panelTab=t;
+    document.getElementById('tabEdits').classList.toggle('on', t==='edits');
+    document.getElementById('tabDisc').classList.toggle('on', t==='disc');
+    document.getElementById('cList').style.display     = t==='edits'?'':'none';
+    document.getElementById('editTools').style.display = t==='edits'?'':'none';
+    document.getElementById('discWrap').style.display  = t==='disc'?'':'none';
+    document.getElementById('panelTitle').textContent  = t==='edits'?'Правки':'Обсуждение';
+    renderPanel();
+  }
+  function renderPanel(){ if(panelTab==='edits') refreshPanel(); else renderDisc(); }
+  document.getElementById('tabEdits').onclick=function(){ setPanelTab('edits'); };
+  document.getElementById('tabDisc').onclick=function(){ setPanelTab('disc'); };
+
+  // ---------- notifications ----------
+  function myNotifSeen(){ var pr=USER && PROFILES[USER.id]; return (pr && pr.notif_seen)? Date.parse(pr.notif_seen):0; }
+  function collectNotifs(){
+    var seen=myNotifSeen(), out=[];
+    comments.forEach(function(c){
+      if(!c.mine) return;
+      (c.replies||[]).forEach(function(r){ if(!r.mine && r.ts>seen) out.push({ts:r.ts, who:nameFor(r.uid,r.email), what:'ответ на вашу правку', ch:c.ch, snippet:r.note}); });
+    });
+    var myPosts={}; DISCALL.forEach(function(d){ if(!d.parent_id && USER && d.user_id===USER.id) myPosts[d.id]=1; });
+    DISCALL.forEach(function(d){
+      if(d.parent_id && myPosts[d.parent_id] && !(USER && d.user_id===USER.id)){
+        var ts=Date.parse(d.created_at); if(ts>seen) out.push({ts:ts, who:nameFor(d.user_id,d.user_email), what:'ответ в обсуждении', ch:d.chapter_id, snippet:d.body});
+      }
+    });
+    out.sort(function(a,b){return b.ts-a.ts;}); return out;
+  }
+  function updateBell(){
+    var bell=document.getElementById('btnBell');
+    if(!USER){ bell.style.display='none'; return; }
+    bell.style.display='inline-flex';
+    var n=collectNotifs().length, b=document.getElementById('bellBadge');
+    if(n>0){ b.textContent=n>9?'9+':String(n); b.style.display='inline-block'; } else b.style.display='none';
+  }
+  function openNotifs(){
+    var list=collectNotifs(), box=document.getElementById('notifList'); box.innerHTML='';
+    if(!list.length) box.innerHTML='<div class="d-empty">Новых ответов нет.</div>';
+    list.forEach(function(nf){
+      var el=document.createElement('div'); el.className='nf';
+      var t=document.createElement('div'); t.className='nf-t';
+      var who=document.createElement('b'); who.textContent=nf.who; t.appendChild(who); t.appendChild(document.createTextNode(' — '+nf.what));
+      var sub=document.createElement('div'); sub.className='nf-sub';
+      var chTitle=BYID[nf.ch]?BYID[nf.ch].title:nf.ch;
+      sub.textContent=chTitle+' · '+fmtTime(nf.ts)+(nf.snippet?(' · '+nf.snippet.slice(0,50)):'');
+      el.appendChild(t); el.appendChild(sub);
+      el.onclick=function(){ closeModals(); if(state.chapter!==nf.ch && BYID[nf.ch]) openChapter(nf.ch); togglePanel(true); setPanelTab('disc'); };
+      box.appendChild(el);
+    });
+    showModal('notifModal'); markNotifsSeen();
+  }
+  async function markNotifsSeen(){
+    if(!SB||!USER) return;
+    var now=new Date().toISOString();
+    if(PROFILES[USER.id]) PROFILES[USER.id].notif_seen=now; else PROFILES[USER.id]={notif_seen:now};
+    updateBell();
+    try{ await SB.from('profiles').upsert({ user_id:USER.id, email:(USER.email||'').toLowerCase(), notif_seen:now, last_seen:now }, {onConflict:'user_id'}); }catch(e){}
+  }
+  document.getElementById('btnBell').onclick=openNotifs;
+  document.getElementById('notifClose').onclick=closeModals;
+
+  // ---------- admin: names ----------
+  async function refreshProfiles(){
+    var box=document.getElementById('profList'); if(!box) return;
+    box.textContent='Загрузка…'; await loadProfiles(); box.innerHTML='';
+    var ids=Object.keys(PROFILES);
+    if(!ids.length){ box.innerHTML='<div style="color:var(--muted);font-size:13px">Пока никто не входил.</div>'; return; }
+    ids.forEach(function(uid){
+      var pr=PROFILES[uid];
+      var row=document.createElement('div'); row.className='pf-row';
+      var mail=document.createElement('span'); mail.className='pf-mail'; mail.textContent=pr.email||uid;
+      var inp=document.createElement('input'); inp.className='pf-name'; inp.value=pr.name||''; inp.placeholder='имя';
+      var save=document.createElement('button'); save.className='btn'; save.textContent='✓'; save.style.padding='6px 11px';
+      save.onclick=async function(){
+        var nm=(inp.value||'').trim();
+        var r=await SB.from('profiles').update({name:nm}).eq('user_id',uid);
+        if(r.error){ toast('Ошибка: '+r.error.message); return; }
+        PROFILES[uid].name=nm; toast('Имя сохранено'); if(panelOpen()) renderPanel();
+      };
+      row.appendChild(mail); row.appendChild(inp); row.appendChild(save); box.appendChild(row);
+    });
+  }
 
   // ---------- init ----------
   (async function init(){
