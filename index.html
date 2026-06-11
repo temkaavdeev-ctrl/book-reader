@@ -332,6 +332,15 @@
     .modal{width:94vw}
     #topTitle{display:none}
   }
+
+/* roles, likes, welcome (Ф1) */
+.c-like{cursor:pointer; color:var(--muted)}
+.c-like.on{color:#d9534f}
+.c-like:hover{color:#d9534f}
+.wl-role{padding:5px 6px; border:1px solid var(--line); border-radius:7px; background:var(--card); color:var(--read); font-size:12px}
+ul.wc-digest{margin:4px 0 0; padding-left:18px}
+ul.wc-digest li{margin-bottom:5px; font-size:14px; color:var(--read)}
+#welcomeModal h3{font-size:20px}
 </style>
 </head>
 <body>
@@ -344,7 +353,7 @@
     <nav id="toc"></nav>
     <div id="userBox" style="display:none">
       <span id="userEmail"></span>
-      <button id="btnPwd" title="Сменить пароль">пароль</button>
+      <button id="btnPwd" title="Аккаунт: имя и пароль">аккаунт</button>
       <button id="btnLogout" title="Выйти из аккаунта">выйти</button>
     </div>
   </aside>
@@ -356,6 +365,7 @@
       <div id="topTitle"></div>
       <button class="iconbtn" id="btnSearch" title="Поиск по книге">🔍</button>
       <button class="iconbtn" id="btnMarkers" title="Показать редакционные маркеры">⟦⟧ Маркеры</button>
+      <button class="iconbtn" id="btnInfo" title="О главе: версия и дата">ⓘ</button>
       <button class="iconbtn" id="btnDash" title="Дашборд глав" style="display:none">📊</button>
       <button class="iconbtn" id="btnBell" title="Уведомления" style="display:none">🔔<span id="bellBadge" class="bell-badge" style="display:none">0</span></button>
       <button class="iconbtn" id="btnPanel" title="Панель">💬 <span id="cCount">0</span></button>
@@ -479,6 +489,11 @@
   <div class="body"><div id="archList"></div></div>
   <div class="foot"><div class="spacer"></div><button class="btn" id="archClose">Закрыть</button></div>
 </div>
+<div class="modal" id="welcomeModal" style="width:440px">
+  <h3 id="wcHi">Добро пожаловать!</h3>
+  <div class="body"><div id="wcBody"></div></div>
+  <div class="foot"><div class="spacer"></div><button class="btn primary" id="wcClose">Читать</button></div>
+</div>
 <div class="modal" id="dashModal" style="width:720px">
   <h3>Дашборд глав</h3>
   <div class="body">
@@ -501,12 +516,19 @@
   <div class="foot"><div class="spacer"></div><button class="btn" id="replyCancel">Отмена</button><button class="btn primary" id="replySave">Отправить</button></div>
 </div>
 <div class="modal" id="pwdModal" style="width:440px">
-  <h3>Сменить пароль</h3>
+  <h3>Аккаунт</h3>
   <div class="body">
+    <div class="adm-h">Ваше имя</div>
+    <div style="font-size:12.5px;color:var(--muted);margin-bottom:8px">Показывается в обсуждениях и правках вместо почты.</div>
+    <div style="display:flex; gap:8px; margin-bottom:16px">
+      <input id="acctName" type="text" placeholder="Имя" class="adm-in" style="flex:1">
+      <button class="btn primary" id="acctNameSave">Сохранить</button>
+    </div>
+    <div class="adm-h">Новый пароль</div>
     <input id="pwdNew" type="password" autocomplete="new-password" placeholder="Новый пароль (минимум 6)" class="adm-in" style="width:100%">
     <div id="pwdMsg" style="font-size:13px; margin-top:10px; color:var(--muted)"></div>
   </div>
-  <div class="foot"><div class="spacer"></div><button class="btn" id="pwdCancel">Отмена</button><button class="btn primary" id="pwdSave">Сохранить</button></div>
+  <div class="foot"><div class="spacer"></div><button class="btn" id="pwdCancel">Закрыть</button><button class="btn primary" id="pwdSave">Сменить пароль</button></div>
 </div>
 <input type="file" id="contentInput" accept="application/json,.json" style="display:none">
 <input type="file" id="fileInput" accept="application/json,.json" style="display:none">
@@ -546,7 +568,7 @@
     if(!SB) return;
     var ch=await SB.from('chapters').select('*').order('ord');
     if(ch.error){ toast('Ошибка загрузки книги: '+ch.error.message); return; }
-    BOOK=(ch.data||[]).map(function(r){ return {id:r.id, file:r.file||(r.id+'.md'), part:r.part||'', title:r.title||r.id, ver:r.ver||'', md:r.md||'', figs:r.figs||[]}; });
+    BOOK=(ch.data||[]).map(function(r){ return {id:r.id, file:r.file||(r.id+'.md'), part:r.part||'', title:r.title||r.id, ver:r.ver||'', updated:r.updated_at||null, md:r.md||'', figs:r.figs||[]}; });
     BYID={}; BOOK.forEach(function(c){ BYID[c.id]=c; });
     _ptCache={};
     var dg=await SB.from('diagrams').select('*');
@@ -834,6 +856,7 @@
   function onSelect(){
     var sel=window.getSelection();
     var fab=document.getElementById('floatAdd');
+    if(!canContribute()){ fab.style.display='none'; return; }   // правки — только контрибьюторам
     if(!sel || sel.isCollapsed || sel.rangeCount===0){ fab.style.display='none'; return; }
     var range=sel.getRangeAt(0);
     var content=document.getElementById('content');
@@ -850,6 +873,7 @@
   function doAddComment(e){
     if(e){ e.preventDefault(); e.stopPropagation(); }
     var fab=document.getElementById('floatAdd');
+    if(!canContribute()){ fab.style.display='none'; try{window.getSelection().removeAllRanges();}catch(_){ } toast('Правки оставляют контрибьюторы. Вы можете читать, обсуждать и оценивать.'); return; }
     if(!lastRange){ fab.style.display='none'; return; }
     var content=document.getElementById('content');
     var start=rangeStartOffset(content,lastRange);
@@ -980,6 +1004,9 @@
         var act=document.createElement('div'); act.className='c-actions';
         var go=document.createElement('a'); go.textContent='к месту'; go.onclick=function(){ jumpTo(c); }; act.appendChild(go);
         var rep=document.createElement('a'); rep.textContent='ответить'; rep.onclick=function(){ openReply(c); }; act.appendChild(rep);
+        var li=likeInfo(c.id);
+        var lk=document.createElement('a'); lk.className='c-like'+(li.mine?' on':''); lk.textContent=(li.mine?'♥':'♡')+(li.count?(' '+li.count):'');
+        lk.title='Полезная правка'; lk.onclick=function(){ if(!canContribute()){ toast('Лайкать могут контрибьюторы'); return; } toggleLike(c.id); }; act.appendChild(lk);
         if(c.mine){
           var ed=document.createElement('a'); ed.textContent='изменить'; ed.onclick=function(){ editingId=c.id; pendingRange=null; openEditor(c.kind==='chapter'?'__chapter__':c.quote, c.note, c.tag, false); };
           act.appendChild(ed);
@@ -1293,11 +1320,46 @@
     if(/Failed to fetch|NetworkError|timeout|timed out|fetch/i.test(m)) return 'Нет связи с базой. Возможно, проект Supabase «уснул» — откройте его панель и нажмите Resume, затем повторите.';
     return 'Ошибка: '+m;
   }
+  var myRole='reader', prevSeen=0, welcomeShown=false, LIKEALL=[];
+  function canContribute(){ return isAdmin || myRole==='contributor' || myRole==='editor'; }
+  function canModerate(){ return isAdmin || myRole==='editor'; }
+  function applyRoleUI(){
+    var contrib=canContribute(), mod=canModerate();
+    var show=function(id,on,inline){ var el=document.getElementById(id); if(el) el.style.display = on ? (inline||'') : 'none'; };
+    show('tabEdits', contrib);
+    show('btnExport', mod);
+    show('btnDash', mod, 'inline-flex');
+    ['btnCopyAll','btnSaveJson','btnLoadJson','btnArchive'].forEach(function(id){ show(id, mod); });
+    show('btnChapterNote', contrib);
+    if(!contrib && panelTab==='edits') setPanelTab('disc');
+  }
   async function checkMember(){
+    myRole = isAdmin ? 'editor' : 'reader';
     if(!SB || !USER) return false;
-    var r=await SB.from('whitelist').select('email').eq('email',(USER.email||'').toLowerCase()).limit(1);
+    var r=await SB.from('whitelist').select('email,role').eq('email',(USER.email||'').toLowerCase()).limit(1);
     if(r.error) return false;
-    return !!(r.data && r.data.length);
+    if(r.data && r.data.length){ if(!isAdmin) myRole=r.data[0].role||'reader'; return true; }
+    return false;
+  }
+  async function loadLikes(){
+    LIKEALL=[]; if(!SB||!USER) return;
+    try{ var r=await SB.from('comment_likes').select('*'); if(!r.error) LIKEALL=r.data||[]; }catch(e){}
+  }
+  function likeInfo(cid){
+    var count=0, mine=false;
+    for(var i=0;i<LIKEALL.length;i++){ if(LIKEALL[i].comment_id===cid){ count++; if(USER && LIKEALL[i].user_id===USER.id) mine=true; } }
+    return {count:count, mine:mine};
+  }
+  async function toggleLike(cid){
+    if(!SB||!USER) return;
+    var li=likeInfo(cid);
+    if(li.mine){
+      for(var i=LIKEALL.length-1;i>=0;i--){ if(LIKEALL[i].comment_id===cid && LIKEALL[i].user_id===USER.id) LIKEALL.splice(i,1); }
+      refreshPanel(); var d=await SB.from('comment_likes').delete().eq('comment_id',cid).eq('user_id',USER.id); if(d.error) toast('Ошибка: '+d.error.message);
+    } else {
+      LIKEALL.push({comment_id:cid, user_id:USER.id}); refreshPanel();
+      var ins=await SB.from('comment_likes').insert({comment_id:cid}); if(ins.error) toast('Ошибка: '+ins.error.message);
+    }
   }
   async function logout(){
     if(SB){ try{ await SB.auth.signOut(); }catch(e){} }
@@ -1348,8 +1410,12 @@
         renderTOC();
       }
       loadedUserId=USER.id;
-      await loadProfiles(); await loadSocial(); await loadProgress(); startPresence(); updateBell(); renderReactBar();
+      await loadProfiles();
+      prevSeen = (PROFILES[USER.id] && PROFILES[USER.id].last_seen)? Date.parse(PROFILES[USER.id].last_seen) : 0;
+      await loadSocial(); await loadProgress(); await loadLikes();
+      startPresence(); updateBell(); renderReactBar(); applyRoleUI();
       if(panelOpen()) renderPanel();
+      maybeWelcome();
     } finally { authInFlight=null; }
   }
   document.getElementById('authBtn').onclick=doAuth;
@@ -1373,6 +1439,80 @@
     }).catch(function(err){ b.disabled=false; msg.textContent='Ошибка: '+((err&&err.message)||err); });
   };
   document.getElementById('pwdNew').addEventListener('keydown', function(e){ if(e.key==='Enter') document.getElementById('pwdSave').click(); });
+  // account: self name
+  document.getElementById('btnPwd').onclick=function(){
+    document.getElementById('pwdNew').value=''; document.getElementById('pwdMsg').textContent='';
+    var nm=(USER && PROFILES[USER.id] && PROFILES[USER.id].name)||'';
+    var an=document.getElementById('acctName'); if(an) an.value=nm;
+    showModal('pwdModal'); setTimeout(function(){ if(an) an.focus(); },50);
+  };
+  async function saveMyName(v){
+    if(!SB||!USER) return;
+    if(PROFILES[USER.id]) PROFILES[USER.id].name=v; else PROFILES[USER.id]={name:v};
+    try{ await SB.from('profiles').upsert({user_id:USER.id, email:(USER.email||'').toLowerCase(), name:v, last_seen:new Date().toISOString()}, {onConflict:'user_id'}); }catch(e){}
+    if(panelOpen()) renderPanel();
+  }
+  (function(){ var b=document.getElementById('acctNameSave'); if(b) b.onclick=async function(){
+    var v=(document.getElementById('acctName').value||'').trim(); if(!v){ toast('Введите имя'); return; }
+    await saveMyName(v); toast('Имя сохранено');
+  }; })();
+
+  // welcome splash + digest
+  function timePhrase(){
+    var h=new Date().getHours(), sets;
+    if(h>=5&&h<12) sets=['Доброе утро','С добрым утром','Утро доброе','Кофе и буквы'];
+    else if(h>=12&&h<18) sets=['Добрый день','Рабочий полдень','День добрый'];
+    else if(h>=18&&h<23) sets=['Добрый вечер','Вечер для чтения','Тихий вечер'];
+    else sets=['Доброй ночи','Режим совы','Глубокая ночь — самое время'];
+    return sets[Math.floor(Math.random()*sets.length)];
+  }
+  function maybeWelcome(){
+    if(welcomeShown) return; welcomeShown=true;
+    if(!prevSeen){ showWelcome(true, []); return; }            // первый визит — онбординг
+    if(Date.now()-prevSeen < 8*3600*1000) return;              // меньше 8 часов — не беспокоим
+    var items=[];
+    var nUpd=BOOK.filter(function(b){ return b.updated && Date.parse(b.updated)>prevSeen; }).length;
+    var nDisc=DISCALL.filter(function(d){ return Date.parse(d.created_at)>prevSeen && !(USER && d.user_id===USER.id); }).length;
+    var nEd=comments.filter(function(c){ return c.ts>prevSeen && !c.mine; }).length;
+    if(nUpd) items.push('обновлено глав: '+nUpd);
+    if(nDisc) items.push('новых сообщений в обсуждениях: '+nDisc);
+    if(canContribute() && nEd) items.push('новых правок: '+nEd);
+    showWelcome(false, items);
+  }
+  function showWelcome(first, items){
+    var nm=(USER && PROFILES[USER.id] && PROFILES[USER.id].name)||'';
+    document.getElementById('wcHi').textContent = timePhrase()+(nm?(', '+nm):'')+'!';
+    var body=document.getElementById('wcBody'); body.innerHTML='';
+    if(first){
+      var p1=document.createElement('p'); p1.textContent='Это «Читальня» — читайте, обсуждайте и оценивайте главы. Чтобы вас было видно по имени, представьтесь:';
+      body.appendChild(p1);
+      var wrap=document.createElement('div'); wrap.style.cssText='display:flex;gap:8px;margin-top:8px';
+      var inp=document.createElement('input'); inp.className='adm-in'; inp.placeholder='Ваше имя'; inp.style.flex='1'; inp.value=nm;
+      var sv=document.createElement('button'); sv.className='btn primary'; sv.textContent='Сохранить';
+      sv.onclick=async function(){ var v=(inp.value||'').trim(); if(v){ await saveMyName(v); document.getElementById('wcHi').textContent=timePhrase()+', '+v+'!'; sv.textContent='Готово'; } };
+      wrap.appendChild(inp); wrap.appendChild(sv); body.appendChild(wrap);
+      var p2=document.createElement('p'); p2.style.cssText='color:var(--muted);font-size:13px;margin-top:12px'; p2.textContent='На полке пока одна книга — со временем здесь появятся и другие.';
+      body.appendChild(p2);
+    } else if(items.length){
+      var t=document.createElement('div'); t.style.cssText='font-size:13px;color:var(--muted);margin-bottom:6px'; t.textContent='Что нового с прошлого визита:';
+      body.appendChild(t);
+      var ul=document.createElement('ul'); ul.className='wc-digest';
+      items.forEach(function(it){ var li=document.createElement('li'); li.textContent=it; ul.appendChild(li); });
+      body.appendChild(ul);
+    } else {
+      var pe=document.createElement('p'); pe.style.color='var(--muted)'; pe.textContent='С прошлого визита всё тихо. Хорошего чтения!'; body.appendChild(pe);
+    }
+    showModal('welcomeModal');
+  }
+  (function(){ var b=document.getElementById('wcClose'); if(b) b.onclick=closeModals; })();
+
+  // chapter info (version + date)
+  function showChapterInfo(){
+    var c=BYID[state.chapter]; if(!c) return;
+    var when=c.updated? new Date(c.updated).toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'}) : '—';
+    toast('Версия '+(c.ver||'?')+' · обновлена '+when);
+  }
+  (function(){ var b=document.getElementById('btnInfo'); if(b) b.onclick=showChapterInfo; })();
   var replyTo=null;
   function openReply(c){
     replyTo=c;
@@ -1407,13 +1547,21 @@
     r.data.forEach(function(w){
       var row=document.createElement('div'); row.className='wl-row';
       var em=document.createElement('span'); em.textContent=w.email; em.style.flex='1'; em.style.overflow='hidden'; em.style.textOverflow='ellipsis';
+      var sel=document.createElement('select'); sel.className='wl-role';
+      [['reader','читатель'],['contributor','контрибьютор'],['editor','редактор']].forEach(function(o){
+        var op=document.createElement('option'); op.value=o[0]; op.textContent=o[1]; if((w.role||'reader')===o[0]) op.selected=true; sel.appendChild(op);
+      });
+      sel.onchange=async function(){
+        var u=await SB.from('whitelist').update({role:sel.value}).eq('email', w.email);
+        if(u.error){ toast('Ошибка: '+u.error.message); } else toast('Роль обновлена');
+      };
       var del=document.createElement('a'); del.textContent='удалить'; del.className='wl-del';
       del.onclick=async function(){
         if((w.email||'').toLowerCase()===ADMIN){ toast('Админа удалять нельзя'); return; }
         var d=await SB.from('whitelist').delete().eq('email', w.email);
         if(d.error) toast('Ошибка: '+d.error.message); else refreshWhitelist();
       };
-      row.appendChild(em); row.appendChild(del); box.appendChild(row);
+      row.appendChild(em); row.appendChild(sel); row.appendChild(del); box.appendChild(row);
     });
   }
   document.getElementById('wlAdd').onclick=async function(){
