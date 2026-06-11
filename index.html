@@ -385,6 +385,48 @@ a.supp-title:hover{color:var(--accent); text-decoration:underline}
 .ci-row{padding:8px 0; border-bottom:1px solid var(--line)}
 .ci-date{font-size:13px; margin-bottom:2px}
 .ci-log{font-size:13.5px; color:var(--read); white-space:pre-wrap}
+
+/* topbar redesign (Ф3 redesign) */
+#topbar{display:flex; align-items:center; gap:6px}
+#topbar #topTitle{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.top-actions{display:flex; align-items:center; gap:4px}
+.iconbtn{height:36px; min-width:36px; padding:0 9px; border-radius:10px; border:1px solid transparent; background:transparent;
+  color:var(--ink); font-size:15px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px; transition:.12s}
+.iconbtn:hover{background:var(--accent-soft)}
+.iconbtn.on{background:var(--accent-soft); color:var(--accent); border-color:var(--accent)}
+.menu-wrap{position:relative; display:inline-flex}
+.menu{position:absolute; top:42px; right:0; z-index:50; min-width:210px; background:var(--card); border:1px solid var(--line);
+  border-radius:12px; box-shadow:0 12px 32px rgba(0,0,0,.16); padding:6px; display:none}
+.menu.open{display:block}
+.menu-item{display:flex; align-items:center; gap:8px; width:100%; text-align:left; padding:9px 10px; border:none; background:transparent;
+  color:var(--ink); font-size:14px; border-radius:8px; cursor:pointer}
+.menu-item:hover{background:var(--accent-soft)}
+.menu-item.on{color:var(--accent)}
+.menu-row{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:9px 10px; font-size:14px; color:var(--read)}
+.font-step button{width:30px; height:28px; border:1px solid var(--line); background:var(--card); color:var(--ink); border-radius:7px; cursor:pointer; font-size:13px}
+.font-step button:first-child{margin-right:4px}
+.font-step button:hover{border-color:var(--accent); color:var(--accent)}
+@media(max-width:560px){ .iconbtn{padding:0 7px; min-width:34px; height:34px} .top-actions{gap:2px} }
+
+/* teardowns (Ф3 groundwork) */
+.td-intro{font-size:13.5px; color:var(--read); line-height:1.5; margin-bottom:14px}
+.td-form{background:var(--accent-soft); border-radius:12px; padding:14px; margin-bottom:18px}
+.td-form textarea{width:100%; resize:vertical; padding:10px; border:1px solid var(--line); border-radius:9px; font-family:inherit; font-size:14px; background:var(--card); color:var(--ink)}
+.td-h{font-size:12px; text-transform:uppercase; letter-spacing:.4px; color:var(--muted); margin:16px 0 10px}
+.td-card{border:1px solid var(--line); border-radius:12px; padding:14px; margin-bottom:12px; position:relative}
+.td-card.pending{background:rgba(224,169,46,.07)}
+.td-title{font-weight:700; font-size:15px; color:var(--ink); text-decoration:none; display:block}
+a.td-title:hover{color:var(--accent)}
+.td-ch{font-size:12px; color:var(--accent); margin-top:3px}
+.td-url{font-size:12px; color:var(--muted); word-break:break-all; display:block; margin-top:4px}
+.td-q{font-size:14px; color:var(--read); margin-top:6px; line-height:1.5}
+.td-body{font-size:14px; color:var(--read); margin-top:8px; line-height:1.55; white-space:pre-wrap}
+.td-meta{font-size:12px; color:var(--muted); margin-top:6px}
+.td-edit{width:100%; min-height:80px; resize:vertical; margin-top:10px; padding:10px; border:1px solid var(--line); border-radius:9px; font-family:inherit; font-size:14px; background:var(--card); color:var(--ink)}
+.td-bar{display:flex; align-items:center; gap:14px; margin-top:8px}
+.td-del{color:var(--muted); cursor:pointer; font-size:13px}
+.td-del:hover{color:#b23b3b}
+.td-mine{font-size:13px; color:var(--read); padding:5px 0; border-bottom:1px solid var(--line)}
 </style>
 </head>
 <body>
@@ -408,16 +450,29 @@ a.supp-title:hover{color:var(--accent); text-decoration:underline}
       <button class="iconbtn" id="btnMenu" title="Оглавление">☰</button>
       <button class="iconbtn" id="btnShelf" title="Полка">📚</button>
       <div id="topTitle"></div>
-      <button class="iconbtn" id="btnSearch" title="Поиск по книге">🔍</button>
-      <button class="iconbtn" id="btnMarkers" title="Показать редакционные маркеры">⟦⟧ Маркеры</button>
-      <button class="iconbtn" id="btnInfo" title="О главе: версия и дата">ⓘ</button>
-      <button class="iconbtn" id="btnDash" title="Дашборд глав" style="display:none">📊</button>
-      <button class="iconbtn" id="btnBell" title="Уведомления" style="display:none">🔔<span id="bellBadge" class="bell-badge" style="display:none">0</span></button>
-      <button class="iconbtn" id="btnPanel" title="Панель">💬 <span id="cCount">0</span></button>
-      <button class="iconbtn" id="btnExport" title="Экспорт правок">⇪ Экспорт</button>
-      <button class="iconbtn" id="btnAdmin" style="display:none" title="Админка">⚙ Админ</button>
-      <button class="iconbtn" id="btnTheme" title="Тема">☾</button>
-      <button class="iconbtn" id="btnFont" title="Размер шрифта">Aa</button>
+      <div class="top-actions">
+        <button class="iconbtn" id="btnSearch" title="Поиск по книге">🔍</button>
+        <button class="iconbtn" id="btnInfo" title="О главе и история изменений">ⓘ</button>
+        <button class="iconbtn" id="btnTeardowns" title="Разборы интерфейсов">🔬</button>
+        <div class="menu-wrap">
+          <button class="iconbtn" id="btnTools" title="Инструменты редактора" style="display:none">🛠</button>
+          <div class="menu" id="toolsMenu">
+            <button class="menu-item" id="miDash">📊 Дашборд глав</button>
+            <button class="menu-item" id="miExport">⇪ Экспорт правок</button>
+            <button class="menu-item" id="miMarkers">⟦⟧ Редакционные маркеры</button>
+          </div>
+        </div>
+        <button class="iconbtn" id="btnBell" title="Уведомления" style="display:none">🔔<span id="bellBadge" class="bell-badge" style="display:none">0</span></button>
+        <button class="iconbtn" id="btnPanel" title="Правки и обсуждение">💬 <span id="cCount">0</span></button>
+        <div class="menu-wrap">
+          <button class="iconbtn" id="btnView" title="Вид: тема и шрифт">Aa</button>
+          <div class="menu" id="viewMenu">
+            <button class="menu-item" id="miTheme">☾ Тёмная тема</button>
+            <div class="menu-row"><span>Размер шрифта</span><span class="font-step"><button id="miFontMinus">A−</button><button id="miFontPlus">A+</button></span></div>
+          </div>
+        </div>
+        <button class="iconbtn" id="btnAdmin" style="display:none" title="Админка">⚙</button>
+      </div>
     </div>
     <div id="scroller">
       <div id="content"></div>
@@ -543,6 +598,20 @@ a.supp-title:hover{color:var(--accent); text-decoration:underline}
   <h3 id="archTitle">Архив правок</h3>
   <div class="body"><div id="archList"></div></div>
   <div class="foot"><div class="spacer"></div><button class="btn" id="archClose">Закрыть</button></div>
+</div>
+<div class="modal" id="tdModal" style="width:600px">
+  <h3>Разборы интерфейсов</h3>
+  <div class="body">
+    <div class="td-intro">Разбор интерфейсов и продуктов через поведенческую оптику. Пришлите кейс — возьмём в работу и опубликуем разбор.</div>
+    <div class="td-form">
+      <input id="tdTitle" class="adm-in" placeholder="Что разбираем (продукт / экран)" style="width:100%; margin-bottom:8px">
+      <input id="tdUrl" class="adm-in" placeholder="Ссылка (необязательно)" style="width:100%; margin-bottom:8px">
+      <textarea id="tdQuestion" placeholder="Что смущает в поведении пользователей? Какой вопрос?" style="width:100%; min-height:64px"></textarea>
+      <div style="text-align:right; margin-top:8px"><button class="btn primary" id="tdSubmit">Отправить кейс</button></div>
+    </div>
+    <div id="tdList"></div>
+  </div>
+  <div class="foot"><div class="spacer"></div><button class="btn" id="tdClose">Закрыть</button></div>
 </div>
 <div class="modal" id="suppModal" style="width:480px">
   <h3>Дополнение к главе</h3>
@@ -885,7 +954,7 @@ a.supp-title:hover{color:var(--accent); text-decoration:underline}
       it.className='toc-item'+(c.id===state.chapter?' active':'');
       it.innerHTML='<span>'+escapeHtml(c.title)+'</span>';
       var n=countFor(c.id);
-      if(n>0){ var b=document.createElement('span'); b.className='badge'; b.textContent=n; it.appendChild(b); }
+      if(n>0 && canContribute()){ var b=document.createElement('span'); b.className='badge'; b.textContent=n; it.appendChild(b); }
       if(state.read && state.read[c.id+':'+c.ver]>=0.97){ var tk=document.createElement('span'); tk.className='tick'; tk.textContent='✓'; it.appendChild(tk); }
       it.onclick=function(){ openChapter(c.id); if(window.innerWidth<=820) toggleSidebar(false); };
       toc.appendChild(it);
@@ -1314,24 +1383,33 @@ a.supp-title:hover{color:var(--accent); text-decoration:underline}
   document.getElementById('btnMenu').onclick=function(){ toggleSidebar(); };
   document.getElementById('btnPanel').onclick=function(){ togglePanel(); };
   document.getElementById('btnPanelClose').onclick=function(){ togglePanel(false); };
-  document.getElementById('btnExport').onclick=openExport;
+  document.getElementById('miExport').onclick=function(){ closeMenus(); openExport(); };
   document.getElementById('btnCopyAll').onclick=function(){ copyText(buildExport(true),'Открытые правки скопированы — вставьте модели'); };
-  document.getElementById('btnMarkers').onclick=function(){
+  document.getElementById('miMarkers').onclick=function(){
+    closeMenus();
     state.markers=!state.markers; saveState();
-    document.getElementById('btnMarkers').classList.toggle('on',state.markers);
+    document.getElementById('miMarkers').classList.toggle('on',state.markers);
     renderChapter();
   };
 
   function applyTheme(){
     document.documentElement.setAttribute('data-theme', state.theme==='dark'?'dark':'light');
-    var b=document.getElementById('btnTheme');
-    if(state.theme==='dark'){ b.textContent='☀'; b.title='Светлая тема'; b.classList.add('on'); }
-    else { b.textContent='☾'; b.title='Тёмная тема'; b.classList.remove('on'); }
+    var b=document.getElementById('miTheme');
+    if(b){ b.textContent = state.theme==='dark'?'☀ Светлая тема':'☾ Тёмная тема'; b.classList.toggle('on', state.theme==='dark'); }
   }
-  document.getElementById('btnTheme').onclick=function(){
-    state.theme = state.theme==='dark'?'light':'dark';
-    applyTheme(); saveState();
+  document.getElementById('miTheme').onclick=function(){
+    closeMenus(); state.theme = state.theme==='dark'?'light':'dark'; applyTheme(); saveState();
   };
+
+  // dropdown menus
+  function closeMenus(){ var ms=document.querySelectorAll('.menu.open'); for(var i=0;i<ms.length;i++) ms[i].classList.remove('open'); }
+  function toggleMenu(id, e){ if(e){ e.stopPropagation(); } var m=document.getElementById(id); var was=m.classList.contains('open'); closeMenus(); if(!was) m.classList.add('open'); }
+  (function(){
+    var bt=document.getElementById('btnTools'); if(bt) bt.onclick=function(e){ toggleMenu('toolsMenu', e); };
+    var bv=document.getElementById('btnView'); if(bv) bv.onclick=function(e){ toggleMenu('viewMenu', e); };
+    ['toolsMenu','viewMenu'].forEach(function(id){ var m=document.getElementById(id); if(m) m.addEventListener('click', function(e){ e.stopPropagation(); }); });
+  })();
+  document.addEventListener('click', closeMenus);
 
   var bd=document.createElement('div'); bd.id='backdrop'; document.body.appendChild(bd);
   bd.onclick=function(){ toggleSidebar(false); };
@@ -1418,12 +1496,10 @@ a.supp-title:hover{color:var(--accent); text-decoration:underline}
     var contrib=canContribute(), mod=canModerate();
     var show=function(id,on,inline){ var el=document.getElementById(id); if(el) el.style.display = on ? (inline||'') : 'none'; };
     show('tabEdits', contrib);
-    show('btnExport', mod);
-    show('btnDash', mod, 'inline-flex');
+    show('btnTools', mod, 'inline-flex');
     ['btnCopyAll','btnSaveJson','btnLoadJson','btnArchive'].forEach(function(id){ show(id, mod); });
     show('btnChapterNote', contrib);
-    show('btnMarkers', mod);
-    if(!mod && state.markers){ state.markers=false; document.getElementById('btnMarkers').classList.remove('on'); renderChapter(); }
+    if(!mod && state.markers){ state.markers=false; var mm=document.getElementById('miMarkers'); if(mm) mm.classList.remove('on'); renderChapter(); }
     if(!contrib && panelTab==='edits') setPanelTab('disc');
   }
   async function checkMember(){
@@ -1474,7 +1550,6 @@ a.supp-title:hover{color:var(--accent); text-decoration:underline}
     if(authInFlight===USER.id) return;                    // загрузка уже идёт
     isAdmin = (USER.email||'').toLowerCase()===ADMIN;
     document.getElementById('btnAdmin').style.display = isAdmin? 'inline-flex':'none';
-    document.getElementById('btnDash').style.display = isAdmin? 'inline-flex':'none';
     isMember = isAdmin || await checkMember();
     if(!isMember){ document.getElementById('nomemberEmail').textContent='Вы вошли как '+USER.email; showGate('nomember'); return; }
     document.getElementById('authGate').style.display='none'; updateAuthUI();
@@ -1792,11 +1867,8 @@ a.supp-title:hover{color:var(--accent); text-decoration:underline}
     var i=Math.max(0,Math.min(FONTS.length-1, state.fontSize|0));
     document.getElementById('content').style.fontSize=FONTS[i]+'px';
   }
-  document.getElementById('btnFont').onclick=function(){
-    state.fontSize=((state.fontSize|0)+1)%FONTS.length;
-    applyFont(); saveState();
-    toast('Размер шрифта: '+FONTS[state.fontSize]+'px');
-  };
+  document.getElementById('miFontPlus').onclick=function(){ state.fontSize=Math.min(FONTS.length-1,(state.fontSize|0)+1); applyFont(); saveState(); };
+  document.getElementById('miFontMinus').onclick=function(){ state.fontSize=Math.max(0,(state.fontSize|0)-1); applyFont(); saveState(); };
 
   // ---------- chapter-level note ----------
   document.getElementById('btnChapterNote').onclick=function(){
@@ -2174,6 +2246,80 @@ a.supp-title:hover{color:var(--accent); text-decoration:underline}
   (function(){ var s1=document.getElementById('suppSave'); if(s1) s1.onclick=addSupp;
     var s2=document.getElementById('suppCancel'); if(s2) s2.onclick=closeModals; })();
 
+  // ---------- teardowns (разборы) ----------
+  var TDALL=[];
+  function tdStatusLabel(s){ return s==='published'?'опубликован':(s==='in_review'?'в работе':'новый'); }
+  async function loadTeardowns(){ TDALL=[]; if(!SB||!USER) return; try{ var r=await SB.from('teardowns').select('*').order('created_at',{ascending:false}); if(!r.error) TDALL=r.data||[]; }catch(e){} }
+  async function openTeardowns(){ await loadTeardowns(); renderTeardowns(); showModal('tdModal'); }
+  function renderTeardowns(){
+    var box=document.getElementById('tdList'); box.innerHTML='';
+    var pub=TDALL.filter(function(t){return t.status==='published';});
+    var pend=TDALL.filter(function(t){return t.status!=='published';});
+    if(canModerate() && pend.length){
+      var h=document.createElement('div'); h.className='td-h'; h.textContent='Заявки на разбор ('+pend.length+')'; box.appendChild(h);
+      pend.forEach(function(t){ box.appendChild(tdPendingEl(t)); });
+    } else {
+      var mine=pend.filter(function(t){return USER && t.user_id===USER.id;});
+      if(mine.length){ var hm=document.createElement('div'); hm.className='td-h'; hm.textContent='Ваши заявки'; box.appendChild(hm);
+        mine.forEach(function(t){ var d=document.createElement('div'); d.className='td-mine'; d.textContent=t.title+' — '+tdStatusLabel(t.status); box.appendChild(d); }); }
+    }
+    var hp=document.createElement('div'); hp.className='td-h'; hp.textContent='Опубликованные разборы'; box.appendChild(hp);
+    if(!pub.length){ var e=document.createElement('div'); e.className='d-empty'; e.textContent='Пока нет — будут здесь.'; box.appendChild(e); }
+    pub.forEach(function(t){ box.appendChild(tdPubEl(t)); });
+  }
+  function tdPubEl(t){
+    var c=document.createElement('div'); c.className='td-card';
+    var ti=document.createElement(t.url?'a':'div'); ti.className='td-title'; ti.textContent=t.title||'(без названия)';
+    if(t.url){ ti.href=t.url; ti.target='_blank'; ti.rel='noopener'; }
+    c.appendChild(ti);
+    if(t.chapter_id && BYID[t.chapter_id]){ var ch=document.createElement('div'); ch.className='td-ch'; ch.textContent='пример к главе: '+BYID[t.chapter_id].title; c.appendChild(ch); }
+    if(t.body){ var b=document.createElement('div'); b.className='td-body'; b.textContent=t.body; c.appendChild(b); }
+    if(canModerate()){ var del=document.createElement('a'); del.className='td-del'; del.textContent='удалить'; del.onclick=function(){ delTeardown(t.id); }; c.appendChild(del); }
+    return c;
+  }
+  function tdPendingEl(t){
+    var c=document.createElement('div'); c.className='td-card pending';
+    var ti=document.createElement('div'); ti.className='td-title'; ti.textContent=t.title||'(без названия)'; c.appendChild(ti);
+    if(t.url){ var u=document.createElement('a'); u.className='td-url'; u.href=t.url; u.target='_blank'; u.rel='noopener'; u.textContent=t.url; c.appendChild(u); }
+    if(t.question){ var q=document.createElement('div'); q.className='td-q'; q.textContent=t.question; c.appendChild(q); }
+    var meta=document.createElement('div'); meta.className='td-meta'; meta.textContent='от '+nameFor(t.user_id,t.user_email)+' · '+tdStatusLabel(t.status); c.appendChild(meta);
+    var ta=document.createElement('textarea'); ta.className='td-edit'; ta.placeholder='Разбор (поведенческая оптика)…'; ta.value=t.body||''; c.appendChild(ta);
+    var bar=document.createElement('div'); bar.className='td-bar';
+    var pubBtn=document.createElement('button'); pubBtn.className='btn primary'; pubBtn.textContent='Опубликовать';
+    pubBtn.onclick=function(){ publishTeardown(t.id, ta.value); };
+    var del=document.createElement('a'); del.className='td-del'; del.textContent='удалить'; del.onclick=function(){ delTeardown(t.id); };
+    bar.appendChild(pubBtn); bar.appendChild(del); c.appendChild(bar);
+    return c;
+  }
+  async function submitTeardown(){
+    var title=(document.getElementById('tdTitle').value||'').trim();
+    var url=(document.getElementById('tdUrl').value||'').trim();
+    var q=(document.getElementById('tdQuestion').value||'').trim();
+    if(!title && !url){ toast('Укажите, что разбираем'); return; }
+    var rec={ title:title, url:url, question:q, chapter_id:state.chapter||null, status:'new', user_email:(USER&&USER.email?USER.email.toLowerCase():'') };
+    var r=await SB.from('teardowns').insert(rec).select().single();
+    if(r.error){ toast('Ошибка: '+r.error.message); return; }
+    document.getElementById('tdTitle').value=''; document.getElementById('tdUrl').value=''; document.getElementById('tdQuestion').value='';
+    TDALL.unshift(r.data); renderTeardowns(); toast('Кейс отправлен — спасибо!');
+  }
+  async function publishTeardown(id, body){
+    if(!SB) return;
+    var r=await SB.from('teardowns').update({ body:(body||'').trim(), status:'published', author_email:(USER&&USER.email?USER.email.toLowerCase():''), published_at:new Date().toISOString() }).eq('id',id);
+    if(r.error){ toast('Ошибка: '+r.error.message); return; }
+    await loadTeardowns(); renderTeardowns(); toast('Разбор опубликован');
+  }
+  async function delTeardown(id){
+    if(!SB) return;
+    var d=await SB.from('teardowns').delete().eq('id',id);
+    if(d.error){ toast('Ошибка: '+d.error.message); return; }
+    TDALL=TDALL.filter(function(x){return x.id!==id;}); renderTeardowns();
+  }
+  (function(){
+    var b=document.getElementById('btnTeardowns'); if(b) b.onclick=openTeardowns;
+    var sb=document.getElementById('tdSubmit'); if(sb) sb.onclick=submitTeardown;
+    var cl=document.getElementById('tdClose'); if(cl) cl.onclick=closeModals;
+  })();
+
   // ---------- author dashboard ----------
   function chapterStats(chId){
     var edits=comments.filter(function(c){return c.ch===chId;});
@@ -2238,7 +2384,7 @@ a.supp-title:hover{color:var(--accent); text-decoration:underline}
     setTimeout(function(){URL.revokeObjectURL(a.href);},2000);
     toast('Весь фидбэк сохранён в файл');
   }
-  document.getElementById('btnDash').onclick=openDashboard;
+  document.getElementById('miDash').onclick=function(){ closeMenus(); openDashboard(); };
   document.getElementById('dashClose').onclick=closeModals;
   document.getElementById('dashBackup').onclick=downloadFeedback;
 
@@ -2348,7 +2494,7 @@ a.supp-title:hover{color:var(--accent); text-decoration:underline}
     else if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches){ state.theme='dark'; }
     applyTheme(); applyFont();
     if(window.innerWidth<=820) document.getElementById('sidebar').classList.add('collapsed');
-    document.getElementById('btnMarkers').classList.toggle('on',state.markers);
+    var _mm=document.getElementById('miMarkers'); if(_mm) _mm.classList.toggle('on',state.markers);
     updateCount();
     document.getElementById('scroller').addEventListener('mouseup', function(){ setTimeout(onSelect,10); });
     document.getElementById('scroller').addEventListener('touchend', function(){ setTimeout(onSelect,30); });
