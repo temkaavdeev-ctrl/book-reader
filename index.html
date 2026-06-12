@@ -95,7 +95,6 @@
   /* ---------- topbar ---------- */
   #main{flex:1; display:flex; flex-direction:column; min-width:0; position:relative}
   #topbar{display:flex; align-items:center; gap:8px; padding:11px 18px; background:var(--panel); background:color-mix(in srgb,var(--panel) 88%,transparent);
-    backdrop-filter:saturate(1.4) blur(10px); -webkit-backdrop-filter:saturate(1.4) blur(10px);
     border-bottom:1px solid var(--line); z-index:20}
   #topTitle{font-weight:600; font-size:15px; letter-spacing:-.01em; color:var(--ink); white-space:nowrap;
     overflow:hidden; text-overflow:ellipsis; flex:0 1 auto}
@@ -951,8 +950,12 @@
   function currentBook(){ return state.book||'main'; }
 
   // ====== ВЕРСИЯ ПРИЛОЖЕНИЯ (повышать с каждым апдейтом HTML) ======
-  var APP_VERSION='2.3';
+  var APP_VERSION='2.4';
   var APP_CHANGELOG=[
+    {v:'2.4', items:[
+      'Исправлено: на телефоне меню «···» и Админка открываются корректно (фильтр панели ломал позиционирование).',
+      'После загрузки content.json понятное сообщение: обновились версии глав или текст тот же.'
+    ]},
     {v:'2.3', items:[
       'Прогресс чтения в меню («Прочитано N из M») — мягко мотивирует дойти до конца (эффект градиента цели).',
       'Тёплый момент в конце главы: «Глава прочитана · осталось N» (правило пик-конец).',
@@ -2140,7 +2143,7 @@
       if(!state.chapter || !BYID[state.chapter]) state.chapter = BOOK.length? BOOK[0].id : null;
       renderTOC(); renderChapter(); await loadComments(); renderChapter(); renderTOC(); refreshPanel(); updateCount();
       await loadVersions();
-      msg.textContent='Загружено в «'+bookName(currentBook())+'»: глав '+chs.length+', схем '+dgs.length+(changed?(' · обновлено '+changed):'')+'.';
+      msg.textContent='Загружено в «'+bookName(currentBook())+'»: глав '+chs.length+', схем '+dgs.length+(changed?(' · обновлено глав: '+changed):' · версии глав не изменились (текст тот же)')+'.';
     };
     fr.readAsText(f); e.target.value='';
   };
