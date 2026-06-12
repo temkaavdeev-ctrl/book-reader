@@ -633,10 +633,12 @@
     transition:opacity .26s var(--ease), visibility .26s var(--ease) }
   #overlay.show{ opacity:1; visibility:visible; pointer-events:auto }
 
-  /* модалка: мягкий вход */
+  /* модалка: мягкий вход (десктоп — центр; мобайл — нижний шит, см. медиазапрос ниже) */
   .modal{ transition:opacity .26s var(--ease), transform .4s var(--spring) }
-  .modal{ transform:translate(-50%,-46%) scale(.985) }
-  .modal.show{ transform:translate(-50%,-50%) scale(1) }
+  @media(min-width:641px){
+    .modal{ transform:translate(-50%,-46%) scale(.985) }
+    .modal.show{ transform:translate(-50%,-50%) scale(1) }
+  }
 
   /* появление текста главы */
   #content.enter{ animation:contentIn .44s var(--spring) }
@@ -691,6 +693,12 @@
     font-size:14.5px; font-weight:500; text-align:center; font-family:inherit; cursor:pointer}
   .disc-cta:hover{border-color:var(--accent); background:var(--accent-tint); color:var(--ink)}
   .disc-cta:active{transform:scale(.985)}
+
+  /* live presence (v2.9) */
+  .presence-line{padding:9px 22px 0; font-size:12px; color:var(--muted); display:flex; align-items:center; gap:8px}
+  .presence-line::before{content:""; width:8px; height:8px; border-radius:50%; background:#46b66e;
+    box-shadow:0 0 0 3px rgba(70,182,110,.18); animation:livePulse 2.2s ease-in-out infinite; flex:0 0 auto}
+  @keyframes livePulse{0%,100%{opacity:1; transform:scale(1)} 50%{opacity:.45; transform:scale(.82)}}
 </style>
 </head>
 <body>
@@ -701,6 +709,7 @@
       <div class="s">чтение и правки</div>
     </div>
     <div id="readProg" class="read-prog" style="display:none"><div class="rp-bar"><i></i></div><div class="rp-lbl"></div></div>
+    <div id="presenceLine" class="presence-line" style="display:none"></div>
     <nav id="toc"></nav>
     <div id="userBox" style="display:none">
       <span id="userEmail"></span>
@@ -1039,8 +1048,12 @@
   function currentBook(){ return state.book||'main'; }
 
   // ====== ВЕРСИЯ ПРИЛОЖЕНИЯ (повышать с каждым апдейтом HTML) ======
-  var APP_VERSION='2.8';
+  var APP_VERSION='2.9';
   var APP_CHANGELOG=[
+    {v:'2.9', items:[
+      'Живая «Читальня»: когда книгу читает кто-то ещё — видно «Сейчас читают: N» с живой точкой.',
+      'Исправлено: на телефоне окна (в т.ч. админка) снова открываются ровно снизу.',
+    ]},
     {v:'2.8', items:[
       'В конце главы появилась кнопка «Обсудить главу» — обсуждение больше не нужно искать.',
       'Под заголовком главы — оценка времени чтения.',
@@ -2426,6 +2439,13 @@
     try{ var r=await SB.from('profiles').select('*'); if(r.error) return;
       PROFILES={}; (r.data||[]).forEach(function(pr){ PROFILES[pr.user_id]={email:pr.email||'', name:pr.name||'', last_seen:pr.last_seen, notif_seen:pr.notif_seen}; });
     }catch(e){}
+    renderPresence();
+  }
+  function renderPresence(){
+    var el=document.getElementById('presenceLine'); if(!el) return;
+    var n=0; for(var uid in PROFILES){ if(isOnline(uid)) n++; }
+    if(n>=2){ el.style.display=''; el.textContent='Сейчас читают: '+n; }
+    else el.style.display='none';
   }
   async function touchPresence(){
     if(!SB || !USER) return;
