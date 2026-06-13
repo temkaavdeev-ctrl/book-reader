@@ -11,6 +11,7 @@
 <title>Читальня</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CjxyZWN0IHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgcng9IjE0IiBmaWxsPSIjOGE1YTJiIi8+CjxwYXRoIGQ9Ik0zMSAxOSBDMjYgMTYgMTkgMTYuNSAxNSAxOCBMMTUgNDQgQzE5IDQyLjUgMjYgNDIgMzEgNDUgWiIgZmlsbD0iI2ZkZjdlYyIvPgo8cGF0aCBkPSJNMzMgMTkgQzM4IDE2IDQ1IDE2LjUgNDkgMTggTDQ5IDQ0IEM0NSA0Mi41IDM4IDQyIDMzIDQ1IFoiIGZpbGw9IiNmZGY3ZWMiLz4KPGcgc3Ryb2tlPSIjYzlhMDZhIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIj4KPGxpbmUgeDE9IjE5IiB5MT0iMjMuMiIgeDI9IjI4IiB5Mj0iMjQiLz48bGluZSB4MT0iMTkiIHkxPSIyOC4yIiB4Mj0iMjgiIHkyPSIyOSIvPjxsaW5lIHgxPSIxOSIgeTE9IjMzLjIiIHgyPSIyOCIgeTI9IjM0Ii8+CjxsaW5lIHgxPSIzNiIgeTE9IjI0IiB4Mj0iNDUiIHkyPSIyMy4yIi8+PGxpbmUgeDE9IjM2IiB5MT0iMjkiIHgyPSI0NSIgeTI9IjI4LjIiLz48bGluZSB4MT0iMzYiIHkxPSIzNCIgeDI9IjQ1IiB5Mj0iMzMuMiIvPgo8L2c+PC9zdmc+">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-title" content="Читальня">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -60,6 +61,7 @@
   body{
     font-family:var(--font-ui); background:var(--bg); color:var(--ink);
     -webkit-text-size-adjust:100%; overflow:hidden; letter-spacing:-.005em;
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
     transition:background .3s ease,color .3s ease;
   }
   button{font-family:inherit; cursor:pointer; color:inherit}
@@ -130,7 +132,8 @@
   /* ---------- reading ---------- */
   #scroller{flex:1; overflow:auto; scroll-behavior:smooth; position:relative}
   #content{max-width:680px; margin:0 auto; padding:56px 32px 170px;
-    font-family:var(--font-read); color:var(--read); font-size:20px; line-height:1.74; font-weight:400}
+    font-family:var(--font-read); color:var(--read); font-size:20px; line-height:1.74; font-weight:400;
+    text-rendering:optimizeLegibility; font-feature-settings:"kern" 1,"liga" 1,"onum" 1,"calt" 1}
   #content h1{font-family:var(--font-ui); font-size:34px; line-height:1.12; letter-spacing:-.025em;
     margin:0 0 10px; font-weight:700; color:var(--ink)}
   #content h1+p{font-size:21px; line-height:1.6; color:var(--ink); margin-top:18px}
@@ -749,6 +752,9 @@
   .jr-stat b{font-size:21px; color:var(--ink); font-family:var(--font-mono)}
   .jr-stat span{font-size:11px; color:var(--muted)}
   .jr-msg{text-align:center; font-size:14.5px; color:var(--read); line-height:1.55}
+
+  /* smooth theme cross-fade (v4.2) — only color props, won't touch transform/opacity animations */
+  html.theming, html.theming *{ transition: background-color .42s ease, color .42s ease, border-color .42s ease, fill .42s ease !important }
 </style>
 </head>
 <body>
@@ -798,6 +804,7 @@
         <div class="seg" id="themeSeg">
           <button class="seg-btn" data-th="light">Светлая</button>
           <button class="seg-btn" data-th="dark">Тёмная</button>
+          <button class="seg-btn" data-th="auto">Авто</button>
         </div>
       </div>
       <div class="sheet-sec">
@@ -1102,13 +1109,27 @@
 
   // ---------- state ----------
   var comments = [];            // {id, ch, start, end, quote, note, ts}
-  var state = { chapter: null, book:'main', markers:false, scroll:{}, theme:'light', fontSize:1, readFont:'book', read:{} };
+  var state = { chapter: null, book:'main', markers:false, scroll:{}, theme:'auto', fontSize:1, readFont:'book', read:{} };
   var BOOKS=[];
   function currentBook(){ return state.book||'main'; }
 
   // ====== ВЕРСИЯ ПРИЛОЖЕНИЯ (повышать с каждым апдейтом HTML) ======
-  var APP_VERSION='4.1';
+  var APP_VERSION='4.5';
   var APP_CHANGELOG=[
+    {v:'4.5', items:[
+      'Офлайн-чтение: приложение и прочитанные главы открываются без сети.',
+      'Установка как нативное приложение: иконка, имя, полноэкранный режим.',
+    ]},
+    {v:'4.4', items:[
+      'Живые обновления: реакции, оценки, комментарии и обсуждения обновляются сами, без перезагрузки. Дашборд живой.',
+    ]},
+    {v:'4.3', items:[
+      'Тонкая типографика: сглаживание шрифта, лигатуры и старостильные цифры в тексте — литературный вид.',
+    ]},
+    {v:'4.2', items:[
+      'Тема «Авто»: днём светло, вечером и ночью — тёмно, приложение подстраивается само.',
+      'Смена темы — плавным переливом цвета.',
+    ]},
     {v:'4.1', items:[
       'Убрал листание глав свайпом — оно сбивало.',
       'Дашборд на телефоне: сводка больше не уезжает, название главы закреплено слева при прокрутке.',
@@ -1873,12 +1894,20 @@
     renderChapter();
   };
 
+  function effectiveTheme(){
+    if(state.theme==='light' || state.theme==='dark') return state.theme;
+    var h=new Date().getHours(); return (h>=7 && h<19) ? 'light' : 'dark';   // 'auto' — by time of day
+  }
   function applyTheme(){
-    document.documentElement.setAttribute('data-theme', state.theme==='dark'?'dark':'light');
+    var html=document.documentElement, eff=effectiveTheme(), cur=html.getAttribute('data-theme');
+    if(cur && cur!==eff){ html.classList.add('theming'); clearTimeout(applyTheme._t); applyTheme._t=setTimeout(function(){ html.classList.remove('theming'); }, 460); }
+    html.setAttribute('data-theme', eff);
     var seg=document.getElementById('themeSeg');
-    if(seg){ var bs=seg.querySelectorAll('.seg-btn'); for(var i=0;i<bs.length;i++){ bs[i].classList.toggle('on', bs[i].getAttribute('data-th')===(state.theme==='dark'?'dark':'light')); } }
+    if(seg){ var bs=seg.querySelectorAll('.seg-btn'), want=(state.theme||'light'); for(var i=0;i<bs.length;i++){ bs[i].classList.toggle('on', bs[i].getAttribute('data-th')===want); } }
   }
   (function(){ var seg=document.getElementById('themeSeg'); if(seg){ var bs=seg.querySelectorAll('.seg-btn'); for(var i=0;i<bs.length;i++){ (function(b){ b.onclick=function(){ state.theme=b.getAttribute('data-th'); applyTheme(); saveState(); }; })(bs[i]); } } })();
+  setInterval(function(){ if(state.theme!=='light' && state.theme!=='dark') applyTheme(); }, 300000);
+  document.addEventListener('visibilitychange', function(){ if(!document.hidden && state.theme!=='light' && state.theme!=='dark') applyTheme(); });
 
   // dropdown menus
   function closeMenus(){ var ms=document.querySelectorAll('.menu.open, .sheet.open'); for(var i=0;i<ms.length;i++) ms[i].classList.remove('open'); }
@@ -2119,10 +2148,15 @@
   async function checkMember(){
     myRole = isAdmin ? 'editor' : 'reader';
     if(!SB || !USER) return false;
-    var r=await SB.from('whitelist').select('email,role').eq('email',(USER.email||'').toLowerCase()).limit(1);
-    if(r.error) return false;
-    if(r.data && r.data.length){ if(!isAdmin) myRole=r.data[0].role||'reader'; return true; }
-    return false;
+    var mk='bp_member:'+USER.id, rk='bp_role:'+USER.id;
+    function fromCache(){ if(lsGet(mk)==='1'){ if(!isAdmin) myRole=lsGet(rk)||'reader'; return true; } return false; }
+    if(typeof navigator!=='undefined' && navigator.onLine===false) return fromCache();   // офлайн — доверяем сохранённому членству
+    try{
+      var r=await SB.from('whitelist').select('email,role').eq('email',(USER.email||'').toLowerCase()).limit(1);
+      if(r.error) return fromCache();                       // сеть подвела — доверяем кэшу
+      if(r.data && r.data.length){ if(!isAdmin){ myRole=r.data[0].role||'reader'; lsSet(rk,myRole); } lsSet(mk,'1'); return true; }
+      lsSet(mk,'0'); return false;                          // онлайн и точно не в списке — сбрасываем кэш
+    }catch(e){ return fromCache(); }
   }
   async function loadLikes(){
     LIKEALL=[]; if(!SB||!USER) return;
@@ -2196,7 +2230,7 @@
       prevSeen = (PROFILES[USER.id] && PROFILES[USER.id].last_seen)? Date.parse(PROFILES[USER.id].last_seen) : 0;
       await loadSocial(); await loadProgress(); await loadLikes();
       await loadBooks(); setBookTitle();
-      startPresence(); updateBell(); renderReactBar(); applyRoleUI();
+      startPresence(); updateBell(); renderReactBar(); applyRoleUI(); setupRealtime();
       if(panelOpen()) renderPanel();
       maybeWelcome();
     } finally { authInFlight=null; }
@@ -2828,6 +2862,39 @@
     if(!SB || !USER) return;
     try{ var r=await SB.from('reactions').select('*'); if(!r.error){ REACTALL=r.data||[]; reactionsAvailable=true; } }catch(e){}
   }
+
+  // ---------- live updates (Supabase Realtime) ----------
+  var rtChannel=null, rtTimer=null, rtDirty={};
+  function refreshLiveUI(){
+    try{ renderReactBar(); }catch(_){}
+    try{ renderRates(); }catch(_){}
+    try{ renderDiscCTA(); }catch(_){}
+    try{ updateCount(); }catch(_){}
+    try{ updateBell(); }catch(_){}
+    try{ if(panelOpen()) renderPanel(); }catch(_){}
+    try{ var dm=document.getElementById('dashModal'); if(dm && dm.classList.contains('show')) openDashboard(); }catch(_){}
+  }
+  function rtFlush(){
+    var d=rtDirty; rtDirty={}; var jobs=[];
+    if(d.comments) jobs.push(loadComments());   // includes replies
+    if(d.likes)    jobs.push(loadLikes());
+    if(d.social)   jobs.push(loadSocial());      // discussions + ratings + reactions
+    Promise.all(jobs).then(refreshLiveUI, refreshLiveUI);
+  }
+  function rtBump(kind){ rtDirty[kind]=true; clearTimeout(rtTimer); rtTimer=setTimeout(rtFlush, 350); }
+  function setupRealtime(){
+    if(!SB || rtChannel) return;
+    try{
+      rtChannel=SB.channel('feedback-live');
+      [['reactions','social'],['ratings','social'],['discussions','social'],
+       ['comments','comments'],['replies','comments'],['comment_likes','likes']
+      ].forEach(function(t){
+        rtChannel.on('postgres_changes', {event:'*', schema:'public', table:t[0]}, function(){ rtBump(t[1]); });
+      });
+      rtChannel.subscribe();
+    }catch(e){}
+  }
+
   function renderDiscCTA(){
     var el=document.getElementById('discCTA'); if(!el) return;
     var ch=BYID[state.chapter]; if(!ch){ el.style.display='none'; return; }
@@ -3168,13 +3235,17 @@
     initSB();
     var sRaw=lsGet('bp_state');
     if(sRaw){ try{ var s=JSON.parse(sRaw); if(s){ state.markers=!!s.markers; state.scroll=s.scroll||{}; if(s.theme) state.theme=s.theme; if(s.book) state.book=s.book; if(s.readFont) state.readFont=s.readFont; if(s.chapter) state.chapter=s.chapter; if(typeof s.fontSize==='number') state.fontSize=s.fontSize; state.read=s.read||{}; } }catch(e){} }
-    else if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches){ state.theme='dark'; }
     applyTheme(); applyReading();
     if(window.innerWidth<=820) document.getElementById('sidebar').classList.add('collapsed');
     var _mm=document.getElementById('miMarkers'); if(_mm) _mm.classList.toggle('on',state.markers);
     updateCount();
     document.getElementById('scroller').addEventListener('mouseup', function(){ setTimeout(onSelect,10); });
     document.getElementById('scroller').addEventListener('touchend', function(){ setTimeout(onSelect,30); });
+
+    // PWA: офлайн-оболочка + индикатор сети
+    if('serviceWorker' in navigator){ try{ navigator.serviceWorker.register('sw.js'); }catch(_){} }
+    window.addEventListener('offline', function(){ toast('Офлайн — читаешь сохранённое'); });
+    window.addEventListener('online',  function(){ toast('Снова в сети'); });
 
     if(!SB){ showGate('config'); return; }
     // мгновенно показать книгу из кэша (если есть) — чтобы возврат в приложение не мигал экраном входа
