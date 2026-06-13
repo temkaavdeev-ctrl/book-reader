@@ -1105,8 +1105,11 @@
   function currentBook(){ return state.book||'main'; }
 
   // ====== ВЕРСИЯ ПРИЛОЖЕНИЯ (повышать с каждым апдейтом HTML) ======
-  var APP_VERSION='3.8';
+  var APP_VERSION='3.9';
   var APP_CHANGELOG=[
+    {v:'3.9', items:[
+      'Исправлено: в меню «···» на телефоне снова нажимаются все пункты (включая «Админку»).',
+    ]},
     {v:'3.8', items:[
       '«Моё чтение» в меню «···»: личная карта пути по книге — главы заполняются по мере чтения, и виден ваш вклад.',
     ]},
@@ -1885,18 +1888,20 @@
     function enableSheetDrag(el){
       if(!el) return; var y0=0, dy=0, drag=false;
       el.addEventListener('touchstart', function(e){
-        if(window.innerWidth>640 || e.touches.length!==1) { drag=false; return; }
-        y0=e.touches[0].clientY; dy=0; drag=true; el.style.transition='none';
+        if(window.innerWidth>640 || e.touches.length!==1){ drag=false; return; }
+        // never hijack taps on controls — let their clicks fire normally
+        if(e.target.closest('button, a, input, select, textarea, label, .menu-item, .seg-btn, .font-opt, .size-btn')){ drag=false; return; }
+        y0=e.touches[0].clientY; dy=0; drag=true;
       }, {passive:true});
       el.addEventListener('touchmove', function(e){
         if(!drag) return; dy=e.touches[0].clientY-y0;
-        el.style.transform = dy>0 ? ('translateY('+dy+'px)') : '';
+        if(dy>6){ el.style.transition='none'; el.style.transform='translateY('+dy+'px)'; }
       }, {passive:true});
       el.addEventListener('touchend', function(){
         if(!drag) return; drag=false;
         if(dy>80){ el.style.transition='transform .2s ease'; el.style.transform='translateY(110%)';
           setTimeout(function(){ closeMenus(); el.style.transition=''; el.style.transform=''; }, 170); }
-        else { el.style.transition='transform .22s cubic-bezier(.32,.72,0,1)'; el.style.transform='';
+        else if(dy>6){ el.style.transition='transform .22s cubic-bezier(.32,.72,0,1)'; el.style.transform='';
           setTimeout(function(){ el.style.transition=''; }, 240); }
       }, {passive:true});
     }
