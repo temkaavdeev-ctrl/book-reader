@@ -729,6 +729,24 @@
   /* completion check pop (v3.6) */
   .df-check.pop{animation:dfCheckPop .5s cubic-bezier(.3,1.4,.5,1)}
   @keyframes dfCheckPop{0%{transform:scale(.2); opacity:.4} 60%{transform:scale(1.18)} 100%{transform:scale(1); opacity:1}}
+
+  /* «Моё чтение» — reading journey (v3.8) */
+  .jr-hl{text-align:center; margin:2px 0 18px}
+  .jr-num{font-size:46px; font-weight:800; color:var(--ink); letter-spacing:-.02em; line-height:1}
+  .jr-of{font-size:20px; color:var(--muted)}
+  .jr-pct{display:block; font-family:var(--font-mono); font-size:13px; color:var(--accent); margin-top:4px}
+  .jr-map{display:flex; flex-wrap:wrap; gap:7px; justify-content:center; margin:0 0 20px}
+  .jr-cell{width:20px; height:20px; border-radius:6px; background:var(--line); border:1px solid var(--line-2); cursor:pointer;
+    opacity:0; transform:scale(.4); animation:jrIn .42s cubic-bezier(.3,1.4,.5,1) forwards; transition:transform .12s}
+  .jr-cell.read{background:var(--accent); border-color:var(--accent)}
+  .jr-cell.cur{box-shadow:0 0 0 3px var(--accent-tint)}
+  .jr-cell:hover{transform:scale(1.25)!important}
+  @keyframes jrIn{to{opacity:1; transform:scale(1)}}
+  .jr-stats{display:flex; justify-content:space-around; gap:8px; padding:15px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); margin-bottom:16px}
+  .jr-stat{text-align:center; display:flex; flex-direction:column; gap:3px}
+  .jr-stat b{font-size:21px; color:var(--ink); font-family:var(--font-mono)}
+  .jr-stat span{font-size:11px; color:var(--muted)}
+  .jr-msg{text-align:center; font-size:14.5px; color:var(--read); line-height:1.55}
 </style>
 </head>
 <body>
@@ -761,6 +779,7 @@
           <div class="menu" id="moreMenu">
             <button class="menu-item" id="btnInfo">О главе</button>
             <button class="menu-item" id="btnShelf">Полка</button>
+            <button class="menu-item" id="btnJourney">Моё чтение</button>
             <button class="menu-item" id="btnBell">Уведомления<span id="bellBadge" class="mi-badge" style="display:none">0</span></button>
             <div class="menu-sep" id="editorSep" style="display:none"></div>
             <button class="menu-item" id="miDash" style="display:none">Дашборд глав</button>
@@ -968,6 +987,11 @@
   <div class="body"><div id="wcBody"></div></div>
   <div class="foot"><div class="spacer"></div><button class="btn primary" id="wcClose">Читать</button></div>
 </div>
+<div class="modal" id="journeyModal" style="width:440px">
+  <h3 id="jrTitle">Ваш путь по книге</h3>
+  <div class="body"><div id="jrBody"></div></div>
+  <div class="foot"><div class="spacer"></div><button class="btn primary" id="jrClose">Закрыть</button></div>
+</div>
 <div class="modal" id="dashModal" style="width:min(760px,94vw)">
   <h3>Дашборд глав</h3>
   <div class="body">
@@ -1081,8 +1105,11 @@
   function currentBook(){ return state.book||'main'; }
 
   // ====== ВЕРСИЯ ПРИЛОЖЕНИЯ (повышать с каждым апдейтом HTML) ======
-  var APP_VERSION='3.7';
+  var APP_VERSION='3.8';
   var APP_CHANGELOG=[
+    {v:'3.8', items:[
+      '«Моё чтение» в меню «···»: личная карта пути по книге — главы заполняются по мере чтения, и виден ваш вклад.',
+    ]},
     {v:'3.7', items:[
       'Довел все тексты до тёплого, живого тона — пустые экраны, подсказки, благодарности.',
     ]},
@@ -1931,6 +1958,45 @@
     var bar=el.querySelector('.rp-bar > i'); if(bar) bar.style.width=st.pct+'%';
     var lbl=el.querySelector('.rp-lbl'); if(lbl) lbl.textContent='Прочитано '+st.read+' из '+st.total;
   }
+  function openJourney(){ renderJourney(); showModal('journeyModal'); }
+  function renderJourney(){
+    var box=document.getElementById('jrBody'); if(!box) return; box.innerHTML='';
+    var st=bookReadStats(), uid=USER&&USER.id;
+    var reacts=REACTALL.filter(function(x){return x.user_id===uid;}).length;
+    var rates=RATEALL.filter(function(x){return x.user_id===uid;}).length;
+    var thoughts=DISCALL.filter(function(x){return x.user_id===uid;}).length;
+    var mins=0; BOOK.forEach(function(c){ if((state.read[c.id+':'+c.ver]||0)>=0.97){ var w=(c.md||'').split(/\s+/).filter(Boolean).length; mins+=Math.max(1,Math.round(w/200)); } });
+    var done=st.total>0 && st.read>=st.total;
+    var tt=document.getElementById('jrTitle'); if(tt) tt.textContent = done ? 'Вы прошли всю книгу' : 'Ваш путь по книге';
+
+    var hl=document.createElement('div'); hl.className='jr-hl';
+    hl.innerHTML='<span class="jr-num">'+st.read+'</span><span class="jr-of"> из '+st.total+'</span><span class="jr-pct">'+st.pct+'%</span>';
+    box.appendChild(hl);
+
+    var map=document.createElement('div'); map.className='jr-map';
+    BOOK.forEach(function(c,i){
+      var read=(state.read[c.id+':'+c.ver]||0)>=0.97, cur=(c.id===state.chapter);
+      var cell=document.createElement('span'); cell.className='jr-cell'+(read?' read':'')+(cur?' cur':'');
+      cell.title=c.title; cell.style.animationDelay=(i*22)+'ms';
+      cell.onclick=function(){ closeModals(); if(BYID[c.id]) openChapter(c.id); };
+      map.appendChild(cell);
+    });
+    box.appendChild(map);
+
+    var stats=document.createElement('div'); stats.className='jr-stats';
+    function stat(n,l){ return '<div class="jr-stat"><b>'+n+'</b><span>'+l+'</span></div>'; }
+    stats.innerHTML = stat(reacts,'реакций') + stat(rates,'оценок') + stat(thoughts,'мыслей') + stat('\u2248'+mins,'мин с книгой');
+    box.appendChild(stats);
+
+    var msg=document.createElement('div'); msg.className='jr-msg';
+    if(done) msg.textContent='Спасибо, что были рядом всю дорогу. Для черновика это очень много.';
+    else if(st.pct>=50) msg.textContent='Больше половины позади. Так держать.';
+    else if(st.pct>0) msg.textContent='Хорошее начало — впереди самое интересное.';
+    else msg.textContent='Путь только начинается. Откройте первую главу.';
+    box.appendChild(msg);
+  }
+  (function(){ var b=document.getElementById('btnJourney'); if(b) b.onclick=function(){ closeMenus(); openJourney(); };
+    var c=document.getElementById('jrClose'); if(c) c.onclick=closeModals; })();
   function haptic(ms){ try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(_){} }
   function celebrateChapter(){
     var st=bookReadStats(), total=st.total, read=st.read, left=total-read, msg;
