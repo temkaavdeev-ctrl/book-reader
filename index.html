@@ -131,7 +131,7 @@
 
   /* ---------- reading ---------- */
   #scroller{flex:1; overflow:auto; scroll-behavior:smooth; position:relative}
-  #content{max-width:680px; margin:0 auto; padding:56px 32px 170px;
+  #content{max-width:680px; margin:0 auto; padding:56px 32px 44px;
     font-family:var(--font-read); color:var(--read); font-size:20px; line-height:1.74; font-weight:400;
     text-rendering:optimizeLegibility; font-feature-settings:"kern" 1,"liga" 1,"onum" 1,"calt" 1}
   #content h1{font-family:var(--font-ui); font-size:34px; line-height:1.12; letter-spacing:-.025em;
@@ -174,7 +174,7 @@
   @keyframes flash{0%,100%{background:var(--hl)} 35%{background:var(--accent-2); color:#fff}}
 
   /* chapter nav */
-  #chapNav{max-width:680px; margin:0 auto; padding:8px 32px 70px; display:flex; gap:14px}
+  #chapNav{max-width:none; margin:0; padding:32px 0 0; display:flex; gap:12px}
   #chapNav button{flex:1; border:1px solid var(--line); background:var(--card); border-radius:var(--r-l);
     padding:16px 18px; text-align:left; color:var(--read); transition:border-color .14s,transform .14s,box-shadow .14s}
   #chapNav button:hover:not(:disabled){border-color:var(--accent); transform:translateY(-2px); box-shadow:var(--shadow)}
@@ -255,7 +255,7 @@
   #discWrap{padding:0 16px 16px}
   #discRate{display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:14px 0; border-bottom:1px solid var(--line); margin-bottom:14px}
   .stars{display:inline-flex; gap:3px; font-size:23px; line-height:1; cursor:pointer}
-  .star{color:var(--line-2)} .star.fill{color:var(--hl-edge)}
+  .star{color:var(--line-2); transition:color .15s, transform .12s} .star.fill{color:var(--hl-edge)} .star:hover{color:var(--hl-edge); transform:scale(1.12)}
   .rate-info{font-size:12.5px; color:var(--muted); font-family:var(--font-mono)}
   .d-post{padding:12px 0; border-bottom:1px solid var(--line)}
   .d-head{display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--muted); margin-bottom:5px}
@@ -275,17 +275,17 @@
   #discNew{margin-top:14px} #discInput{margin-bottom:8px}
 
   /* reactions */
-  #reactBar{max-width:680px; margin:10px auto 0; display:flex; flex-wrap:wrap; align-items:center; gap:9px;
-    padding:18px 0 4px; border-top:1px solid var(--line)}
-  .rb-label{font-size:13px; color:var(--muted); margin-right:2px}
+  #reactBar{max-width:none; margin:18px 0 0; display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:10px;
+    padding:0; border-top:none}
+  .rb-label{display:none}
   .rb-btn{border:1px solid var(--line-2); background:var(--card); color:var(--read); border-radius:var(--r-xl);
-    padding:7px 14px; font-size:13.5px; transition:.12s}
+    padding:9px 16px; font-size:14px; transition:.14s}
   .rb-btn:hover{border-color:var(--accent)}
   .rb-btn.on{border-color:var(--accent); background:var(--accent-soft); color:var(--accent)}
   .rb-btn b{margin-left:4px; font-family:var(--font-mono); font-size:12px}
 
   /* supplements */
-  #suppBox{max-width:680px; margin:8px auto 0; padding:18px 0 4px; border-top:1px solid var(--line)}
+  #suppBox{max-width:none; margin:30px 0 0; padding:26px 0 0; border-top:1px solid var(--line)}
   .supp-h{font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.4px; color:var(--accent); margin-bottom:10px}
   .supp-row{display:flex; align-items:baseline; gap:9px; flex-wrap:wrap; padding:7px 0; font-size:14.5px}
   .supp-kind{font-family:var(--font-mono); font-size:10px; color:var(--accent); border:1px solid var(--accent); border-radius:6px; padding:1px 6px; white-space:nowrap; text-transform:uppercase}
@@ -482,10 +482,11 @@
   /* ---------- responsive ---------- */
   @media(max-width:820px){
     #sidebar{position:fixed; top:0; left:0; height:100%; box-shadow:var(--shadow-lg)}
-    #content{font-size:19px; padding:32px 22px 150px}
+    #content{font-size:19px; padding:32px 22px 36px}
     #content h1{font-size:28px}
     #content h1+p{font-size:19px}
-    #chapNav{padding:8px 22px 60px}
+    #chapNav{padding:28px 0 0}
+    .chapter-end{padding:0 20px 84px}
     .modal{width:94vw}
     #floatAdd{bottom:calc(env(safe-area-inset-bottom,0px) + 22px)}
     #panel{width:100%; max-width:100%}
@@ -549,7 +550,7 @@
   #sizeFill{position:absolute; left:0; top:0; bottom:0; background:var(--accent); border-radius:3px; transition:width .14s}
 
   /* more reading space: slim translucent header, lighter padding */
-  #content{padding:40px 30px 150px}
+  #content{padding:40px 30px 44px}
   @media(min-width:1100px){ #content{max-width:720px} }
 
   /* iOS bottom-sheet modals on phones + responsive admin */
@@ -573,7 +574,7 @@
     .wl-row > span:first-child{flex:1 0 100% !important}
     table.dash{min-width:560px}
     .pf-name{width:100%}
-    #content{padding:30px 20px 130px}
+    #content{padding:30px 20px 32px}
     #topTitle{font-size:14px}
   }
   @keyframes slideUp{from{transform:translateY(100%)} to{transform:translateY(0)}}
@@ -682,10 +683,13 @@
   .iconbtn,.btn,.bn-item,.menu-item,.toc-item,.book-card{ touch-action:manipulation }
 
   /* end-of-chapter rating (v2.6) */
-  #rateBar{max-width:680px; margin:16px auto 0; display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding:18px 0 2px; border-top:1px solid var(--line)}
-  .rate-q{font-size:14.5px; color:var(--read); font-weight:500}
-  #rateBar .stars{font-size:26px}
-  #reactBar{border-top:none; padding-top:14px}
+  /* === End of chapter (v4.6) === */
+  .chapter-end{max-width:680px; margin:0 auto; padding:0 32px 96px}
+  .chap-end-mark{text-align:center; color:var(--line-2); font-size:15px; letter-spacing:.7em; padding-left:.7em; margin:4px 0 32px; user-select:none}
+  .rate-info{font-size:12.5px; color:var(--muted)}
+  #rateBar{max-width:none; margin:0; display:flex; flex-direction:column; align-items:center; gap:11px; padding:0; border-top:none; text-align:center}
+  .rate-q{font-size:17px; color:var(--ink); font-weight:600; letter-spacing:-.01em}
+  #rateBar .stars{font-size:31px; gap:8px}
   @media(max-width:640px){
     .pf-row{flex-wrap:wrap}
     .pf-mail{flex:1 0 100%}
@@ -698,9 +702,9 @@
 
   /* reader UX (v2.8): reading time + discuss CTA */
   .chap-meta{font-family:var(--font-mono); font-size:12px; color:var(--muted); margin:-8px 0 24px; letter-spacing:0}
-  .disc-cta{display:block; margin:14px auto 0; max-width:680px; width:100%; padding:13px 16px;
+  .disc-cta{display:block; margin:24px 0 0; max-width:none; width:100%; padding:15px 16px;
     border:1px solid var(--line-2); background:var(--card); color:var(--read); border-radius:var(--r-l);
-    font-size:14.5px; font-weight:500; text-align:center; font-family:inherit; cursor:pointer}
+    font-size:14.5px; font-weight:600; text-align:center; font-family:inherit; cursor:pointer}
   .disc-cta:hover{border-color:var(--accent); background:var(--accent-tint); color:var(--ink)}
   .disc-cta:active{transform:scale(.985)}
 
@@ -818,11 +822,14 @@
     </div>
     <div id="scroller">
       <div id="content"></div>
-      <div id="rateBar"></div>
-      <div id="reactBar"></div>
-      <button id="discCTA" class="disc-cta" style="display:none"></button>
-      <div id="suppBox" style="display:none"></div>
-      <div id="chapNav"></div>
+      <div class="chapter-end">
+        <div class="chap-end-mark" aria-hidden="true">· · ·</div>
+        <div id="rateBar"></div>
+        <div id="reactBar"></div>
+        <button id="discCTA" class="disc-cta" style="display:none"></button>
+        <div id="suppBox" style="display:none"></div>
+        <div id="chapNav"></div>
+      </div>
     </div>
     <button id="floatAdd">+ Добавить комментарий</button>
   </main>
@@ -1114,8 +1121,11 @@
   function currentBook(){ return state.book||'main'; }
 
   // ====== ВЕРСИЯ ПРИЛОЖЕНИЯ (повышать с каждым апдейтом HTML) ======
-  var APP_VERSION='4.5';
+  var APP_VERSION='4.6';
   var APP_CHANGELOG=[
+    {v:'4.6', items:[
+      'Новый красивый низ главы: единый выровненный блок — оценка, реакции, обсуждение и навигация по центру, без пустот.',
+    ]},
     {v:'4.5', items:[
       'Офлайн-чтение: приложение и прочитанные главы открываются без сети.',
       'Установка как нативное приложение: иконка, имя, полноэкранный режим.',
@@ -1453,13 +1463,12 @@
     var nav=document.getElementById('chapNav'); var i=chapterIndex(state.chapter);
     var prev=BOOK[i-1], next=BOOK[i+1];
     nav.innerHTML='';
-    var pb=document.createElement('button');
-    pb.innerHTML='<div class="lbl">← Назад</div><div class="ttl">'+(prev?escapeHtml(prev.title):'')+'</div>';
-    pb.disabled=!prev; pb.onclick=function(){ if(prev) openChapter(prev.id); };
-    var nb=document.createElement('button'); nb.className='next';
-    nb.innerHTML='<div class="lbl">Дальше →</div><div class="ttl">'+(next?escapeHtml(next.title):'')+'</div>';
-    nb.disabled=!next; nb.onclick=function(){ if(next) openChapter(next.id); };
-    nav.appendChild(pb); nav.appendChild(nb);
+    if(prev){ var pb=document.createElement('button');
+      pb.innerHTML='<div class="lbl">← Назад</div><div class="ttl">'+escapeHtml(prev.title)+'</div>';
+      pb.onclick=function(){ openChapter(prev.id); }; nav.appendChild(pb); }
+    if(next){ var nb=document.createElement('button'); nb.className='next';
+      nb.innerHTML='<div class="lbl">Дальше →</div><div class="ttl">'+escapeHtml(next.title)+'</div>';
+      nb.onclick=function(){ openChapter(next.id); }; nav.appendChild(nb); }
   }
 
   function renderChapter(){
@@ -2745,7 +2754,7 @@
     var ch=BYID[state.chapter]; if(!ch){ box.style.display='none'; return; }
     var mine=null, sum=0, n=0;
     RATEALL.forEach(function(r){ if(r.chapter_id===ch.id){ sum+=r.score; n++; if(USER && r.user_id===USER.id) mine=r.score; } });
-    if(boxId==='rateBar'){ var q=document.createElement('span'); q.className='rate-q'; q.textContent= mine? 'Ваша оценка' : 'Оцените главу'; box.appendChild(q); }
+    if(boxId==='rateBar'){ var q=document.createElement('span'); q.className='rate-q'; q.textContent= mine? 'Ваша оценка' : 'Как вам глава?'; box.appendChild(q); }
     var stars=document.createElement('div'); stars.className='stars';
     for(var i=1;i<=5;i++){ (function(i){ var st=document.createElement('span'); st.className='star'+(mine>=i?' fill':''); st.textContent='★'; st.onclick=function(){ setRating(i); }; stars.appendChild(st); })(i); }
     box.appendChild(stars);
