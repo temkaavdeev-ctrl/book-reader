@@ -702,9 +702,6 @@
     box-shadow:0 0 0 3px rgba(70,182,110,.18); animation:livePulse 2.2s ease-in-out infinite; flex:0 0 auto}
   @keyframes livePulse{0%,100%{opacity:1; transform:scale(1)} 50%{opacity:.45; transform:scale(.82)}}
 
-  /* sheet/menu scrim — dim behind bottom sheets on mobile (v3.0) */
-  #menuScrim{position:fixed; inset:0; background:rgba(20,16,8,.30); z-index:48; display:none; opacity:0; transition:opacity .22s var(--ease)}
-  @media(max-width:640px){ #menuScrim.on{display:block; opacity:1} }
 
   /* auth screen note (v3.1) */
   .auth-note{font-size:12px; color:var(--muted); line-height:1.5; margin-top:16px; text-align:center}
@@ -1105,8 +1102,11 @@
   function currentBook(){ return state.book||'main'; }
 
   // ====== ВЕРСИЯ ПРИЛОЖЕНИЯ (повышать с каждым апдейтом HTML) ======
-  var APP_VERSION='3.9';
+  var APP_VERSION='4.0';
   var APP_CHANGELOG=[
+    {v:'4.0', items:[
+      'Исправлено по-настоящему: меню «···» больше не серое и все пункты нажимаются.',
+    ]},
     {v:'3.9', items:[
       'Исправлено: в меню «···» на телефоне снова нажимаются все пункты (включая «Админку»).',
     ]},
@@ -1872,10 +1872,9 @@
   (function(){ var seg=document.getElementById('themeSeg'); if(seg){ var bs=seg.querySelectorAll('.seg-btn'); for(var i=0;i<bs.length;i++){ (function(b){ b.onclick=function(){ state.theme=b.getAttribute('data-th'); applyTheme(); saveState(); }; })(bs[i]); } } })();
 
   // dropdown menus
-  function closeMenus(){ var ms=document.querySelectorAll('.menu.open, .sheet.open'); for(var i=0;i<ms.length;i++) ms[i].classList.remove('open'); var sc=document.getElementById('menuScrim'); if(sc) sc.classList.remove('on'); }
-  function toggleMenu(id, e){ if(e){ e.stopPropagation(); } var m=document.getElementById(id); var was=m.classList.contains('open'); closeMenus(); if(!was){ m.classList.add('open'); var sc=document.getElementById('menuScrim'); if(sc) sc.classList.add('on'); } }
+  function closeMenus(){ var ms=document.querySelectorAll('.menu.open, .sheet.open'); for(var i=0;i<ms.length;i++) ms[i].classList.remove('open'); }
+  function toggleMenu(id, e){ if(e){ e.stopPropagation(); } var m=document.getElementById(id); var was=m.classList.contains('open'); closeMenus(); if(!was){ m.classList.add('open'); } }
   (function(){
-    var scrim=document.createElement('div'); scrim.id='menuScrim'; document.body.appendChild(scrim); scrim.onclick=closeMenus;
     var bv=document.getElementById('btnView'); if(bv) bv.onclick=function(e){ toggleMenu('readSheet', e); };
     var bm=document.getElementById('btnMore'); if(bm) bm.onclick=function(e){ toggleMenu('moreMenu', e); };
     var rs=document.getElementById('readSheet'); if(rs) rs.addEventListener('click', function(e){ e.stopPropagation(); });
