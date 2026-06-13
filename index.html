@@ -759,6 +759,21 @@
 
   /* smooth theme cross-fade (v4.2) — only color props, won't touch transform/opacity animations */
   html.theming, html.theming *{ transition: background-color .42s ease, color .42s ease, border-color .42s ease, fill .42s ease !important }
+
+  /* book changelog "new" dot (v4.7) */
+  #btnBookLog{position:relative}
+  #btnBookLog.has-new::after{content:""; position:absolute; top:50%; right:14px; transform:translateY(-50%); width:7px; height:7px; border-radius:50%; background:var(--accent)}
+
+  /* book-update banner (v4.8) */
+  #bookLogBanner{position:fixed; left:50%; bottom:calc(20px + env(safe-area-inset-bottom)); transform:translate(-50%,18px); z-index:88;
+    display:flex; align-items:center; gap:8px; max-width:calc(100vw - 32px);
+    background:var(--accent-soft); color:var(--ink); border:1px solid var(--accent); border-radius:var(--r-xl);
+    padding:11px 10px 11px 18px; box-shadow:var(--shadow-lg); cursor:pointer;
+    opacity:0; pointer-events:none; transition:opacity .3s ease, transform .32s cubic-bezier(.32,.72,0,1)}
+  #bookLogBanner.show{opacity:1; transform:translate(-50%,0); pointer-events:auto}
+  .blb-txt{font-size:14px; font-weight:500; line-height:1.3}
+  .blb-x{border:none; background:transparent; color:var(--muted); font-size:13px; padding:5px 7px; flex:0 0 auto; border-radius:8px; cursor:pointer}
+  .blb-x:hover{color:var(--ink)}
 </style>
 </head>
 <body>
@@ -792,6 +807,7 @@
             <button class="menu-item" id="btnInfo">О главе</button>
             <button class="menu-item" id="btnShelf">Полка</button>
             <button class="menu-item" id="btnJourney">Моё чтение</button>
+            <button class="menu-item" id="btnBookLog">Что нового в книге</button>
             <button class="menu-item" id="btnBell">Уведомления<span id="bellBadge" class="mi-badge" style="display:none">0</span></button>
             <div class="menu-sep" id="editorSep" style="display:none"></div>
             <button class="menu-item" id="miDash" style="display:none">Дашборд глав</button>
@@ -993,6 +1009,11 @@
     <div class="shelf-note">Со временем здесь появятся и другие книги.</div>
   </div>
 </div>
+<div class="modal" id="bookLogModal" style="width:460px">
+  <h3>Что нового в книге</h3>
+  <div class="body"><div id="bookLogBody"></div></div>
+  <div class="foot"><div class="spacer"></div><button class="btn" id="bookLogClose">Закрыть</button></div>
+</div>
 <div class="modal" id="appLogModal" style="width:460px">
   <h3>Что нового в Читальне</h3>
   <div class="body"><div id="appLogBody"></div></div>
@@ -1121,8 +1142,14 @@
   function currentBook(){ return state.book||'main'; }
 
   // ====== ВЕРСИЯ ПРИЛОЖЕНИЯ (повышать с каждым апдейтом HTML) ======
-  var APP_VERSION='4.6';
+  var APP_VERSION='4.8';
   var APP_CHANGELOG=[
+    {v:'4.8', items:[
+      'Сигнал об обновлении книги: точка на «···» и мягкая плашка при входе — читатель сразу видит, что есть новое.',
+    ]},
+    {v:'4.7', items:[
+      '«Что нового в книге» в меню «···»: читатели видят историю изменений книги, как чейнджлог самой читальни.',
+    ]},
     {v:'4.6', items:[
       'Новый красивый низ главы: единый выровненный блок — оценка, реакции, обсуждение и навигация по центру, без пустот.',
     ]},
@@ -1252,6 +1279,50 @@
     var b=document.getElementById('brandBtn'); if(b) b.onclick=openAppLog;
     var c=document.getElementById('appLogClose'); if(c) c.onclick=closeModals;
   })();
+  function bookChangelog(){ var b=(BOOKS||[]).filter(function(x){return x.id===currentBook();})[0]; return (b && Array.isArray(b.changelog)) ? b.changelog : []; }
+  function fmtLogDate(s){ try{ var d=new Date(s); if(isNaN(d)) return s; return d.toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'}); }catch(_){ return s; } }
+  function bookLogSig(){ var l=bookChangelog(); if(!l.length) return ''; var e=l[0]||{}; return (e.v||'')+'|'+(e.date||'')+'|'+((e.items||[]).length); }
+  function hasNewBookLog(){
+    var sig=bookLogSig(); if(!sig) return false;
+    var seen=lsGet('bp_booklog_seen');
+    if(seen===null || seen===undefined){ lsSet('bp_booklog_seen', sig); return false; }  // первая встреча с книгой — без навязывания
+    return sig!==seen;
+  }
+  function refreshBookLogDot(){
+    var b=document.getElementById('btnBookLog'); if(b) b.classList.toggle('has-new', hasNewBookLog());
+    if(typeof updateBell==='function') updateBell();   // точка на «···» отражает и чейнджлог
+  }
+  function showBookLogBanner(){
+    if(window._blbShown) return; if(!hasNewBookLog()) return; window._blbShown=true;
+    var el=document.getElementById('bookLogBanner');
+    if(!el){
+      el=document.createElement('div'); el.id='bookLogBanner';
+      el.innerHTML='<span class="blb-txt">Книга обновилась — посмотреть, что нового?</span><button class="blb-x" aria-label="Закрыть">\u2715</button>';
+      document.body.appendChild(el);
+      el.onclick=function(){ el.classList.remove('show'); openBookLog(); };
+      el.querySelector('.blb-x').onclick=function(e){ e.stopPropagation(); el.classList.remove('show'); };
+    }
+    void el.offsetWidth; el.classList.add('show');
+  }
+  function openBookLog(){
+    var box=document.getElementById('bookLogBody'); if(!box) return; box.innerHTML='';
+    var bb=document.getElementById('bookLogBanner'); if(bb) bb.classList.remove('show');
+    var log=bookChangelog();
+    if(!log.length){ box.innerHTML='<div class="empty">Пока без записей. Здесь будут появляться изменения в книге — что переписано, что добавлено.</div>'; showModal('bookLogModal'); return; }
+    log.forEach(function(rel){
+      var head = rel.v ? ('Версия '+rel.v) : '';
+      if(rel.date){ var dd=fmtLogDate(rel.date); head = head ? (head+' · '+dd) : dd; }
+      if(!head) head='Обновление';
+      var h=document.createElement('div'); h.className='applog-v'; h.textContent=head; box.appendChild(h);
+      var ul=document.createElement('ul'); ul.className='applog-list';
+      (rel.items||[]).forEach(function(it){ var li=document.createElement('li'); li.textContent=it; ul.appendChild(li); });
+      box.appendChild(ul);
+    });
+    lsSet('bp_booklog_seen', bookLogSig()); refreshBookLogDot();
+    showModal('bookLogModal');
+  }
+  (function(){ var b=document.getElementById('btnBookLog'); if(b) b.onclick=function(){ closeMenus(); openBookLog(); };
+    var c=document.getElementById('bookLogClose'); if(c) c.onclick=closeModals; })();
   var pendingRange = null;      // {ch,start,end,quote,before,after} when adding
   var editingId = null;
   var _ptCache = {};            // chapter id -> plain text (markers off)
@@ -1482,7 +1553,7 @@
     var _h1=cont.querySelector('h1');
     if(_h1){ var _w=(c.md||'').split(/\s+/).filter(Boolean).length, _m=Math.max(1,Math.round(_w/200));
       var _meta=document.createElement('div'); _meta.className='chap-meta'; _meta.textContent='≈ '+_m+' мин чтения'; _h1.insertAdjacentElement('afterend', _meta); }
-    fillFigures(); highlightChapter(); renderChapNav(); renderRate('rateBar'); renderReactBar(); renderDiscCTA(); renderSupp(); renderReadProgress();
+    fillFigures(); highlightChapter(); renderChapNav(); renderRate('rateBar'); renderReactBar(); renderDiscCTA(); renderSupp(); renderReadProgress(); refreshBookLogDot();
   }
 
   function openChapter(id, scrollToTop){
@@ -2242,6 +2313,7 @@
       startPresence(); updateBell(); renderReactBar(); applyRoleUI(); setupRealtime();
       if(panelOpen()) renderPanel();
       maybeWelcome();
+      setTimeout(function(){ try{ showBookLogBanner(); }catch(_){} }, 1400);
     } finally { authInFlight=null; }
   }
   document.getElementById('authBtn').onclick=doAuth;
@@ -2531,6 +2603,13 @@
         if(rd.error){ msg.textContent='Ошибка схемы '+d.name+': '+rd.error.message; return; }
         msg.textContent='Схемы: '+(j+1)+'/'+dgs.length;
       }
+      // книжный чейнджлог: из файла (приоритет) либо из заметки админа при изменении глав
+      var bl = Array.isArray(data.changelog) ? data.changelog : null;
+      if(!bl && changelog && changed>0){
+        var ex=[]; try{ var br=await SB.from('books').select('changelog').eq('id',currentBook()).limit(1); if(!br.error && br.data && br.data[0] && Array.isArray(br.data[0].changelog)) ex=br.data[0].changelog; }catch(_){}
+        bl=[{ date:new Date().toISOString().slice(0,10), items:[changelog] }].concat(ex);
+      }
+      if(bl){ try{ await SB.from('books').update({changelog:bl}).eq('id',currentBook()); }catch(_){} }
       await loadContent();
       if(!state.chapter || !BYID[state.chapter]) state.chapter = BOOK.length? BOOK[0].id : null;
       renderTOC(); renderChapter(); await loadComments(); renderChapter(); renderTOC(); refreshPanel(); updateCount();
@@ -3187,7 +3266,7 @@
     if(bell) bell.style.display = USER? '' : 'none';
     var n=USER?collectNotifs().length:0, b=document.getElementById('bellBadge');
     if(b){ if(n>0){ b.textContent=n>9?'9+':String(n); b.style.display='inline-block'; } else b.style.display='none'; }
-    var dot=document.getElementById('moreDot'); if(dot) dot.style.display = n>0?'block':'none';
+    var dot=document.getElementById('moreDot'); if(dot) dot.style.display = (n>0 || hasNewBookLog())?'block':'none';
   }
   function openNotifs(){
     var list=collectNotifs(), box=document.getElementById('notifList'); box.innerHTML='';
