@@ -387,7 +387,12 @@
   .dash-sum b{font-family:var(--font-mono); color:var(--ink)}
   .dash-legend{font-size:12.5px; color:var(--muted); line-height:1.5; margin-bottom:12px}
   .dash-weak-key{background:color-mix(in srgb,var(--warn) 22%,transparent); color:var(--warn); padding:0 5px; border-radius:4px}
-  #dashBody{max-height:64vh; overflow:auto}
+  #dashBody{max-height:64vh; overflow-y:auto; overflow-x:hidden}
+  .dash-scroll{overflow-x:auto; -webkit-overflow-scrolling:touch; overscroll-behavior-x:contain}
+  table.dash td.ch{position:sticky; left:0; background:var(--panel); z-index:2}
+  table.dash th:first-child{position:sticky; left:0; background:var(--panel); z-index:3}
+  table.dash tr.weak td.ch{background:color-mix(in srgb,var(--warn) 9%,var(--panel))}
+  table.dash tr:hover td.ch{background:color-mix(in srgb,var(--accent) 8%,var(--panel))}
   table.dash{width:100%; border-collapse:collapse; font-size:13px}
   table.dash th{text-align:left; font-weight:600; color:var(--muted); font-family:var(--font-mono); font-size:10.5px;
     text-transform:uppercase; letter-spacing:.3px; padding:8px 7px; border-bottom:1px solid var(--line-2); position:sticky; top:0; background:var(--panel)}
@@ -1102,8 +1107,12 @@
   function currentBook(){ return state.book||'main'; }
 
   // ====== ВЕРСИЯ ПРИЛОЖЕНИЯ (повышать с каждым апдейтом HTML) ======
-  var APP_VERSION='4.0';
+  var APP_VERSION='4.1';
   var APP_CHANGELOG=[
+    {v:'4.1', items:[
+      'Убрал листание глав свайпом — оно сбивало.',
+      'Дашборд на телефоне: сводка больше не уезжает, название главы закреплено слева при прокрутке.',
+    ]},
     {v:'4.0', items:[
       'Исправлено по-настоящему: меню «···» больше не серое и все пункты нажимаются.',
     ]},
@@ -1919,23 +1928,6 @@
       if(panel){ panel.style.height = (kb>80 && panel.classList.contains('open')) ? (vv.height+'px') : ''; }
     }
     vv.addEventListener('resize', onVV); vv.addEventListener('scroll', onVV);
-  })();
-
-  // swipe left/right to change chapters (mobile reading flow)
-  (function(){
-    var sc=document.getElementById('scroller'); if(!sc) return;
-    var x0=0,y0=0,t0=0,on=false;
-    sc.addEventListener('touchstart', function(e){ if(e.touches.length!==1){ on=false; return; } var t=e.touches[0]; x0=t.clientX; y0=t.clientY; t0=Date.now(); on=true; }, {passive:true});
-    sc.addEventListener('touchend', function(e){
-      if(!on) return; on=false;
-      var t=e.changedTouches[0], dx=t.clientX-x0, dy=t.clientY-y0, dt=Date.now()-t0;
-      var sel=''; try{ sel=String(window.getSelection()); }catch(_){}
-      if(sel) return;                                   // не мешаем выделению текста
-      if(dt>600) return;                                // только быстрый жест
-      if(Math.abs(dx)<70 || Math.abs(dx) < Math.abs(dy)*1.8) return; // явно горизонтальный
-      if(panelOpen()) return;
-      gotoAdjacent(dx<0 ? 1 : -1);                      // влево → дальше, вправо → назад
-    }, {passive:true});
   })();
 
   var bd=document.createElement('div'); bd.id='backdrop'; document.body.appendChild(bd);
@@ -3054,7 +3046,8 @@
       tr.onclick=function(){ closeModals(); if(BYID[ch.id]) openChapter(ch.id); };
       tb.appendChild(tr);
     });
-    tbl.appendChild(tb); body.appendChild(tbl);
+    tbl.appendChild(tb);
+    var wrap=document.createElement('div'); wrap.className='dash-scroll'; wrap.appendChild(tbl); body.appendChild(wrap);
     showModal('dashModal');
   }
   function downloadFeedback(){
