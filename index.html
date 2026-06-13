@@ -1,0 +1,3199 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f3f1ea" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16140f" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Читальня</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CjxyZWN0IHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgcng9IjE0IiBmaWxsPSIjOGE1YTJiIi8+CjxwYXRoIGQ9Ik0zMSAxOSBDMjYgMTYgMTkgMTYuNSAxNSAxOCBMMTUgNDQgQzE5IDQyLjUgMjYgNDIgMzEgNDUgWiIgZmlsbD0iI2ZkZjdlYyIvPgo8cGF0aCBkPSJNMzMgMTkgQzM4IDE2IDQ1IDE2LjUgNDkgMTggTDQ5IDQ0IEM0NSA0Mi41IDM4IDQyIDMzIDQ1IFoiIGZpbGw9IiNmZGY3ZWMiLz4KPGcgc3Ryb2tlPSIjYzlhMDZhIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIj4KPGxpbmUgeDE9IjE5IiB5MT0iMjMuMiIgeDI9IjI4IiB5Mj0iMjQiLz48bGluZSB4MT0iMTkiIHkxPSIyOC4yIiB4Mj0iMjgiIHkyPSIyOSIvPjxsaW5lIHgxPSIxOSIgeTE9IjMzLjIiIHgyPSIyOCIgeTI9IjM0Ii8+CjxsaW5lIHgxPSIzNiIgeTE9IjI0IiB4Mj0iNDUiIHkyPSIyMy4yIi8+PGxpbmUgeDE9IjM2IiB5MT0iMjkiIHgyPSI0NSIgeTI9IjI4LjIiLz48bGluZSB4MT0iMzYiIHkxPSIzNCIgeDI9IjQ1IiB5Mj0iMzMuMiIvPgo8L2c+PC9zdmc+">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Читальня">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Ключи Supabase лежат в отдельном файле config.js рядом с index.html.
+     Его заполняют один раз; при обновлениях index.html этот файл не трогаем. -->
+<script src="config.js"></script>
+<style>
+  /* =========================================================
+     Читальня — design system "reading instrument"
+     Display: Inter · Reading: Spectral · Data: JetBrains Mono
+     ========================================================= */
+  :root{
+    --font-ui:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --font-read:'Spectral',Georgia,"PT Serif","Times New Roman",serif;
+    --font-mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+
+    --bg:#f3f1ea; --panel:#faf8f2; --card:#ffffff;
+    --ink:#201d17; --read:#3a352c; --muted:#8c8475;
+    --line:#e5e0d4; --line-2:#d8d2c4;
+    --accent:#8f5a23; --accent-2:#a8682b; --accent-soft:#f0e7d8; --accent-tint:#fbf6ee;
+    --hl:#fbe7a0; --hl-edge:#d8a838;
+    --good:#2f7d4f; --warn:#b98322; --danger:#bc453c;
+    --code:#f1ece0; --tip:#201d17; --tip-fg:#fbf8f1;
+    --mk-bg:#f4ebd9; --mk-line:#e6d6b4; --mk-fg:#9b7338;
+    --shadow:0 6px 24px rgba(60,45,20,.10); --shadow-lg:0 18px 48px rgba(50,38,18,.20);
+    --ring:rgba(143,90,35,.40);
+    --r-s:8px; --r-m:12px; --r-l:16px; --r-xl:22px;
+  }
+  html[data-theme="dark"]{
+    --bg:#16140f; --panel:#1d1a14; --card:#232017;
+    --ink:#ece6d7; --read:#d6cfbf; --muted:#968e7c;
+    --line:#322d24; --line-2:#3e382c;
+    --accent:#d7a664; --accent-2:#e2b473; --accent-soft:#2b2418; --accent-tint:#221d14;
+    --hl:#574518; --hl-edge:#c39a3c;
+    --good:#5fb07e; --warn:#d6a84e; --danger:#d9695e;
+    --code:#2a2619; --tip:#34302a; --tip-fg:#f1ece1;
+    --mk-bg:#332c1e; --mk-line:#4a4030; --mk-fg:#cda665;
+    --shadow:0 8px 28px rgba(0,0,0,.5); --shadow-lg:0 20px 54px rgba(0,0,0,.6);
+    --ring:rgba(215,166,100,.45);
+  }
+  *{box-sizing:border-box}
+  html{background:var(--bg)}
+  html,body{margin:0;height:100%}
+  body{
+    font-family:var(--font-ui); background:var(--bg); color:var(--ink);
+    -webkit-text-size-adjust:100%; overflow:hidden; letter-spacing:-.005em;
+    transition:background .3s ease,color .3s ease;
+  }
+  button{font-family:inherit; cursor:pointer; color:inherit}
+  a{color:var(--accent); text-decoration:none}
+  ::selection{background:var(--hl); color:var(--ink)}
+  :focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:6px}
+
+  /* ---------- layout ---------- */
+  #app{display:flex; height:100vh; height:100dvh}
+  #sidebar{
+    width:312px; flex:0 0 312px; background:var(--panel); border-right:1px solid var(--line);
+    display:flex; flex-direction:column; transition:margin-left .24s cubic-bezier(.4,0,.2,1); z-index:40;
+  }
+  #sidebar.collapsed{margin-left:-312px}
+  .side-head{padding:22px 22px 16px; border-bottom:1px solid var(--line)}
+  .side-head .t{font-weight:700; font-size:17px; letter-spacing:-.02em; color:var(--ink)}
+  .side-head .s{font-size:12px; color:var(--muted); margin-top:4px; font-family:var(--font-mono); letter-spacing:0}
+
+  #toc{flex:1; overflow:auto; padding:10px 10px 28px}
+  .toc-part{font-family:var(--font-mono); font-size:10.5px; letter-spacing:.5px; text-transform:uppercase;
+    color:var(--accent); padding:18px 12px 7px; font-weight:500}
+  .toc-item{display:flex; align-items:flex-start; gap:8px; padding:8px 12px 8px 14px; border-radius:var(--r-s);
+    font-size:14px; line-height:1.38; color:var(--read); cursor:pointer; position:relative; transition:background .12s}
+  .toc-item:hover{background:var(--accent-tint)}
+  .toc-item.active{background:var(--accent-soft); color:var(--ink); font-weight:600}
+  .toc-item.active::before{content:""; position:absolute; left:3px; top:8px; bottom:8px; width:3px;
+    border-radius:3px; background:var(--accent)}
+  .toc-item .badge{margin-left:auto; flex:0 0 auto; background:var(--accent); color:#fff;
+    font-family:var(--font-mono); font-size:10.5px; font-weight:500; border-radius:9px;
+    padding:1px 7px; line-height:1.5; min-width:20px; text-align:center}
+  .toc-item .tick{color:var(--good); font-size:12px; margin-left:6px; flex:0 0 auto}
+
+  /* ---------- topbar ---------- */
+  #main{flex:1; display:flex; flex-direction:column; min-width:0; position:relative}
+  #topbar{display:flex; align-items:center; gap:8px; padding:11px 18px; background:var(--panel); background:color-mix(in srgb,var(--panel) 88%,transparent);
+    border-bottom:1px solid var(--line); z-index:20}
+  #topTitle{font-weight:600; font-size:15px; letter-spacing:-.01em; color:var(--ink); white-space:nowrap;
+    overflow:hidden; text-overflow:ellipsis; flex:0 1 auto}
+  #topMeta{font-family:var(--font-mono); font-size:11px; color:var(--muted); white-space:nowrap; flex:1;
+    overflow:hidden; text-overflow:ellipsis; padding-left:2px}
+  .top-actions{display:flex; align-items:center; gap:3px; margin-left:auto}
+  .iconbtn{height:38px; min-width:38px; padding:0 10px; border-radius:var(--r-m); border:1px solid transparent;
+    background:transparent; color:var(--read); font-size:15px; display:inline-flex; align-items:center;
+    justify-content:center; gap:6px; transition:background .12s,color .12s,border-color .12s}
+  .iconbtn:hover{background:var(--accent-tint); color:var(--ink)}
+  .iconbtn.on{background:var(--accent-soft); color:var(--accent); border-color:var(--accent)}
+  #cCount{font-family:var(--font-mono); font-size:11px}
+  #progress{position:absolute; left:0; top:0; height:2.5px; width:0; background:var(--accent); z-index:25;
+    transition:width .12s; box-shadow:0 0 8px var(--accent)}
+
+  /* menus */
+  .menu-wrap{position:relative; display:inline-flex}
+  .menu{position:absolute; top:46px; right:0; z-index:50; min-width:216px; background:var(--card);
+    border:1px solid var(--line); border-radius:var(--r-m); box-shadow:var(--shadow-lg); padding:6px; display:none}
+  .menu.open{display:block; animation:pop .14s ease}
+  @keyframes pop{from{opacity:0; transform:translateY(-4px)} to{opacity:1; transform:none}}
+  .menu-item{display:flex; align-items:center; gap:9px; width:100%; text-align:left; padding:10px 11px;
+    border:none; background:transparent; color:var(--ink); font-size:14px; border-radius:var(--r-s)}
+  .menu-item:hover{background:var(--accent-tint)}
+  .menu-item.on{color:var(--accent)}
+  .menu-row{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 11px;
+    font-size:14px; color:var(--read)}
+  .font-step{display:inline-flex; gap:4px}
+  .font-step button{width:32px; height:30px; border:1px solid var(--line-2); background:var(--card);
+    color:var(--ink); border-radius:var(--r-s); font-family:var(--font-mono); font-size:13px}
+  .font-step button:hover{border-color:var(--accent); color:var(--accent)}
+
+  /* ---------- reading ---------- */
+  #scroller{flex:1; overflow:auto; scroll-behavior:smooth; position:relative}
+  #content{max-width:680px; margin:0 auto; padding:56px 32px 170px;
+    font-family:var(--font-read); color:var(--read); font-size:20px; line-height:1.74; font-weight:400}
+  #content h1{font-family:var(--font-ui); font-size:34px; line-height:1.12; letter-spacing:-.025em;
+    margin:0 0 10px; font-weight:700; color:var(--ink)}
+  #content h1+p{font-size:21px; line-height:1.6; color:var(--ink); margin-top:18px}
+  #content h1+p::first-letter{}
+  #content h2{font-family:var(--font-ui); font-size:23px; letter-spacing:-.02em; margin:48px 0 14px;
+    color:var(--ink); font-weight:700; line-height:1.22}
+  #content h4{font-family:var(--font-ui); font-size:14px; margin:36px 0 12px; color:var(--accent);
+    font-weight:600; letter-spacing:.04em; text-transform:uppercase}
+  #content p{margin:0 0 20px}
+  #content em{font-style:italic; color:var(--read)}
+  #content strong{color:var(--ink); font-weight:600}
+  #content blockquote{margin:24px 0; padding:4px 0 4px 22px; border-left:2px solid var(--accent);
+    color:var(--muted); font-style:italic}
+  #content ul,#content ol{margin:0 0 20px; padding-left:26px}
+  #content li{margin:0 0 9px}
+  #content hr{border:none; height:1px; background:var(--line-2); margin:38px auto; width:40%}
+  #content code{background:var(--code); padding:1px 6px; border-radius:5px; font-family:var(--font-mono); font-size:.8em}
+  #content pre{background:var(--code); padding:16px; border-radius:var(--r-m); overflow:auto; font-family:var(--font-mono)}
+  #content table{border-collapse:collapse; margin:0 0 20px; font-size:.9em; width:100%}
+  #content th,#content td{border:1px solid var(--line); padding:8px 11px; text-align:left}
+  #content th{background:var(--accent-tint); font-family:var(--font-ui); font-weight:600}
+  #content .mk{font-family:var(--font-mono); font-size:.66em; color:var(--mk-fg); background:var(--mk-bg);
+    border:1px solid var(--mk-line); border-radius:5px; padding:1px 5px; margin:0 2px; vertical-align:middle;
+    white-space:nowrap; letter-spacing:.02em}
+  #content figure.fig{margin:36px auto; text-align:center; background:var(--card); border:1px solid var(--line);
+    border-radius:var(--r-l); padding:22px 20px 14px; max-width:680px; box-shadow:var(--shadow)}
+  #content figure.fig img{max-width:100%; height:auto; display:block; margin:0 auto}
+  #content figure.fig figcaption{margin-top:14px; font-family:var(--font-ui); font-size:12.5px; line-height:1.5;
+    color:var(--muted); text-align:center; letter-spacing:.01em}
+  #content blockquote.epigraph{margin:30px auto; padding:18px 24px; border:none; border-left:3px solid var(--accent);
+    font-style:italic; font-size:1.04em; color:var(--ink); background:var(--accent-soft); border-radius:0 var(--r-m) var(--r-m) 0}
+  #content blockquote.epigraph .cite{display:block; margin-top:10px; font-style:normal; font-size:.74em;
+    color:var(--muted); font-family:var(--font-mono); letter-spacing:0}
+
+  mark.hl{background:var(--hl); border-radius:2px; box-shadow:inset 0 -2px 0 var(--hl-edge); cursor:pointer; padding:1px 0}
+  mark.hl.done{background:transparent; box-shadow:inset 0 -2px 0 var(--hl-edge); opacity:.6}
+  mark.hl.flash{animation:flash 1.1s ease}
+  @keyframes flash{0%,100%{background:var(--hl)} 35%{background:var(--accent-2); color:#fff}}
+
+  /* chapter nav */
+  #chapNav{max-width:680px; margin:0 auto; padding:8px 32px 70px; display:flex; gap:14px}
+  #chapNav button{flex:1; border:1px solid var(--line); background:var(--card); border-radius:var(--r-l);
+    padding:16px 18px; text-align:left; color:var(--read); transition:border-color .14s,transform .14s,box-shadow .14s}
+  #chapNav button:hover:not(:disabled){border-color:var(--accent); transform:translateY(-2px); box-shadow:var(--shadow)}
+  #chapNav button:disabled{opacity:.35; cursor:default}
+  #chapNav .lbl{font-family:var(--font-mono); font-size:10.5px; color:var(--accent); text-transform:uppercase; letter-spacing:.5px}
+  #chapNav .ttl{font-size:14.5px; margin-top:5px; font-weight:500; color:var(--ink)}
+  #chapNav .next{text-align:right}
+
+  /* float add */
+  #floatAdd{position:fixed; z-index:70; display:none; left:50%;
+    bottom:calc(env(safe-area-inset-bottom,0px) + 22px); transform:translateX(-50%);
+    background:var(--accent); color:#fff; border:none; border-radius:var(--r-xl); padding:14px 24px;
+    font-size:15px; font-weight:600; box-shadow:var(--shadow-lg); white-space:nowrap;
+    -webkit-user-select:none; user-select:none; touch-action:manipulation; transition:filter .12s,transform .12s}
+  #floatAdd:active{filter:brightness(1.08); transform:translateX(-50%) scale(.97)}
+
+
+  /* ---------- panel ---------- */
+  #panel{position:fixed; top:0; right:0; height:100%; width:420px; max-width:92vw; background:var(--panel);
+    border-left:1px solid var(--line); box-shadow:var(--shadow-lg); transform:translateX(102%);
+    transition:transform .26s cubic-bezier(.4,0,.2,1); z-index:80; display:flex; flex-direction:column}
+  #panel.open{transform:none}
+  .panel-head{padding:18px 20px; border-bottom:1px solid var(--line)}
+  .panel-head .row{display:flex; align-items:center; gap:10px}
+  .panel-head h3{margin:0; font-size:16px; font-weight:700; letter-spacing:-.01em; flex:1}
+  .ptabs{display:flex; gap:4px; margin-top:14px; background:var(--accent-tint); padding:4px; border-radius:var(--r-m)}
+  .ptab{flex:1; padding:9px 6px; border:none; background:transparent; color:var(--muted); border-radius:var(--r-s);
+    font-size:13px; font-weight:600; transition:.12s}
+  .ptab.on{background:var(--card); color:var(--accent); box-shadow:var(--shadow)}
+  .panel-tools{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px}
+  .ptool{font-size:12.5px; border:1px solid var(--line-2); background:var(--card); border-radius:var(--r-s);
+    padding:8px 11px; color:var(--read); transition:.12s}
+  .ptool.primary{background:var(--accent); color:#fff; border-color:var(--accent)}
+  .ptool:hover{border-color:var(--accent); color:var(--accent)}
+  .ptool.primary:hover{filter:brightness(1.06); color:#fff}
+  #cList{flex:1; overflow:auto; padding:12px 14px 44px}
+  .c-group{margin:6px 0 16px}
+  .c-group .gh{font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.4px;
+    color:var(--muted); font-weight:500; padding:8px 6px 8px}
+  .c-card{border:1px solid var(--line); border-radius:var(--r-m); padding:13px 14px; margin:0 0 10px;
+    background:var(--card); transition:border-color .12s,box-shadow .12s}
+  .c-card:hover{border-color:var(--line-2); box-shadow:var(--shadow)}
+  .c-card.done{opacity:.5}
+  .c-card.foreign{border-left:3px solid var(--accent)}
+  .c-quote{font-size:12.5px; color:var(--muted); border-left:2px solid var(--hl-edge); padding-left:10px;
+    margin-bottom:8px; cursor:pointer; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical;
+    overflow:hidden; font-family:var(--font-read); font-style:italic}
+  .c-note{font-size:14.5px; line-height:1.5; white-space:pre-wrap; color:var(--read)}
+  .c-actions{display:flex; flex-wrap:wrap; gap:12px 16px; margin-top:11px; align-items:center}
+  .c-actions a{font-size:12.5px; color:var(--muted)}
+  .c-actions a:hover{color:var(--accent)}
+  .c-tag{display:inline-block; font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:.3px;
+    color:var(--accent); background:var(--accent-soft); border-radius:6px; padding:2px 7px; margin:0 6px 6px 0}
+  .c-author{display:inline-block; font-size:11px; color:var(--accent); border:1px solid var(--accent);
+    background:var(--accent-soft); border-radius:7px; padding:1px 7px; margin:0 6px 6px 0; font-weight:600}
+  .c-meta{display:flex; flex-wrap:wrap; align-items:center}
+  .c-thread{margin:10px 0 2px; padding-left:12px; border-left:2px solid var(--line)}
+  .c-reply{font-size:13.5px; line-height:1.5; color:var(--read); margin:0 0 6px; position:relative; padding-right:14px}
+  .c-reply-who{color:var(--accent); font-weight:600}
+  .c-reply-del{position:absolute; right:0; top:0; color:var(--muted); cursor:pointer; font-size:14px; line-height:1}
+  .c-reply-del:hover{color:var(--danger)}
+  .c-like{cursor:pointer; color:var(--muted)}
+  .c-like.on,.c-like:hover{color:var(--danger)}
+  .empty,.d-empty{color:var(--muted); font-size:14px; text-align:center; padding:48px 20px; line-height:1.6}
+  .d-empty{padding:16px 0; text-align:left; font-size:13px}
+
+  /* presence */
+  .person{display:inline-flex; align-items:center; gap:5px}
+  .dot{width:7px; height:7px; border-radius:50%; background:var(--line-2); flex:0 0 auto}
+  .dot.on{background:var(--good); box-shadow:0 0 0 3px color-mix(in srgb,var(--good) 22%,transparent)}
+
+  /* bell */
+  #btnBell{position:relative}
+  .bell-badge{position:absolute; top:0; right:0; min-width:16px; height:16px; padding:0 4px; background:var(--danger);
+    color:#fff; border-radius:8px; font-family:var(--font-mono); font-size:9.5px; line-height:16px; text-align:center; font-weight:500}
+
+  /* discussion */
+  #discWrap{padding:0 16px 16px}
+  #discRate{display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:14px 0; border-bottom:1px solid var(--line); margin-bottom:14px}
+  .stars{display:inline-flex; gap:3px; font-size:23px; line-height:1; cursor:pointer}
+  .star{color:var(--line-2)} .star.fill{color:var(--hl-edge)}
+  .rate-info{font-size:12.5px; color:var(--muted); font-family:var(--font-mono)}
+  .d-post{padding:12px 0; border-bottom:1px solid var(--line)}
+  .d-head{display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--muted); margin-bottom:5px}
+  .d-head .person{color:var(--ink); font-weight:600}
+  .d-time{font-size:11px; color:var(--muted); font-family:var(--font-mono)}
+  .d-body{font-size:14.5px; line-height:1.55; color:var(--read); white-space:pre-wrap}
+  .d-acts{margin-top:6px; display:flex; gap:16px}
+  .d-acts a{font-size:12px; color:var(--muted)}
+  .d-acts a:hover{color:var(--accent)}
+  .d-replies{margin:10px 0 0 14px; padding-left:12px; border-left:2px solid var(--line)}
+  .d-reply{margin-bottom:8px}
+  .d-replybox{margin:8px 0 0 14px; display:none}
+  .d-replybox.show{display:block}
+  #discInput,.d-replybox textarea{width:100%; min-height:62px; resize:vertical; padding:11px; border:1px solid var(--line-2);
+    border-radius:var(--r-s); font-family:inherit; font-size:14px; background:var(--card); color:var(--ink)}
+  #discInput:focus,.d-replybox textarea:focus{outline:none; border-color:var(--accent)}
+  #discNew{margin-top:14px} #discInput{margin-bottom:8px}
+
+  /* reactions */
+  #reactBar{max-width:680px; margin:10px auto 0; display:flex; flex-wrap:wrap; align-items:center; gap:9px;
+    padding:18px 0 4px; border-top:1px solid var(--line)}
+  .rb-label{font-size:13px; color:var(--muted); margin-right:2px}
+  .rb-btn{border:1px solid var(--line-2); background:var(--card); color:var(--read); border-radius:var(--r-xl);
+    padding:7px 14px; font-size:13.5px; transition:.12s}
+  .rb-btn:hover{border-color:var(--accent)}
+  .rb-btn.on{border-color:var(--accent); background:var(--accent-soft); color:var(--accent)}
+  .rb-btn b{margin-left:4px; font-family:var(--font-mono); font-size:12px}
+
+  /* supplements */
+  #suppBox{max-width:680px; margin:8px auto 0; padding:18px 0 4px; border-top:1px solid var(--line)}
+  .supp-h{font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.4px; color:var(--accent); margin-bottom:10px}
+  .supp-row{display:flex; align-items:baseline; gap:9px; flex-wrap:wrap; padding:7px 0; font-size:14.5px}
+  .supp-kind{font-family:var(--font-mono); font-size:10px; color:var(--accent); border:1px solid var(--accent); border-radius:6px; padding:1px 6px; white-space:nowrap; text-transform:uppercase}
+  .supp-title{color:var(--ink); font-weight:600}
+  a.supp-title:hover{color:var(--accent); text-decoration:underline}
+  .supp-note{color:var(--muted); font-size:13.5px}
+  .supp-del{margin-left:auto; color:var(--muted); cursor:pointer}
+  .supp-del:hover{color:var(--danger)}
+  .supp-add{display:inline-block; margin-top:10px; font-size:13.5px; color:var(--accent); cursor:pointer; font-weight:500}
+
+  /* ---------- overlay + modal ---------- */
+  #overlay{position:fixed; inset:0; background:rgba(20,16,8,.42); backdrop-filter:blur(2px); z-index:90; display:none}
+  #overlay.show{display:block}
+  #backdrop{position:fixed; inset:0; background:rgba(0,0,0,.3); z-index:35; display:none}
+  .modal{position:fixed; z-index:100; left:50%; top:50%; transform:translate(-50%,-48%); width:520px; max-width:94vw; max-height:90vh;
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--r-l); box-shadow:var(--shadow-lg);
+    display:none; flex-direction:column; overflow:hidden; opacity:0; transition:opacity .16s,transform .16s}
+  .modal.show{display:flex; opacity:1; transform:translate(-50%,-50%)}
+  .modal h3{margin:0; padding:18px 22px; border-bottom:1px solid var(--line); font-size:16px; font-weight:700; letter-spacing:-.01em}
+  .modal .body{padding:18px 22px; overflow:auto; flex:1; min-height:0}
+  .modal .q{font-size:13px; color:var(--muted); border-left:2px solid var(--hl-edge); padding:6px 0 6px 12px; margin:0 0 14px;
+    max-height:120px; overflow:auto; line-height:1.5; font-family:var(--font-read); font-style:italic}
+  .modal textarea{width:100%; min-height:120px; border:1px solid var(--line-2); border-radius:var(--r-s); padding:12px;
+    font-family:inherit; font-size:15px; line-height:1.5; resize:vertical; background:var(--card); color:var(--ink)}
+  .modal textarea:focus{outline:none; border-color:var(--accent)}
+  .modal .foot{display:flex; gap:10px; padding:16px 22px; border-top:1px solid var(--line); align-items:center}
+  .modal .foot .spacer{flex:1}
+
+  .btn{border:1px solid var(--line-2); background:var(--card); border-radius:var(--r-s); padding:10px 17px; font-size:14px;
+    color:var(--read); font-weight:500; transition:.12s}
+  .btn:hover{border-color:var(--accent); color:var(--accent)}
+  .btn.primary{background:var(--accent); color:#fff; border-color:var(--accent)}
+  .btn.primary:hover{filter:brightness(1.06); color:#fff}
+  .btn.danger{color:var(--danger); border-color:color-mix(in srgb,var(--danger) 35%,var(--line))}
+  .btn.danger:hover{background:color-mix(in srgb,var(--danger) 10%,transparent); color:var(--danger)}
+
+  .tagrow{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px}
+  .tagchip{font-family:var(--font-mono); font-size:11px; border:1px solid var(--line-2); border-radius:14px; padding:5px 12px;
+    cursor:pointer; color:var(--muted); background:var(--card); user-select:none}
+  .tagchip.on{border-color:var(--accent); color:var(--accent); background:var(--accent-soft)}
+
+  #exportArea{width:100%; height:46vh; border:1px solid var(--line-2); border-radius:var(--r-s); padding:14px;
+    font-family:var(--font-mono); font-size:12px; line-height:1.55; background:var(--card); color:var(--ink); resize:none}
+  .exp-opts{display:flex; align-items:center; gap:8px; margin-bottom:12px; font-size:13.5px; color:var(--read)}
+
+  /* toast */
+  .toast{position:fixed; left:50%; bottom:calc(env(safe-area-inset-bottom,0px) + 28px); transform:translateX(-50%) translateY(20px);
+    opacity:0; background:var(--tip); color:var(--tip-fg); padding:12px 20px; border-radius:var(--r-m); font-size:13.5px;
+    z-index:120; transition:all .22s; pointer-events:none; box-shadow:var(--shadow-lg)}
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+
+  /* ---------- auth ---------- */
+  #authGate{position:fixed; inset:0; z-index:200; background:var(--bg); display:none; align-items:center; justify-content:center; padding:24px}
+  .auth-card{width:100%; max-width:400px; background:var(--panel); border:1px solid var(--line); border-radius:var(--r-xl);
+    box-shadow:var(--shadow-lg); padding:34px 30px; text-align:center}
+  .auth-title{font-size:24px; font-weight:700; letter-spacing:-.02em; margin-bottom:14px; color:var(--ink)}
+  .auth-sub{font-size:14.5px; color:var(--muted); line-height:1.6; margin-bottom:20px}
+  #authEmail,#authPass{width:100%; padding:14px; border:1px solid var(--line-2); border-radius:var(--r-m); font-size:16px;
+    background:var(--card); color:var(--ink); margin-bottom:12px; font-family:inherit}
+  #authEmail:focus,#authPass:focus{outline:none; border-color:var(--accent)}
+  #authBtn{width:100%; padding:14px; border:none; border-radius:var(--r-m); background:var(--accent); color:#fff;
+    font-size:15px; font-weight:600; transition:filter .12s}
+  #authBtn:hover{filter:brightness(1.05)}
+  #authBtn:disabled{opacity:.6; cursor:default}
+  #authToggle{margin-top:14px}
+  #authSwitch{font-size:13.5px; color:var(--accent); cursor:pointer}
+  #authSwitch:hover{text-decoration:underline}
+  #authMsg{margin-top:16px; font-size:13.5px; color:var(--read); line-height:1.5; min-height:18px}
+
+  #userBox{display:none; align-items:center; gap:8px; padding:14px 18px; border-top:1px solid var(--line); font-size:12.5px; color:var(--muted)}
+  #userEmail{flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-family:var(--font-mono); font-size:11px}
+  #btnLogout,#btnPwd{border:1px solid var(--line-2); background:var(--card); color:var(--read); border-radius:var(--r-s);
+    padding:6px 11px; font-size:12px; flex:0 0 auto}
+  #btnLogout:hover,#btnPwd:hover{border-color:var(--accent); color:var(--accent)}
+
+  /* ---------- admin ---------- */
+  .adm-h{font-weight:600; margin-bottom:8px; color:var(--ink); font-size:14px}
+  .adm-in{padding:12px; border:1px solid var(--line-2); border-radius:var(--r-s); font-size:15px; background:var(--card); color:var(--ink); font-family:inherit}
+  .adm-in:focus{outline:none; border-color:var(--accent)}
+  #wlList{max-height:200px; overflow:auto; border:1px solid var(--line); border-radius:var(--r-m)}
+  .wl-row{display:flex; align-items:center; gap:10px; padding:10px 12px; border-bottom:1px solid var(--line); font-size:14px}
+  .wl-row:last-child{border-bottom:none}
+  .wl-del{color:var(--muted); font-size:12px; cursor:pointer; flex:0 0 auto}
+  .wl-del:hover{color:var(--danger)}
+  .wl-role{padding:6px 7px; border:1px solid var(--line-2); border-radius:var(--r-s); background:var(--card); color:var(--read); font-size:12px; font-family:inherit}
+  .pf-row{display:flex; align-items:center; gap:8px; padding:9px 0; border-bottom:1px solid var(--line)}
+  .pf-row:last-child{border-bottom:none}
+  .pf-mail{flex:1; font-size:12px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; font-family:var(--font-mono)}
+  .pf-name{width:130px; padding:8px 10px; border:1px solid var(--line-2); border-radius:var(--r-s); font-size:13px; background:var(--card); color:var(--ink)}
+  .pf-name:focus{outline:none; border-color:var(--accent)}
+
+  /* notifications */
+  .nf{padding:12px 0; border-bottom:1px solid var(--line); cursor:pointer}
+  .nf:last-child{border-bottom:none}
+  .nf:hover{background:var(--accent-tint)}
+  .nf-t{font-size:14px; color:var(--read)} .nf-t b{color:var(--ink)}
+  .nf-sub{font-size:11.5px; color:var(--muted); margin-top:3px; font-family:var(--font-mono)}
+
+  /* dashboard */
+  .dash-sum{font-size:13.5px; color:var(--read); background:var(--accent-soft); border-radius:var(--r-m);
+    padding:13px 15px; margin-bottom:14px; line-height:1.7}
+  .dash-sum b{font-family:var(--font-mono); color:var(--ink)}
+  .dash-legend{font-size:12.5px; color:var(--muted); line-height:1.5; margin-bottom:12px}
+  .dash-weak-key{background:color-mix(in srgb,var(--warn) 22%,transparent); color:var(--warn); padding:0 5px; border-radius:4px}
+  #dashBody{max-height:64vh; overflow:auto}
+  table.dash{width:100%; border-collapse:collapse; font-size:13px}
+  table.dash th{text-align:left; font-weight:600; color:var(--muted); font-family:var(--font-mono); font-size:10.5px;
+    text-transform:uppercase; letter-spacing:.3px; padding:8px 7px; border-bottom:1px solid var(--line-2); position:sticky; top:0; background:var(--panel)}
+  table.dash td{padding:9px 7px; border-bottom:1px solid var(--line); vertical-align:middle; font-size:12.5px}
+  table.dash tr.weak td{background:color-mix(in srgb,var(--warn) 9%,transparent)}
+  table.dash tr:hover td{background:var(--accent-tint)}
+  table.dash .ch{font-weight:600; color:var(--ink); font-family:var(--font-ui)}
+  table.dash .muted{color:var(--muted)}
+  .dash-x{white-space:nowrap; font-family:var(--font-mono); font-size:12px}
+
+  /* search */
+  #searchResults{max-height:50vh; overflow:auto; margin-top:12px}
+  .sr{padding:12px 14px; border:1px solid var(--line); border-radius:var(--r-m); margin-bottom:8px; cursor:pointer; background:var(--card)}
+  .sr:hover{border-color:var(--accent)}
+  .sr-ch{font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.4px; color:var(--accent); margin-bottom:5px}
+  .sr-t{font-size:14px; line-height:1.5; color:var(--read); font-family:var(--font-read)}
+  .sr-t b{color:var(--accent)}
+
+  /* version history + changelog */
+  #archList{max-height:52vh; overflow:auto}
+  .arch-h{font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.4px; color:var(--muted); margin:4px 0 10px}
+  .ver-row{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:9px 0; border-bottom:1px solid var(--line); font-size:13px}
+  .ver-row b,.ci-date b{font-family:var(--font-mono); font-size:12px}
+  .ver-show{color:var(--accent); cursor:pointer; white-space:nowrap; font-weight:500}
+  .ver-md{white-space:pre-wrap; font-family:var(--font-read); font-size:14px; line-height:1.6; color:var(--read); margin-top:14px;
+    max-height:60vh; overflow:auto; background:var(--card); border:1px solid var(--line); border-radius:var(--r-m); padding:16px}
+  .ci-cur{font-size:14.5px; margin-bottom:6px}
+  .ci-cur b{font-family:var(--font-ui)}
+  .ci-h{font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.4px; color:var(--muted); margin:16px 0 10px}
+  .ci-row{padding:10px 0; border-bottom:1px solid var(--line)}
+  .ci-date{font-size:13px; margin-bottom:3px}
+  .ci-log{font-size:14px; color:var(--read); white-space:pre-wrap; line-height:1.55}
+
+  /* ---------- shelf ---------- */
+  #shelf{position:fixed; inset:0; z-index:60; background:var(--bg); display:none; align-items:flex-start; justify-content:center; overflow:auto}
+  .shelf-inner{width:100%; max-width:760px; padding:44px 28px 80px}
+  .shelf-top{display:flex; align-items:center; justify-content:space-between; margin-bottom:28px}
+  .shelf-top h2{font-size:28px; letter-spacing:-.025em; margin:0; font-weight:700}
+  .shelf-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:22px}
+  .book-card{cursor:pointer; transition:transform .16s}
+  .book-card:hover{transform:translateY(-4px)}
+  .book-cover{aspect-ratio:3/4; border-radius:6px 12px 12px 6px; position:relative; overflow:hidden;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2)); color:#fff; display:flex; align-items:flex-end;
+    padding:16px; font-family:var(--font-read); font-size:46px; font-weight:600; margin-bottom:12px;
+    box-shadow:var(--shadow-lg)}
+  .book-cover::before{content:""; position:absolute; left:0; top:0; bottom:0; width:8px; background:rgba(0,0,0,.18)}
+  .book-card.current .book-cover{outline:2px solid var(--accent); outline-offset:3px}
+  .book-title{font-weight:600; font-size:15px; line-height:1.3; color:var(--ink)}
+  .book-sub{font-size:12.5px; color:var(--muted); margin-top:3px}
+  .shelf-note{margin-top:32px; font-size:13px; color:var(--muted); text-align:center; font-family:var(--font-mono)}
+
+  /* ---------- teardowns ---------- */
+  .td-intro{font-size:14px; color:var(--read); line-height:1.55; margin-bottom:16px}
+  .td-form{background:var(--accent-soft); border-radius:var(--r-m); padding:16px; margin-bottom:20px}
+  .td-form textarea{width:100%; resize:vertical; padding:11px; border:1px solid var(--line-2); border-radius:var(--r-s); font-family:inherit; font-size:14px; background:var(--card); color:var(--ink)}
+  .td-form textarea:focus{outline:none; border-color:var(--accent)}
+  .td-h{font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.4px; color:var(--muted); margin:18px 0 12px}
+  .td-card{border:1px solid var(--line); border-radius:var(--r-m); padding:16px; margin-bottom:12px; position:relative; background:var(--card)}
+  .td-card.pending{background:var(--accent-tint); border-color:var(--accent-soft)}
+  .td-title{font-weight:700; font-size:15.5px; color:var(--ink); display:block; letter-spacing:-.01em}
+  a.td-title:hover{color:var(--accent)}
+  .td-ch{font-size:12px; color:var(--accent); margin-top:4px}
+  .td-url{font-family:var(--font-mono); font-size:11.5px; color:var(--muted); word-break:break-all; display:block; margin-top:5px}
+  .td-q{font-size:14px; color:var(--read); margin-top:8px; line-height:1.55}
+  .td-body{font-family:var(--font-read); font-size:15px; color:var(--read); margin-top:10px; line-height:1.6; white-space:pre-wrap}
+  .td-meta{font-size:12px; color:var(--muted); margin-top:8px; font-family:var(--font-mono)}
+  .td-edit{width:100%; min-height:84px; resize:vertical; margin-top:12px; padding:11px; border:1px solid var(--line-2); border-radius:var(--r-s); font-family:inherit; font-size:14px; background:var(--card); color:var(--ink)}
+  .td-bar{display:flex; align-items:center; gap:16px; margin-top:10px}
+  .td-del{color:var(--muted); cursor:pointer; font-size:13px}
+  .td-del:hover{color:var(--danger)}
+  .td-mine{font-size:13.5px; color:var(--read); padding:7px 0; border-bottom:1px solid var(--line)}
+
+  /* welcome */
+  #welcomeModal h3{font-size:22px; letter-spacing:-.02em}
+  ul.wc-digest{margin:6px 0 0; padding-left:20px}
+  ul.wc-digest li{margin-bottom:6px; font-size:14.5px; color:var(--read)}
+
+  /* skeleton */
+  .sk{background:linear-gradient(90deg,var(--line) 25%,var(--card) 37%,var(--line) 63%); background-size:400% 100%;
+    animation:shimmer 1.4s ease infinite; border-radius:6px; margin:0 0 14px}
+  .sk-h{height:40px; width:62%; margin-bottom:28px} .sk-l{height:16px}
+  @keyframes shimmer{0%{background-position:100% 0} 100%{background-position:-100% 0}}
+
+  /* ---------- responsive ---------- */
+  @media(max-width:820px){
+    #sidebar{position:fixed; top:0; left:0; height:100%; box-shadow:var(--shadow-lg)}
+    #content{font-size:19px; padding:32px 22px 150px}
+    #content h1{font-size:28px}
+    #content h1+p{font-size:19px}
+    #chapNav{padding:8px 22px 60px}
+    .modal{width:94vw}
+    #floatAdd{bottom:calc(env(safe-area-inset-bottom,0px) + 22px)}
+    #panel{width:100%; max-width:100%}
+    .top-actions .desktop-only{display:none}
+  }
+  @media(max-width:560px){
+    .iconbtn{padding:0 8px; min-width:36px; height:36px}
+    .top-actions{gap:1px}
+    #content{font-size:18.5px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{animation-duration:.01ms !important; transition-duration:.01ms !important}
+    #scroller{scroll-behavior:auto}
+  }
+
+  /* ============================================================
+     iOS bubble layer — clean SVG icons, sheets, segmented controls
+     ============================================================ */
+  #topbar{padding:9px 14px; gap:6px}
+  .iconbtn{height:40px; min-width:40px; padding:0 10px; border-radius:13px; color:var(--read); position:relative}
+  .iconbtn:hover{background:var(--accent-tint); color:var(--ink)}
+  .iconbtn.on{background:var(--accent-soft); color:var(--accent); border-color:transparent}
+  .iconbtn .i{width:23px; height:23px; stroke:currentColor; stroke-width:1.8; fill:none;
+    stroke-linecap:round; stroke-linejoin:round; display:block}
+  .iconbtn .i.i-fill{fill:currentColor; stroke:none}
+  .iconbtn .aa{font-weight:700; font-size:17px; letter-spacing:-.03em}
+  .pill-count{display:none; margin-left:5px; background:var(--accent); color:#fff; font-family:var(--font-mono);
+    font-size:10.5px; line-height:17px; height:17px; min-width:17px; padding:0 5px; border-radius:9px; text-align:center}
+  .dot-ind{position:absolute; top:8px; right:9px; width:8px; height:8px; border-radius:50%; background:var(--danger);
+    box-shadow:0 0 0 2px var(--panel)}
+  .mi-badge{margin-left:auto; background:var(--danger); color:#fff; font-family:var(--font-mono); font-size:10px;
+    line-height:17px; height:17px; min-width:17px; padding:0 5px; border-radius:9px; text-align:center}
+  .menu-sep{height:1px; background:var(--line); margin:6px 8px}
+  .menu-item{padding:11px 12px; font-size:14.5px; border-radius:10px}
+
+  /* reading settings sheet */
+  .sheet{position:absolute; top:54px; right:14px; z-index:55; width:300px; max-width:calc(100vw - 28px);
+    background:var(--card); border:1px solid var(--line); border-radius:var(--r-l); box-shadow:var(--shadow-lg);
+    padding:16px; display:none}
+  .sheet.open{display:block; animation:pop .16s ease}
+  .sheet-sec{margin-bottom:16px}
+  .sheet-sec:last-child{margin-bottom:0}
+  .sheet-lbl{font-size:12px; font-weight:600; color:var(--muted); margin-bottom:9px; letter-spacing:.01em}
+  .seg{display:flex; gap:3px; background:var(--accent-tint); padding:3px; border-radius:11px}
+  .seg-btn{flex:1; border:none; background:transparent; color:var(--muted); padding:9px 6px; border-radius:9px;
+    font-size:13.5px; font-weight:600; transition:.14s}
+  .seg-btn.on{background:var(--card); color:var(--ink); box-shadow:var(--shadow)}
+  .font-opt{display:flex; align-items:center; justify-content:space-between; width:100%; border:1px solid var(--line);
+    background:var(--card); border-radius:11px; padding:12px 13px; margin-bottom:7px; transition:.12s}
+  .font-opt:hover{border-color:var(--line-2)}
+  .font-opt.on{border-color:var(--accent); background:var(--accent-tint)}
+  .fo-name{font-size:16px; color:var(--ink)}
+  .fo-check{color:var(--accent); opacity:0; font-weight:700}
+  .font-opt.on .fo-check{opacity:1}
+  .size-row{display:flex; align-items:center; gap:12px}
+  .size-btn{width:40px; height:40px; border:1px solid var(--line); background:var(--card); border-radius:11px;
+    color:var(--ink); font-family:var(--font-read); flex:0 0 auto}
+  .size-btn{font-size:15px} .size-btn.big{font-size:22px}
+  .size-btn:active{background:var(--accent-tint)}
+  .size-track{flex:1; height:4px; background:var(--line); border-radius:3px; position:relative; overflow:hidden}
+  #sizeFill{position:absolute; left:0; top:0; bottom:0; background:var(--accent); border-radius:3px; transition:width .14s}
+
+  /* more reading space: slim translucent header, lighter padding */
+  #content{padding:40px 30px 150px}
+  @media(min-width:1100px){ #content{max-width:720px} }
+
+  /* iOS bottom-sheet modals on phones + responsive admin */
+  @media(max-width:640px){
+    .modal{top:auto; bottom:0; left:0; transform:translateY(100%); width:100%; max-width:100%;
+      max-height:92vh; border-radius:22px 22px 0 0; border-bottom:none}
+    .modal.show{transform:translateY(0)}
+    .modal h3{padding:18px 20px 14px; text-align:center}
+    .modal .foot{padding:14px 18px calc(14px + env(safe-area-inset-bottom,0px))}
+    .sheet{position:fixed; top:auto; bottom:0; left:0; right:0; width:100%; max-width:100%;
+      border-radius:22px 22px 0 0; padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px))}
+    .sheet.open{animation:slideUp .22s ease}
+    .menu{position:fixed; top:auto; bottom:0; left:0; right:0; width:100%; min-width:0;
+      border-radius:22px 22px 0 0; padding:8px 8px calc(8px + env(safe-area-inset-bottom,0px))}
+    .menu.open{animation:slideUp .22s ease}
+    .menu-item{padding:14px 14px}
+    .adm-in{width:100% !important}
+    #adminModal .body > div{flex-wrap:wrap}
+    #bookId,#bookTitle{width:100% !important}
+    .wl-row{flex-wrap:wrap}
+    .wl-row > span:first-child{flex:1 0 100% !important}
+    table.dash{min-width:560px}
+    .pf-name{width:100%}
+    #content{padding:30px 20px 130px}
+    #topTitle{font-size:14px}
+  }
+  @keyframes slideUp{from{transform:translateY(100%)} to{transform:translateY(0)}}
+
+  /* app version + changelog (brand) */
+  .side-head{cursor:pointer; transition:background .12s}
+  .side-head:hover{background:var(--accent-tint)}
+  .app-ver{font-family:var(--font-mono); font-size:12px; color:var(--accent); font-weight:500; letter-spacing:0}
+  .applog-v{font-family:var(--font-mono); font-size:11px; text-transform:uppercase; letter-spacing:.4px; color:var(--accent); margin:16px 0 8px; font-weight:600}
+  .applog-v:first-child{margin-top:0}
+  .applog-list{margin:0; padding-left:18px}
+  .applog-list li{font-size:14px; color:var(--read); line-height:1.5; margin-bottom:7px}
+
+  /* mobile drawer polish */
+  @media(max-width:820px){
+    #sidebar{width:min(320px,86vw); flex-basis:min(320px,86vw); transition:transform .24s cubic-bezier(.4,0,.2,1)}
+    #sidebar.collapsed{transform:translateX(-100%); margin-left:0}
+  }
+
+  /* charming BE touches (v2.3) */
+  .read-prog{padding:12px 22px 0}
+  .rp-bar{height:5px; background:var(--line); border-radius:3px; overflow:hidden}
+  .rp-bar > i{display:block; height:100%; width:0; background:var(--accent); border-radius:3px; transition:width .5s cubic-bezier(.3,1,.4,1)}
+  .rp-lbl{font-family:var(--font-mono); font-size:10.5px; color:var(--muted); margin-top:6px; letter-spacing:0}
+  .tick.pop{animation:tickPop .5s cubic-bezier(.3,1.4,.5,1)}
+  @keyframes tickPop{0%{transform:scale(1)} 35%{transform:scale(1.7)} 100%{transform:scale(1)}}
+  #doneFx{position:fixed; left:50%; bottom:calc(env(safe-area-inset-bottom,0px) + 30px); transform:translateX(-50%) translateY(16px) scale(.96);
+    opacity:0; display:flex; align-items:center; gap:10px; background:var(--accent); color:#fff; padding:13px 20px;
+    border-radius:var(--r-xl); font-size:14px; font-weight:600; z-index:130; box-shadow:var(--shadow-lg); pointer-events:none;
+    transition:opacity .26s, transform .26s cubic-bezier(.3,1.3,.5,1)}
+  #doneFx.show{opacity:1; transform:translateX(-50%) translateY(0) scale(1)}
+  .df-check{display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:50%;
+    background:rgba(255,255,255,.22); font-size:14px}
+  .book-prog{margin-top:10px}
+  .bp-bar{height:4px; background:var(--line); border-radius:3px; overflow:hidden}
+  .bp-bar > i{display:block; height:100%; background:var(--accent); border-radius:3px}
+  .bp-lbl{font-family:var(--font-mono); font-size:10.5px; color:var(--accent); margin-top:5px}
+  .rb-btn:active{transform:scale(.93)}
+  .c-like{transition:transform .12s} .c-like:active{transform:scale(1.35)}
+  .star{transition:transform .12s} .star:active{transform:scale(1.3)}
+
+  /* ============================================================
+     polish pass (v2.5) — motion, touch, fine details
+     ============================================================ */
+  :root{ --spring:cubic-bezier(.32,.72,0,1); --ease:cubic-bezier(.4,0,.2,1) }
+  *{ -webkit-tap-highlight-color:transparent }
+  html,body{ overscroll-behavior:none }
+  #scroller,#cList,#toc,.modal .body,#archList,#dashBody,#searchResults{ -webkit-overflow-scrolling:touch; overscroll-behavior:contain }
+  *{ scrollbar-width:thin; scrollbar-color:var(--line-2) transparent }
+  #scroller::-webkit-scrollbar,#toc::-webkit-scrollbar,#cList::-webkit-scrollbar,.modal .body::-webkit-scrollbar{ width:9px; height:9px }
+  #scroller::-webkit-scrollbar-thumb,#toc::-webkit-scrollbar-thumb,#cList::-webkit-scrollbar-thumb,.modal .body::-webkit-scrollbar-thumb{ background:var(--line-2); border-radius:6px; border:2px solid transparent; background-clip:padding-box }
+  ::-webkit-scrollbar-thumb:hover{ background:var(--muted) }
+
+  /* chrome non-selectable; reading text stays selectable (нужно для правок) */
+  #topbar,#sidebar,.menu,.sheet,.panel-head,#chapNav,#reactBar,.toc-item,.iconbtn,.btn,.menu-item,.bn-item,.book-card{ -webkit-user-select:none; user-select:none }
+  #content{ -webkit-user-select:text; user-select:text }
+
+  /* safe-area: панель под вырезом */
+  #topbar{ padding-top:calc(11px + env(safe-area-inset-top)) }
+
+  /* пружинные переходы крупных поверхностей */
+  #sidebar{ transition:transform .36s var(--spring) }
+  #panel{ transition:transform .38s var(--spring) }
+
+  /* плавный backdrop под модалками */
+  #overlay{ display:block; opacity:0; visibility:hidden; pointer-events:none;
+    transition:opacity .26s var(--ease), visibility .26s var(--ease) }
+  #overlay.show{ opacity:1; visibility:visible; pointer-events:auto }
+
+  /* модалка: мягкий вход (десктоп — центр; мобайл — нижний шит, см. медиазапрос ниже) */
+  .modal{ transition:opacity .26s var(--ease), transform .4s var(--spring) }
+  @media(min-width:641px){
+    .modal{ transform:translate(-50%,-46%) scale(.985) }
+    .modal.show{ transform:translate(-50%,-50%) scale(1) }
+  }
+
+  /* появление текста главы */
+  #content.enter{ animation:contentIn .44s var(--spring) }
+  @keyframes contentIn{ from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:none} }
+
+  /* мягкие нажатия (единый отклик) */
+  .iconbtn,.btn,.menu-item,.seg-btn,.font-opt,.size-btn,.book-card,.rb-btn,.ptab,.ptool,.tagchip,.bn-item{
+    transition:transform .13s var(--spring), background .16s var(--ease), color .16s var(--ease), border-color .16s var(--ease), box-shadow .16s var(--ease) }
+  .iconbtn:active{ transform:scale(.9) }
+  .btn:active{ transform:scale(.97) }
+  .book-card:active{ transform:scale(.98) }
+  .seg-btn:active,.font-opt:active,.size-btn:active,.tagchip:active{ transform:scale(.97) }
+  .menu-item:active,.toc-item:active{ background:var(--accent-soft) }
+
+  /* progress bar чуть мягче */
+  #progress{ transition:width .18s var(--ease) }
+
+  /* грабер у нижних шитов (iOS) + место под него */
+  @media(max-width:640px){
+    .modal{ transition:opacity .24s var(--ease), transform .4s var(--spring) }
+    .modal::before,.menu::before,.sheet::before{
+      content:""; position:absolute; top:9px; left:50%; transform:translateX(-50%);
+      width:38px; height:5px; border-radius:3px; background:var(--line-2); z-index:3 }
+    .modal h3{ padding-top:26px }
+    .menu,.sheet{ padding-top:24px }
+    .modal.show,.menu.open,.sheet.open{ animation:sheetIn .42s var(--spring) }
+  }
+  @keyframes sheetIn{ from{transform:translateY(100%)} to{transform:translateY(0)} }
+
+  /* убрать у крупных поверхностей дёрганье на тач */
+  .iconbtn,.btn,.bn-item,.menu-item,.toc-item,.book-card{ touch-action:manipulation }
+
+  /* end-of-chapter rating (v2.6) */
+  #rateBar{max-width:680px; margin:16px auto 0; display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding:18px 0 2px; border-top:1px solid var(--line)}
+  .rate-q{font-size:14.5px; color:var(--read); font-weight:500}
+  #rateBar .stars{font-size:26px}
+  #reactBar{border-top:none; padding-top:14px}
+  @media(max-width:640px){
+    .pf-row{flex-wrap:wrap}
+    .pf-mail{flex:1 0 100%}
+    .pf-name{flex:1; width:auto}
+  }
+
+  /* refactor: consolidated repeated inline styles */
+  .adm-sep{border:none; border-top:1px solid var(--line); margin:20px 0}
+  .hint{font-size:13px; color:var(--muted); line-height:1.5; margin-bottom:10px}
+
+  /* reader UX (v2.8): reading time + discuss CTA */
+  .chap-meta{font-family:var(--font-mono); font-size:12px; color:var(--muted); margin:-8px 0 24px; letter-spacing:0}
+  .disc-cta{display:block; margin:14px auto 0; max-width:680px; width:100%; padding:13px 16px;
+    border:1px solid var(--line-2); background:var(--card); color:var(--read); border-radius:var(--r-l);
+    font-size:14.5px; font-weight:500; text-align:center; font-family:inherit; cursor:pointer}
+  .disc-cta:hover{border-color:var(--accent); background:var(--accent-tint); color:var(--ink)}
+  .disc-cta:active{transform:scale(.985)}
+
+  /* live presence (v2.9) */
+  .presence-line{padding:9px 22px 0; font-size:12px; color:var(--muted); display:flex; align-items:center; gap:8px}
+  .presence-line::before{content:""; width:8px; height:8px; border-radius:50%; background:#46b66e;
+    box-shadow:0 0 0 3px rgba(70,182,110,.18); animation:livePulse 2.2s ease-in-out infinite; flex:0 0 auto}
+  @keyframes livePulse{0%,100%{opacity:1; transform:scale(1)} 50%{opacity:.45; transform:scale(.82)}}
+
+  /* sheet/menu scrim — dim behind bottom sheets on mobile (v3.0) */
+  #menuScrim{position:fixed; inset:0; background:rgba(20,16,8,.30); z-index:48; display:none; opacity:0; transition:opacity .22s var(--ease)}
+  @media(max-width:640px){ #menuScrim.on{display:block; opacity:1} }
+
+  /* auth screen note (v3.1) */
+  .auth-note{font-size:12px; color:var(--muted); line-height:1.5; margin-top:16px; text-align:center}
+
+  /* completion invite pulse on next-chapter button (v3.2) */
+  #chapNav button.next.invite{animation:invitePulse 1.5s ease 2}
+  @keyframes invitePulse{
+    0%,100%{box-shadow:0 0 0 0 rgba(176,109,51,0)}
+    35%{box-shadow:0 0 0 4px rgba(176,109,51,.16); border-color:var(--accent)}
+  }
+
+  /* admin: user management (v3.3) */
+  .wl-add{display:flex; gap:8px; margin-bottom:8px; flex-wrap:wrap; align-items:center}
+  .wl-role{padding:8px 10px; border:1px solid var(--line-2); border-radius:var(--r-s); background:var(--card); color:var(--ink); font-size:13px}
+  .wl-invite-row{margin-bottom:12px}
+  .wl-invite{font-size:12.5px; color:var(--accent); cursor:pointer}
+  .wl-joined{font-size:11px; font-family:var(--font-mono); color:var(--muted); padding:1px 7px; border-radius:8px; background:var(--accent-tint); flex:0 0 auto; white-space:nowrap}
+  .wl-joined.yes{color:#3d8c5a; background:rgba(70,182,110,.14)}
+  .danger-armed{color:var(--danger)!important; font-weight:600}
+  @media(max-width:640px){ .wl-add #wlEmail{flex:1 0 100%} .wl-add #wlRole{flex:1} }
+
+  /* completion check pop (v3.6) */
+  .df-check.pop{animation:dfCheckPop .5s cubic-bezier(.3,1.4,.5,1)}
+  @keyframes dfCheckPop{0%{transform:scale(.2); opacity:.4} 60%{transform:scale(1.18)} 100%{transform:scale(1); opacity:1}}
+
+  /* «Моё чтение» — reading journey (v3.8) */
+  .jr-hl{text-align:center; margin:2px 0 18px}
+  .jr-num{font-size:46px; font-weight:800; color:var(--ink); letter-spacing:-.02em; line-height:1}
+  .jr-of{font-size:20px; color:var(--muted)}
+  .jr-pct{display:block; font-family:var(--font-mono); font-size:13px; color:var(--accent); margin-top:4px}
+  .jr-map{display:flex; flex-wrap:wrap; gap:7px; justify-content:center; margin:0 0 20px}
+  .jr-cell{width:20px; height:20px; border-radius:6px; background:var(--line); border:1px solid var(--line-2); cursor:pointer;
+    opacity:0; transform:scale(.4); animation:jrIn .42s cubic-bezier(.3,1.4,.5,1) forwards; transition:transform .12s}
+  .jr-cell.read{background:var(--accent); border-color:var(--accent)}
+  .jr-cell.cur{box-shadow:0 0 0 3px var(--accent-tint)}
+  .jr-cell:hover{transform:scale(1.25)!important}
+  @keyframes jrIn{to{opacity:1; transform:scale(1)}}
+  .jr-stats{display:flex; justify-content:space-around; gap:8px; padding:15px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); margin-bottom:16px}
+  .jr-stat{text-align:center; display:flex; flex-direction:column; gap:3px}
+  .jr-stat b{font-size:21px; color:var(--ink); font-family:var(--font-mono)}
+  .jr-stat span{font-size:11px; color:var(--muted)}
+  .jr-msg{text-align:center; font-size:14.5px; color:var(--read); line-height:1.55}
+</style>
+</head>
+<body>
+<div id="app">
+  <aside id="sidebar">
+    <div class="side-head" id="brandBtn" title="История версий приложения">
+      <div class="t">Читальня <span id="appVer" class="app-ver"></span></div>
+      <div class="s">чтение и правки</div>
+    </div>
+    <div id="readProg" class="read-prog" style="display:none"><div class="rp-bar"><i></i></div><div class="rp-lbl"></div></div>
+    <div id="presenceLine" class="presence-line" style="display:none"></div>
+    <nav id="toc"></nav>
+    <div id="userBox" style="display:none">
+      <span id="userEmail"></span>
+      <button id="btnPwd" title="Аккаунт: имя и пароль">аккаунт</button>
+      <button id="btnLogout" title="Выйти из аккаунта">выйти</button>
+    </div>
+  </aside>
+
+  <main id="main">
+    <div id="progress"></div>
+    <header id="topbar">
+      <button class="iconbtn" id="btnMenu" title="Оглавление" aria-label="Оглавление"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <div id="topTitle"></div>
+      <div class="top-actions">
+        <button class="iconbtn" id="btnView" title="Шрифт и тема" aria-label="Шрифт и тема"><span class="aa">Aa</span></button>
+        <button class="iconbtn" id="btnPanel" title="Отклики" aria-label="Отклики"><svg class="i" viewBox="0 0 24 24"><path d="M20 11.5a7.5 7.5 0 0 1-10.9 6.7L4 19.5l1.3-4.1A7.5 7.5 0 1 1 20 11.5Z"/></svg><span id="cCount" class="pill-count"></span></button>
+        <div class="menu-wrap">
+          <button class="iconbtn" id="btnMore" title="Ещё" aria-label="Ещё"><svg class="i i-fill" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg><span id="moreDot" class="dot-ind" style="display:none"></span></button>
+          <div class="menu" id="moreMenu">
+            <button class="menu-item" id="btnInfo">О главе</button>
+            <button class="menu-item" id="btnShelf">Полка</button>
+            <button class="menu-item" id="btnJourney">Моё чтение</button>
+            <button class="menu-item" id="btnBell">Уведомления<span id="bellBadge" class="mi-badge" style="display:none">0</span></button>
+            <div class="menu-sep" id="editorSep" style="display:none"></div>
+            <button class="menu-item" id="miDash" style="display:none">Дашборд глав</button>
+            <button class="menu-item" id="miExport" style="display:none">Экспорт правок</button>
+            <button class="menu-item" id="miMarkers" style="display:none">Редакционные маркеры</button>
+            <button class="menu-item" id="btnAdmin" style="display:none">Админка</button>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div id="readSheet" class="sheet">
+      <div class="sheet-sec">
+        <div class="sheet-lbl">Тема</div>
+        <div class="seg" id="themeSeg">
+          <button class="seg-btn" data-th="light">Светлая</button>
+          <button class="seg-btn" data-th="dark">Тёмная</button>
+        </div>
+      </div>
+      <div class="sheet-sec">
+        <div class="sheet-lbl">Шрифт</div>
+        <div id="fontOpts"></div>
+      </div>
+      <div class="sheet-sec">
+        <div class="sheet-lbl">Размер текста</div>
+        <div class="size-row"><button class="size-btn" id="fontMinus">A</button><div class="size-track"><div id="sizeFill"></div></div><button class="size-btn big" id="fontPlus">A</button></div>
+      </div>
+    </div>
+    <div id="scroller">
+      <div id="content"></div>
+      <div id="rateBar"></div>
+      <div id="reactBar"></div>
+      <button id="discCTA" class="disc-cta" style="display:none"></button>
+      <div id="suppBox" style="display:none"></div>
+      <div id="chapNav"></div>
+    </div>
+    <button id="floatAdd">+ Добавить комментарий</button>
+  </main>
+</div>
+
+<!-- comments panel -->
+<aside id="panel">
+  <div class="panel-head">
+    <div class="row">
+      <h3 id="panelTitle">Панель</h3>
+      <button class="iconbtn" id="btnPanelClose" aria-label="Закрыть панель">✕</button>
+    </div>
+    <div class="ptabs">
+      <button class="ptab on" id="tabEdits">✎ Правки</button>
+      <button class="ptab" id="tabDisc">💬 Обсуждение</button>
+    </div>
+    <div class="panel-tools" id="editTools">
+      <button class="ptool primary" id="btnCopyAll">⇪ Скопировать всё для модели</button>
+      <button class="ptool" id="btnSaveJson">Сохранить .json</button>
+      <button class="ptool" id="btnLoadJson">Загрузить .json</button>
+      <button class="ptool" id="btnChapterNote">＋ К главе</button>
+      <button class="ptool" id="btnArchive">Архив версий</button>
+    </div>
+  </div>
+  <div id="cList"></div>
+  <div id="discWrap" style="display:none">
+    <div id="discRate"></div>
+    <div id="discList"></div>
+    <div id="discNew">
+      <textarea id="discInput" placeholder="Поделиться мыслью об этой главе…"></textarea>
+      <div style="text-align:right"><button class="ptool primary" id="discPost">Отправить</button></div>
+    </div>
+  </div>
+</aside>
+
+<!-- comment editor -->
+<div id="overlay"></div>
+<div class="modal" id="editModal">
+  <h3 id="editTitle">Комментарий</h3>
+  <div class="body">
+    <div class="q" id="editQuote"></div>
+    <textarea id="editText" placeholder="Что здесь поправить или что зацепило?"></textarea>
+    <div class="tagrow" id="tagRow">
+      <span class="tagchip on" data-tag="">без тега</span>
+      <span class="tagchip" data-tag="стиль">стиль</span>
+      <span class="tagchip" data-tag="факт">факт</span>
+      <span class="tagchip" data-tag="структура">структура</span>
+      <span class="tagchip" data-tag="опечатка">опечатка</span>
+    </div>
+  </div>
+  <div class="foot">
+    <button class="btn danger" id="editDelete" style="display:none">Удалить</button>
+    <div class="spacer"></div>
+    <button class="btn" id="editCancel">Отмена</button>
+    <button class="btn primary" id="editSave">Сохранить</button>
+  </div>
+</div>
+
+<!-- export modal -->
+<div class="modal" id="exportModal" style="width:680px">
+  <h3>Экспорт правок для модели</h3>
+  <div class="body">
+    <label class="exp-opts"><input type="checkbox" id="expOnlyOpen" checked> только открытые правки (без отмеченных «готово»)</label>
+    <textarea id="exportArea" readonly></textarea>
+  </div>
+  <div class="foot">
+    <span id="exportInfo" style="font-size:13px;color:var(--muted)"></span>
+    <div class="spacer"></div>
+    <button class="btn" id="exportClose">Закрыть</button>
+    <button class="btn primary" id="exportCopy">Скопировать</button>
+  </div>
+</div>
+
+<div class="modal" id="adminModal" style="width:560px">
+  <h3>Админ</h3>
+  <div class="body">
+    <div class="adm-h">Доступ по email</div>
+    <div class="wl-add">
+      <input id="wlEmail" type="email" inputmode="email" placeholder="email@домен" class="adm-in" style="flex:1">
+      <select id="wlRole" class="wl-role"><option value="reader">читатель</option><option value="contributor">контрибьютор</option><option value="editor">редактор</option></select>
+      <button class="btn primary" id="wlAdd">Добавить</button>
+    </div>
+    <div class="wl-invite-row"><a id="wlInvite" class="wl-invite">Скопировать приглашение для отправки</a></div>
+    <div id="wlList"></div>
+    <hr class="adm-sep">
+    <div class="adm-h">Обновить главы</div>
+    <div class="hint">
+      Загрузите <b>content.json</b> (его собирает Claude из ваших md-файлов). Изменённые главы получат новую версию — их правки обнулятся, нетронутые сохранятся.
+    </div>
+    <input id="uploadChangelog" class="adm-in" placeholder="Что изменилось (чейнджлог для обновлённых глав)" style="width:100%; margin-bottom:8px">
+    <button class="btn" id="contentUpload">Выбрать content.json</button>
+    <div id="contentMsg" style="font-size:13px; margin-top:10px; color:var(--muted)"></div>
+    <hr class="adm-sep">
+    <div class="adm-h">Книги (полка)</div>
+    <div id="bookList" style="font-size:13px"></div>
+    <div style="display:flex; gap:8px; margin-top:8px">
+      <input id="bookId" class="adm-in" placeholder="id (напр. b2_…)" style="width:130px">
+      <input id="bookTitle" class="adm-in" placeholder="Название книги" style="flex:1">
+      <button class="btn" id="bookAdd">Добавить</button>
+    </div>
+    <div style="font-size:12px; color:var(--muted); margin:6px 0 18px">Чтобы загрузить главы новой книги — откройте её на полке (📚) и загрузите content.json: главы привяжутся к ней. Id глав должны быть уникальны между книгами.</div>
+    <div class="adm-h">Имена участников</div>
+    <div class="hint">
+      Задайте отображаемые имена — они показываются в правках и обсуждении вместо почты. Появляются здесь после первого входа человека.
+    </div>
+    <div id="profList"></div>
+  </div>
+  <div class="foot"><div class="spacer"></div><button class="btn" id="adminClose">Закрыть</button></div>
+</div>
+<div class="modal" id="searchModal" style="width:620px">
+  <h3>Поиск по книге</h3>
+  <div class="body">
+    <input id="searchInput" type="search" class="adm-in" style="width:100%" placeholder="Слово или фраза…">
+    <div id="searchResults"></div>
+  </div>
+  <div class="foot"><span id="searchInfo" style="font-size:13px;color:var(--muted)"></span><div class="spacer"></div><button class="btn" id="searchClose">Закрыть</button></div>
+</div>
+<div class="modal" id="archModal" style="width:620px">
+  <h3 id="archTitle">Архив правок</h3>
+  <div class="body"><div id="archList"></div></div>
+  <div class="foot"><div class="spacer"></div><button class="btn" id="archClose">Закрыть</button></div>
+</div>
+<div class="modal" id="tdModal" style="width:600px">
+  <h3>Разборы интерфейсов</h3>
+  <div class="body">
+    <div class="td-intro">Разбор интерфейсов и продуктов через поведенческую оптику. Пришлите кейс — возьмём в работу и опубликуем разбор.</div>
+    <div class="td-form">
+      <input id="tdTitle" class="adm-in" placeholder="Что разбираем (продукт / экран)" style="width:100%; margin-bottom:8px">
+      <input id="tdUrl" class="adm-in" placeholder="Ссылка (необязательно)" style="width:100%; margin-bottom:8px">
+      <textarea id="tdQuestion" placeholder="Что смущает в поведении пользователей? Какой вопрос?" style="width:100%; min-height:64px"></textarea>
+      <div style="text-align:right; margin-top:8px"><button class="btn primary" id="tdSubmit">Отправить кейс</button></div>
+    </div>
+    <div id="tdList"></div>
+  </div>
+  <div class="foot"><div class="spacer"></div><button class="btn" id="tdClose">Закрыть</button></div>
+</div>
+<div class="modal" id="suppModal" style="width:480px">
+  <h3>Дополнение к главе</h3>
+  <div class="body">
+    <select id="suppKind" class="adm-in" style="width:100%; margin-bottom:8px">
+      <option value="book">книга</option>
+      <option value="article" selected>статья</option>
+      <option value="theory">теория</option>
+      <option value="other">ссылка</option>
+    </select>
+    <input id="suppTitle" class="adm-in" placeholder="Название" style="width:100%; margin-bottom:8px">
+    <input id="suppUrl" class="adm-in" placeholder="Ссылка (необязательно)" style="width:100%; margin-bottom:8px">
+    <input id="suppNote" class="adm-in" placeholder="Короткая заметка (необязательно)" style="width:100%">
+  </div>
+  <div class="foot"><div class="spacer"></div><button class="btn" id="suppCancel">Отмена</button><button class="btn primary" id="suppSave">Добавить</button></div>
+</div>
+<div class="modal" id="chinfoModal" style="width:520px">
+  <h3 id="ciTitle">О главе</h3>
+  <div class="body"><div id="ciBody"></div></div>
+  <div class="foot"><div class="spacer"></div><button class="btn" id="ciClose">Закрыть</button></div>
+</div>
+<div id="shelf" style="display:none">
+  <div class="shelf-inner">
+    <div class="shelf-top"><h2>Полка</h2><button class="iconbtn" id="shelfClose" title="Закрыть" aria-label="Закрыть">✕</button></div>
+    <div id="shelfList" class="shelf-grid"></div>
+    <div class="shelf-note">Со временем здесь появятся и другие книги.</div>
+  </div>
+</div>
+<div class="modal" id="appLogModal" style="width:460px">
+  <h3>Что нового в Читальне</h3>
+  <div class="body"><div id="appLogBody"></div></div>
+  <div class="foot"><div class="spacer"></div><button class="btn" id="appLogClose">Закрыть</button></div>
+</div>
+<div class="modal" id="welcomeModal" style="width:440px">
+  <h3 id="wcHi">Добро пожаловать!</h3>
+  <div class="body"><div id="wcBody"></div></div>
+  <div class="foot"><div class="spacer"></div><button class="btn primary" id="wcClose">Читать</button></div>
+</div>
+<div class="modal" id="journeyModal" style="width:440px">
+  <h3 id="jrTitle">Ваш путь по книге</h3>
+  <div class="body"><div id="jrBody"></div></div>
+  <div class="foot"><div class="spacer"></div><button class="btn primary" id="jrClose">Закрыть</button></div>
+</div>
+<div class="modal" id="dashModal" style="width:min(760px,94vw)">
+  <h3>Дашборд глав</h3>
+  <div class="body">
+    <div class="dash-legend">Карта слабых мест. <span class="dash-weak-key">Жёлтым</span> — главы, которым стоит уделить внимание (низкая оценка или много «запутался/затянуто»).</div>
+    <div id="dashBody"></div>
+  </div>
+  <div class="foot"><button class="btn" id="dashBackup">⤓ Скачать весь фидбэк</button><div class="spacer"></div><button class="btn" id="dashClose">Закрыть</button></div>
+</div>
+<div class="modal" id="notifModal" style="width:480px">
+  <h3>Уведомления</h3>
+  <div class="body"><div id="notifList"></div></div>
+  <div class="foot"><div class="spacer"></div><button class="btn" id="notifClose">Закрыть</button></div>
+</div>
+<div class="modal" id="replyModal" style="width:480px">
+  <h3>Ответить на комментарий</h3>
+  <div class="body">
+    <div class="q" id="replyQuote"></div>
+    <textarea id="replyText" placeholder="Ваш ответ…"></textarea>
+  </div>
+  <div class="foot"><div class="spacer"></div><button class="btn" id="replyCancel">Отмена</button><button class="btn primary" id="replySave">Отправить</button></div>
+</div>
+<div class="modal" id="pwdModal" style="width:440px">
+  <h3>Аккаунт</h3>
+  <div class="body">
+    <div class="adm-h">Ваше имя</div>
+    <div style="font-size:12.5px;color:var(--muted);margin-bottom:8px">Показывается в обсуждениях и правках вместо почты.</div>
+    <div style="display:flex; gap:8px; margin-bottom:16px">
+      <input id="acctName" type="text" placeholder="Имя" class="adm-in" style="flex:1">
+      <button class="btn primary" id="acctNameSave">Сохранить</button>
+    </div>
+    <div class="adm-h">Новый пароль</div>
+    <input id="pwdNew" type="password" autocomplete="new-password" placeholder="Новый пароль (минимум 6)" class="adm-in" style="width:100%">
+    <div id="pwdMsg" style="font-size:13px; margin-top:10px; color:var(--muted)"></div>
+  </div>
+  <div class="foot"><div class="spacer"></div><button class="btn" id="pwdCancel">Закрыть</button><button class="btn primary" id="pwdSave">Сменить пароль</button></div>
+</div>
+<input type="file" id="contentInput" accept="application/json,.json" style="display:none">
+<input type="file" id="fileInput" accept="application/json,.json" style="display:none">
+<div id="authGate">
+  <div class="auth-card">
+    <div class="auth-title">Добро пожаловать в «Читальню»</div>
+    <div id="authForm">
+      <div class="auth-sub">Закрытое место, где вы читаете черновик книги и помогаете ей стать лучше — ваши реакции, оценки и мысли видит автор. Здесь только приглашённые.</div>
+      <input id="authEmail" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com">
+      <input id="authPass" type="password" autocomplete="current-password" placeholder="Пароль">
+      <button id="authBtn">Войти</button>
+      <div id="authToggle"><a id="authSwitch">Первый раз? Создать пароль</a></div>
+      <div id="authMsg"></div>
+      <div class="auth-note">Вход по email и паролю · работает на телефоне и компьютере. Впервые? Нажмите «Создать пароль».</div>
+    </div>
+    <div id="authConfig" style="display:none">
+      <div class="auth-sub">Подключение к базе не настроено.<br>Откройте файл <b>config.js</b> рядом с index.html и впишите в него <b>SUPABASE_URL</b> и <b>SUPABASE_ANON_KEY</b> (см. инструкцию).</div>
+    </div>
+    <div id="authNomember" style="display:none">
+      <div class="auth-sub">Вы вошли, но доступ к книге ещё не открыт.<br>Попросите администратора добавить ваш email в список доступа.</div>
+      <div id="nomemberEmail" style="font-size:13px;color:var(--muted);margin-bottom:14px"></div>
+      <button id="authLogout2" class="btn">Выйти / войти другим email</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- data ----------
+  var ADMIN = 'temka.avdeev@gmail.com';
+  var BOOK = [], BYID = {}, DIAGS = {};
+  var isAdmin = false, isMember = false;
+  function svgToSrc(svg){ return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg||''); }
+  async function loadContent(){
+    if(!SB) return;
+    var ch=await SB.from('chapters').select('*').eq('book_id', currentBook()).order('ord');
+    if(ch.error){ ch=await SB.from('chapters').select('*').order('ord'); }   // до миграции v9 нет book_id — грузим без фильтра
+    if(ch.error){ toast('Ошибка загрузки книги: '+ch.error.message); return; }
+    BOOK=(ch.data||[]).map(function(r){ return {id:r.id, file:r.file||(r.id+'.md'), part:r.part||'', title:r.title||r.id, ver:r.ver||'', updated:r.updated_at||null, md:r.md||'', figs:r.figs||[]}; });
+    BYID={}; BOOK.forEach(function(c){ BYID[c.id]=c; });
+    _ptCache={};
+    var dg=await SB.from('diagrams').select('*');
+    DIAGS={};
+    if(!dg.error){ (dg.data||[]).forEach(function(d){ DIAGS[d.name]={caption:d.caption||'', src:svgToSrc(d.svg||'')}; }); }
+    saveContentCache();
+  }
+  function contentSig(){ return BOOK.map(function(c){ return c.id+':'+c.ver; }).join(','); }
+  function saveContentCache(){
+    try{ lsSet('bp_content:'+currentBook(), JSON.stringify({ v:1, book:BOOK, diags:DIAGS })); }catch(e){}
+  }
+  function loadContentCache(){
+    try{
+      var raw=lsGet('bp_content:'+currentBook()); if(!raw) return false;
+      var d=JSON.parse(raw); if(!d || !d.book || !d.book.length) return false;
+      BOOK=d.book; BYID={}; BOOK.forEach(function(c){ BYID[c.id]=c; });
+      DIAGS=d.diags||{}; _ptCache={};
+      return true;
+    }catch(e){ return false; }
+  }
+  function showSkeleton(){
+    var sk='<div class="sk sk-h"></div>';
+    var w=[88,72,95,66,90,80,58,93,70];
+    for(var i=0;i<w.length;i++) sk+='<div class="sk sk-l" style="width:'+w[i]+'%"></div>';
+    document.getElementById('content').innerHTML=sk;
+    document.getElementById('topTitle').textContent='';
+    document.getElementById('chapNav').innerHTML='';
+  }
+
+  // ---------- state ----------
+  var comments = [];            // {id, ch, start, end, quote, note, ts}
+  var state = { chapter: null, book:'main', markers:false, scroll:{}, theme:'light', fontSize:1, readFont:'book', read:{} };
+  var BOOKS=[];
+  function currentBook(){ return state.book||'main'; }
+
+  // ====== ВЕРСИЯ ПРИЛОЖЕНИЯ (повышать с каждым апдейтом HTML) ======
+  var APP_VERSION='3.8';
+  var APP_CHANGELOG=[
+    {v:'3.8', items:[
+      '«Моё чтение» в меню «···»: личная карта пути по книге — главы заполняются по мере чтения, и виден ваш вклад.',
+    ]},
+    {v:'3.7', items:[
+      'Довел все тексты до тёплого, живого тона — пустые экраны, подсказки, благодарности.',
+    ]},
+    {v:'3.6', items:[
+      'Момент «глава прочитана» теперь ловится вовремя — на конце текста, сразу и мягче.',
+      'Сообщения о прогрессе стали ободряющими — без пугающего «осталось 30» в начале.',
+      'Тексты по всему приложению — теплее и живее.',
+    ]},
+    {v:'3.5', items:[
+      'Приветствия стали теплее и живее, и учитывают выходные.',
+      'Приветственное окно появляется плавно, а не выскакивает.',
+      'Окна открываются и закрываются мягко.',
+    ]},
+    {v:'3.4', items:[
+      'Поле ответа/правки больше не прячется за клавиатурой на телефоне.',
+      'Мобильные правки: действия на карточке («к месту», «ответить» и др.) больше не вылезают за экран.',
+      'Админка на телефоне: строка пользователя аккуратнее, дашборд прокручивается вбок.',
+    ]},
+    {v:'3.3', items:[
+      'Админка: роль выбирается сразу при добавлении, есть кнопка «Скопировать приглашение».',
+      'Видно, кто из приглашённых уже зашёл.',
+      'Удаление пользователя и правки — в два шага (защита от случайного).',
+    ]},
+    {v:'3.2', items:[
+      'Нижние панели закрываются свайпом вниз.',
+      'В момент завершения главы кнопка «Дальше» мягко приглашает продолжить.',
+      'Лёгкая вибро-отдача на оценке/реакции (где поддерживается).',
+    ]},
+    {v:'3.1', items:[
+      'Экран входа теперь сразу объясняет, что это и зачем — проще начать новичку.',
+    ]},
+    {v:'3.0', items:[
+      'Листайте главы свайпом влево/вправо (на телефоне).',
+      'Нижние панели теперь с лёгким затемнением фона — понятно, что закрыть можно тапом мимо.',
+      'Оглавление сразу прокручивается к текущей главе.',
+    ]},
+    {v:'2.9', items:[
+      'Живая «Читальня»: когда книгу читает кто-то ещё — видно «Сейчас читают: N» с живой точкой.',
+      'Исправлено: на телефоне окна (в т.ч. админка) снова открываются ровно снизу.',
+    ]},
+    {v:'2.8', items:[
+      'В конце главы появилась кнопка «Обсудить главу» — обсуждение больше не нужно искать.',
+      'Под заголовком главы — оценка времени чтения.',
+      'Понятнее приветствие: что это черновик и как вы помогаете книге.',
+    ]},
+    {v:'2.7', items:[
+      'Под капотом: чище разметка (семантические теги) и лучше доступность для скринридеров.',
+    ]},
+    {v:'2.6', items:[
+      'Оценка главы (звёзды) теперь в конце главы, рядом с реакциями.',
+      'Управление именами в админке аккуратно умещается на телефоне.',
+    ]},
+    {v:'2.5', items:[
+      'Полировка интерфейса: пружинные плавные анимации и переходы, мягкие нажатия.',
+      'Текст главы плавно появляется при переходе; нижние панели — с «ручкой» как в iOS.',
+      'Мобильные детали: без серой вспышки при тапе, инерционный скролл, безопасные зоны под вырез, тонкие скроллбары.',
+    ]},
+    {v:'2.4', items:[
+      'Исправлено: на телефоне меню «···» и Админка открываются корректно (фильтр панели ломал позиционирование).',
+      'После загрузки content.json понятное сообщение: обновились версии глав или текст тот же.'
+    ]},
+    {v:'2.3', items:[
+      'Прогресс чтения в меню («Прочитано N из M») — мягко мотивирует дойти до конца (эффект градиента цели).',
+      'Тёплый момент в конце главы: «Глава прочитана · осталось N» (правило пик-конец).',
+      'На полке у книги — полоса прогресса и «Продолжить · %» (незавершённое тянет вернуться).',
+      'Маленькое спасибо за отклик и приятные микро-нажатия (бережное подкрепление вклада).'
+    ]},
+    {v:'2.2', items:[
+      'Исправлен баг: после удаления поиска приложение не загружало главы (обрывалась инициализация). Теперь всё открывается.',
+      'Боковое меню на телефоне аккуратнее: не на весь экран, с затемнением и закрытием по тапу мимо.'
+    ]},
+    {v:'2.1', items:[
+      'Новый дизайн в стиле iOS: чистые иконки вместо эмодзи, одна верхняя панель — больше места под текст.',
+      'Кнопка «Aa» — лист настроек чтения: тема, выбор шрифта (Литературный · Книжный · Гротеск · Системный), размер.',
+      'Вторичные действия собраны под кнопкой «···»; поиск убран.',
+      'Версия приложения и эта история изменений — по клику на название слева вверху.'
+    ]},
+    {v:'2.0', items:[
+      'Полка с несколькими книгами.',
+      'Дополнения к главе (книги/статьи/теории) и чейнджлог главы для всех читателей.',
+      'История версий глав с авто-уведомлением авторов правок.',
+      'Дашборд для редактора и роли: читатель · контрибьютор · редактор.'
+    ]}
+  ];
+  function openAppLog(){
+    var box=document.getElementById('appLogBody'); if(!box) return; box.innerHTML='';
+    APP_CHANGELOG.forEach(function(rel){
+      var h=document.createElement('div'); h.className='applog-v'; h.textContent='Версия '+rel.v; box.appendChild(h);
+      var ul=document.createElement('ul'); ul.className='applog-list';
+      (rel.items||[]).forEach(function(it){ var li=document.createElement('li'); li.textContent=it; ul.appendChild(li); });
+      box.appendChild(ul);
+    });
+    showModal('appLogModal');
+  }
+  (function(){
+    var v=document.getElementById('appVer'); if(v) v.textContent=APP_VERSION;
+    var b=document.getElementById('brandBtn'); if(b) b.onclick=openAppLog;
+    var c=document.getElementById('appLogClose'); if(c) c.onclick=closeModals;
+  })();
+  var pendingRange = null;      // {ch,start,end,quote,before,after} when adding
+  var editingId = null;
+  var _ptCache = {};            // chapter id -> plain text (markers off)
+  var SB = null, USER = null;   // Supabase client + signed-in user
+
+  // ---------- Supabase ----------
+  function initSB(){
+    try{
+      var rawUrl=window.SUPABASE_URL, rawKey=window.SUPABASE_ANON_KEY;
+      if(!rawUrl || !rawKey) return null;
+      if(/ВСТАВЬ|ВАШ/i.test(String(rawUrl)+String(rawKey))) return null;
+      if(!window.supabase || !window.supabase.createClient) return null;
+      var url=String(rawUrl).trim().replace(/\s+/g,'').replace(/\/+$/,'');  // снять любые пробелы/переносы и хвостовой /
+      var key=String(rawKey).replace(/\s+/g,'');
+      SB = window.supabase.createClient(url, key);
+      return SB;
+    }catch(e){ return null; }
+  }
+  function mapRow(r){
+    return { id:r.id, ch:r.chapter_id, ver:r.chapter_version,
+      start:r.start_off, end:r.end_off, quote:r.quote||'',
+      before:r.ctx_before||'', after:r.ctx_after||'', note:r.note||'',
+      status:r.status||'open', tag:r.tag||'', kind:r.kind||'fragment',
+      email:r.user_email||'', uid:r.user_id, mine:!!(USER && r.user_id===USER.id), replies:[],
+      ts:r.updated_at? Date.parse(r.updated_at): Date.now() };
+  }
+  // comments[] holds only the ACTIVE set: rows whose stored version matches the
+  // chapter's current version. Older rows stay in the DB (archived) but aren't shown.
+  async function loadComments(){
+    comments=[];
+    if(!SB || !USER) return;
+    var res=await SB.from('comments').select('*');
+    if(res.error){ toast('Не удалось загрузить правки: '+res.error.message); return; }
+    (res.data||[]).forEach(function(r){
+      if(BYID[r.chapter_id] && r.chapter_version===BYID[r.chapter_id].ver){ comments.push(mapRow(r)); }
+    });
+    await loadReplies();
+  }
+  async function loadReplies(){
+    comments.forEach(function(c){ c.replies=[]; });
+    if(!SB || !USER) return;
+    var byId={}; comments.forEach(function(c){ byId[c.id]=c; });
+    var rr;
+    try{ rr=await SB.from('replies').select('*').order('created_at',{ascending:true}); }catch(e){ return; }
+    if(rr.error) return; // таблицы replies может не быть (до миграции) — просто без ответов
+    (rr.data||[]).forEach(function(r){
+      var c=byId[r.comment_id]; if(!c) return;
+      c.replies.push({ id:r.id, email:r.user_email||'', uid:r.user_id, note:r.note||'',
+        mine:!!(USER && r.user_id===USER.id), ts:r.created_at?Date.parse(r.created_at):Date.now() });
+    });
+  }
+
+  // ---------- local prefs (theme / reading position) ----------
+  function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+  function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+  function saveState(){ lsSet('bp_state', JSON.stringify(state)); }
+
+  // ---------- markdown ----------
+  function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function escapeRe(s){ return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
+  function preprocess(md){
+    // diagrams at their markers (always shown)
+    md = md.replace(/<!--\s*DIAGRAM:\s*([a-z0-9_]+)[\s\S]*?-->/g, function(m,name){
+      return '\n\n<div class="figslot" data-fig="'+name+'"></div>\n\n';
+    });
+    // opponent quotes -> quotation block (always shown)
+    md = md.replace(/<!--\s*QUOTE-OPPONENT:\s*([\s\S]*?)-->/g, function(m,inner){
+      var qm=inner.match(/"([^"]*)"/); var quote=qm?qm[1]:'';
+      if(!quote) return '';
+      var am=inner.match(/author=([^|]+)/); var author=am?am[1].trim():'';
+      var h='<blockquote class="epigraph">'+escapeHtml(quote);
+      if(author) h+='<span class="cite">— '+escapeHtml(author)+'</span>';
+      h+='</blockquote>';
+      return '\n\n'+h+'\n\n';
+    });
+    // diagrams without a marker -> anchor after the relevant heading
+    var anchors=(BYID[state.chapter] && BYID[state.chapter].figs) || null;
+    if(anchors){ anchors.forEach(function(a){
+      var re=new RegExp('(^####\\s+'+escapeRe(a.h)+'\\s*$)','m');
+      md=md.replace(re, '$1\n\n<div class="figslot" data-fig="'+a.fig+'"></div>\n');
+    }); }
+    // remaining editorial markers
+    if(state.markers){
+      return md.replace(/<!--\s*([\s\S]*?)\s*-->/g, function(m, inner){
+        var label = inner.split(/[:|\n]/)[0].trim();
+        var rest = inner.slice(label.length).replace(/^[:\s|]+/,'').replace(/\s+/g,' ').trim();
+        if(rest.length>70) rest = rest.slice(0,70)+'…';
+        var txt = label + (rest?' '+rest:'');
+        return '<span class="mk">⟦'+escapeHtml(txt)+'⟧</span>';
+      });
+    }
+    return md.replace(/<!--[\s\S]*?-->/g,'');
+  }
+  function fillFigures(){
+    var slots=document.querySelectorAll('#content .figslot');
+    for(var i=0;i<slots.length;i++){
+      var s=slots[i], name=s.getAttribute('data-fig'), d=DIAGS[name];
+      if(!d){ if(s.parentNode) s.parentNode.removeChild(s); continue; }
+      var fig=document.createElement('figure'); fig.className='fig';
+      var img=document.createElement('img'); img.src=d.src; img.alt=d.caption||name; img.loading='lazy';
+      fig.appendChild(img);
+      if(d.caption){ var cap=document.createElement('figcaption'); cap.textContent=d.caption; fig.appendChild(cap); }
+      s.parentNode.replaceChild(fig, s);
+    }
+  }
+  function fallbackMd(md){
+    // very small fallback if marked failed to load
+    var lines = md.split(/\n/), out=[], i, para=[];
+    function flush(){ if(para.length){ out.push('<p>'+inline(para.join(' '))+'</p>'); para=[]; } }
+    function inline(t){
+      return t.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
+              .replace(/\*([^*]+)\*/g,'<em>$1</em>')
+              .replace(/`([^`]+)`/g,'<code>$1</code>');
+    }
+    for(i=0;i<lines.length;i++){
+      var ln=lines[i];
+      if(/^#### /.test(ln)){ flush(); out.push('<h4>'+inline(ln.slice(5))+'</h4>'); }
+      else if(/^## /.test(ln)){ flush(); out.push('<h2>'+inline(ln.slice(3))+'</h2>'); }
+      else if(/^# /.test(ln)){ flush(); out.push('<h1>'+inline(ln.slice(2))+'</h1>'); }
+      else if(/^-{3,}\s*$/.test(ln)){ flush(); out.push('<hr>'); }
+      else if(/^>\s?/.test(ln)){ flush(); out.push('<blockquote>'+inline(ln.replace(/^>\s?/,''))+'</blockquote>'); }
+      else if(/^[-*]\s+/.test(ln)){ flush(); out.push('<ul><li>'+inline(ln.replace(/^[-*]\s+/,''))+'</li></ul>'); }
+      else if(/^\s*$/.test(ln)){ flush(); }
+      else para.push(ln.trim());
+    }
+    flush();
+    return out.join('\n');
+  }
+  function renderMd(md){
+    var src = preprocess(md);
+    if(typeof window.marked!=='undefined'){
+      try{
+        if(window.marked.parse) return window.marked.parse(src, {breaks:false, gfm:true, mangle:false, headerIds:false});
+        return window.marked(src);
+      }catch(e){ return fallbackMd(src); }
+    }
+    return fallbackMd(src);
+  }
+
+  // ---------- offset helpers ----------
+  var EXCL='figure.fig, .mk, blockquote.epigraph';
+  function rangeStartOffset(container, range){
+    var pre = range.cloneRange();
+    pre.selectNodeContents(container);
+    try{ pre.setEnd(range.startContainer, range.startOffset); }catch(e){ return 0; }
+    var len = pre.toString().length;
+    var extras = container.querySelectorAll(EXCL);
+    for(var i=0;i<extras.length;i++){
+      var el=extras[i];
+      var pos=el.compareDocumentPosition(range.startContainer);
+      if(pos & 4){ len -= el.textContent.length; }   // selection starts AFTER this excluded block
+    }
+    return len<0?0:len;
+  }
+  function applyHighlight(container, start, end, id, extraClass){
+    if(end<=start) return;
+    var walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT,
+      { acceptNode:function(n){ var p=n.parentNode;
+        return (p && p.closest && p.closest(EXCL)) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT; } }, false);
+    var pos=0, targets=[], node;
+    while((node=walker.nextNode())){
+      var len=node.nodeValue.length, ns=pos, ne=pos+len;
+      if(ne>start && ns<end){
+        targets.push({node:node, from:Math.max(0,start-ns), to:Math.min(len,end-ns)});
+      }
+      pos=ne;
+      if(pos>=end) break;
+    }
+    targets.forEach(function(t){
+      try{
+        var r=document.createRange();
+        r.setStart(t.node,t.from); r.setEnd(t.node,t.to);
+        var m=document.createElement('mark'); m.className='hl'+(extraClass?' '+extraClass:''); m.dataset.cid=id;
+        r.surroundContents(m);
+      }catch(e){}
+    });
+  }
+  function highlightChapter(){
+    var c=document.getElementById('content');
+    comments.filter(function(x){return x.ch===state.chapter && x.kind!=='chapter' && x.start>=0;})
+            .forEach(function(x){ applyHighlight(c, x.start, x.end, x.id, x.status==='done'?'done':''); });
+  }
+
+  // ---------- render ----------
+  function chapterIndex(id){ for(var i=0;i<BOOK.length;i++) if(BOOK[i].id===id) return i; return -1; }
+  function gotoAdjacent(dir){ var i=chapterIndex(state.chapter); if(i<0) return; var t=BOOK[i+dir]; if(t) openChapter(t.id); }
+  function countFor(id){ var n=0; comments.forEach(function(c){ if(c.ch===id && c.status!=='done') n++; }); return n; }
+
+  function renderTOC(){
+    var toc=document.getElementById('toc'); toc.innerHTML='';
+    var lastPart=null;
+    BOOK.forEach(function(c){
+      if(c.part!==lastPart){
+        var ph=document.createElement('div'); ph.className='toc-part'; ph.textContent=c.part;
+        toc.appendChild(ph); lastPart=c.part;
+      }
+      var it=document.createElement('div');
+      it.className='toc-item'+(c.id===state.chapter?' active':'');
+      it.innerHTML='<span>'+escapeHtml(c.title)+'</span>';
+      var n=countFor(c.id);
+      if(n>0 && canContribute()){ var b=document.createElement('span'); b.className='badge'; b.textContent=n; it.appendChild(b); }
+      if(state.read && state.read[c.id+':'+c.ver]>=0.97){ var tk=document.createElement('span'); tk.className='tick'; tk.textContent='✓'; it.appendChild(tk); }
+      it.onclick=function(){ openChapter(c.id); if(window.innerWidth<=820) toggleSidebar(false); };
+      toc.appendChild(it);
+    });
+  }
+
+  function renderChapNav(){
+    var nav=document.getElementById('chapNav'); var i=chapterIndex(state.chapter);
+    var prev=BOOK[i-1], next=BOOK[i+1];
+    nav.innerHTML='';
+    var pb=document.createElement('button');
+    pb.innerHTML='<div class="lbl">← Назад</div><div class="ttl">'+(prev?escapeHtml(prev.title):'')+'</div>';
+    pb.disabled=!prev; pb.onclick=function(){ if(prev) openChapter(prev.id); };
+    var nb=document.createElement('button'); nb.className='next';
+    nb.innerHTML='<div class="lbl">Дальше →</div><div class="ttl">'+(next?escapeHtml(next.title):'')+'</div>';
+    nb.disabled=!next; nb.onclick=function(){ if(next) openChapter(next.id); };
+    nav.appendChild(pb); nav.appendChild(nb);
+  }
+
+  function renderChapter(){
+    var cont=document.getElementById('content');
+    var c=BYID[state.chapter];
+    if(!c){ cont.innerHTML='<p style="color:var(--muted)">'+(BOOK.length?'Выберите главу слева.':'Книга ещё загружается…')+'</p>'; document.getElementById('topTitle').textContent=''; document.getElementById('chapNav').innerHTML=''; var rb=document.getElementById('reactBar'); if(rb){rb.style.display='none';rb.innerHTML='';} return; }
+    var _changed = (cont._ch !== c.id); cont._ch = c.id;
+    cont.innerHTML = renderMd(c.md);
+    if(_changed){ cont.classList.remove('enter'); void cont.offsetWidth; cont.classList.add('enter'); }
+    document.getElementById('topTitle').textContent = c.title;
+    var _h1=cont.querySelector('h1');
+    if(_h1){ var _w=(c.md||'').split(/\s+/).filter(Boolean).length, _m=Math.max(1,Math.round(_w/200));
+      var _meta=document.createElement('div'); _meta.className='chap-meta'; _meta.textContent='≈ '+_m+' мин чтения'; _h1.insertAdjacentElement('afterend', _meta); }
+    fillFigures(); highlightChapter(); renderChapNav(); renderRate('rateBar'); renderReactBar(); renderDiscCTA(); renderSupp(); renderReadProgress();
+  }
+
+  function openChapter(id, scrollToTop){
+    if(state.chapter && state.chapter!==id){ // remember scroll of leaving chapter
+      state.scroll[state.chapter]=document.getElementById('scroller').scrollTop;
+    }
+    state.chapter=id;
+    renderChapter();
+    renderTOC();
+    var sc=document.getElementById('scroller');
+    sc.scrollTop = (scrollToTop===false && state.scroll[id])? state.scroll[id] : 0;
+    saveState();
+    clearTimeout(window._fitT); window._fitT=setTimeout(function(){ var s=document.getElementById('scroller'), c=BYID[state.chapter]; if(!c||state.chapter!==id) return; var k=c.id+':'+c.ver; if((state.read[k]||0)<0.97 && s.scrollHeight<=s.clientHeight+8){ state.read[k]=0.97; renderTOC(); renderReadProgress(); saveState(); } }, 2500);
+    updateProgress();
+    if(panelOpen() && panelTab==='disc') renderDisc();
+    flushProgress();
+  }
+
+  function updateProgress(){
+    var sc=document.getElementById('scroller');
+    var max=sc.scrollHeight-sc.clientHeight;
+    var p=max>0?(sc.scrollTop/max*100):0;
+    document.getElementById('progress').style.width=p+'%';
+  }
+
+  // ---------- selection -> floating add ----------
+  var lastRange=null;
+  function onSelect(){
+    var sel=window.getSelection();
+    var fab=document.getElementById('floatAdd');
+    if(!canContribute()){ fab.style.display='none'; return; }   // правки — только контрибьюторам
+    if(!sel || sel.isCollapsed || sel.rangeCount===0){ fab.style.display='none'; return; }
+    var range=sel.getRangeAt(0);
+    var content=document.getElementById('content');
+    if(!content.contains(range.commonAncestorContainer)){ fab.style.display='none'; return; }
+    if(sel.toString().trim().length<2){ fab.style.display='none'; return; }
+    lastRange=range.cloneRange();   // keep last valid range even if selection later collapses
+    fab.style.display='block';
+  }
+  document.addEventListener('selectionchange', function(){
+    // debounce to end of selection on touch
+    clearTimeout(window.__selT); window.__selT=setTimeout(onSelect,10);
+  });
+
+  function doAddComment(e){
+    if(e){ e.preventDefault(); e.stopPropagation(); }
+    var fab=document.getElementById('floatAdd');
+    if(!canContribute()){ fab.style.display='none'; try{window.getSelection().removeAllRanges();}catch(_){ } toast('Здесь правки оставляют контрибьюторы — а читать, обсуждать и оценивать можно уже сейчас.'); return; }
+    if(!lastRange){ fab.style.display='none'; return; }
+    var content=document.getElementById('content');
+    var start=rangeStartOffset(content,lastRange);
+    var quote=lastRange.toString().replace(/⟦[^⟧]*⟧/g,'').replace(/\u00a0/g,' ');
+    if(quote.trim().length<2){ fab.style.display='none'; return; }
+    var end=start+quote.length;
+    var p=ctxParts({ ch:state.chapter, start:start, end:end, quote:quote });
+    pendingRange={ ch:state.chapter, start:start, end:end, quote:quote, before:p.b, after:p.a, kind:'fragment' };
+    editingId=null;
+    openEditor(quote,'','',false);
+    fab.style.display='none';
+    try{ window.getSelection().removeAllRanges(); }catch(_){}
+  }
+  // pointerdown fires before the tap can collapse the selection; preventDefault keeps the range intact
+  document.getElementById('floatAdd').addEventListener('pointerdown', doAddComment);
+  document.getElementById('floatAdd').addEventListener('click', function(e){ e.preventDefault(); });
+
+  // click an existing highlight
+  document.getElementById('content').addEventListener('click', function(e){
+    var m=e.target.closest && e.target.closest('mark.hl');
+    if(!m) return;
+    var id=m.dataset.cid;
+    var c=comments.filter(function(x){return x.id===id;})[0];
+    if(!c) return;
+    pendingRange=null;
+    if(c.mine){ editingId=id; openEditor(c.quote, c.note, c.tag, false); }
+    else { editingId=null; openEditor(c.quote, c.note, c.tag, true); }
+  });
+
+  // ---------- editor modal ----------
+  var curTag='';
+  function setTagUI(t){
+    curTag=t||'';
+    var chips=document.querySelectorAll('#tagRow .tagchip');
+    for(var i=0;i<chips.length;i++) chips[i].classList.toggle('on', chips[i].getAttribute('data-tag')===curTag);
+  }
+  document.getElementById('tagRow').addEventListener('click', function(e){
+    var ch=e.target.closest? e.target.closest('.tagchip'):null; if(!ch) return;
+    if(document.getElementById('editText').disabled) return;
+    setTagUI(ch.getAttribute('data-tag'));
+  });
+  function openEditor(quote, note, tag, readOnly){
+    document.getElementById('editQuote').textContent =
+      quote==='__chapter__' ? '— вся глава —' : '«'+quote.replace(/\s+/g,' ').trim()+'»';
+    var ta=document.getElementById('editText');
+    ta.value=note||''; ta.disabled=!!readOnly;
+    setTagUI(tag||'');
+    document.getElementById('editTitle').textContent = readOnly? 'Комментарий (только чтение)' : (editingId? 'Правка комментария':'Новый комментарий');
+    document.getElementById('editDelete').style.display = (editingId && !readOnly)? 'inline-block':'none';
+    document.getElementById('editSave').style.display = readOnly? 'none':'inline-block';
+    showModal('editModal');
+    if(!readOnly) setTimeout(function(){ ta.focus(); },50);
+  }
+  document.getElementById('editSave').onclick=async function(){
+    var note=document.getElementById('editText').value.trim();
+    if(editingId){
+      var found=comments.filter(function(x){return x.id===editingId;})[0];
+      if(found){ found.note=note; found.tag=curTag; found.ts=Date.now(); }
+      if(SB && found){ var u=await SB.from('comments').update({note:note, tag:curTag}).eq('id',editingId); if(u.error) toast('Ошибка: '+u.error.message); }
+    } else if(pendingRange){
+      var ver=BYID[pendingRange.ch]? BYID[pendingRange.ch].ver : '';
+      if(SB){
+        var ins=await SB.from('comments').insert({
+          chapter_id:pendingRange.ch, chapter_version:ver,
+          start_off:pendingRange.start, end_off:pendingRange.end,
+          quote:pendingRange.quote, ctx_before:pendingRange.before, ctx_after:pendingRange.after,
+          note:note, tag:curTag, kind:pendingRange.kind||'fragment', status:'open',
+          user_email:(USER&&USER.email? USER.email.toLowerCase():'')
+        }).select().single();
+        if(ins.error){ toast('Ошибка сохранения: '+ins.error.message); }
+        else { comments.push(mapRow(ins.data)); }
+      } else {
+        comments.push({ id:'local'+Date.now(), ch:pendingRange.ch, ver:ver, start:pendingRange.start, end:pendingRange.end,
+          quote:pendingRange.quote, before:pendingRange.before, after:pendingRange.after, note:note,
+          tag:curTag, kind:pendingRange.kind||'fragment', status:'open', mine:true, email:'', ts:Date.now() });
+      }
+    }
+    closeModals(); renderChapter(); renderTOC(); refreshPanel(); updateCount();
+  };
+  document.getElementById('editDelete').onclick=async function(){
+    if(!editingId) return;
+    var id=editingId;
+    comments=comments.filter(function(c){return c.id!==id;});
+    if(SB){ var d=await SB.from('comments').delete().eq('id',id); if(d.error) toast('Ошибка удаления: '+d.error.message); }
+    closeModals(); renderChapter(); renderTOC(); refreshPanel(); updateCount();
+  };
+  document.getElementById('editCancel').onclick=closeModals;
+
+  // ---------- comments panel ----------
+  function updateCount(){
+    var el=document.getElementById('cCount');
+    var n=0; comments.forEach(function(c){ if(c.status!=='done') n++; });
+    if(!canContribute() || n===0){ el.textContent=''; el.style.display='none'; return; }
+    el.style.display='inline-block'; el.textContent=n>9?'9+':String(n);
+  }
+  function refreshPanel(){
+    var list=document.getElementById('cList'); list.innerHTML='';
+    if(comments.length===0){
+      list.innerHTML='<div class="empty">Пока пусто. Выделите фрагмент в тексте — и оставьте автору заметку.</div>';
+      return;
+    }
+    BOOK.forEach(function(ch){
+      var cs=comments.filter(function(c){return c.ch===ch.id;}).sort(function(a,b){return a.start-b.start;});
+      if(!cs.length) return;
+      var g=document.createElement('div'); g.className='c-group';
+      var gh=document.createElement('div'); gh.className='gh'; gh.textContent=ch.title; g.appendChild(gh);
+      cs.forEach(function(c){
+        var foreign=!c.mine;
+        var card=document.createElement('div'); card.className='c-card'+(c.status==='done'?' done':'')+(foreign?' foreign':'');
+        var meta=document.createElement('div'); meta.className='c-meta';
+        if(foreign){ var au=document.createElement('span'); au.className='c-author'; au.appendChild(personSpan(c.uid, c.email)); meta.appendChild(au); }
+        if(c.tag){ var tg=document.createElement('span'); tg.className='c-tag'; tg.textContent=c.tag; meta.appendChild(tg); }
+        if(meta.childNodes.length) card.appendChild(meta);
+        var q=document.createElement('div'); q.className='c-quote';
+        q.textContent = c.kind==='chapter' ? '— вся глава —' : '«'+c.quote.replace(/\s+/g,' ').trim()+'»';
+        q.onclick=function(){ jumpTo(c); };
+        var note=document.createElement('div'); note.className='c-note';
+        note.textContent=c.note||'(без текста)';
+        card.appendChild(q); card.appendChild(note);
+        if(c.replies && c.replies.length){
+          var th=document.createElement('div'); th.className='c-thread';
+          c.replies.forEach(function(r){
+            var ri=document.createElement('div'); ri.className='c-reply';
+            var who=document.createElement('span'); who.className='c-reply-who'; who.textContent=(r.mine?'вы':nameFor(r.uid,r.email))+': ';
+            ri.appendChild(who); ri.appendChild(document.createTextNode(r.note));
+            if(r.mine || isAdmin){ var rd=document.createElement('a'); rd.className='c-reply-del'; rd.textContent='×'; rd.title='удалить ответ';
+              rd.onclick=async function(){ if(SB){ var d=await SB.from('replies').delete().eq('id',r.id); if(d.error){ toast('Ошибка: '+d.error.message); return; } } await loadComments(); refreshPanel(); };
+              ri.appendChild(rd); }
+            th.appendChild(ri);
+          });
+          card.appendChild(th);
+        }
+        var act=document.createElement('div'); act.className='c-actions';
+        var go=document.createElement('a'); go.textContent='к месту'; go.onclick=function(){ jumpTo(c); }; act.appendChild(go);
+        var rep=document.createElement('a'); rep.textContent='ответить'; rep.onclick=function(){ openReply(c); }; act.appendChild(rep);
+        var li=likeInfo(c.id);
+        var lk=document.createElement('a'); lk.className='c-like'+(li.mine?' on':''); lk.textContent=(li.mine?'♥':'♡')+(li.count?(' '+li.count):'');
+        lk.title='Полезная правка'; lk.onclick=function(){ if(!canContribute()){ toast('Отмечать правки могут контрибьюторы'); return; } toggleLike(c.id); }; act.appendChild(lk);
+        if(c.mine){
+          var ed=document.createElement('a'); ed.textContent='изменить'; ed.onclick=function(){ editingId=c.id; pendingRange=null; openEditor(c.kind==='chapter'?'__chapter__':c.quote, c.note, c.tag, false); };
+          act.appendChild(ed);
+        }
+        if(c.mine || isAdmin){
+          var st=document.createElement('a'); st.textContent = c.status==='done' ? 'вернуть' : 'готово';
+          st.onclick=async function(){
+            var ns = c.status==='done' ? 'open' : 'done'; c.status=ns;
+            if(SB){ var u=await SB.from('comments').update({status:ns}).eq('id',c.id); if(u.error) toast('Ошибка: '+u.error.message); }
+            renderChapter(); renderTOC(); refreshPanel(); updateCount();
+          };
+          var del=document.createElement('a'); del.textContent='удалить'; del.onclick=function(){ armDelete(del, async function(){
+            comments=comments.filter(function(x){return x.id!==c.id;});
+            if(SB){ var d=await SB.from('comments').delete().eq('id',c.id); if(d.error) toast('Ошибка удаления: '+d.error.message); }
+            renderChapter(); renderTOC(); refreshPanel(); updateCount();
+          }); };
+          act.appendChild(st); act.appendChild(del);
+        }
+        card.appendChild(act);
+        g.appendChild(card);
+      });
+      list.appendChild(g);
+    });
+  }
+  function jumpTo(c){
+    if(c.kind==='chapter'){ if(state.chapter!==c.ch) openChapter(c.ch); if(window.innerWidth<=820) togglePanel(false); return; }
+    function find(){
+      var m=document.querySelector('mark.hl[data-cid="'+c.id+'"]');
+      if(m){ m.scrollIntoView({block:'center'}); m.classList.add('flash'); setTimeout(function(){m.classList.remove('flash');},1200); }
+    }
+    if(state.chapter!==c.ch){ openChapter(c.ch); setTimeout(find,120); }
+    else find();
+    if(window.innerWidth<=820) togglePanel(false);
+  }
+
+  // ---------- context for precise positioning ----------
+  function captureContext(container, range){
+    var pre=range.cloneRange(); pre.selectNodeContents(container); try{pre.setEnd(range.startContainer,range.startOffset);}catch(e){}
+    var post=range.cloneRange(); post.selectNodeContents(container); try{post.setStart(range.endContainer,range.endOffset);}catch(e){}
+    var before=pre.toString().replace(/⟦[^⟧]*⟧/g,'').replace(/\u00a0/g,' ').replace(/\s+/g,' ');
+    var after=post.toString().replace(/⟦[^⟧]*⟧/g,'').replace(/\u00a0/g,' ').replace(/\s+/g,' ');
+    var L=70, bT=before.length>L, aT=after.length>L;
+    if(bT) before=before.slice(-L).replace(/^\S*\s/,'');
+    if(aT) after=after.slice(0,L).replace(/\s\S*$/,'');
+    return { before:(bT?'…':'')+before, after:after+(aT?'…':'') };
+  }
+  function plainText(id){
+    if(_ptCache[id]!=null) return _ptCache[id];
+    var c=BYID[id]; if(!c){ return ''; }
+    var src=c.md.replace(/<!--[\s\S]*?-->/g,'');
+    var html;
+    if(typeof window.marked!=='undefined'){ try{ html=window.marked.parse(src,{gfm:true,headerIds:false,mangle:false}); }catch(e){ html=fallbackMd(src); } }
+    else html=fallbackMd(src);
+    var tmp=document.createElement('div'); tmp.innerHTML=html;
+    var t=(tmp.textContent||'').replace(/\u00a0/g,' ');
+    _ptCache[id]=t; return t;
+  }
+  function ctxParts(c){
+    if(typeof c.before==='string' || typeof c.after==='string') return {b:c.before||'', a:c.after||''};
+    // fallback for older comments: locate quote in chapter plain text, nearest to stored offset
+    var pt=plainText(c.ch), q=c.quote||'', s=c.start, e=c.end;
+    if(q){
+      var best=-1, bestd=1e9, p=0;
+      while((p=pt.indexOf(q,p))!==-1){ var d=Math.abs(p-c.start); if(d<bestd){bestd=d;best=p;} p++; }
+      if(best>=0){ s=best; e=best+q.length; }
+      else { var ptN=pt.replace(/\s+/g,' '), qN=q.replace(/\s+/g,' ').trim(), j=ptN.indexOf(qN);
+             if(j>=0){ pt=ptN; s=j; e=j+qN.length; } }
+    }
+    var L=70;
+    var before=pt.slice(Math.max(0,s-220),s).replace(/\s+/g,' ');
+    var after=pt.slice(e,e+220).replace(/\s+/g,' ');
+    var bT=before.length>L, aT=after.length>L;
+    if(bT) before=before.slice(-L).replace(/^\S*\s/,'');
+    if(aT) after=after.slice(0,L).replace(/\s\S*$/,'');
+    return { b:(bT?'…':'')+before, a:after+(aT?'…':'') };
+  }
+  function contextFor(c){ var p=ctxParts(c); return p.b+'⟦'+c.quote.replace(/\s+/g,' ').trim()+'⟧'+p.a; }
+
+  // ---------- export ----------
+  function pad(n){ return n<10?'0'+n:''+n; }
+  function nowStr(){ var d=new Date(); return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes()); }
+  function exportPool(onlyOpen){
+    return comments.filter(function(c){ return !onlyOpen || c.status!=='done'; });
+  }
+  function buildExport(onlyOpen){
+    var pool=exportPool(onlyOpen);
+    var lines=[];
+    lines.push('ПРАВКИ К КНИГЕ «Управляя поведением»');
+    lines.push('Сгенерировано: '+nowStr()+' · правок: '+pool.length+(onlyOpen?' (только открытые)':''));
+    lines.push('');
+    lines.push('Для каждой правки указан файл главы, точная цитата фрагмента, его контекст');
+    lines.push('(фрагмент внутри контекста выделен символами ⟦ ⟧), тег в [скобках] и комментарий.');
+    lines.push('Пометка «— ВСЯ ГЛАВА —» значит: правка относится к главе целиком, без привязки к месту.');
+    lines.push('');
+    var any=false;
+    BOOK.forEach(function(ch){
+      var cs=pool.filter(function(c){return c.ch===ch.id;}).sort(function(a,b){return a.start-b.start;});
+      if(!cs.length) return;
+      any=true;
+      lines.push('═══════════════════════════════════════════════');
+      lines.push('ГЛАВА: '+ch.title);
+      lines.push('ФАЙЛ: '+ch.file);
+      lines.push('───────────────────────────────────────────────');
+      cs.forEach(function(c,i){
+        var head=(i+1)+'. '+(c.tag? '['+c.tag.toUpperCase()+'] ':'');
+        if(c.kind==='chapter'){
+          lines.push(head+'— ВСЯ ГЛАВА —');
+        } else {
+          lines.push(head+'ФРАГМЕНТ: «'+c.quote.replace(/\s+/g,' ').trim()+'»');
+          lines.push('   КОНТЕКСТ: «'+contextFor(c)+'»');
+        }
+        if(!c.mine && c.email) lines.push('   АВТОР: '+c.email);
+        lines.push('   ПРАВКА: '+(c.note||'(без текста)').replace(/\n/g,'\n           '));
+        lines.push('');
+      });
+    });
+    if(!any) lines.push('(правок нет)');
+    return lines.join('\n');
+  }
+  function rebuildExport(){
+    var only=document.getElementById('expOnlyOpen').checked;
+    document.getElementById('exportArea').value=buildExport(only);
+    var pool=exportPool(only);
+    document.getElementById('exportInfo').textContent=pool.length+' правок · '+
+      (new Set(pool.map(function(c){return c.ch;})).size)+' глав';
+  }
+  function openExport(){ rebuildExport(); showModal('exportModal'); }
+  document.getElementById('expOnlyOpen').onchange=rebuildExport;
+  document.getElementById('exportCopy').onclick=function(){
+    copyText(document.getElementById('exportArea').value, 'Скопировано — вставьте в чат с моделью');
+  };
+  document.getElementById('exportClose').onclick=closeModals;
+
+  function copyText(txt, msg){
+    var done=function(){ toast(msg||'Скопировано'); };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(done, function(){ legacyCopy(txt); done(); });
+    } else { legacyCopy(txt); done(); }
+  }
+  function legacyCopy(txt){
+    var ta=document.getElementById('exportArea');
+    ta.value=txt; ta.style.display='block'; ta.select();
+    try{ document.execCommand('copy'); }catch(e){}
+  }
+
+  // ---------- json backup ----------
+  document.getElementById('btnSaveJson').onclick=function(){
+    var blob=new Blob([JSON.stringify({book:'upravlyaya-povedeniem',exported:nowStr(),comments:comments},null,2)],{type:'application/json'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    a.download='pravki_'+nowStr().replace(/[: ]/g,'-')+'.json'; a.click();
+    setTimeout(function(){URL.revokeObjectURL(a.href);},2000);
+    toast('Файл с правками сохранён');
+  };
+  document.getElementById('btnLoadJson').onclick=function(){ document.getElementById('fileInput').click(); };
+  document.getElementById('fileInput').onchange=function(e){
+    var f=e.target.files[0]; if(!f) return;
+    var fr=new FileReader();
+    fr.onload=async function(){
+      try{
+        var data=JSON.parse(fr.result);
+        var arr=Array.isArray(data)?data:(data.comments||[]);
+        if(!Array.isArray(arr)) throw 0;
+        if(SB){
+          var rows=arr.map(function(c){
+            var ver=BYID[c.ch]? BYID[c.ch].ver : (c.ver||'');
+            return { chapter_id:c.ch, chapter_version:ver, start_off:(c.start==null?0:c.start), end_off:(c.end==null?0:c.end),
+                     quote:c.quote||'', ctx_before:c.before||'', ctx_after:c.after||'', note:c.note||'',
+                     tag:c.tag||'', kind:c.kind||'fragment', status:c.status||'open',
+                     user_email:(USER&&USER.email? USER.email.toLowerCase():'') };
+          });
+          var ins=await SB.from('comments').insert(rows);
+          if(ins.error){ toast('Ошибка импорта: '+ins.error.message); return; }
+          await loadComments();
+        } else {
+          arr.forEach(function(c){ comments.push({ id:'local'+Date.now()+Math.random().toString(36).slice(2,5),
+            ch:c.ch, ver:(c.ver||''), start:c.start, end:c.end, quote:c.quote, before:c.before, after:c.after, note:c.note, ts:Date.now() }); });
+        }
+        renderChapter(); renderTOC(); refreshPanel(); updateCount();
+        toast('Импортировано правок: '+arr.length);
+      }catch(err){ toast('Не удалось прочитать файл'); }
+    };
+    fr.readAsText(f); e.target.value='';
+  };
+
+  // ---------- modals / panel / sidebar ----------
+  function showModal(id){
+    document.getElementById('overlay').classList.add('show');
+    var m=document.getElementById(id);
+    if(m){ m.style.display='flex'; void m.offsetWidth; m.classList.add('show'); }
+  }
+  function closeModals(){
+    document.getElementById('overlay').classList.remove('show');
+    document.querySelectorAll('.modal.show').forEach(function(m){
+      m.classList.remove('show');
+      (function(el){ setTimeout(function(){ if(!el.classList.contains('show')){ el.style.display=''; el.style.bottom=''; } }, 300); })(m);
+    });
+    editingId=null; pendingRange=null;
+  }
+  document.getElementById('overlay').onclick=closeModals;
+  document.addEventListener('keydown', function(e){
+    if(e.key==='Escape'){ closeModals(); return; }
+    var tn=(e.target && e.target.tagName || '').toLowerCase();
+    if(tn==='input' || tn==='textarea') return;
+    if(document.querySelector('.modal.show')) return;
+    var i=chapterIndex(state.chapter);
+    if(e.key==='ArrowRight' && BOOK[i+1]) openChapter(BOOK[i+1].id);
+    else if(e.key==='ArrowLeft' && BOOK[i-1]) openChapter(BOOK[i-1].id);
+  });
+
+  function togglePanel(open){
+    var p=document.getElementById('panel');
+    if(open===undefined) open=!p.classList.contains('open');
+    p.classList.toggle('open', open);
+    if(open) renderPanel();
+  }
+  function toggleSidebar(open){
+    var s=document.getElementById('sidebar'), bd=document.getElementById('backdrop');
+    if(open===undefined) open=s.classList.contains('collapsed');
+    s.classList.toggle('collapsed', !open);
+    if(window.innerWidth<=820) bd.style.display=open?'block':'none';
+    if(open){ setTimeout(function(){ var toc=document.getElementById('toc'), a=toc&&toc.querySelector('.toc-item.active'); if(toc&&a&&a.scrollIntoView){ try{ a.scrollIntoView({block:'center'}); }catch(_){ a.scrollIntoView(); } } }, 60); }
+  }
+  document.getElementById('btnMenu').onclick=function(){ toggleSidebar(); };
+  document.getElementById('btnPanel').onclick=function(){ togglePanel(); };
+  document.getElementById('btnPanelClose').onclick=function(){ togglePanel(false); };
+  document.getElementById('miExport').onclick=function(){ closeMenus(); openExport(); };
+  document.getElementById('btnCopyAll').onclick=function(){ copyText(buildExport(true),'Открытые правки скопированы — вставьте модели'); };
+  document.getElementById('miMarkers').onclick=function(){
+    closeMenus();
+    state.markers=!state.markers; saveState();
+    document.getElementById('miMarkers').classList.toggle('on',state.markers);
+    renderChapter();
+  };
+
+  function applyTheme(){
+    document.documentElement.setAttribute('data-theme', state.theme==='dark'?'dark':'light');
+    var seg=document.getElementById('themeSeg');
+    if(seg){ var bs=seg.querySelectorAll('.seg-btn'); for(var i=0;i<bs.length;i++){ bs[i].classList.toggle('on', bs[i].getAttribute('data-th')===(state.theme==='dark'?'dark':'light')); } }
+  }
+  (function(){ var seg=document.getElementById('themeSeg'); if(seg){ var bs=seg.querySelectorAll('.seg-btn'); for(var i=0;i<bs.length;i++){ (function(b){ b.onclick=function(){ state.theme=b.getAttribute('data-th'); applyTheme(); saveState(); }; })(bs[i]); } } })();
+
+  // dropdown menus
+  function closeMenus(){ var ms=document.querySelectorAll('.menu.open, .sheet.open'); for(var i=0;i<ms.length;i++) ms[i].classList.remove('open'); var sc=document.getElementById('menuScrim'); if(sc) sc.classList.remove('on'); }
+  function toggleMenu(id, e){ if(e){ e.stopPropagation(); } var m=document.getElementById(id); var was=m.classList.contains('open'); closeMenus(); if(!was){ m.classList.add('open'); var sc=document.getElementById('menuScrim'); if(sc) sc.classList.add('on'); } }
+  (function(){
+    var scrim=document.createElement('div'); scrim.id='menuScrim'; document.body.appendChild(scrim); scrim.onclick=closeMenus;
+    var bv=document.getElementById('btnView'); if(bv) bv.onclick=function(e){ toggleMenu('readSheet', e); };
+    var bm=document.getElementById('btnMore'); if(bm) bm.onclick=function(e){ toggleMenu('moreMenu', e); };
+    var rs=document.getElementById('readSheet'); if(rs) rs.addEventListener('click', function(e){ e.stopPropagation(); });
+    var mm=document.getElementById('moreMenu'); if(mm) mm.addEventListener('click', function(e){ e.stopPropagation(); if(e.target.closest('.menu-item')) closeMenus(); });
+  })();
+  document.addEventListener('click', closeMenus);
+
+  // swipe down to dismiss bottom sheets (mobile)
+  (function(){
+    function enableSheetDrag(el){
+      if(!el) return; var y0=0, dy=0, drag=false;
+      el.addEventListener('touchstart', function(e){
+        if(window.innerWidth>640 || e.touches.length!==1) { drag=false; return; }
+        y0=e.touches[0].clientY; dy=0; drag=true; el.style.transition='none';
+      }, {passive:true});
+      el.addEventListener('touchmove', function(e){
+        if(!drag) return; dy=e.touches[0].clientY-y0;
+        el.style.transform = dy>0 ? ('translateY('+dy+'px)') : '';
+      }, {passive:true});
+      el.addEventListener('touchend', function(){
+        if(!drag) return; drag=false;
+        if(dy>80){ el.style.transition='transform .2s ease'; el.style.transform='translateY(110%)';
+          setTimeout(function(){ closeMenus(); el.style.transition=''; el.style.transform=''; }, 170); }
+        else { el.style.transition='transform .22s cubic-bezier(.32,.72,0,1)'; el.style.transform='';
+          setTimeout(function(){ el.style.transition=''; }, 240); }
+      }, {passive:true});
+    }
+    enableSheetDrag(document.getElementById('readSheet'));
+    enableSheetDrag(document.getElementById('moreMenu'));
+  })();
+
+  // keep editor/reply inputs and the discussion panel above the mobile keyboard (iOS fixed-element fix)
+  (function(){
+    var vv=window.visualViewport; if(!vv) return;
+    function onVV(){
+      var modals=document.querySelectorAll('.modal'), panel=document.getElementById('panel');
+      if(window.innerWidth>640){ for(var i=0;i<modals.length;i++) modals[i].style.bottom=''; if(panel) panel.style.height=''; return; }
+      var kb=Math.max(0, window.innerHeight - vv.height - vv.offsetTop), shown=document.querySelector('.modal.show');
+      for(var j=0;j<modals.length;j++){ modals[j].style.bottom = (modals[j]===shown && kb>80) ? (kb+'px') : ''; }
+      if(panel){ panel.style.height = (kb>80 && panel.classList.contains('open')) ? (vv.height+'px') : ''; }
+    }
+    vv.addEventListener('resize', onVV); vv.addEventListener('scroll', onVV);
+  })();
+
+  // swipe left/right to change chapters (mobile reading flow)
+  (function(){
+    var sc=document.getElementById('scroller'); if(!sc) return;
+    var x0=0,y0=0,t0=0,on=false;
+    sc.addEventListener('touchstart', function(e){ if(e.touches.length!==1){ on=false; return; } var t=e.touches[0]; x0=t.clientX; y0=t.clientY; t0=Date.now(); on=true; }, {passive:true});
+    sc.addEventListener('touchend', function(e){
+      if(!on) return; on=false;
+      var t=e.changedTouches[0], dx=t.clientX-x0, dy=t.clientY-y0, dt=Date.now()-t0;
+      var sel=''; try{ sel=String(window.getSelection()); }catch(_){}
+      if(sel) return;                                   // не мешаем выделению текста
+      if(dt>600) return;                                // только быстрый жест
+      if(Math.abs(dx)<70 || Math.abs(dx) < Math.abs(dy)*1.8) return; // явно горизонтальный
+      if(panelOpen()) return;
+      gotoAdjacent(dx<0 ? 1 : -1);                      // влево → дальше, вправо → назад
+    }, {passive:true});
+  })();
+
+  var bd=document.createElement('div'); bd.id='backdrop'; document.body.appendChild(bd);
+  bd.onclick=function(){ toggleSidebar(false); };
+
+  // toast
+  var toastT=null;
+  function toast(msg){
+    var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+    clearTimeout(toastT); toastT=setTimeout(function(){t.classList.remove('show');},2200);
+  }
+
+  // ====== «вау» на принципах поведенческой экономики ======
+  function bookReadStats(){
+    var total=0, read=0;
+    BOOK.forEach(function(c){ total++; if((state.read[c.id+':'+c.ver]||0)>=0.97) read++; });
+    return {read:read, total:total, pct: total? Math.round(read/total*100):0};
+  }
+  function renderReadProgress(){
+    var el=document.getElementById('readProg'); if(!el) return;
+    var st=bookReadStats();
+    if(!st.total){ el.style.display='none'; return; }
+    el.style.display='block';
+    var bar=el.querySelector('.rp-bar > i'); if(bar) bar.style.width=st.pct+'%';
+    var lbl=el.querySelector('.rp-lbl'); if(lbl) lbl.textContent='Прочитано '+st.read+' из '+st.total;
+  }
+  function openJourney(){ renderJourney(); showModal('journeyModal'); }
+  function renderJourney(){
+    var box=document.getElementById('jrBody'); if(!box) return; box.innerHTML='';
+    var st=bookReadStats(), uid=USER&&USER.id;
+    var reacts=REACTALL.filter(function(x){return x.user_id===uid;}).length;
+    var rates=RATEALL.filter(function(x){return x.user_id===uid;}).length;
+    var thoughts=DISCALL.filter(function(x){return x.user_id===uid;}).length;
+    var mins=0; BOOK.forEach(function(c){ if((state.read[c.id+':'+c.ver]||0)>=0.97){ var w=(c.md||'').split(/\s+/).filter(Boolean).length; mins+=Math.max(1,Math.round(w/200)); } });
+    var done=st.total>0 && st.read>=st.total;
+    var tt=document.getElementById('jrTitle'); if(tt) tt.textContent = done ? 'Вы прошли всю книгу' : 'Ваш путь по книге';
+
+    var hl=document.createElement('div'); hl.className='jr-hl';
+    hl.innerHTML='<span class="jr-num">'+st.read+'</span><span class="jr-of"> из '+st.total+'</span><span class="jr-pct">'+st.pct+'%</span>';
+    box.appendChild(hl);
+
+    var map=document.createElement('div'); map.className='jr-map';
+    BOOK.forEach(function(c,i){
+      var read=(state.read[c.id+':'+c.ver]||0)>=0.97, cur=(c.id===state.chapter);
+      var cell=document.createElement('span'); cell.className='jr-cell'+(read?' read':'')+(cur?' cur':'');
+      cell.title=c.title; cell.style.animationDelay=(i*22)+'ms';
+      cell.onclick=function(){ closeModals(); if(BYID[c.id]) openChapter(c.id); };
+      map.appendChild(cell);
+    });
+    box.appendChild(map);
+
+    var stats=document.createElement('div'); stats.className='jr-stats';
+    function stat(n,l){ return '<div class="jr-stat"><b>'+n+'</b><span>'+l+'</span></div>'; }
+    stats.innerHTML = stat(reacts,'реакций') + stat(rates,'оценок') + stat(thoughts,'мыслей') + stat('\u2248'+mins,'мин с книгой');
+    box.appendChild(stats);
+
+    var msg=document.createElement('div'); msg.className='jr-msg';
+    if(done) msg.textContent='Спасибо, что были рядом всю дорогу. Для черновика это очень много.';
+    else if(st.pct>=50) msg.textContent='Больше половины позади. Так держать.';
+    else if(st.pct>0) msg.textContent='Хорошее начало — впереди самое интересное.';
+    else msg.textContent='Путь только начинается. Откройте первую главу.';
+    box.appendChild(msg);
+  }
+  (function(){ var b=document.getElementById('btnJourney'); if(b) b.onclick=function(){ closeMenus(); openJourney(); };
+    var c=document.getElementById('jrClose'); if(c) c.onclick=closeModals; })();
+  function haptic(ms){ try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(_){} }
+  function celebrateChapter(){
+    var st=bookReadStats(), total=st.total, read=st.read, left=total-read, msg;
+    if(left<=0)             msg='Вы прочитали книгу целиком. Спасибо, что дошли до конца.';
+    else if(read===1)      msg='Первая глава позади — хорошее начало.';
+    else if(read===2)      msg='Уже две главы. Втягиваемся.';
+    else if(left<=3)       msg='Почти всё — впереди ещё '+left;
+    else if(read*2<total)  msg='Глава прочитана. Так держать.';
+    else                   msg='Больше половины позади — '+read+' из '+total;
+    var el=document.getElementById('doneFx');
+    if(!el){ el=document.createElement('div'); el.id='doneFx'; el.innerHTML='<span class="df-check">\u2713</span><span class="df-msg"></span>'; document.body.appendChild(el); }
+    el.querySelector('.df-msg').textContent=msg;
+    el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
+    var chk=el.querySelector('.df-check'); if(chk){ chk.classList.remove('pop'); void chk.offsetWidth; chk.classList.add('pop'); }
+    clearTimeout(el._t); el._t=setTimeout(function(){ el.classList.remove('show'); }, 3200);
+    setTimeout(function(){ var t=document.querySelector('.toc-item.active .tick'); if(t) t.classList.add('pop'); }, 60);
+    haptic(18);
+    var nb=document.querySelector('#chapNav .next'); if(nb && !nb.disabled){ nb.classList.remove('invite'); void nb.offsetWidth; nb.classList.add('invite'); }
+  }
+  var _thanked=false;
+  function thankFeedbackOnce(){
+    if(_thanked) return; _thanked=true;
+    setTimeout(function(){ toast('Спасибо — автор обязательно это увидит'); }, 350);
+  }
+
+  // scroll progress + remember
+  var scrollT=null;
+  document.getElementById('scroller').addEventListener('scroll', function(){
+    updateProgress();
+    checkChapterDone();
+    clearTimeout(scrollT); scrollT=setTimeout(function(){
+      var sc2=document.getElementById('scroller');
+      state.scroll[state.chapter]=sc2.scrollTop;
+      var ch=BYID[state.chapter];
+      if(ch && sc2.scrollHeight>0){
+        var key=ch.id+':'+ch.ver;
+        var frac=Math.min(1,(sc2.scrollTop+sc2.clientHeight)/sc2.scrollHeight);
+        var prevf=state.read[key]||0;
+        if(frac>prevf){ state.read[key]=frac; renderTOC(); renderReadProgress(); }
+      }
+      flushProgress();
+      saveState();
+    },400);
+  });
+  // fire the moment the chapter TEXT ends (not the very bottom past the buttons), without the 400ms lag
+  function checkChapterDone(){
+    var sc=document.getElementById('scroller'), ch=BYID[state.chapter], content=document.getElementById('content');
+    if(!ch || !content || sc.scrollHeight<=0) return;
+    var key=ch.id+':'+ch.ver;
+    if((state.read[key]||0)>=0.97) return;
+    var proseEnd=content.offsetTop+content.offsetHeight;
+    if((sc.scrollTop+sc.clientHeight) >= (proseEnd-48)){
+      state.read[key]=0.97; renderTOC(); renderReadProgress(); saveState();
+      celebrateChapter();
+    }
+  }
+
+  // ---------- auth UI ----------
+  function showGate(mode){
+    document.getElementById('authGate').style.display='flex';
+    document.getElementById('authForm').style.display     = (mode==='login')?'block':'none';
+    document.getElementById('authConfig').style.display   = (mode==='config')?'block':'none';
+    document.getElementById('authNomember').style.display = (mode==='nomember')?'block':'none';
+  }
+  function updateAuthUI(){
+    document.getElementById('userBox').style.display = USER? 'flex':'none';
+    if(USER) document.getElementById('userEmail').textContent=USER.email||'аккаунт';
+  }
+  var authMode='signin';
+  function setAuthMode(m){
+    authMode=m;
+    document.getElementById('authBtn').textContent = (m==='signup')?'Создать аккаунт':'Войти';
+    document.getElementById('authSwitch').textContent = (m==='signup')?'Уже есть пароль? Войти':'Первый раз? Создать пароль';
+    document.getElementById('authPass').setAttribute('autocomplete', (m==='signup')?'new-password':'current-password');
+    document.getElementById('authMsg').textContent = (m==='signup')?'Придумайте пароль (минимум 6 символов).':'';
+  }
+  function doAuth(){
+    var email=(document.getElementById('authEmail').value||'').trim();
+    var pass=(document.getElementById('authPass').value||'');
+    var msg=document.getElementById('authMsg');
+    if(!email || email.indexOf('@')<1){ msg.textContent='Введите корректный email.'; return; }
+    if(pass.length<6){ msg.textContent='Пароль минимум 6 символов.'; return; }
+    if(!SB){ msg.textContent='Подключение к Supabase не настроено.'; return; }
+    var btn=document.getElementById('authBtn'); btn.disabled=true; msg.textContent='Минутку…';
+    var op = (authMode==='signup')
+      ? SB.auth.signUp({ email:email, password:pass })
+      : SB.auth.signInWithPassword({ email:email, password:pass });
+    op.then(function(res){
+      btn.disabled=false;
+      if(res.error){ msg.textContent=authErr(res.error.message); return; }
+      if(authMode==='signup' && !(res.data && res.data.session)){
+        msg.textContent='Аккаунт создан, но включено подтверждение email. Выключите «Confirm email» в настройках Supabase (см. инструкцию) и войдите по паролю.';
+        return;
+      }
+      // успех → onAuthStateChange продолжит
+    }).catch(function(err){ btn.disabled=false; msg.textContent=authErr((err&&err.message)||err); });
+  }
+  function authErr(m){
+    m=String(m||'');
+    if(/Invalid login credentials/i.test(m)) return 'Неверный email или пароль. Впервые здесь? Нажмите «Первый раз? Создать пароль».';
+    if(/Email not confirmed/i.test(m)) return 'Email не подтверждён. Админу нужно выключить «Confirm email» в Supabase (шаг 1.4 инструкции), затем войдите.';
+    if(/already registered/i.test(m)) return 'Аккаунт уже есть — входите по паролю (без «создать»).';
+    if(/rate limit|Too many|For security/i.test(m)) return 'Слишком много попыток, подождите минуту и повторите.';
+    if(/Failed to fetch|NetworkError|timeout|timed out|fetch/i.test(m)) return 'Нет связи с базой. Возможно, проект Supabase «уснул» — откройте его панель и нажмите Resume, затем повторите.';
+    return 'Ошибка: '+m;
+  }
+  var myRole='reader', prevSeen=0, welcomeShown=false, LIKEALL=[];
+  var CVALL=[], MYCHS={};   // история версий глав; главы, где у меня есть правки
+  function canContribute(){ return isAdmin || myRole==='contributor' || myRole==='editor'; }
+  function canModerate(){ return isAdmin || myRole==='editor'; }
+  function applyRoleUI(){
+    var contrib=canContribute(), mod=canModerate();
+    var show=function(id,on,inline){ var el=document.getElementById(id); if(el) el.style.display = on ? (inline||'') : 'none'; };
+    show('tabEdits', contrib);
+    ['editorSep','miDash','miExport','miMarkers'].forEach(function(id){ show(id, mod); });
+    show('btnAdmin', isAdmin);
+    ['btnCopyAll','btnSaveJson','btnLoadJson','btnArchive'].forEach(function(id){ show(id, mod); });
+    show('btnChapterNote', contrib);
+    if(!mod && state.markers){ state.markers=false; var mm=document.getElementById('miMarkers'); if(mm) mm.classList.remove('on'); renderChapter(); }
+    if(!contrib && panelTab==='edits') setPanelTab('disc');
+    renderTOC();      // перерисовать оглавление под роль (счётчики правок — только контрибьютору/редактору)
+    updateCount();    // и счётчик у 💬
+  }
+  async function checkMember(){
+    myRole = isAdmin ? 'editor' : 'reader';
+    if(!SB || !USER) return false;
+    var r=await SB.from('whitelist').select('email,role').eq('email',(USER.email||'').toLowerCase()).limit(1);
+    if(r.error) return false;
+    if(r.data && r.data.length){ if(!isAdmin) myRole=r.data[0].role||'reader'; return true; }
+    return false;
+  }
+  async function loadLikes(){
+    LIKEALL=[]; if(!SB||!USER) return;
+    try{ var r=await SB.from('comment_likes').select('*'); if(!r.error) LIKEALL=r.data||[]; }catch(e){}
+  }
+  function likeInfo(cid){
+    var count=0, mine=false;
+    for(var i=0;i<LIKEALL.length;i++){ if(LIKEALL[i].comment_id===cid){ count++; if(USER && LIKEALL[i].user_id===USER.id) mine=true; } }
+    return {count:count, mine:mine};
+  }
+  async function toggleLike(cid){
+    if(!SB||!USER) return;
+    var li=likeInfo(cid);
+    if(li.mine){
+      for(var i=LIKEALL.length-1;i>=0;i--){ if(LIKEALL[i].comment_id===cid && LIKEALL[i].user_id===USER.id) LIKEALL.splice(i,1); }
+      refreshPanel(); var d=await SB.from('comment_likes').delete().eq('comment_id',cid).eq('user_id',USER.id); if(d.error) toast('Ошибка: '+d.error.message);
+    } else {
+      LIKEALL.push({comment_id:cid, user_id:USER.id}); refreshPanel();
+      var ins=await SB.from('comment_likes').insert({comment_id:cid}); if(ins.error) toast('Ошибка: '+ins.error.message);
+    }
+  }
+  async function logout(){
+    if(SB){ try{ await SB.auth.signOut(); }catch(e){} }
+    USER=null; isAdmin=false; isMember=false; comments=[]; BOOK=[]; BYID={};
+    loadedUserId=null; authInFlight=null;
+    try{ localStorage.removeItem('bp_content:'+currentBook()); }catch(e){}
+    document.getElementById('btnAdmin').style.display='none';
+    document.getElementById('userBox').style.display='none';
+    renderChapter(); renderTOC(); refreshPanel(); updateCount();
+    showGate('login');
+  }
+  var loadedUserId=null, authInFlight=null;
+  async function onAuth(session){
+    USER = session ? session.user : null;
+    if(!USER){ isAdmin=isMember=false; loadedUserId=null; updateAuthUI(); showGate('login'); return; }
+    if(loadedUserId===USER.id && BOOK.length){           // уже загружено для этого пользователя — не перезагружаем
+      document.getElementById('authGate').style.display='none'; updateAuthUI(); return;
+    }
+    if(authInFlight===USER.id) return;                    // загрузка уже идёт
+    isAdmin = (USER.email||'').toLowerCase()===ADMIN;
+    document.getElementById('btnAdmin').style.display = isAdmin? '':'none';
+    isMember = isAdmin || await checkMember();
+    if(!isMember){ document.getElementById('nomemberEmail').textContent='Вы вошли как '+USER.email; showGate('nomember'); return; }
+    document.getElementById('authGate').style.display='none'; updateAuthUI();
+    authInFlight=USER.id;
+    try{
+      // 1) мгновенная отрисовка из кэша, иначе скелет
+      if(!BOOK.length){
+        if(loadContentCache()){
+          if(!state.chapter || !BYID[state.chapter]) state.chapter=BOOK[0].id;
+          renderTOC(); renderChapter();
+          document.getElementById('scroller').scrollTop=state.scroll[state.chapter]||0;
+        } else { showSkeleton(); }
+      }
+      // 2) комментарии (не кэшируются)
+      await loadComments();
+      if(BOOK.length){ renderChapter(); renderTOC(); refreshPanel(); updateCount(); }
+      // 3) фоновое обновление контента из базы
+      var sig=contentSig();
+      await loadContent();
+      if(!state.chapter || !BYID[state.chapter]) state.chapter = BOOK.length? BOOK[0].id : null;
+      if(contentSig()!==sig){                              // контент реально изменился (или это первая загрузка)
+        await loadComments();
+        renderTOC(); renderChapter(); refreshPanel(); updateCount();
+        document.getElementById('scroller').scrollTop=state.scroll[state.chapter]||0;
+      } else {
+        renderTOC();
+      }
+      loadedUserId=USER.id;
+      await loadProfiles();
+      prevSeen = (PROFILES[USER.id] && PROFILES[USER.id].last_seen)? Date.parse(PROFILES[USER.id].last_seen) : 0;
+      await loadSocial(); await loadProgress(); await loadLikes();
+      await loadBooks(); setBookTitle();
+      startPresence(); updateBell(); renderReactBar(); applyRoleUI();
+      if(panelOpen()) renderPanel();
+      maybeWelcome();
+    } finally { authInFlight=null; }
+  }
+  document.getElementById('authBtn').onclick=doAuth;
+  document.getElementById('authSwitch').onclick=function(){ setAuthMode(authMode==='signin'?'signup':'signin'); };
+  document.getElementById('authEmail').addEventListener('keydown', function(e){ if(e.key==='Enter') doAuth(); });
+  document.getElementById('authPass').addEventListener('keydown', function(e){ if(e.key==='Enter') doAuth(); });
+  document.getElementById('btnPwd').onclick=function(){
+    document.getElementById('pwdNew').value=''; document.getElementById('pwdMsg').textContent='';
+    showModal('pwdModal'); setTimeout(function(){ document.getElementById('pwdNew').focus(); },50);
+  };
+  document.getElementById('pwdCancel').onclick=closeModals;
+  document.getElementById('pwdSave').onclick=function(){
+    var np=(document.getElementById('pwdNew').value||''); var msg=document.getElementById('pwdMsg');
+    if(np.length<6){ msg.textContent='Минимум 6 символов.'; return; }
+    if(!SB){ msg.textContent='Нет подключения к базе.'; return; }
+    var b=document.getElementById('pwdSave'); b.disabled=true; msg.textContent='Сохраняю…';
+    SB.auth.updateUser({ password:np }).then(function(res){
+      b.disabled=false;
+      if(res.error){ msg.textContent='Ошибка: '+res.error.message; return; }
+      closeModals(); toast('Пароль изменён');
+    }).catch(function(err){ b.disabled=false; msg.textContent='Ошибка: '+((err&&err.message)||err); });
+  };
+  document.getElementById('pwdNew').addEventListener('keydown', function(e){ if(e.key==='Enter') document.getElementById('pwdSave').click(); });
+  // account: self name
+  document.getElementById('btnPwd').onclick=function(){
+    document.getElementById('pwdNew').value=''; document.getElementById('pwdMsg').textContent='';
+    var nm=(USER && PROFILES[USER.id] && PROFILES[USER.id].name)||'';
+    var an=document.getElementById('acctName'); if(an) an.value=nm;
+    showModal('pwdModal'); setTimeout(function(){ if(an) an.focus(); },50);
+  };
+  async function saveMyName(v){
+    if(!SB||!USER) return;
+    if(PROFILES[USER.id]) PROFILES[USER.id].name=v; else PROFILES[USER.id]={name:v};
+    try{ await SB.from('profiles').upsert({user_id:USER.id, email:(USER.email||'').toLowerCase(), name:v, last_seen:new Date().toISOString()}, {onConflict:'user_id'}); }catch(e){}
+    if(panelOpen()) renderPanel();
+  }
+  (function(){ var b=document.getElementById('acctNameSave'); if(b) b.onclick=async function(){
+    var v=(document.getElementById('acctName').value||'').trim(); if(!v){ toast('Введите имя'); return; }
+    await saveMyName(v); toast('Запомнил, спасибо');
+  }; })();
+
+  // welcome splash + digest
+  function timePhrase(){
+    var d=new Date(), h=d.getHours(), dow=d.getDay(), wknd=(dow===0||dow===6), sets;
+    var adj = (dow===6) ? {n:'субботнее', m:'субботний'} : {n:'воскресное', m:'воскресный'};
+    if(h>=5&&h<12)       sets = wknd ? ['Доброе '+adj.n+' утро','Неспешного утра','Кофе, плед и буквы'] : ['Доброе утро','С добрым утром','Кофе и буквы'];
+    else if(h>=12&&h<17) sets = wknd ? ['Добрый '+adj.m+' день','Уютного дня','Тёплого дня']           : ['Добрый день','День добрый','Тёплого дня'];
+    else if(h>=17&&h<23) sets = wknd ? ['Добрый '+adj.m+' вечер','Тихого вечера','Вечер для чтения']    : ['Добрый вечер','Вечер для чтения','Тихого вечера'];
+    else                 sets = ['Доброй ночи','Режим совы','Глубокая ночь — самое чтение'];
+    return sets[Math.floor(Math.random()*sets.length)];
+  }
+  function maybeWelcome(){
+    if(welcomeShown) return; welcomeShown=true;
+    if(!prevSeen){ onboarding=true; showWelcome(true, []); return; }   // первый визит — онбординг
+    if(Date.now()-prevSeen < 8*3600*1000) return;              // меньше 8 часов — не беспокоим
+    var items=[];
+    var nUpd=BOOK.filter(function(b){ return b.updated && Date.parse(b.updated)>prevSeen; }).length;
+    var nDisc=DISCALL.filter(function(d){ return Date.parse(d.created_at)>prevSeen && !(USER && d.user_id===USER.id); }).length;
+    var nEd=comments.filter(function(c){ return c.ts>prevSeen && !c.mine; }).length;
+    if(nUpd) items.push('обновлено глав: '+nUpd);
+    if(nDisc) items.push('новых сообщений в обсуждениях: '+nDisc);
+    if(canContribute() && nEd) items.push('новых правок: '+nEd);
+    showWelcome(false, items);
+  }
+  function showWelcome(first, items){
+    var nm=(USER && PROFILES[USER.id] && PROFILES[USER.id].name)||'';
+    document.getElementById('wcHi').textContent = timePhrase()+(nm?(', '+nm):'')+'!';
+    var body=document.getElementById('wcBody'); body.innerHTML='';
+    if(first){
+      var p1=document.createElement('p'); p1.textContent='Рады, что заглянули. «Читальня» — тихое место, где можно читать черновик книги и помогать ей расти: реакции, оценки, мысли на полях — автор всё это видит и правда им рад. Как вас называть?';
+      body.appendChild(p1);
+      var wrap=document.createElement('div'); wrap.style.cssText='display:flex;gap:8px;margin-top:8px';
+      var inp=document.createElement('input'); inp.className='adm-in'; inp.placeholder='Ваше имя'; inp.style.flex='1'; inp.value=nm;
+      var sv=document.createElement('button'); sv.className='btn primary'; sv.textContent='Сохранить';
+      sv.onclick=async function(){ var v=(inp.value||'').trim(); if(v){ await saveMyName(v); document.getElementById('wcHi').textContent=timePhrase()+', '+v+'!'; sv.textContent='Готово'; } };
+      wrap.appendChild(inp); wrap.appendChild(sv); body.appendChild(wrap);
+      var p2=document.createElement('p'); p2.style.cssText='color:var(--muted);font-size:13px;margin-top:12px'; p2.textContent='Тут пока одна книга и небольшой круг своих — устраивайтесь поудобнее.';
+      body.appendChild(p2);
+    } else if(items.length){
+      var t=document.createElement('div'); t.style.cssText='font-size:13px;color:var(--muted);margin-bottom:6px'; t.textContent='Пока вас не было — вот что появилось:';
+      body.appendChild(t);
+      var ul=document.createElement('ul'); ul.className='wc-digest';
+      items.forEach(function(it){ var li=document.createElement('li'); li.textContent=it; ul.appendChild(li); });
+      body.appendChild(ul);
+    } else {
+      var pe=document.createElement('p'); pe.style.color='var(--muted)'; pe.textContent='С прошлого захода тихо — самое время снова устроиться с книгой.'; body.appendChild(pe);
+    }
+    setTimeout(function(){ showModal('welcomeModal'); }, 450);
+  }
+  (function(){ var b=document.getElementById('wcClose'); if(b) b.onclick=function(){ closeModals(); if(onboarding){ onboarding=false; showShelf(); } }; })();
+
+  // chapter info (version + date)
+  async function showChapterInfo(){
+    var c=BYID[state.chapter]; if(!c) return;
+    document.getElementById('ciTitle').textContent='О главе · '+c.title;
+    var box=document.getElementById('ciBody'); box.innerHTML='Загрузка…';
+    showModal('chinfoModal');
+    var when=c.updated? new Date(c.updated).toLocaleString('ru-RU') : '—';
+    var html='<div class="ci-cur"><b>Текущая версия:</b> '+(c.ver||'?').slice(0,7)+' · '+when+'</div>';
+    box.innerHTML=html;
+    var vr=await SB.from('chapter_versions').select('ver,changelog,created_at').eq('chapter_id',c.id).order('created_at',{ascending:false});
+    if(!vr.error && vr.data && vr.data.length){
+      var h=document.createElement('div'); h.className='ci-h'; h.textContent='История изменений'; box.appendChild(h);
+      vr.data.forEach(function(v){
+        var row=document.createElement('div'); row.className='ci-row';
+        var d=document.createElement('div'); d.className='ci-date';
+        d.innerHTML='<b>'+(v.ver||'?').slice(0,7)+'</b> · '+new Date(v.created_at).toLocaleDateString('ru-RU')+(v.ver===c.ver?' <span class="muted">(текущая)</span>':'');
+        var cl=document.createElement('div'); cl.className='ci-log'; cl.textContent=v.changelog||'—';
+        row.appendChild(d); row.appendChild(cl); box.appendChild(row);
+      });
+    } else {
+      var e=document.createElement('div'); e.className='muted'; e.style.marginTop='10px'; e.style.fontSize='13px';
+      e.textContent='История появится после следующих обновлений главы.'; box.appendChild(e);
+    }
+  }
+  (function(){ var b=document.getElementById('ciClose'); if(b) b.onclick=closeModals; })();
+  (function(){ var b=document.getElementById('btnInfo'); if(b) b.onclick=showChapterInfo; })();
+
+  // ---------- shelf (multi-book) ----------
+  var onboarding=false;
+  function bookName(id){ for(var i=0;i<BOOKS.length;i++){ if(BOOKS[i].id===id) return BOOKS[i].title; } return 'книга'; }
+  function setBookTitle(){ /* бренд-подзаголовок фиксирован: «чтение и правки» */ }
+  async function loadBooks(){ BOOKS=[]; if(!SB) return; try{ var r=await SB.from('books').select('*').order('sort'); if(!r.error) BOOKS=r.data||[]; }catch(e){} }
+  function renderShelf(){
+    var box=document.getElementById('shelfList'); box.innerHTML='';
+    if(!BOOKS.length){ box.innerHTML='<div class="d-empty">Книги скоро появятся.</div>'; return; }
+    BOOKS.forEach(function(b){
+      var card=document.createElement('div'); card.className='book-card'+(b.id===currentBook()?' current':'');
+      var cov=document.createElement('div'); cov.className='book-cover'; cov.textContent=(b.title||'?').slice(0,1).toUpperCase();
+      var ti=document.createElement('div'); ti.className='book-title'; ti.textContent=b.title;
+      card.appendChild(cov); card.appendChild(ti);
+      if(b.subtitle){ var su=document.createElement('div'); su.className='book-sub'; su.textContent=b.subtitle; card.appendChild(su); }
+      if(b.id===currentBook()){
+        var st=bookReadStats();
+        if(st.total){
+          var pb=document.createElement('div'); pb.className='book-prog';
+          pb.innerHTML='<div class="bp-bar"><i style="width:'+st.pct+'%"></i></div><div class="bp-lbl">'+(st.pct>0?('Продолжить \u00b7 '+st.pct+'%'):'Начать чтение')+'</div>';
+          card.appendChild(pb);
+        }
+      }
+      card.onclick=function(){ openBook(b.id); };
+      box.appendChild(card);
+    });
+  }
+  function showShelf(){ renderShelf(); document.getElementById('shelf').style.display='flex'; }
+  function hideShelf(){ document.getElementById('shelf').style.display='none'; }
+  async function openBook(id){
+    hideShelf();
+    if(state.book!==id){ state.book=id; state.chapter=null; }
+    BOOK=[]; BYID={}; showSkeleton(); saveState();
+    await loadContent();
+    if(!state.chapter || !BYID[state.chapter]) state.chapter = BOOK.length? BOOK[0].id : null;
+    saveState(); setBookTitle();
+    renderTOC(); renderChapter();
+    document.getElementById('scroller').scrollTop = state.scroll[state.chapter]||0;
+    await loadComments(); await loadVersions();
+    renderTOC(); renderChapter(); refreshPanel(); updateCount(); renderReactBar(); applyRoleUI();
+  }
+  (function(){ var b=document.getElementById('btnShelf'); if(b) b.onclick=showShelf;
+    var c=document.getElementById('shelfClose'); if(c) c.onclick=hideShelf; })();
+
+  // admin: books
+  async function refreshBooksAdmin(){
+    var box=document.getElementById('bookList'); if(!box) return;
+    await loadBooks(); box.innerHTML='';
+    BOOKS.forEach(function(b){
+      var row=document.createElement('div'); row.className='wl-row';
+      var t=document.createElement('span'); t.style.flex='1'; t.textContent=b.title+'  ('+b.id+')';
+      row.appendChild(t); box.appendChild(row);
+    });
+  }
+  (function(){
+    var add=document.getElementById('bookAdd');
+    if(add) add.onclick=async function(){
+      var id=(document.getElementById('bookId').value||'').trim();
+      var ti=(document.getElementById('bookTitle').value||'').trim();
+      if(!id || !ti){ toast('Заполните id и название'); return; }
+      var r=await SB.from('books').insert({ id:id, title:ti, sort:BOOKS.length });
+      if(r.error){ toast('Ошибка: '+r.error.message); return; }
+      document.getElementById('bookId').value=''; document.getElementById('bookTitle').value='';
+      toast('Книга добавлена'); refreshBooksAdmin();
+    };
+  })();
+  var replyTo=null;
+  function openReply(c){
+    replyTo=c;
+    document.getElementById('replyQuote').textContent = c.kind==='chapter' ? '— вся глава —' : '«'+(c.quote||'').replace(/\s+/g,' ').trim()+'»';
+    document.getElementById('replyText').value='';
+    showModal('replyModal'); setTimeout(function(){ document.getElementById('replyText').focus(); },50);
+  }
+  document.getElementById('replyCancel').onclick=closeModals;
+  document.getElementById('replySave').onclick=async function(){
+    if(!replyTo) return;
+    var t=(document.getElementById('replyText').value||'').trim();
+    if(!t){ toast('Напишите ответ'); return; }
+    var b=document.getElementById('replySave'); b.disabled=true;
+    if(SB){
+      var r=await SB.from('replies').insert({ comment_id:replyTo.id, note:t, user_email:(USER&&USER.email?USER.email.toLowerCase():'') });
+      b.disabled=false;
+      if(r.error){ toast('Ошибка: '+r.error.message); return; }
+    } else b.disabled=false;
+    closeModals(); await loadComments(); refreshPanel(); renderChapter();
+  };
+  document.getElementById('replyText').addEventListener('keydown', function(e){ if(e.key==='Enter' && (e.metaKey||e.ctrlKey)) document.getElementById('replySave').click(); });
+  document.getElementById('btnLogout').onclick=logout;
+  document.getElementById('authLogout2').onclick=logout;
+
+  // ---------- admin ----------
+  function armDelete(el, run){
+    if(el._armed){ clearTimeout(el._armed); el._armed=null; el.classList.remove('danger-armed'); run(); return; }
+    var orig=el.textContent; el.textContent='точно?'; el.classList.add('danger-armed');
+    el._armed=setTimeout(function(){ if(el){ el.textContent=orig; el.classList.remove('danger-armed'); el._armed=null; } }, 3000);
+  }
+  async function refreshWhitelist(){
+    var box=document.getElementById('wlList'); box.textContent='Загрузка…';
+    var joined={}; for(var _u in PROFILES){ joined[(PROFILES[_u].email||'').toLowerCase()]=true; }
+    var r=await SB.from('whitelist').select('*').order('email');
+    if(r.error){ box.textContent='Ошибка: '+r.error.message; return; }
+    box.innerHTML='';
+    if(!r.data || !r.data.length){ box.innerHTML='<div style="color:var(--muted);font-size:13px;padding:6px">Пока никого. Добавьте первый email выше.</div>'; return; }
+    r.data.forEach(function(w){
+      var row=document.createElement('div'); row.className='wl-row';
+      var em=document.createElement('span'); em.textContent=w.email; em.style.flex='1'; em.style.overflow='hidden'; em.style.textOverflow='ellipsis';
+      var sel=document.createElement('select'); sel.className='wl-role';
+      [['reader','читатель'],['contributor','контрибьютор'],['editor','редактор']].forEach(function(o){
+        var op=document.createElement('option'); op.value=o[0]; op.textContent=o[1]; if((w.role||'reader')===o[0]) op.selected=true; sel.appendChild(op);
+      });
+      sel.onchange=async function(){
+        var u=await SB.from('whitelist').update({role:sel.value}).eq('email', w.email);
+        if(u.error){ toast('Ошибка: '+u.error.message); } else toast('Роль обновлена');
+      };
+      var jn=document.createElement('span'); var has=!!joined[(w.email||'').toLowerCase()];
+      jn.className='wl-joined'+(has?' yes':''); jn.textContent=has?'зашёл':'ждёт'; jn.title=has?'создал аккаунт':'ещё не заходил';
+      var del=document.createElement('a'); del.textContent='удалить'; del.className='wl-del';
+      del.onclick=function(){
+        if((w.email||'').toLowerCase()===ADMIN){ toast('Админа удалять нельзя'); return; }
+        armDelete(del, async function(){ var d=await SB.from('whitelist').delete().eq('email', w.email); if(d.error) toast('Ошибка: '+d.error.message); else refreshWhitelist(); });
+      };
+      row.appendChild(em); row.appendChild(sel); row.appendChild(jn); row.appendChild(del); box.appendChild(row);
+    });
+  }
+  document.getElementById('wlAdd').onclick=async function(){
+    var e=(document.getElementById('wlEmail').value||'').trim().toLowerCase();
+    if(!e || e.indexOf('@')<1){ toast('Введите email'); return; }
+    var role=(document.getElementById('wlRole')&&document.getElementById('wlRole').value)||'reader';
+    var r=await SB.from('whitelist').insert({ email:e, role:role, added_by:(USER&&USER.email)||'' });
+    if(r.error){ toast('Ошибка: '+r.error.message); return; }
+    document.getElementById('wlEmail').value=''; refreshWhitelist();
+  };
+  (function(){ var inv=document.getElementById('wlInvite'); if(inv) inv.onclick=function(){
+    var url=location.origin+location.pathname;
+    var txt='Привет! Приглашаю читать черновик книги в «Читальне»:\n'+url+'\n\nКак войти: открой ссылку → «Первый раз? Создать пароль» → укажи этот email и придумай пароль. Дальше просто читай и оставляй реакции и мысли — автор их видит.';
+    copyText(txt, 'Приглашение скопировано — отправьте читателю');
+  }; })();
+  document.getElementById('wlEmail').addEventListener('keydown', function(e){ if(e.key==='Enter') document.getElementById('wlAdd').click(); });
+  document.getElementById('btnAdmin').onclick=function(){ refreshWhitelist(); refreshProfiles(); refreshBooksAdmin(); document.getElementById('contentMsg').textContent=''; showModal('adminModal'); };
+  document.getElementById('adminClose').onclick=closeModals;
+  document.getElementById('contentUpload').onclick=function(){ document.getElementById('contentInput').click(); };
+  document.getElementById('contentInput').onchange=function(e){
+    var f=e.target.files[0]; if(!f) return;
+    var msg=document.getElementById('contentMsg');
+    var fr=new FileReader();
+    fr.onload=async function(){
+      var data; try{ data=JSON.parse(fr.result); }catch(_){ msg.textContent='Это не JSON.'; return; }
+      var chs=data.chapters||[], dgs=data.diagrams||[];
+      if(!chs.length){ msg.textContent='В файле нет глав.'; return; }
+      var oldVers={}; BOOK.forEach(function(b){ oldVers[b.id]=b.ver; });   // версии до загрузки
+      var changelog=(document.getElementById('uploadChangelog')&&document.getElementById('uploadChangelog').value||'').trim();
+      var changed=0;
+      for(var i=0;i<chs.length;i++){
+        var c=chs[i];
+        var r=await SB.from('chapters').upsert({ id:c.id, book_id:currentBook(), ord:c.ord||0, file:c.file||'', part:c.part||'', title:c.title||'', ver:c.ver||'', md:c.md||'', figs:c.figs||[] }, {onConflict:'id'});
+        if(r.error){ msg.textContent='Ошибка главы '+c.id+': '+r.error.message; return; }
+        // архивируем эту версию (старый текст не теряется)
+        var changedThis = oldVers[c.id] && oldVers[c.id]!==(c.ver||'');
+        await SB.from('chapter_versions').upsert({ chapter_id:c.id, book_id:currentBook(), ver:c.ver||'', title:c.title||'', md:c.md||'', changelog:(changedThis?changelog:'') }, {onConflict:'chapter_id,ver', ignoreDuplicates:true });
+        // если версия сменилась — закрываем правки к старой версии (авторы получат уведомление)
+        if(changedThis){
+          changed++;
+          await SB.from('comments').update({status:'done'}).eq('chapter_id',c.id).eq('chapter_version',oldVers[c.id]).neq('status','done');
+        }
+        msg.textContent='Главы: '+(i+1)+'/'+chs.length;
+      }
+      for(var j=0;j<dgs.length;j++){
+        var d=dgs[j];
+        var rd=await SB.from('diagrams').upsert({ name:d.name, caption:d.caption||'', svg:d.svg||'' }, {onConflict:'name'});
+        if(rd.error){ msg.textContent='Ошибка схемы '+d.name+': '+rd.error.message; return; }
+        msg.textContent='Схемы: '+(j+1)+'/'+dgs.length;
+      }
+      await loadContent();
+      if(!state.chapter || !BYID[state.chapter]) state.chapter = BOOK.length? BOOK[0].id : null;
+      renderTOC(); renderChapter(); await loadComments(); renderChapter(); renderTOC(); refreshPanel(); updateCount();
+      await loadVersions();
+      msg.textContent='Загружено в «'+bookName(currentBook())+'»: глав '+chs.length+', схем '+dgs.length+(changed?(' · обновлено глав: '+changed):' · версии глав не изменились (текст тот же)')+'.';
+    };
+    fr.readAsText(f); e.target.value='';
+  };
+
+  // ---------- font size ----------
+  var FONTS=[17,19,21,23];
+  var FONT_FAMILIES=[
+    {key:'lit',     name:'Литературный', css:"Georgia,'PT Serif','Times New Roman',serif"},
+    {key:'book',    name:'Книжный',      css:"'Spectral',Georgia,serif"},
+    {key:'grotesk', name:'Гротеск',      css:"'Inter',system-ui,sans-serif"},
+    {key:'system',  name:'Системный',    css:"-apple-system,system-ui,'Segoe UI',Roboto,sans-serif"}
+  ];
+  function fontCss(key){ for(var i=0;i<FONT_FAMILIES.length;i++){ if(FONT_FAMILIES[i].key===key) return FONT_FAMILIES[i].css; } return FONT_FAMILIES[1].css; }
+  function applyReading(){
+    var i=Math.max(0,Math.min(FONTS.length-1, state.fontSize|0));
+    var c=document.getElementById('content');
+    if(c){ c.style.fontSize=FONTS[i]+'px'; c.style.fontFamily=fontCss(state.readFont||'book'); }
+    var fill=document.getElementById('sizeFill'); if(fill) fill.style.width=Math.round((i/(FONTS.length-1))*100)+'%';
+    var fo=document.getElementById('fontOpts'); if(fo){ var bs=fo.querySelectorAll('.font-opt'); for(var k=0;k<bs.length;k++) bs[k].classList.toggle('on', bs[k].getAttribute('data-f')===(state.readFont||'book')); }
+  }
+  function applyFont(){ applyReading(); }
+  function renderFontOpts(){
+    var fo=document.getElementById('fontOpts'); if(!fo) return; fo.innerHTML='';
+    FONT_FAMILIES.forEach(function(f){
+      var b=document.createElement('button'); b.className='font-opt'; b.setAttribute('data-f',f.key);
+      b.innerHTML='<span class="fo-name" style="font-family:'+f.css+'">'+f.name+'</span><span class="fo-check">✓</span>';
+      b.onclick=function(){ state.readFont=f.key; applyReading(); saveState(); };
+      fo.appendChild(b);
+    });
+  }
+  (function(){
+    var mn=document.getElementById('fontMinus'); if(mn) mn.onclick=function(){ state.fontSize=Math.max(0,(state.fontSize|0)-1); applyReading(); saveState(); };
+    var pl=document.getElementById('fontPlus'); if(pl) pl.onclick=function(){ state.fontSize=Math.min(FONTS.length-1,(state.fontSize|0)+1); applyReading(); saveState(); };
+    renderFontOpts();
+  })();
+
+  // ---------- chapter-level note ----------
+  document.getElementById('btnChapterNote').onclick=function(){
+    if(!BYID[state.chapter]){ toast('Сначала откройте главу'); return; }
+    pendingRange={ ch:state.chapter, start:-1, end:-1, quote:'', before:'', after:'', kind:'chapter' };
+    editingId=null;
+    openEditor('__chapter__','', '', false);
+  };
+
+  // ---------- search ----------
+  function renderSearch(){
+    var q=(document.getElementById('searchInput').value||'').trim();
+    var box=document.getElementById('searchResults'); box.innerHTML='';
+    var info=document.getElementById('searchInfo');
+    if(q.length<2){ info.textContent='Введите минимум 2 символа'; return; }
+    var ql=q.toLowerCase(), total=0, LIMIT=60;
+    for(var bi=0; bi<BOOK.length; bi++){
+      var ch=BOOK[bi]; var pt=plainText(ch.id); var ptl=pt.toLowerCase();
+      var p=0;
+      while((p=ptl.indexOf(ql,p))!==-1){
+        total++;
+        if(total<=LIMIT){
+          (function(ch,p){
+            var st=Math.max(0,p-60), en=Math.min(pt.length,p+q.length+60);
+            var row=document.createElement('div'); row.className='sr';
+            var t=document.createElement('div'); t.className='sr-ch'; t.textContent=ch.title;
+            var sn=document.createElement('div'); sn.className='sr-t';
+            sn.appendChild(document.createTextNode((st>0?'…':'')+pt.slice(st,p)));
+            var b=document.createElement('b'); b.textContent=pt.slice(p,p+q.length); sn.appendChild(b);
+            sn.appendChild(document.createTextNode(pt.slice(p+q.length,en)+(en<pt.length?'…':'')));
+            row.appendChild(t); row.appendChild(sn);
+            row.onclick=function(){
+              closeModals();
+              var go=function(){ flashAt(p, p+q.length); };
+              if(state.chapter!==ch.id){ openChapter(ch.id); setTimeout(go,160); } else go();
+            };
+            box.appendChild(row);
+          })(ch,p);
+        }
+        p+=(ql.length||1);
+      }
+    }
+    info.textContent = total ? ('Найдено: '+total+(total>LIMIT?' (показаны первые '+LIMIT+')':'')) : 'Ничего не найдено';
+  }
+  function flashAt(start,end){
+    var c=document.getElementById('content');
+    applyHighlight(c, start, end, '__tmp', 'flash');
+    var ms=c.querySelectorAll('mark.hl[data-cid="__tmp"]');
+    if(ms.length) ms[0].scrollIntoView({block:'center'});
+    setTimeout(function(){
+      var arr=c.querySelectorAll('mark.hl[data-cid="__tmp"]');
+      for(var i=0;i<arr.length;i++){ var m=arr[i], par=m.parentNode; while(m.firstChild) par.insertBefore(m.firstChild,m); par.removeChild(m); }
+      c.normalize();
+    },1300);
+  }
+  (function(){ var bs=document.getElementById('btnSearch'); if(bs) bs.onclick=function(){
+    showModal('searchModal'); renderSearch();
+    setTimeout(function(){ document.getElementById('searchInput').focus(); },60);
+  }; })();
+  var searchT=null;
+  document.getElementById('searchInput').addEventListener('input', function(){ clearTimeout(searchT); searchT=setTimeout(renderSearch,250); });
+  document.getElementById('searchClose').onclick=closeModals;
+
+  // ---------- archive of past-version comments ----------
+  async function openArchive(){
+    var ch=BYID[state.chapter];
+    if(!ch){ toast('Сначала откройте главу'); return; }
+    if(!SB){ toast('Нет подключения к базе'); return; }
+    document.getElementById('archTitle').textContent='История версий · '+ch.title;
+    var box=document.getElementById('archList'); box.innerHTML='Загрузка…';
+    showModal('archModal');
+    // история версий (текст) — для редактора/админа
+    box.innerHTML='';
+    if(canModerate()){
+      var vr=await SB.from('chapter_versions').select('*').eq('chapter_id',ch.id).order('created_at',{ascending:false});
+      if(!vr.error && vr.data && vr.data.length){
+        var vh=document.createElement('div'); vh.className='arch-h'; vh.textContent='Версии главы'; box.appendChild(vh);
+        vr.data.forEach(function(v){
+          var row=document.createElement('div'); row.className='ver-row';
+          var lab=document.createElement('span');
+          lab.innerHTML='<b>'+(v.ver||'?').slice(0,7)+'</b> · '+new Date(v.created_at).toLocaleString('ru-RU')+(v.ver===ch.ver?' <span class="muted">(текущая)</span>':'');
+          var a=document.createElement('a'); a.textContent='показать текст'; a.className='ver-show';
+          a.onclick=function(){ showVersionText(v); };
+          row.appendChild(lab); row.appendChild(a); box.appendChild(row);
+        });
+        var ch2=document.createElement('div'); ch2.className='arch-h'; ch2.style.marginTop='16px'; ch2.textContent='Правки из прошлых версий'; box.appendChild(ch2);
+      }
+    }
+    var r=await SB.from('comments').select('*').eq('chapter_id',ch.id).neq('chapter_version',ch.ver).order('created_at',{ascending:false});
+    if(r.error){ var er=document.createElement('div'); er.className='empty'; er.textContent='Ошибка: '+r.error.message; box.appendChild(er); return; }
+    if(!r.data || !r.data.length){ var ep=document.createElement('div'); ep.className='empty'; ep.textContent='Правок из прошлых версий нет.'; box.appendChild(ep); return; }
+    r.data.forEach(function(row){
+      var c=mapRow(row);
+      var card=document.createElement('div'); card.className='c-card';
+      var meta=document.createElement('div');
+      var v=document.createElement('span'); v.className='c-author';
+      v.textContent='версия '+(c.ver||'?').slice(0,7)+' · '+new Date(c.ts).toLocaleDateString('ru-RU');
+      meta.appendChild(v);
+      if(c.tag){ var tg=document.createElement('span'); tg.className='c-tag'; tg.textContent=c.tag; meta.appendChild(tg); }
+      if(!c.mine && c.email){ var au=document.createElement('span'); au.className='c-author'; au.textContent=c.email; meta.appendChild(au); }
+      card.appendChild(meta);
+      var q=document.createElement('div'); q.className='c-quote';
+      q.textContent = c.kind==='chapter' ? '— вся глава —' : '«'+(c.quote||'').replace(/\s+/g,' ').trim()+'»';
+      var note=document.createElement('div'); note.className='c-note'; note.textContent=c.note||'(без текста)';
+      card.appendChild(q); card.appendChild(note);
+      box.appendChild(card);
+    });
+  }
+  function showVersionText(v){
+    document.getElementById('archTitle').textContent='Версия '+(v.ver||'?').slice(0,7)+' · '+new Date(v.created_at).toLocaleDateString('ru-RU');
+    var box=document.getElementById('archList'); box.innerHTML='';
+    var back=document.createElement('a'); back.textContent='← к истории версий'; back.className='ver-show'; back.onclick=openArchive; box.appendChild(back);
+    var pre=document.createElement('div'); pre.className='ver-md'; pre.textContent=v.md||'(пусто)'; box.appendChild(pre);
+  }
+  document.getElementById('btnArchive').onclick=openArchive;
+  document.getElementById('archClose').onclick=closeModals;
+
+  // ---------- profiles, presence, names ----------
+  var PROFILES={};            // user_id -> {email,name,last_seen,notif_seen}
+  var DISCALL=[];             // все обсуждения
+  var RATEALL=[];             // все оценки
+  var panelTab='edits';
+  var heartbeatTimer=null, presenceTimer=null;
+
+  function nameFor(uid, email){ var pr=uid && PROFILES[uid]; if(pr && pr.name) return pr.name; return email || 'кто-то'; }
+  function isOnline(uid){ var pr=uid && PROFILES[uid]; if(!pr || !pr.last_seen) return false; return (Date.now()-Date.parse(pr.last_seen))<90000; }
+  function personSpan(uid, email){
+    var sp=document.createElement('span'); sp.className='person';
+    var d=document.createElement('span'); d.className='dot'+(isOnline(uid)?' on':'');
+    sp.appendChild(d); sp.appendChild(document.createTextNode(nameFor(uid,email)));
+    return sp;
+  }
+  function panelOpen(){ return document.getElementById('panel').classList.contains('open'); }
+
+  async function loadProfiles(){
+    if(!SB) return;
+    try{ var r=await SB.from('profiles').select('*'); if(r.error) return;
+      PROFILES={}; (r.data||[]).forEach(function(pr){ PROFILES[pr.user_id]={email:pr.email||'', name:pr.name||'', last_seen:pr.last_seen, notif_seen:pr.notif_seen}; });
+    }catch(e){}
+    renderPresence();
+  }
+  function renderPresence(){
+    var el=document.getElementById('presenceLine'); if(!el) return;
+    var n=0; for(var uid in PROFILES){ if(isOnline(uid)) n++; }
+    if(n>=2){ el.style.display=''; el.textContent='Сейчас читают: '+n; }
+    else el.style.display='none';
+  }
+  async function touchPresence(){
+    if(!SB || !USER) return;
+    try{ await SB.from('profiles').upsert({ user_id:USER.id, email:(USER.email||'').toLowerCase(), last_seen:new Date().toISOString() }, {onConflict:'user_id'}); }catch(e){}
+  }
+  function startPresence(){
+    touchPresence();
+    if(heartbeatTimer) clearInterval(heartbeatTimer);
+    heartbeatTimer=setInterval(function(){ if(document.visibilityState==='visible') touchPresence(); }, 45000);
+    if(presenceTimer) clearInterval(presenceTimer);
+    presenceTimer=setInterval(function(){ if(document.visibilityState==='visible'){ loadProfiles().then(function(){ if(panelOpen()&&panelTab==='disc') renderDisc(); updateBell(); }); } }, 60000);
+  }
+
+  // ---------- discussions + ratings ----------
+  async function loadSocial(){
+    DISCALL=[]; RATEALL=[];
+    if(!SB || !USER) return;
+    try{ var d=await SB.from('discussions').select('*').order('created_at',{ascending:true}); if(!d.error) DISCALL=d.data||[]; }catch(e){}
+    try{ var r=await SB.from('ratings').select('*'); if(!r.error) RATEALL=r.data||[]; }catch(e){}
+    await loadReactions(); await loadVersions(); await loadSupp();
+  }
+  async function loadVersions(){
+    CVALL=[]; MYCHS={};
+    if(!SB || !USER) return;
+    try{ var v=await SB.from('chapter_versions').select('chapter_id,ver,title,created_at').order('created_at',{ascending:false}); if(!v.error) CVALL=v.data||[]; }catch(e){}
+    try{ var m=await SB.from('comments').select('chapter_id').eq('user_id',USER.id); if(!m.error){ (m.data||[]).forEach(function(x){ MYCHS[x.chapter_id]=1; }); } }catch(e){}
+  }
+  function fmtTime(ts){
+    var d=new Date(ts), now=new Date();
+    if(d.toDateString()===now.toDateString()) return d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+    return d.toLocaleDateString('ru-RU',{day:'numeric',month:'short'});
+  }
+  function renderRate(boxId){
+    var box=document.getElementById(boxId||'discRate'); if(!box) return; box.innerHTML=''; box.style.display='';
+    var ch=BYID[state.chapter]; if(!ch){ box.style.display='none'; return; }
+    var mine=null, sum=0, n=0;
+    RATEALL.forEach(function(r){ if(r.chapter_id===ch.id){ sum+=r.score; n++; if(USER && r.user_id===USER.id) mine=r.score; } });
+    if(boxId==='rateBar'){ var q=document.createElement('span'); q.className='rate-q'; q.textContent= mine? 'Ваша оценка' : 'Оцените главу'; box.appendChild(q); }
+    var stars=document.createElement('div'); stars.className='stars';
+    for(var i=1;i<=5;i++){ (function(i){ var st=document.createElement('span'); st.className='star'+(mine>=i?' fill':''); st.textContent='★'; st.onclick=function(){ setRating(i); }; stars.appendChild(st); })(i); }
+    box.appendChild(stars);
+    var info=document.createElement('span'); info.className='rate-info';
+    info.textContent = n? ('средняя '+(sum/n).toFixed(1)+' · оценок '+n) : 'пока без оценок — будьте первым';
+    box.appendChild(info);
+  }
+  function renderRates(){ renderRate('discRate'); renderRate('rateBar'); }
+  async function setRating(score){
+    var ch=BYID[state.chapter]; if(!ch||!SB) return;
+    var prev=RATEALL.filter(function(r){return r.chapter_id===ch.id && USER && r.user_id===USER.id;})[0];
+    if(prev) prev.score=score; else RATEALL.push({user_id:USER.id, chapter_id:ch.id, score:score});
+    renderRates(); thankFeedbackOnce(); haptic(8);
+    try{ var r=await SB.from('ratings').upsert({ user_id:USER.id, chapter_id:ch.id, score:score, updated_at:new Date().toISOString() }, {onConflict:'user_id,chapter_id'}); if(r.error) toast('Ошибка оценки: '+r.error.message); }catch(e){}
+  }
+  function renderDisc(){
+    renderRate('discRate'); renderDiscCTA();
+    var box=document.getElementById('discList'); box.innerHTML='';
+    var ch=BYID[state.chapter];
+    if(!ch){ box.innerHTML='<div class="d-empty">Откройте главу, чтобы обсудить.</div>'; return; }
+    var posts=DISCALL.filter(function(d){return d.chapter_id===ch.id && !d.parent_id;}).sort(function(a,b){return Date.parse(a.created_at)-Date.parse(b.created_at);});
+    if(!posts.length){ box.innerHTML='<div class="d-empty">Здесь пока тихо — можно начать первым.</div>'; return; }
+    posts.forEach(function(pp){ box.appendChild(discPostEl(pp, ch)); });
+  }
+  function delLink(id){ var a=document.createElement('a'); a.textContent='удалить'; a.onclick=function(){ delDisc(id); }; return a; }
+  function discPostEl(pp, ch){
+    var wrap=document.createElement('div'); wrap.className='d-post';
+    var head=document.createElement('div'); head.className='d-head';
+    head.appendChild(personSpan(pp.user_id, pp.user_email));
+    var tm=document.createElement('span'); tm.className='d-time'; tm.textContent=fmtTime(Date.parse(pp.created_at)); head.appendChild(tm);
+    wrap.appendChild(head);
+    var body=document.createElement('div'); body.className='d-body'; body.textContent=pp.body; wrap.appendChild(body);
+    var acts=document.createElement('div'); acts.className='d-acts';
+    var rep=document.createElement('a'); rep.textContent='ответить';
+    var rbox=document.createElement('div'); rbox.className='d-replybox';
+    var rta=document.createElement('textarea'); rta.placeholder='Ответ…'; rbox.appendChild(rta);
+    var rbtn=document.createElement('button'); rbtn.className='ptool primary'; rbtn.textContent='Отправить'; rbtn.style.marginTop='6px';
+    rbox.appendChild(rbtn);
+    rep.onclick=function(){ rbox.classList.toggle('show'); if(rbox.classList.contains('show')) rta.focus(); };
+    rbtn.onclick=function(){ var t=(rta.value||'').trim(); if(!t) return; postDisc(ch.id, t, pp.id); };
+    acts.appendChild(rep);
+    if((USER && pp.user_id===USER.id) || isAdmin) acts.appendChild(delLink(pp.id));
+    wrap.appendChild(acts); wrap.appendChild(rbox);
+    var reps=DISCALL.filter(function(d){return d.parent_id===pp.id;}).sort(function(a,b){return Date.parse(a.created_at)-Date.parse(b.created_at);});
+    if(reps.length){
+      var rc=document.createElement('div'); rc.className='d-replies';
+      reps.forEach(function(r){
+        var ri=document.createElement('div'); ri.className='d-reply';
+        var rh=document.createElement('div'); rh.className='d-head';
+        rh.appendChild(personSpan(r.user_id, r.user_email));
+        var rt=document.createElement('span'); rt.className='d-time'; rt.textContent=fmtTime(Date.parse(r.created_at)); rh.appendChild(rt);
+        if((USER && r.user_id===USER.id) || isAdmin){ var rd=document.createElement('a'); rd.textContent='×'; rd.style.cssText='margin-left:auto;color:var(--muted);cursor:pointer'; rd.onclick=function(){ delDisc(r.id); }; rh.appendChild(rd); }
+        var rb=document.createElement('div'); rb.className='d-body'; rb.textContent=r.body;
+        ri.appendChild(rh); ri.appendChild(rb); rc.appendChild(ri);
+      });
+      wrap.appendChild(rc);
+    }
+    return wrap;
+  }
+  async function postDisc(chId, body, parentId){
+    if(!SB){ return; }
+    var r=await SB.from('discussions').insert({ chapter_id:chId, parent_id:parentId||null, body:body, user_email:(USER&&USER.email?USER.email.toLowerCase():'') }).select().single();
+    if(r.error){ toast('Ошибка: '+r.error.message); return; }
+    DISCALL.push(r.data); renderDisc();
+  }
+  async function delDisc(id){
+    if(!SB) return;
+    var d=await SB.from('discussions').delete().eq('id',id);
+    if(d.error){ toast('Ошибка: '+d.error.message); return; }
+    DISCALL=DISCALL.filter(function(x){return x.id!==id && x.parent_id!==id;}); renderDisc();
+  }
+  document.getElementById('discPost').onclick=function(){
+    var t=(document.getElementById('discInput').value||'').trim();
+    if(!t){ toast('Напишите пару слов'); return; }
+    var ch=BYID[state.chapter]; if(!ch) return;
+    document.getElementById('discInput').value=''; postDisc(ch.id, t, null);
+  };
+
+  // ---------- reading progress (analytics) ----------
+  var PROGALL=[];          // admin: все строки; читатель: только свои
+  var progSent={};         // chapter_id -> последняя отправленная доля
+  async function loadProgress(){
+    PROGALL=[]; progSent={};
+    if(!SB || !USER) return;
+    try{
+      var r=await SB.from('progress').select('*');
+      if(!r.error){ PROGALL=r.data||[];
+        PROGALL.forEach(function(p){ if(USER && p.user_id===USER.id) progSent[p.chapter_id]=p.max_frac; });
+      }
+    }catch(e){}
+  }
+  var progT=null;
+  function flushProgress(){
+    if(!SB || !USER) return;
+    var ch=BYID[state.chapter]; if(!ch) return;
+    var frac=state.read[ch.id+':'+ch.ver]; if(typeof frac!=='number') return;
+    if(frac <= (progSent[ch.id]||0) + 0.02) return;     // пишем только заметный прирост
+    progSent[ch.id]=frac;
+    clearTimeout(progT);
+    progT=setTimeout(function(){
+      SB.from('progress').upsert({ user_id:USER.id, chapter_id:ch.id, max_frac:frac, updated_at:new Date().toISOString() }, {onConflict:'user_id,chapter_id'})
+        .then(function(){}, function(){});
+      // локально поддерживаем PROGALL (для админ-сводки в этой сессии)
+      var found=null; for(var i=0;i<PROGALL.length;i++){ if(PROGALL[i].user_id===USER.id && PROGALL[i].chapter_id===ch.id){ found=PROGALL[i]; break; } }
+      if(found) found.max_frac=frac; else PROGALL.push({user_id:USER.id, chapter_id:ch.id, max_frac:frac});
+    }, 1500);
+  }
+
+  // ---------- tap reactions ----------
+  var REACTKINDS=[{id:'confused',emoji:'\u{1F914}',label:'Запутался'},{id:'drag',emoji:'\u{1F634}',label:'Затянуто'},{id:'strong',emoji:'\u{1F525}',label:'Сильно'}];
+  var REACTALL=[]; var reactionsAvailable=false;
+  async function loadReactions(){
+    REACTALL=[]; reactionsAvailable=false;
+    if(!SB || !USER) return;
+    try{ var r=await SB.from('reactions').select('*'); if(!r.error){ REACTALL=r.data||[]; reactionsAvailable=true; } }catch(e){}
+  }
+  function renderDiscCTA(){
+    var el=document.getElementById('discCTA'); if(!el) return;
+    var ch=BYID[state.chapter]; if(!ch){ el.style.display='none'; return; }
+    var n=DISCALL.filter(function(d){return d.chapter_id===ch.id && !d.parent_id;}).length;
+    el.style.display='block';
+    el.textContent = n>0 ? ('Обсудить главу · '+n) : 'Обсудить главу';
+    el.onclick=function(){ togglePanel(true); setPanelTab('disc'); };
+  }
+  function renderReactBar(){
+    var bar=document.getElementById('reactBar'); if(!bar) return;
+    var ch=BYID[state.chapter];
+    if(!ch || !reactionsAvailable){ bar.style.display='none'; bar.innerHTML=''; return; }
+    bar.style.display=''; bar.innerHTML='';
+    var label=document.createElement('span'); label.className='rb-label'; label.textContent='Как вам глава?'; bar.appendChild(label);
+    REACTKINDS.forEach(function(k){
+      var mine=REACTALL.some(function(x){return x.chapter_id===ch.id && x.kind===k.id && USER && x.user_id===USER.id;});
+      var cnt=REACTALL.filter(function(x){return x.chapter_id===ch.id && x.kind===k.id;}).length;
+      var b=document.createElement('button'); b.className='rb-btn'+(mine?' on':'');
+      b.innerHTML=k.emoji+' '+k.label+(cnt?' <b>'+cnt+'</b>':'');
+      b.onclick=function(){ toggleReaction(k.id); };
+      bar.appendChild(b);
+    });
+  }
+  async function toggleReaction(kind){
+    var ch=BYID[state.chapter]; if(!ch||!SB||!USER) return;
+    var idx=-1;
+    for(var i=0;i<REACTALL.length;i++){ var x=REACTALL[i]; if(x.chapter_id===ch.id && x.kind===kind && x.user_id===USER.id){ idx=i; break; } }
+    if(idx>=0){
+      REACTALL.splice(idx,1); renderReactBar();
+      var d=await SB.from('reactions').delete().eq('chapter_id',ch.id).eq('kind',kind).eq('user_id',USER.id);
+      if(d.error){ toast('Ошибка: '+d.error.message); }
+    } else {
+      REACTALL.push({user_id:USER.id, chapter_id:ch.id, kind:kind}); renderReactBar(); thankFeedbackOnce(); haptic(8);
+      var ins=await SB.from('reactions').insert({chapter_id:ch.id, kind:kind});
+      if(ins.error){ toast('Ошибка: '+ins.error.message); }
+    }
+  }
+
+  // ---------- supplements (chapter links) ----------
+  var SUPPALL=[];
+  var SUPP_KINDS={book:'книга', article:'статья', theory:'теория', other:'ссылка'};
+  async function loadSupp(){ SUPPALL=[]; if(!SB||!USER) return; try{ var r=await SB.from('chapter_links').select('*').order('created_at',{ascending:true}); if(!r.error) SUPPALL=r.data||[]; }catch(e){} }
+  function renderSupp(){
+    var box=document.getElementById('suppBox'); if(!box) return;
+    var ch=BYID[state.chapter];
+    if(!ch){ box.style.display='none'; box.innerHTML=''; return; }
+    var items=SUPPALL.filter(function(x){return x.chapter_id===ch.id;});
+    if(!items.length && !canContribute()){ box.style.display='none'; box.innerHTML=''; return; }
+    box.style.display=''; box.innerHTML='';
+    var h=document.createElement('div'); h.className='supp-h'; h.textContent='Дополнения к главе'; box.appendChild(h);
+    items.forEach(function(it){
+      var row=document.createElement('div'); row.className='supp-row';
+      var k=document.createElement('span'); k.className='supp-kind'; k.textContent=SUPP_KINDS[it.kind]||'ссылка'; row.appendChild(k);
+      var a=document.createElement(it.url?'a':'span'); a.className='supp-title'; a.textContent=it.title||it.url||'(без названия)';
+      if(it.url){ a.href=it.url; a.target='_blank'; a.rel='noopener'; } row.appendChild(a);
+      if(it.note){ var n=document.createElement('span'); n.className='supp-note'; n.textContent='— '+it.note; row.appendChild(n); }
+      if((USER && it.user_id===USER.id) || canModerate()){ var d=document.createElement('a'); d.className='supp-del'; d.textContent='×'; d.title='удалить'; d.onclick=function(){ delSupp(it.id); }; row.appendChild(d); }
+      box.appendChild(row);
+    });
+    if(canContribute()){
+      var add=document.createElement('a'); add.className='supp-add'; add.textContent='+ добавить дополнение';
+      add.onclick=function(){ openSupp(ch.id); };
+      box.appendChild(add);
+    }
+  }
+  function openSupp(chId){
+    document.getElementById('suppKind').value='article';
+    document.getElementById('suppTitle').value='';
+    document.getElementById('suppUrl').value='';
+    document.getElementById('suppNote').value='';
+    document.getElementById('suppModal').dataset.ch=chId;
+    showModal('suppModal'); setTimeout(function(){ document.getElementById('suppTitle').focus(); },50);
+  }
+  async function addSupp(){
+    var chId=document.getElementById('suppModal').dataset.ch; if(!chId||!SB) return;
+    var rec={ chapter_id:chId, kind:document.getElementById('suppKind').value,
+      title:(document.getElementById('suppTitle').value||'').trim(),
+      url:(document.getElementById('suppUrl').value||'').trim(),
+      note:(document.getElementById('suppNote').value||'').trim(),
+      added_by:(USER&&USER.email?USER.email.toLowerCase():'') };
+    if(!rec.title && !rec.url){ toast('Нужно название или ссылка'); return; }
+    var r=await SB.from('chapter_links').insert(rec).select().single();
+    if(r.error){ toast('Ошибка: '+r.error.message); return; }
+    SUPPALL.push(r.data); closeModals(); renderSupp();
+  }
+  async function delSupp(id){
+    if(!SB) return;
+    var d=await SB.from('chapter_links').delete().eq('id',id);
+    if(d.error){ toast('Ошибка: '+d.error.message); return; }
+    SUPPALL=SUPPALL.filter(function(x){return x.id!==id;}); renderSupp();
+  }
+  (function(){ var s1=document.getElementById('suppSave'); if(s1) s1.onclick=addSupp;
+    var s2=document.getElementById('suppCancel'); if(s2) s2.onclick=closeModals; })();
+
+  // ---------- teardowns (разборы) ----------
+  var TDALL=[];
+  function tdStatusLabel(s){ return s==='published'?'опубликован':(s==='in_review'?'в работе':'новый'); }
+  async function loadTeardowns(){ TDALL=[]; if(!SB||!USER) return; try{ var r=await SB.from('teardowns').select('*').order('created_at',{ascending:false}); if(!r.error) TDALL=r.data||[]; }catch(e){} }
+  async function openTeardowns(){ await loadTeardowns(); renderTeardowns(); showModal('tdModal'); }
+  function renderTeardowns(){
+    var box=document.getElementById('tdList'); box.innerHTML='';
+    var pub=TDALL.filter(function(t){return t.status==='published';});
+    var pend=TDALL.filter(function(t){return t.status!=='published';});
+    if(canModerate() && pend.length){
+      var h=document.createElement('div'); h.className='td-h'; h.textContent='Заявки на разбор ('+pend.length+')'; box.appendChild(h);
+      pend.forEach(function(t){ box.appendChild(tdPendingEl(t)); });
+    } else {
+      var mine=pend.filter(function(t){return USER && t.user_id===USER.id;});
+      if(mine.length){ var hm=document.createElement('div'); hm.className='td-h'; hm.textContent='Ваши заявки'; box.appendChild(hm);
+        mine.forEach(function(t){ var d=document.createElement('div'); d.className='td-mine'; d.textContent=t.title+' — '+tdStatusLabel(t.status); box.appendChild(d); }); }
+    }
+    var hp=document.createElement('div'); hp.className='td-h'; hp.textContent='Опубликованные разборы'; box.appendChild(hp);
+    if(!pub.length){ var e=document.createElement('div'); e.className='d-empty'; e.textContent='Пока пусто — здесь появятся материалы.'; box.appendChild(e); }
+    pub.forEach(function(t){ box.appendChild(tdPubEl(t)); });
+  }
+  function tdPubEl(t){
+    var c=document.createElement('div'); c.className='td-card';
+    var ti=document.createElement(t.url?'a':'div'); ti.className='td-title'; ti.textContent=t.title||'(без названия)';
+    if(t.url){ ti.href=t.url; ti.target='_blank'; ti.rel='noopener'; }
+    c.appendChild(ti);
+    if(t.chapter_id && BYID[t.chapter_id]){ var ch=document.createElement('div'); ch.className='td-ch'; ch.textContent='пример к главе: '+BYID[t.chapter_id].title; c.appendChild(ch); }
+    if(t.body){ var b=document.createElement('div'); b.className='td-body'; b.textContent=t.body; c.appendChild(b); }
+    if(canModerate()){ var del=document.createElement('a'); del.className='td-del'; del.textContent='удалить'; del.onclick=function(){ delTeardown(t.id); }; c.appendChild(del); }
+    return c;
+  }
+  function tdPendingEl(t){
+    var c=document.createElement('div'); c.className='td-card pending';
+    var ti=document.createElement('div'); ti.className='td-title'; ti.textContent=t.title||'(без названия)'; c.appendChild(ti);
+    if(t.url){ var u=document.createElement('a'); u.className='td-url'; u.href=t.url; u.target='_blank'; u.rel='noopener'; u.textContent=t.url; c.appendChild(u); }
+    if(t.question){ var q=document.createElement('div'); q.className='td-q'; q.textContent=t.question; c.appendChild(q); }
+    var meta=document.createElement('div'); meta.className='td-meta'; meta.textContent='от '+nameFor(t.user_id,t.user_email)+' · '+tdStatusLabel(t.status); c.appendChild(meta);
+    var ta=document.createElement('textarea'); ta.className='td-edit'; ta.placeholder='Разбор (поведенческая оптика)…'; ta.value=t.body||''; c.appendChild(ta);
+    var bar=document.createElement('div'); bar.className='td-bar';
+    var pubBtn=document.createElement('button'); pubBtn.className='btn primary'; pubBtn.textContent='Опубликовать';
+    pubBtn.onclick=function(){ publishTeardown(t.id, ta.value); };
+    var del=document.createElement('a'); del.className='td-del'; del.textContent='удалить'; del.onclick=function(){ delTeardown(t.id); };
+    bar.appendChild(pubBtn); bar.appendChild(del); c.appendChild(bar);
+    return c;
+  }
+  async function submitTeardown(){
+    var title=(document.getElementById('tdTitle').value||'').trim();
+    var url=(document.getElementById('tdUrl').value||'').trim();
+    var q=(document.getElementById('tdQuestion').value||'').trim();
+    if(!title && !url){ toast('Напишите, что разбираем'); return; }
+    var rec={ title:title, url:url, question:q, chapter_id:state.chapter||null, status:'new', user_email:(USER&&USER.email?USER.email.toLowerCase():'') };
+    var r=await SB.from('teardowns').insert(rec).select().single();
+    if(r.error){ toast('Ошибка: '+r.error.message); return; }
+    document.getElementById('tdTitle').value=''; document.getElementById('tdUrl').value=''; document.getElementById('tdQuestion').value='';
+    TDALL.unshift(r.data); renderTeardowns(); toast('Кейс отправлен — спасибо!');
+  }
+  async function publishTeardown(id, body){
+    if(!SB) return;
+    var r=await SB.from('teardowns').update({ body:(body||'').trim(), status:'published', author_email:(USER&&USER.email?USER.email.toLowerCase():''), published_at:new Date().toISOString() }).eq('id',id);
+    if(r.error){ toast('Ошибка: '+r.error.message); return; }
+    await loadTeardowns(); renderTeardowns(); toast('Разбор опубликован');
+  }
+  async function delTeardown(id){
+    if(!SB) return;
+    var d=await SB.from('teardowns').delete().eq('id',id);
+    if(d.error){ toast('Ошибка: '+d.error.message); return; }
+    TDALL=TDALL.filter(function(x){return x.id!==id;}); renderTeardowns();
+  }
+  (function(){
+    var b=document.getElementById('btnTeardowns'); if(b) b.onclick=openTeardowns;
+    var sb=document.getElementById('tdSubmit'); if(sb) sb.onclick=submitTeardown;
+    var cl=document.getElementById('tdClose'); if(cl) cl.onclick=closeModals;
+  })();
+
+  // ---------- author dashboard ----------
+  function chapterStats(chId){
+    var edits=comments.filter(function(c){return c.ch===chId;});
+    var open=0; edits.forEach(function(c){ if(c.status!=='done') open++; });
+    var rs=RATEALL.filter(function(r){return r.chapter_id===chId;});
+    var ravg=rs.length? rs.reduce(function(a,b){return a+b.score;},0)/rs.length : 0;
+    var disc=DISCALL.filter(function(d){return d.chapter_id===chId;}).length;
+    var rx={confused:0,drag:0,strong:0};
+    REACTALL.forEach(function(x){ if(x.chapter_id===chId && rx[x.kind]!=null) rx[x.kind]++; });
+    var ps=PROGALL.filter(function(p){return p.chapter_id===chId;});
+    var started=0, finished=0, sumf=0;
+    ps.forEach(function(p){ if(p.max_frac>0.05){ started++; sumf+=p.max_frac; if(p.max_frac>=0.9) finished++; } });
+    var avgf = started? (sumf/started) : 0;
+    var likes=0, last=0;
+    edits.forEach(function(c){ likes+=likeInfo(c.id).count; if(c.ts>last) last=c.ts; });
+    DISCALL.forEach(function(d){ if(d.chapter_id===chId){ var t=Date.parse(d.created_at); if(t>last) last=t; } });
+    return {edits:edits.length, open:open, done:edits.length-open, ravg:ravg, rn:rs.length, disc:disc, rx:rx,
+            started:started, finished:finished, avgf:avgf, likes:likes, last:last};
+  }
+  function isWeak(st){ return (st.rn>0 && st.ravg<3) || (st.rx.confused+st.rx.drag>=2) || (st.started>=2 && st.avgf<0.6); }
+  function openDashboard(){
+    var body=document.getElementById('dashBody'); body.innerHTML='';
+    // сводка
+    var totOpen=0, weak=0, nstart=0, sumf=0, totDisc=0, totLikes=0, totRn=0;
+    BOOK.forEach(function(ch){ var st=chapterStats(ch.id); totOpen+=st.open; totDisc+=st.disc; totLikes+=st.likes; totRn+=st.rn; if(isWeak(st)) weak++; if(st.started){ nstart++; sumf+=st.avgf; } });
+    var sum=document.createElement('div'); sum.className='dash-sum';
+    sum.innerHTML='Глав: <b>'+BOOK.length+'</b> · требуют внимания: <b>'+weak+'</b> · открытых правок: <b>'+totOpen+'</b> · ♥ <b>'+totLikes+'</b> · сообщений в обсуждениях: <b>'+totDisc+'</b> · средняя дочит.: <b>'+(nstart?Math.round(sumf/nstart*100):0)+'%</b>';
+    body.appendChild(sum);
+    var tbl=document.createElement('table'); tbl.className='dash';
+    tbl.innerHTML='<thead><tr><th>Глава</th><th>Версия</th><th>Дочит.</th><th>Оценка</th><th>Реакции</th><th>Правки</th><th>Обсужд.</th><th>Активн.</th></tr></thead>';
+    var tb=document.createElement('tbody');
+    BOOK.forEach(function(ch){
+      var st=chapterStats(ch.id);
+      var tr=document.createElement('tr'); if(isWeak(st)) tr.className='weak';
+      var td1=document.createElement('td'); td1.className='ch'; td1.textContent=ch.title; tr.appendChild(td1);
+      var tdV=document.createElement('td'); tdV.className='dash-x';
+      tdV.innerHTML='<span class="muted">'+(ch.ver||'?').slice(0,7)+'</span>'+(ch.updated?('<br><span class="muted" style="font-size:11px">'+new Date(ch.updated).toLocaleDateString('ru-RU')+'</span>'):''); tr.appendChild(tdV);
+      var tdR=document.createElement('td'); tdR.className='dash-x';
+      if(st.started){ var pct=Math.round(st.avgf*100); tdR.innerHTML = st.finished+'/'+st.started+' <span class="muted">· ~'+pct+'%</span>'; } else tdR.innerHTML='<span class="muted">—</span>';
+      tr.appendChild(tdR);
+      var td2=document.createElement('td'); td2.innerHTML = st.rn? ('★ '+st.ravg.toFixed(1)+' <span class="muted">('+st.rn+')</span>') : '<span class="muted">—</span>'; tr.appendChild(td2);
+      var td3=document.createElement('td'); td3.className='dash-x';
+      td3.innerHTML='\u{1F914} '+st.rx.confused+'  \u{1F634} '+st.rx.drag+'  \u{1F525} '+st.rx.strong; tr.appendChild(td3);
+      var td4=document.createElement('td'); td4.innerHTML = st.edits? (st.open+'/'+st.done+' <span class="muted">о/г</span>'+(st.likes?(' · ♥'+st.likes):'')) : (st.likes?('♥'+st.likes):'<span class="muted">—</span>'); tr.appendChild(td4);
+      var td5=document.createElement('td'); td5.innerHTML = st.disc? String(st.disc) : '<span class="muted">—</span>'; tr.appendChild(td5);
+      var td6=document.createElement('td'); td6.className='dash-x'; td6.innerHTML = st.last? ('<span class="muted">'+fmtTime(st.last)+'</span>') : '<span class="muted">—</span>'; tr.appendChild(td6);
+      tr.style.cursor='pointer';
+      tr.onclick=function(){ closeModals(); if(BYID[ch.id]) openChapter(ch.id); };
+      tb.appendChild(tr);
+    });
+    tbl.appendChild(tb); body.appendChild(tbl);
+    showModal('dashModal');
+  }
+  function downloadFeedback(){
+    var reps=[]; comments.forEach(function(c){ (c.replies||[]).forEach(function(r){ reps.push({comment_id:c.id, email:r.email, note:r.note, ts:r.ts}); }); });
+    var data={ book:'upravlyaya-povedeniem', exported:nowStr(),
+      comments:comments.map(function(c){ return {id:c.id, ch:c.ch, kind:c.kind, tag:c.tag, status:c.status, email:c.email, quote:c.quote, note:c.note}; }),
+      replies:reps, discussions:DISCALL, ratings:RATEALL, reactions:REACTALL };
+    var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    a.download='feedback_'+nowStr().replace(/[: ]/g,'-')+'.json'; a.click();
+    setTimeout(function(){URL.revokeObjectURL(a.href);},2000);
+    toast('Весь фидбэк сохранён в файл');
+  }
+  document.getElementById('miDash').onclick=function(){ closeMenus(); openDashboard(); };
+  document.getElementById('dashClose').onclick=closeModals;
+  document.getElementById('dashBackup').onclick=downloadFeedback;
+
+  // ---------- panel tabs ----------
+  function setPanelTab(t){
+    panelTab=t;
+    document.getElementById('tabEdits').classList.toggle('on', t==='edits');
+    document.getElementById('tabDisc').classList.toggle('on', t==='disc');
+    document.getElementById('cList').style.display     = t==='edits'?'':'none';
+    document.getElementById('editTools').style.display = t==='edits'?'':'none';
+    document.getElementById('discWrap').style.display  = t==='disc'?'':'none';
+    document.getElementById('panelTitle').textContent  = t==='edits'?'Правки':'Обсуждение';
+    renderPanel();
+  }
+  function renderPanel(){ if(panelTab==='edits') refreshPanel(); else renderDisc(); }
+  document.getElementById('tabEdits').onclick=function(){ setPanelTab('edits'); };
+  document.getElementById('tabDisc').onclick=function(){ setPanelTab('disc'); };
+
+  // ---------- notifications ----------
+  function myNotifSeen(){ var pr=USER && PROFILES[USER.id]; return (pr && pr.notif_seen)? Date.parse(pr.notif_seen):0; }
+  function collectNotifs(){
+    var seen=myNotifSeen(), out=[];
+    comments.forEach(function(c){
+      if(!c.mine) return;
+      (c.replies||[]).forEach(function(r){ if(!r.mine && r.ts>seen) out.push({ts:r.ts, who:nameFor(r.uid,r.email), what:'ответ на вашу правку', ch:c.ch, snippet:r.note}); });
+    });
+    var myPosts={}; DISCALL.forEach(function(d){ if(!d.parent_id && USER && d.user_id===USER.id) myPosts[d.id]=1; });
+    DISCALL.forEach(function(d){
+      if(d.parent_id && myPosts[d.parent_id] && !(USER && d.user_id===USER.id)){
+        var ts=Date.parse(d.created_at); if(ts>seen) out.push({ts:ts, who:nameFor(d.user_id,d.user_email), what:'ответ в обсуждении', ch:d.chapter_id, snippet:d.body});
+      }
+    });
+    // обновления глав, где у меня есть правки (после моего notif_seen) — одно на главу
+    var perCh={};
+    CVALL.forEach(function(v){
+      if(!MYCHS[v.chapter_id]) return;
+      var ts=v.created_at?Date.parse(v.created_at):0;
+      if(ts>seen && (!perCh[v.chapter_id] || ts>perCh[v.chapter_id])) perCh[v.chapter_id]=ts;
+    });
+    Object.keys(perCh).forEach(function(chId){
+      out.push({ts:perCh[chId], who:'', what:'глава обновлена — ваши правки учтены', ch:chId, snippet:''});
+    });
+    out.sort(function(a,b){return b.ts-a.ts;}); return out;
+  }
+  function updateBell(){
+    var bell=document.getElementById('btnBell');
+    if(bell) bell.style.display = USER? '' : 'none';
+    var n=USER?collectNotifs().length:0, b=document.getElementById('bellBadge');
+    if(b){ if(n>0){ b.textContent=n>9?'9+':String(n); b.style.display='inline-block'; } else b.style.display='none'; }
+    var dot=document.getElementById('moreDot'); if(dot) dot.style.display = n>0?'block':'none';
+  }
+  function openNotifs(){
+    var list=collectNotifs(), box=document.getElementById('notifList'); box.innerHTML='';
+    if(!list.length) box.innerHTML='<div class="d-empty">Пока тихо — ответы появятся здесь.</div>';
+    list.forEach(function(nf){
+      var el=document.createElement('div'); el.className='nf';
+      var t=document.createElement('div'); t.className='nf-t';
+      if(nf.who){ var who=document.createElement('b'); who.textContent=nf.who; t.appendChild(who); t.appendChild(document.createTextNode(' — '+nf.what)); }
+      else { var w2=document.createElement('b'); w2.textContent='📘 '+nf.what.charAt(0).toUpperCase()+nf.what.slice(1); t.appendChild(w2); }
+      var sub=document.createElement('div'); sub.className='nf-sub';
+      var chTitle=BYID[nf.ch]?BYID[nf.ch].title:nf.ch;
+      sub.textContent=chTitle+' · '+fmtTime(nf.ts)+(nf.snippet?(' · '+nf.snippet.slice(0,50)):'');
+      el.appendChild(t); el.appendChild(sub);
+      var isUpd=!nf.who;
+      el.onclick=function(){ closeModals(); if(state.chapter!==nf.ch && BYID[nf.ch]) openChapter(nf.ch); if(!isUpd){ togglePanel(true); setPanelTab('disc'); } };
+      box.appendChild(el);
+    });
+    showModal('notifModal'); markNotifsSeen();
+  }
+  async function markNotifsSeen(){
+    if(!SB||!USER) return;
+    var now=new Date().toISOString();
+    if(PROFILES[USER.id]) PROFILES[USER.id].notif_seen=now; else PROFILES[USER.id]={notif_seen:now};
+    updateBell();
+    try{ await SB.from('profiles').upsert({ user_id:USER.id, email:(USER.email||'').toLowerCase(), notif_seen:now, last_seen:now }, {onConflict:'user_id'}); }catch(e){}
+  }
+  document.getElementById('btnBell').onclick=openNotifs;
+  document.getElementById('notifClose').onclick=closeModals;
+
+  // ---------- admin: names ----------
+  async function refreshProfiles(){
+    var box=document.getElementById('profList'); if(!box) return;
+    box.textContent='Загрузка…'; await loadProfiles(); box.innerHTML='';
+    var ids=Object.keys(PROFILES);
+    if(!ids.length){ box.innerHTML='<div style="color:var(--muted);font-size:13px">Пока никто не заходил — пригласите первых читателей.</div>'; return; }
+    ids.forEach(function(uid){
+      var pr=PROFILES[uid];
+      var row=document.createElement('div'); row.className='pf-row';
+      var mail=document.createElement('span'); mail.className='pf-mail'; mail.textContent=pr.email||uid;
+      var inp=document.createElement('input'); inp.className='pf-name'; inp.value=pr.name||''; inp.placeholder='имя';
+      var save=document.createElement('button'); save.className='btn'; save.textContent='✓'; save.style.padding='6px 11px';
+      save.onclick=async function(){
+        var nm=(inp.value||'').trim();
+        var r=await SB.from('profiles').update({name:nm}).eq('user_id',uid);
+        if(r.error){ toast('Ошибка: '+r.error.message); return; }
+        PROFILES[uid].name=nm; toast('Имя сохранено'); if(panelOpen()) renderPanel();
+      };
+      row.appendChild(mail); row.appendChild(inp); row.appendChild(save); box.appendChild(row);
+    });
+  }
+
+  // ---------- init ----------
+  (async function init(){
+    initSB();
+    var sRaw=lsGet('bp_state');
+    if(sRaw){ try{ var s=JSON.parse(sRaw); if(s){ state.markers=!!s.markers; state.scroll=s.scroll||{}; if(s.theme) state.theme=s.theme; if(s.book) state.book=s.book; if(s.readFont) state.readFont=s.readFont; if(s.chapter) state.chapter=s.chapter; if(typeof s.fontSize==='number') state.fontSize=s.fontSize; state.read=s.read||{}; } }catch(e){} }
+    else if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches){ state.theme='dark'; }
+    applyTheme(); applyReading();
+    if(window.innerWidth<=820) document.getElementById('sidebar').classList.add('collapsed');
+    var _mm=document.getElementById('miMarkers'); if(_mm) _mm.classList.toggle('on',state.markers);
+    updateCount();
+    document.getElementById('scroller').addEventListener('mouseup', function(){ setTimeout(onSelect,10); });
+    document.getElementById('scroller').addEventListener('touchend', function(){ setTimeout(onSelect,30); });
+
+    if(!SB){ showGate('config'); return; }
+    // мгновенно показать книгу из кэша (если есть) — чтобы возврат в приложение не мигал экраном входа
+    if(loadContentCache()){
+      if(!state.chapter || !BYID[state.chapter]) state.chapter = BOOK.length? BOOK[0].id : null;
+      renderTOC(); renderChapter();
+      document.getElementById('scroller').scrollTop = state.scroll[state.chapter]||0;
+    }
+    SB.auth.onAuthStateChange(function(ev, session){ onAuth(session); });
+    var got=await SB.auth.getSession();
+    var sess = got.data && got.data.session;
+    if(!sess){ showGate('login'); }   // вход показываем только если сессии действительно нет
+    await onAuth(sess);
+  })();
+
+})();
+</script>
+</body>
+</html>
