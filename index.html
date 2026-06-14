@@ -197,13 +197,16 @@
     border-left:1px solid var(--line); box-shadow:var(--shadow-lg); transform:translateX(102%);
     transition:transform .26s cubic-bezier(.4,0,.2,1); z-index:80; display:flex; flex-direction:column}
   #panel.open{transform:none}
-  .panel-head{padding:18px 20px; border-bottom:1px solid var(--line)}
-  .panel-head .row{display:flex; align-items:center; gap:10px}
-  .panel-head h3{margin:0; font-size:16px; font-weight:700; letter-spacing:-.01em; flex:1}
-  .ptabs{display:flex; gap:4px; margin-top:14px; background:var(--accent-tint); padding:4px; border-radius:var(--r-m)}
-  .ptab{flex:1; padding:9px 6px; border:none; background:transparent; color:var(--muted); border-radius:var(--r-s);
-    font-size:13px; font-weight:600; transition:.12s}
-  .ptab.on{background:var(--card); color:var(--accent); box-shadow:var(--shadow)}
+  .panel-head{padding:14px 18px 14px; border-bottom:1px solid var(--line)}
+  .panel-head .row{display:flex; align-items:center; gap:8px}
+  .panel-head h3{margin:0; font-size:17px; font-weight:700; letter-spacing:-.02em; flex:1}
+  .panel-head .menu-wrap{position:relative}
+  .panel-head .menu{top:42px}
+  .sheet-grab{display:none; width:38px; height:5px; border-radius:3px; background:var(--line-2); margin:2px auto 10px; cursor:pointer}
+  .ptabs{display:flex; gap:2px; margin-top:13px; background:var(--accent-tint); padding:3px; border-radius:11px}
+  .ptab{flex:1; padding:8px 6px; border:none; background:transparent; color:var(--muted); border-radius:8px;
+    font-size:13.5px; font-weight:600; letter-spacing:-.01em; transition:.18s; cursor:pointer}
+  .ptab.on{background:var(--card); color:var(--ink); box-shadow:0 1px 4px rgba(0,0,0,.10)}
   .panel-tools{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px}
   .ptool{font-size:12.5px; border:1px solid var(--line-2); background:var(--card); border-radius:var(--r-s);
     padding:8px 11px; color:var(--read); transition:.12s}
@@ -240,6 +243,10 @@
   .c-like.on,.c-like:hover{color:var(--danger)}
   .empty,.d-empty{color:var(--muted); font-size:14px; text-align:center; padding:48px 20px; line-height:1.6}
   .d-empty{padding:16px 0; text-align:left; font-size:13px}
+  .empty-state{display:flex; flex-direction:column; align-items:center; text-align:center; padding:54px 28px 40px}
+  .es-ic{width:42px; height:42px; stroke:var(--line-2); stroke-width:1.5; fill:none; stroke-linecap:round; stroke-linejoin:round; margin-bottom:12px}
+  .es-t{font-size:16px; font-weight:600; color:var(--ink); letter-spacing:-.01em}
+  .es-s{font-size:13.5px; color:var(--muted); line-height:1.5; max-width:250px; margin-top:3px}
 
   /* presence */
   .person{display:inline-flex; align-items:center; gap:5px}
@@ -252,12 +259,12 @@
     color:#fff; border-radius:8px; font-family:var(--font-mono); font-size:9.5px; line-height:16px; text-align:center; font-weight:500}
 
   /* discussion */
-  #discWrap{padding:0 16px 16px}
-  #discRate{display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:14px 0; border-bottom:1px solid var(--line); margin-bottom:14px}
+  #discWrap{flex:1; overflow:auto; padding:14px 16px calc(16px + env(safe-area-inset-bottom,0px))}
+  #discRate{display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding:13px 15px; margin-bottom:14px; background:var(--card); border:1px solid var(--line); border-radius:14px}
   .stars{display:inline-flex; gap:3px; font-size:23px; line-height:1; cursor:pointer}
   .star{color:var(--line-2); transition:color .15s, transform .12s} .star.fill{color:var(--hl-edge)} .star:hover{color:var(--hl-edge); transform:scale(1.12)}
   .rate-info{font-size:12.5px; color:var(--muted); font-family:var(--font-mono)}
-  .d-post{padding:12px 0; border-bottom:1px solid var(--line)}
+  .d-post{padding:13px 15px; margin-bottom:10px; background:var(--card); border:1px solid var(--line); border-radius:14px}
   .d-head{display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--muted); margin-bottom:5px}
   .d-head .person{color:var(--ink); font-weight:600}
   .d-time{font-size:11px; color:var(--muted); font-family:var(--font-mono)}
@@ -269,10 +276,10 @@
   .d-reply{margin-bottom:8px}
   .d-replybox{margin:8px 0 0 14px; display:none}
   .d-replybox.show{display:block}
-  #discInput,.d-replybox textarea{width:100%; min-height:62px; resize:vertical; padding:11px; border:1px solid var(--line-2);
-    border-radius:var(--r-s); font-family:inherit; font-size:14px; background:var(--card); color:var(--ink)}
-  #discInput:focus,.d-replybox textarea:focus{outline:none; border-color:var(--accent)}
-  #discNew{margin-top:14px} #discInput{margin-bottom:8px}
+  #discInput,.d-replybox textarea{width:100%; min-height:64px; resize:vertical; padding:12px 14px; border:1px solid var(--line-2);
+    border-radius:14px; font-family:inherit; font-size:14.5px; line-height:1.5; background:var(--card); color:var(--ink)}
+  #discInput:focus,.d-replybox textarea:focus{outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft)}
+  #discNew{margin-top:0} .disc-send-row{display:flex; justify-content:flex-end; margin-top:10px}
 
   /* reactions */
   #reactBar{max-width:none; margin:18px 0 0; display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:10px;
@@ -800,7 +807,7 @@
   }
 
   /* spot marks (v5.2) */
-  .mark-pop{position:fixed; z-index:70; left:50%; transform:translateX(-50%); bottom:calc(env(safe-area-inset-bottom,0px) + 16px); display:flex; flex-direction:column; gap:6px; align-items:center; background:var(--panel); border:1px solid var(--line-2); border-radius:16px; box-shadow:var(--shadow-lg); padding:8px 10px; max-width:calc(100vw - 16px)}
+  .mark-pop{position:fixed; z-index:70; left:50%; transform:translateX(-50%); bottom:calc(env(safe-area-inset-bottom,0px) + 16px); display:flex; flex-direction:column; gap:6px; align-items:center; background:var(--panel); border:1px solid var(--line-2); border-radius:16px; box-shadow:var(--shadow-lg); padding:8px 10px; max-width:calc(100vw - 16px); background:color-mix(in srgb,var(--panel) 80%,transparent); -webkit-backdrop-filter:blur(22px) saturate(1.7); backdrop-filter:blur(22px) saturate(1.7)}
   .mark-pop .mp-head{font-size:10px; color:var(--muted); font-family:var(--font-mono); text-transform:uppercase; letter-spacing:.4px}
   .mark-pop .mp-row{display:flex; flex-wrap:wrap; gap:6px; justify-content:center; max-width:330px}
   .mark-pop .rb-btn{padding:6px 11px; font-size:12.5px}
@@ -812,6 +819,11 @@
   #bmBody .bm-q:hover{color:var(--accent)}
   #bmBody .bm-x{flex:0 0 auto; border:none; background:transparent; color:var(--muted); cursor:pointer; font-size:13px; padding:2px 4px}
   #bmBody .bm-x:hover{color:var(--danger)}
+  #chapLogBody .chaplog-admin{margin-top:20px; padding-top:14px; border-top:1px dashed var(--line-2)}
+  #chapLogBody .chaplog-admin-h{font-family:var(--font-mono); font-size:11px; text-transform:uppercase; letter-spacing:.3px; color:var(--muted); margin-bottom:8px}
+  #chapLogBody .chaplog-tech{font-size:13px; color:var(--muted); font-family:var(--font-mono); margin-bottom:12px}
+  #chapLogBody .chaplog-arch-btn{border:1px solid var(--line-2); background:var(--bg); color:var(--accent); border-radius:10px; padding:8px 14px; font-size:13px; font-weight:600; cursor:pointer}
+  #chapLogBody .chaplog-arch-btn:hover{border-color:var(--accent)}
   mark.smk{cursor:pointer; border-radius:2px; padding:0 .5px; box-decoration-break:clone; -webkit-box-decoration-break:clone; --mk:var(--warn)}
   mark.smk.spot-strong{--mk:var(--good)}
   mark.smk.spot-note{--mk:var(--accent)}
@@ -824,6 +836,12 @@
   #markView .mv-note{color:var(--muted); font-style:italic; margin-top:6px; line-height:1.4}
   #markView .mv-del{display:block; margin-top:9px; border:1px solid var(--line-2); background:transparent; color:var(--muted); border-radius:8px; padding:5px 10px; font-size:12.5px; cursor:pointer; font-family:inherit}
   #markView .mv-del:hover{border-color:var(--danger); color:var(--danger)}
+
+  @media(max-width:640px){
+    #panel{ left:0; right:0; top:auto; bottom:0; width:100%; max-width:100%; height:90vh; border-left:none;
+      border-radius:22px 22px 0 0; transform:translateY(102%); box-shadow:0 -10px 44px rgba(0,0,0,.20) }
+    .sheet-grab{ display:block }
+  }
 </style>
 </head>
 <body>
@@ -854,7 +872,6 @@
         <div class="menu-wrap">
           <button class="iconbtn" id="btnMore" title="Ещё" aria-label="Ещё"><svg class="i i-fill" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg><span id="moreDot" class="dot-ind" style="display:none"></span></button>
           <div class="menu" id="moreMenu">
-            <button class="menu-item" id="btnInfo">О главе</button>
             <button class="menu-item" id="btnShelf">Полка</button>
             <button class="menu-item" id="btnJourney">Мой прогресс</button>
             <button class="menu-item" id="btnBookmarks">Закладки</button>
@@ -922,20 +939,25 @@
 <!-- comments panel -->
 <aside id="panel">
   <div class="panel-head">
+    <div class="sheet-grab" id="panelGrab" aria-hidden="true"></div>
     <div class="row">
-      <h3 id="panelTitle">Панель</h3>
-      <button class="iconbtn" id="btnPanelClose" aria-label="Закрыть панель">✕</button>
+      <h3 id="panelTitle">Отклики</h3>
+      <div class="menu-wrap">
+        <button class="iconbtn" id="btnPanelTools" title="Инструменты" aria-label="Инструменты" style="display:none"><svg class="i i-fill" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg></button>
+        <div class="menu" id="panelToolsMenu">
+          <button class="menu-item" id="btnChapterNote">Заметка к главе</button>
+          <button class="menu-item" id="btnCopyAll">Скопировать всё для модели</button>
+          <button class="menu-item" id="btnArchive">Архив версий</button>
+          <div class="menu-sep"></div>
+          <button class="menu-item" id="btnSaveJson">Сохранить в файл (.json)</button>
+          <button class="menu-item" id="btnLoadJson">Загрузить из файла (.json)</button>
+        </div>
+      </div>
+      <button class="iconbtn" id="btnPanelClose" aria-label="Закрыть">✕</button>
     </div>
-    <div class="ptabs">
-      <button class="ptab on" id="tabEdits">✎ Правки</button>
-      <button class="ptab" id="tabDisc">💬 Обсуждение</button>
-    </div>
-    <div class="panel-tools" id="editTools">
-      <button class="ptool primary" id="btnCopyAll">⇪ Скопировать всё для модели</button>
-      <button class="ptool" id="btnSaveJson">Сохранить .json</button>
-      <button class="ptool" id="btnLoadJson">Загрузить .json</button>
-      <button class="ptool" id="btnChapterNote">＋ К главе</button>
-      <button class="ptool" id="btnArchive">Архив версий</button>
+    <div class="ptabs" id="ptabs">
+      <button class="ptab on" id="tabEdits">Правки</button>
+      <button class="ptab" id="tabDisc">Обсуждение</button>
     </div>
   </div>
   <div id="cList"></div>
@@ -944,7 +966,7 @@
     <div id="discList"></div>
     <div id="discNew">
       <textarea id="discInput" placeholder="Поделиться мыслью об этой главе…"></textarea>
-      <div style="text-align:right"><button class="ptool primary" id="discPost">Отправить</button></div>
+      <div class="disc-send-row"><button class="btn primary" id="discPost">Отправить</button></div>
     </div>
   </div>
 </aside>
@@ -1064,11 +1086,6 @@
     <input id="suppNote" class="adm-in" placeholder="Короткая заметка (необязательно)" style="width:100%">
   </div>
   <div class="foot"><div class="spacer"></div><button class="btn" id="suppCancel">Отмена</button><button class="btn primary" id="suppSave">Добавить</button></div>
-</div>
-<div class="modal" id="chinfoModal" style="width:520px">
-  <h3 id="ciTitle">О главе</h3>
-  <div class="body"><div id="ciBody"></div></div>
-  <div class="foot"><div class="spacer"></div><button class="btn" id="ciClose">Закрыть</button></div>
 </div>
 <div id="shelf" style="display:none">
   <div class="shelf-inner">
@@ -1220,8 +1237,15 @@
   function currentBook(){ return state.book||'main'; }
 
   // ====== ВЕРСИЯ ПРИЛОЖЕНИЯ (повышать с каждым апдейтом HTML) ======
-  var APP_VERSION='5.7';
+  var APP_VERSION='5.9';
   var APP_CHANGELOG=[
+    {v:'5.9', items:[
+      'Панель откликов перерисована в духе iOS: на телефоне — низовой лист с ручкой, аккуратные вкладки, карточки обсуждения.',
+      'Инструменты редактора убраны в меню «···» — вкладка «Правки» больше не забита.',
+    ]},
+    {v:'5.8', items:[
+      'Убрали «О главе» — она дублировала «Что изменилось». Теперь одно место.',
+    ]},
     {v:'5.7', items:[
       'Вместо заметок — закладки: выделите фразу и сохраните, чтобы вернуться. Список закладок — в меню «···» (только ваши, автор их не видит).',
       'Панель отметок стала компактнее по высоте.',
@@ -1440,8 +1464,8 @@
     var box=document.getElementById('chapLogBody'); if(!box) return; box.innerHTML='';
     var ttl=document.getElementById('chapLogTitle'); if(ttl) ttl.textContent='Что изменилось — '+ch.title;
     var log=Array.isArray(ch.changelog)?ch.changelog:[];
-    if(!log.length){ box.innerHTML='<div class="empty">Для этой главы пока нет записей об изменениях.</div>'; showModal('chapLogModal'); return; }
-    log.forEach(function(rel){
+    if(!log.length){ box.innerHTML='<div class="empty">Для этой главы пока нет записей об изменениях.</div>'; }
+    else log.forEach(function(rel){
       var head = rel.v ? ('Версия '+rel.v) : '';
       if(rel.date){ var dd=fmtLogDate(rel.date); head = head ? (head+' · '+dd) : dd; }
       if(!head) head='Обновление';
@@ -1450,6 +1474,13 @@
       (rel.items||[]).forEach(function(it){ var li=document.createElement('li'); li.textContent=it; ul.appendChild(li); });
       box.appendChild(ul);
     });
+    if(canModerate()){
+      var ad=document.createElement('div'); ad.className='chaplog-admin';
+      var ah=document.createElement('div'); ah.className='chaplog-admin-h'; ah.textContent='Техническое · видит только редактор'; ad.appendChild(ah);
+      var cur=document.createElement('div'); cur.className='chaplog-tech'; cur.innerHTML='Текущая версия: <b>'+(ch.ver||'?').slice(0,7)+'</b>'+(ch.updated?(' \u00b7 '+new Date(ch.updated).toLocaleString('ru-RU')):''); ad.appendChild(cur);
+      var btn=document.createElement('button'); btn.className='chaplog-arch-btn'; btn.textContent='Открыть архив версий →'; btn.onclick=function(){ closeModals(); openArchive(); }; ad.appendChild(btn);
+      box.appendChild(ad);
+    }
     showModal('chapLogModal');
   }
   (function(){ var c=document.getElementById('chapLogClose'); if(c) c.onclick=closeModals; })();
@@ -1684,7 +1715,7 @@
     var _h1=cont.querySelector('h1');
     if(_h1){ var _w=(c.md||'').split(/\s+/).filter(Boolean).length, _m=Math.max(1,Math.round(_w/200));
       var _meta=document.createElement('div'); _meta.className='chap-meta'; _meta.textContent='≈ '+_m+' мин чтения';
-      if(c.changelog && c.changelog.length){ _meta.appendChild(document.createTextNode('  ·  ')); var _cl=document.createElement('button'); _cl.className='chap-changed-link'; _cl.textContent='Что изменилось'; _cl.onclick=function(){ openChapLog(c.id); }; _meta.appendChild(_cl); }
+      if((c.changelog && c.changelog.length) || canModerate()){ _meta.appendChild(document.createTextNode('  ·  ')); var _cl=document.createElement('button'); _cl.className='chap-changed-link'; _cl.textContent='Что изменилось'; _cl.onclick=function(){ openChapLog(c.id); }; _meta.appendChild(_cl); }
       _h1.insertAdjacentElement('afterend', _meta); }
     fillFigures(); highlightChapter(); renderSpotMarks(); renderChapNav(); renderRate('rateBar'); renderReactBar(); renderDiscCTA(); renderSupp(); renderReadProgress(); refreshBookLogDot();
   }
@@ -1944,7 +1975,7 @@
   function refreshPanel(){
     var list=document.getElementById('cList'); list.innerHTML='';
     if(comments.length===0){
-      list.innerHTML='<div class="empty">Пока пусто. Выделите фрагмент в тексте — и оставьте автору заметку.</div>';
+      list.innerHTML='<div class="empty-state"><svg class="es-ic" viewBox="0 0 24 24"><path d="M4 20h4L18.5 9.5a2.12 2.12 0 0 0-3-3L5 17z"/><path d="M13.5 6.5l3 3"/></svg><div class="es-t">Пока нет правок</div><div class="es-s">Выделите фрагмент в тексте и нажмите «Предложить правку».</div></div>';
       return;
     }
     BOOK.forEach(function(ch){
@@ -2243,6 +2274,9 @@
     var bm=document.getElementById('btnMore'); if(bm) bm.onclick=function(e){ toggleMenu('moreMenu', e); };
     var rs=document.getElementById('readSheet'); if(rs) rs.addEventListener('click', function(e){ e.stopPropagation(); });
     var mm=document.getElementById('moreMenu'); if(mm) mm.addEventListener('click', function(e){ e.stopPropagation(); if(e.target.closest('.menu-item')) closeMenus(); });
+    var bpt=document.getElementById('btnPanelTools'); if(bpt) bpt.onclick=function(e){ toggleMenu('panelToolsMenu', e); };
+    var ptm=document.getElementById('panelToolsMenu'); if(ptm) ptm.addEventListener('click', function(e){ e.stopPropagation(); if(e.target.closest('.menu-item')) closeMenus(); });
+    var pgr=document.getElementById('panelGrab'); if(pgr) pgr.onclick=function(){ togglePanel(false); };
   })();
   document.addEventListener('click', closeMenus);
 
@@ -2270,6 +2304,24 @@
     }
     enableSheetDrag(document.getElementById('readSheet'));
     enableSheetDrag(document.getElementById('moreMenu'));
+    (function(){
+      var el=document.getElementById('panel'); if(!el) return;
+      var head=el.querySelector('.panel-head')||el; var y0=0,dy=0,drag=false;
+      head.addEventListener('touchstart', function(e){
+        if(window.innerWidth>640 || e.touches.length!==1){ drag=false; return; }
+        if(e.target.closest('button, a, input, select, textarea, .menu-item, .seg-btn')){ drag=false; return; }
+        y0=e.touches[0].clientY; dy=0; drag=true;
+      }, {passive:true});
+      head.addEventListener('touchmove', function(e){
+        if(!drag) return; dy=e.touches[0].clientY-y0;
+        if(dy>6){ el.style.transition='none'; el.style.transform='translateY('+dy+'px)'; }
+      }, {passive:true});
+      head.addEventListener('touchend', function(){
+        if(!drag) return; drag=false;
+        if(dy>80){ el.style.transition='transform .2s ease'; el.style.transform='translateY(110%)'; setTimeout(function(){ togglePanel(false); el.style.transition=''; el.style.transform=''; }, 170); }
+        else if(dy>6){ el.style.transition='transform .24s cubic-bezier(.32,.72,0,1)'; el.style.transform=''; setTimeout(function(){ el.style.transition=''; }, 250); }
+      }, {passive:true});
+    })();
   })();
 
   // keep editor/reply inputs and the discussion panel above the mobile keyboard (iOS fixed-element fix)
@@ -2464,8 +2516,7 @@
     show('tabEdits', contrib);
     ['editorSep','miDash','miExport','miMarkers'].forEach(function(id){ show(id, mod); });
     show('btnAdmin', isAdmin);
-    ['btnCopyAll','btnSaveJson','btnLoadJson','btnArchive'].forEach(function(id){ show(id, mod); });
-    show('btnChapterNote', contrib);
+    var ptb=document.getElementById('btnPanelTools'); if(ptb) ptb.style.display=(panelTab==='edits' && mod)?'':'none';
     if(!mod && state.markers){ state.markers=false; var mm=document.getElementById('miMarkers'); if(mm) mm.classList.remove('on'); renderChapter(); }
     if(!contrib && panelTab==='edits') setPanelTab('disc');
     renderTOC();      // перерисовать оглавление под роль (счётчики правок — только контрибьютору/редактору)
@@ -2652,31 +2703,6 @@
   (function(){ var b=document.getElementById('wcClose'); if(b) b.onclick=function(){ closeModals(); if(onboarding){ onboarding=false; showShelf(); } }; })();
 
   // chapter info (version + date)
-  async function showChapterInfo(){
-    var c=BYID[state.chapter]; if(!c) return;
-    document.getElementById('ciTitle').textContent='О главе · '+c.title;
-    var box=document.getElementById('ciBody'); box.innerHTML='Загрузка…';
-    showModal('chinfoModal');
-    var when=c.updated? new Date(c.updated).toLocaleString('ru-RU') : '—';
-    var html='<div class="ci-cur"><b>Текущая версия:</b> '+(c.ver||'?').slice(0,7)+' · '+when+'</div>';
-    box.innerHTML=html;
-    var vr=await SB.from('chapter_versions').select('ver,changelog,created_at').eq('chapter_id',c.id).order('created_at',{ascending:false});
-    if(!vr.error && vr.data && vr.data.length){
-      var h=document.createElement('div'); h.className='ci-h'; h.textContent='История изменений'; box.appendChild(h);
-      vr.data.forEach(function(v){
-        var row=document.createElement('div'); row.className='ci-row';
-        var d=document.createElement('div'); d.className='ci-date';
-        d.innerHTML='<b>'+(v.ver||'?').slice(0,7)+'</b> · '+new Date(v.created_at).toLocaleDateString('ru-RU')+(v.ver===c.ver?' <span class="muted">(текущая)</span>':'');
-        var cl=document.createElement('div'); cl.className='ci-log'; cl.textContent=v.changelog||'—';
-        row.appendChild(d); row.appendChild(cl); box.appendChild(row);
-      });
-    } else {
-      var e=document.createElement('div'); e.className='muted'; e.style.marginTop='10px'; e.style.fontSize='13px';
-      e.textContent='История появится после следующих обновлений главы.'; box.appendChild(e);
-    }
-  }
-  (function(){ var b=document.getElementById('ciClose'); if(b) b.onclick=closeModals; })();
-  (function(){ var b=document.getElementById('btnInfo'); if(b) b.onclick=showChapterInfo; })();
 
   // ---------- shelf (multi-book) ----------
   var onboarding=false;
@@ -3101,7 +3127,7 @@
     var ch=BYID[state.chapter];
     if(!ch){ box.innerHTML='<div class="d-empty">Откройте главу, чтобы обсудить.</div>'; return; }
     var posts=DISCALL.filter(function(d){return d.chapter_id===ch.id && !d.parent_id;}).sort(function(a,b){return Date.parse(a.created_at)-Date.parse(b.created_at);});
-    if(!posts.length){ box.innerHTML='<div class="d-empty">Здесь пока тихо — можно начать первым.</div>'; return; }
+    if(!posts.length){ box.innerHTML='<div class="empty-state"><svg class="es-ic" viewBox="0 0 24 24"><path d="M20 11.5a7.5 7.5 0 0 1-10.9 6.7L4 19.5l1.3-4.1A7.5 7.5 0 1 1 20 11.5Z"/></svg><div class="es-t">Здесь пока тихо</div><div class="es-s">Будьте первым — поделитесь мыслью об этой главе.</div></div>'; return; }
     posts.forEach(function(pp){ box.appendChild(discPostEl(pp, ch)); });
   }
   function delLink(id){ var a=document.createElement('a'); a.textContent='удалить'; a.onclick=function(){ delDisc(id); }; return a; }
@@ -3469,12 +3495,13 @@
   // ---------- panel tabs ----------
   function setPanelTab(t){
     panelTab=t;
-    document.getElementById('tabEdits').classList.toggle('on', t==='edits');
-    document.getElementById('tabDisc').classList.toggle('on', t==='disc');
-    document.getElementById('cList').style.display     = t==='edits'?'':'none';
-    document.getElementById('editTools').style.display = t==='edits'?'':'none';
-    document.getElementById('discWrap').style.display  = t==='disc'?'':'none';
-    document.getElementById('panelTitle').textContent  = t==='edits'?'Правки':'Обсуждение';
+    var ed=t==='edits';
+    document.getElementById('tabEdits').classList.toggle('on', ed);
+    document.getElementById('tabDisc').classList.toggle('on', !ed);
+    document.getElementById('cList').style.display    = ed?'':'none';
+    document.getElementById('discWrap').style.display = ed?'none':'';
+    var pt=document.getElementById('btnPanelTools'); if(pt) pt.style.display=(ed && canModerate())?'':'none';
+    closeMenus();
     renderPanel();
   }
   function renderPanel(){ if(panelTab==='edits') refreshPanel(); else renderDisc(); }
