@@ -800,10 +800,18 @@
   }
 
   /* spot marks (v5.2) */
-  .mark-pop{position:fixed; z-index:70; left:50%; transform:translateX(-50%); bottom:calc(env(safe-area-inset-bottom,0px) + 18px); display:flex; flex-direction:column; gap:8px; align-items:center; background:var(--panel); border:1px solid var(--line-2); border-radius:18px; box-shadow:var(--shadow-lg); padding:11px 13px; max-width:calc(100vw - 18px)}
-  .mark-pop .mp-head{font-size:11px; color:var(--muted); font-family:var(--font-mono); text-transform:uppercase; letter-spacing:.4px}
-  .mark-pop .mp-row{display:flex; flex-wrap:wrap; gap:7px; justify-content:center; max-width:336px}
+  .mark-pop{position:fixed; z-index:70; left:50%; transform:translateX(-50%); bottom:calc(env(safe-area-inset-bottom,0px) + 16px); display:flex; flex-direction:column; gap:6px; align-items:center; background:var(--panel); border:1px solid var(--line-2); border-radius:16px; box-shadow:var(--shadow-lg); padding:8px 10px; max-width:calc(100vw - 16px)}
+  .mark-pop .mp-head{font-size:10px; color:var(--muted); font-family:var(--font-mono); text-transform:uppercase; letter-spacing:.4px}
+  .mark-pop .mp-row{display:flex; flex-wrap:wrap; gap:6px; justify-content:center; max-width:330px}
+  .mark-pop .rb-btn{padding:6px 11px; font-size:12.5px}
   .mark-pop .mp-edit-chip{color:var(--accent); border-color:var(--accent); font-weight:600}
+  #bmBody .bm-ch{font-family:var(--font-mono); font-size:11px; text-transform:uppercase; letter-spacing:.3px; color:var(--muted); margin:14px 0 6px}
+  #bmBody .bm-ch:first-child{margin-top:0}
+  #bmBody .bm-row{display:flex; align-items:flex-start; gap:8px; margin-bottom:8px}
+  #bmBody .bm-q{flex:1; text-align:left; border:none; background:transparent; color:var(--read); font-family:inherit; font-size:14px; line-height:1.45; cursor:pointer; padding:2px 0}
+  #bmBody .bm-q:hover{color:var(--accent)}
+  #bmBody .bm-x{flex:0 0 auto; border:none; background:transparent; color:var(--muted); cursor:pointer; font-size:13px; padding:2px 4px}
+  #bmBody .bm-x:hover{color:var(--danger)}
   mark.smk{cursor:pointer; border-radius:2px; padding:0 .5px; box-decoration-break:clone; -webkit-box-decoration-break:clone; --mk:var(--warn)}
   mark.smk.spot-strong{--mk:var(--good)}
   mark.smk.spot-note{--mk:var(--accent)}
@@ -849,6 +857,7 @@
             <button class="menu-item" id="btnInfo">О главе</button>
             <button class="menu-item" id="btnShelf">Полка</button>
             <button class="menu-item" id="btnJourney">Мой прогресс</button>
+            <button class="menu-item" id="btnBookmarks">Закладки</button>
             <button class="menu-item" id="btnBookLog">Что нового в книге</button>
             <button class="menu-item" id="btnBell">Уведомления<span id="bellBadge" class="mi-badge" style="display:none">0</span></button>
             <div class="menu-sep" id="editorSep" style="display:none"></div>
@@ -903,7 +912,7 @@
       <button class="mp-react rb-btn" data-kind="drag">😴 Затянуто</button>
       <button class="mp-react rb-btn" data-kind="strong">🔥 Сильно</button>
       <button class="mp-react rb-btn" data-kind="ai">🤖 Похоже на ИИ</button>
-      <button class="mp-note rb-btn">✎ Заметка</button>
+      <button class="mp-bookmark rb-btn">🔖 Закладка</button>
       <button class="mp-edit rb-btn mp-edit-chip">Предложить правку</button>
     </div>
   </div>
@@ -1068,6 +1077,11 @@
     <div class="shelf-note">Со временем здесь появятся и другие книги.</div>
   </div>
 </div>
+<div class="modal" id="bookmarksModal" style="width:460px">
+  <h3>Закладки</h3>
+  <div class="body"><div id="bmBody"></div></div>
+  <div class="foot"><div class="spacer"></div><button class="btn" id="bmClose">Закрыть</button></div>
+</div>
 <div class="modal" id="chapLogModal" style="width:460px">
   <h3 id="chapLogTitle">Что изменилось</h3>
   <div class="body"><div id="chapLogBody"></div></div>
@@ -1206,8 +1220,12 @@
   function currentBook(){ return state.book||'main'; }
 
   // ====== ВЕРСИЯ ПРИЛОЖЕНИЯ (повышать с каждым апдейтом HTML) ======
-  var APP_VERSION='5.6';
+  var APP_VERSION='5.7';
   var APP_CHANGELOG=[
+    {v:'5.7', items:[
+      'Вместо заметок — закладки: выделите фразу и сохраните, чтобы вернуться. Список закладок — в меню «···» (только ваши, автор их не видит).',
+      'Панель отметок стала компактнее по высоте.',
+    ]},
     {v:'5.6', items:[
       'Реакции теперь только по месту (выделите фразу) — чипы в конце главы убраны. Конец главы чище: оценка и обсуждение.',
       'Каждый инструмент про своё: реакция — по месту, звёзды — оценка главы, обсуждение — разговор.',
@@ -1761,7 +1779,7 @@
   function renderSpotMarks(){
     if(!spotMarksVisible()) return;
     var c=document.getElementById('content'); var ch=BYID[state.chapter]; if(!ch) return;
-    var marks=SMARKS.filter(function(m){ return m.chapter_id===state.chapter && ((m.chapter_version||'')===(ch.ver||'') || !m.chapter_version) && m.end_off>m.start_off; });
+    var marks=SMARKS.filter(function(m){ return m.chapter_id===state.chapter && m.kind!=='bookmark' && ((m.chapter_version||'')===(ch.ver||'') || !m.chapter_version) && m.end_off>m.start_off; });
     if(!marks.length) return;
     var groups={}; marks.forEach(function(m){ var k=m.start_off+'_'+m.end_off; (groups[k]=groups[k]||[]).push(m); });
     Object.keys(groups).forEach(function(k){ var g=groups[k]; var m=g[0]; var heat=Math.min(g.length,3);
@@ -1786,7 +1804,7 @@
     var tmp=Object.assign({id:'tmp_'+Date.now()}, row); SMARKS.push(tmp);
     hideMarkPop(); try{ window.getSelection().removeAllRanges(); }catch(_){}
     renderChapter();
-    toast(kind==='note'?'Заметка добавлена':'Отмечено: '+kindLabel(kind));
+    toast(kind==='bookmark'?'Добавлено в закладки':(kind==='note'?'Заметка добавлена':'Отмечено: '+kindLabel(kind)));
     try{ SB.from('spot_marks').insert(row).select().then(function(r){ if(r&&!r.error&&r.data&&r.data[0]){ var i=SMARKS.indexOf(tmp); if(i>=0) SMARKS[i]=r.data[0]; } }); }catch(_){}
   }
   function deleteSpotMark(id){
@@ -1822,7 +1840,7 @@
       var b=e.target.closest('button'); if(!b) return;
       e.preventDefault(); e.stopPropagation();
       if(b.classList.contains('mp-react')) addSpotMark(b.getAttribute('data-kind'),'');
-      else if(b.classList.contains('mp-note')){ var t=(prompt('Ваша заметка к этому месту:','')||'').trim(); if(t) addSpotMark('note', t); else hideMarkPop(); }
+      else if(b.classList.contains('mp-bookmark')) addSpotMark('bookmark','');
       else if(b.classList.contains('mp-edit')) doAddComment();
     });
     var content=document.getElementById('content');
@@ -1831,6 +1849,31 @@
     var sc=document.getElementById('scroller'); if(sc) sc.addEventListener('scroll', function(){ hideMarkView(); });
     var bm=document.getElementById('btnMarks'); if(bm) bm.onclick=toggleSpotMarks;
   })();
+  function scrollToOffset(start){
+    var c=document.getElementById('content'); if(!c) return;
+    var walker=document.createTreeWalker(c, NodeFilter.SHOW_TEXT, { acceptNode:function(n){ var p=n.parentNode; return (p&&p.closest&&p.closest(EXCL))?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT; } }, false);
+    var pos=0, node;
+    while((node=walker.nextNode())){ var len=node.nodeValue.length;
+      if(pos+len>=start){ try{ var r=document.createRange(); var off=Math.max(0,Math.min(len,start-pos)); r.setStart(node,off); r.setEnd(node,Math.min(len,off+1)); var rect=r.getBoundingClientRect(); var sc=document.getElementById('scroller'); sc.scrollTop += rect.top - sc.clientHeight*0.3; }catch(_){} return; }
+      pos+=len; }
+  }
+  function jumpToMark(m){ closeModals(); if(state.chapter!==m.chapter_id) openChapter(m.chapter_id); setTimeout(function(){ scrollToOffset(m.start_off); }, 280); }
+  function openBookmarks(){
+    var box=document.getElementById('bmBody'); if(!box) return; box.innerHTML='';
+    var bms=SMARKS.filter(function(m){ return m.kind==='bookmark' && USER && m.user_id===USER.id; });
+    if(!bms.length){ box.innerHTML='<div class="empty">Пока нет закладок. Выделите фразу в тексте и нажмите «Закладка», чтобы вернуться к ней позже.</div>'; showModal('bookmarksModal'); return; }
+    bms.sort(function(a,b){ return (chapterIndex(a.chapter_id)-chapterIndex(b.chapter_id)) || (a.start_off-b.start_off); });
+    var lastCh=null;
+    bms.forEach(function(m){
+      if(m.chapter_id!==lastCh){ var h=document.createElement('div'); h.className='bm-ch'; var ch=BYID[m.chapter_id]; h.textContent=ch?ch.title:m.chapter_id; box.appendChild(h); lastCh=m.chapter_id; }
+      var row=document.createElement('div'); row.className='bm-row';
+      var q=document.createElement('button'); q.className='bm-q'; q.textContent='\u00ab'+(m.quote.length>90?m.quote.slice(0,90)+'\u2026':m.quote)+'\u00bb'; q.onclick=function(){ jumpToMark(m); }; row.appendChild(q);
+      var x=document.createElement('button'); x.className='bm-x'; x.textContent='\u2715'; x.title='Удалить закладку'; x.onclick=function(){ deleteSpotMark(m.id); openBookmarks(); }; row.appendChild(x);
+      box.appendChild(row);
+    });
+    showModal('bookmarksModal');
+  }
+  (function(){ var b=document.getElementById('btnBookmarks'); if(b) b.onclick=function(){ closeMenus(); openBookmarks(); }; var c=document.getElementById('bmClose'); if(c) c.onclick=closeModals; })();
 
   // ---------- editor modal ----------
   var curTag='';
