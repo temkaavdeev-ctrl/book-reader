@@ -774,9 +774,6 @@
   .blb-txt{font-size:14px; font-weight:500; line-height:1.3}
   .blb-x{border:none; background:transparent; color:var(--muted); font-size:13px; padding:5px 7px; flex:0 0 auto; border-radius:8px; cursor:pointer}
   .blb-x:hover{color:var(--ink)}
-
-  /* immersion mode (v4.9) */
-  #app.immersive #topbar{display:none}
   /* TOC "updated" badge (v4.9) */
   .toc-item .toc-upd{margin-left:auto; flex:0 0 auto; font-family:var(--font-mono); font-size:9px; text-transform:uppercase; letter-spacing:.3px;
     color:var(--accent); border:1px solid var(--accent); border-radius:5px; padding:1px 5px; white-space:nowrap}
@@ -803,11 +800,10 @@
   }
 
   /* spot marks (v5.2) */
-  .mark-pop{position:fixed; z-index:95; display:flex; gap:2px; align-items:center; background:var(--panel); border:1px solid var(--line-2); border-radius:12px; box-shadow:var(--shadow-lg); padding:4px}
-  .mark-pop button{border:none; background:transparent; cursor:pointer; border-radius:8px; padding:6px 8px; font-size:18px; line-height:1}
-  .mark-pop .mp-edit{font-size:13px; font-family:var(--font-ui); color:var(--accent); font-weight:600; padding:6px 11px}
-  .mark-pop button:hover{background:var(--accent-soft)}
-  .mark-pop button:active{transform:scale(.9)}
+  .mark-pop{position:fixed; z-index:70; left:50%; transform:translateX(-50%); bottom:calc(env(safe-area-inset-bottom,0px) + 18px); display:flex; flex-direction:column; gap:8px; align-items:center; background:var(--panel); border:1px solid var(--line-2); border-radius:18px; box-shadow:var(--shadow-lg); padding:11px 13px; max-width:calc(100vw - 18px)}
+  .mark-pop .mp-head{font-size:11px; color:var(--muted); font-family:var(--font-mono); text-transform:uppercase; letter-spacing:.4px}
+  .mark-pop .mp-row{display:flex; flex-wrap:wrap; gap:7px; justify-content:center; max-width:336px}
+  .mark-pop .mp-edit-chip{color:var(--accent); border-color:var(--accent); font-weight:600}
   mark.smk{cursor:pointer; border-radius:2px; padding:0 .5px; box-decoration-break:clone; -webkit-box-decoration-break:clone; --mk:var(--warn)}
   mark.smk.spot-strong{--mk:var(--good)}
   mark.smk.spot-note{--mk:var(--accent)}
@@ -852,9 +848,8 @@
           <div class="menu" id="moreMenu">
             <button class="menu-item" id="btnInfo">О главе</button>
             <button class="menu-item" id="btnShelf">Полка</button>
-            <button class="menu-item" id="btnJourney">Моё чтение</button>
+            <button class="menu-item" id="btnJourney">Мой прогресс</button>
             <button class="menu-item" id="btnBookLog">Что нового в книге</button>
-            <button class="menu-item" id="btnMarks">Метки на тексте</button>
             <button class="menu-item" id="btnBell">Уведомления<span id="bellBadge" class="mi-badge" style="display:none">0</span></button>
             <div class="menu-sep" id="editorSep" style="display:none"></div>
             <button class="menu-item" id="miDash" style="display:none">Дашборд глав</button>
@@ -882,13 +877,19 @@
         <div class="sheet-lbl">Размер текста</div>
         <div class="size-row"><button class="size-btn" id="fontMinus">A</button><div class="size-track"><div id="sizeFill"></div></div><button class="size-btn big" id="fontPlus">A</button></div>
       </div>
+      <div class="sheet-sec">
+        <div class="sheet-lbl">Метки на тексте</div>
+        <div class="seg" id="marksSeg">
+          <button class="seg-btn" data-marks="on">Показаны</button>
+          <button class="seg-btn" data-marks="off">Скрыты</button>
+        </div>
+      </div>
     </div>
     <div id="scroller">
       <div id="content"></div>
       <div class="chapter-end">
         <div class="chap-end-mark" aria-hidden="true">· · ·</div>
         <div id="rateBar"></div>
-        <div id="reactBar"></div>
         <button id="discCTA" class="disc-cta" style="display:none"></button>
         <div id="suppBox" style="display:none"></div>
         <div id="chapNav"></div>
@@ -896,12 +897,15 @@
     </div>
     <button id="floatAdd">+ Добавить комментарий</button>
   <div id="markPop" class="mark-pop" style="display:none">
-    <button class="mp-react" data-kind="confused" title="Запутался">🤔</button>
-    <button class="mp-react" data-kind="drag" title="Затянуто">😴</button>
-    <button class="mp-react" data-kind="strong" title="Сильно">🔥</button>
-    <button class="mp-react" data-kind="ai" title="Похоже на ИИ">🤖</button>
-    <button class="mp-note" title="Оставить заметку">✎</button>
-    <button class="mp-edit" title="Предложить правку">Правка</button>
+    <div class="mp-head">Отметить выделённое</div>
+    <div class="mp-row">
+      <button class="mp-react rb-btn" data-kind="confused">🤔 Запутался</button>
+      <button class="mp-react rb-btn" data-kind="drag">😴 Затянуто</button>
+      <button class="mp-react rb-btn" data-kind="strong">🔥 Сильно</button>
+      <button class="mp-react rb-btn" data-kind="ai">🤖 Похоже на ИИ</button>
+      <button class="mp-note rb-btn">✎ Заметка</button>
+      <button class="mp-edit rb-btn mp-edit-chip">Предложить правку</button>
+    </div>
   </div>
   </main>
 </div>
@@ -1202,8 +1206,23 @@
   function currentBook(){ return state.book||'main'; }
 
   // ====== ВЕРСИЯ ПРИЛОЖЕНИЯ (повышать с каждым апдейтом HTML) ======
-  var APP_VERSION='5.2';
+  var APP_VERSION='5.6';
   var APP_CHANGELOG=[
+    {v:'5.6', items:[
+      'Реакции теперь только по месту (выделите фразу) — чипы в конце главы убраны. Конец главы чище: оценка и обсуждение.',
+      'Каждый инструмент про своё: реакция — по месту, звёзды — оценка главы, обсуждение — разговор.',
+    ]},
+    {v:'5.5', items:[
+      '«Метки на тексте» переехали из меню «···» в настройки чтения («Aa») — там им место рядом с темой и шрифтом.',
+    ]},
+    {v:'5.4', items:[
+      'Панель отметок при выделении теперь с подписями («\ud83e\udd14 Запутался») и заголовком — понятно без догадок.',
+      'При первом чтении — разовая подсказка, как отмечать места в тексте.',
+    ]},
+    {v:'5.3', items:[
+      'Убрал режим погружения (тап по тексту) — мешал чтению и отметкам.',
+      'Панель реакций при выделении теперь внизу экрана — системное меню «Копировать» больше её не перекрывает.',
+    ]},
     {v:'5.2', items:[
       'Отметки по месту: выделите фразу — и поставьте реакцию (вкл. «похоже на ИИ») или заметку прямо в тексте.',
       'Автор видит тепловую карту: где и насколько часто читатели спотыкаются. Тумблер «Метки на тексте» в меню.',
@@ -1666,6 +1685,7 @@
     updateProgress();
     if(panelOpen() && panelTab==='disc') renderDisc();
     flushProgress();
+    maybeMarkHint();
   }
 
   function updateProgress(){
@@ -1730,6 +1750,11 @@
   var SMARKS=[];
   async function loadSpotMarks(){ SMARKS=[]; if(!SB||!USER) return; try{ var r=await SB.from('spot_marks').select('*').eq('book_id',currentBook()); if(!r.error) SMARKS=r.data||[]; }catch(e){} }
   function spotMarksVisible(){ return !window._spotHidden; }
+  function maybeMarkHint(){
+    if(!USER || lsGet('bp_markhint')) return;
+    lsSet('bp_markhint','1');
+    setTimeout(function(){ toast('Выделите любую фразу в тексте, чтобы отметить её — что зацепило или где непонятно'); }, 1700);
+  }
   function kindEmoji(k){ if(k==='note') return '\u270E'; var x=REACTKINDS.filter(function(r){return r.id===k;})[0]; return x?x.emoji:'\u2022'; }
   function kindLabel(k){ if(k==='note') return 'заметка'; var x=REACTKINDS.filter(function(r){return r.id===k;})[0]; return x?x.label:k; }
   function dominantKind(g){ var c={},best=g[0].kind,bn=0; g.forEach(function(m){ c[m.kind]=(c[m.kind]||0)+1; if(c[m.kind]>bn){bn=c[m.kind];best=m.kind;} }); return best; }
@@ -1745,11 +1770,7 @@
   function showMarkPop(range){
     var pop=document.getElementById('markPop'); if(!pop) return;
     var eb=pop.querySelector('.mp-edit'); if(eb) eb.style.display = canContribute()? '' : 'none';
-    pop.style.display='flex'; pop.style.visibility='hidden';
-    var r=range.getBoundingClientRect(); var pw=pop.offsetWidth, ph=pop.offsetHeight;
-    var left=r.left + r.width/2 - pw/2; left=Math.max(8, Math.min(left, window.innerWidth-pw-8));
-    var top=r.top - ph - 8; if(top<8) top=r.bottom+8;
-    pop.style.left=left+'px'; pop.style.top=top+'px'; pop.style.visibility='';
+    pop.style.display='flex';
   }
   function hideMarkPop(){ var pop=document.getElementById('markPop'); if(pop) pop.style.display='none'; }
   function addSpotMark(kind, note){
@@ -2166,6 +2187,8 @@
     if(seg){ var bs=seg.querySelectorAll('.seg-btn'), want=(state.theme||'light'); for(var i=0;i<bs.length;i++){ bs[i].classList.toggle('on', bs[i].getAttribute('data-th')===want); } }
   }
   (function(){ var seg=document.getElementById('themeSeg'); if(seg){ var bs=seg.querySelectorAll('.seg-btn'); for(var i=0;i<bs.length;i++){ (function(b){ b.onclick=function(){ state.theme=b.getAttribute('data-th'); applyTheme(); saveState(); }; })(bs[i]); } } })();
+  function refreshMarksSeg(){ var seg=document.getElementById('marksSeg'); if(!seg) return; var bs=seg.querySelectorAll('.seg-btn'); var on=!window._spotHidden; for(var i=0;i<bs.length;i++){ bs[i].classList.toggle('on', (bs[i].getAttribute('data-marks')==='on')===on); } }
+  (function(){ var seg=document.getElementById('marksSeg'); if(seg){ var bs=seg.querySelectorAll('.seg-btn'); for(var i=0;i<bs.length;i++){ (function(b){ b.onclick=function(){ window._spotHidden=(b.getAttribute('data-marks')==='off'); refreshMarksSeg(); renderChapter(); }; })(bs[i]); } } })();
   setInterval(function(){ if(state.theme!=='light' && state.theme!=='dark') applyTheme(); }, 300000);
   document.addEventListener('visibilitychange', function(){ if(!document.hidden && state.theme!=='light' && state.theme!=='dark') applyTheme(); });
 
@@ -2173,7 +2196,7 @@
   function closeMenus(){ var ms=document.querySelectorAll('.menu.open, .sheet.open'); for(var i=0;i<ms.length;i++) ms[i].classList.remove('open'); }
   function toggleMenu(id, e){ if(e){ e.stopPropagation(); } var m=document.getElementById(id); var was=m.classList.contains('open'); closeMenus(); if(!was){ m.classList.add('open'); } }
   (function(){
-    var bv=document.getElementById('btnView'); if(bv) bv.onclick=function(e){ toggleMenu('readSheet', e); };
+    var bv=document.getElementById('btnView'); if(bv) bv.onclick=function(e){ toggleMenu('readSheet', e); refreshMarksSeg(); };
     var bm=document.getElementById('btnMore'); if(bm) bm.onclick=function(e){ toggleMenu('moreMenu', e); };
     var rs=document.getElementById('readSheet'); if(rs) rs.addEventListener('click', function(e){ e.stopPropagation(); });
     var mm=document.getElementById('moreMenu'); if(mm) mm.addEventListener('click', function(e){ e.stopPropagation(); if(e.target.closest('.menu-item')) closeMenus(); });
@@ -3013,7 +3036,7 @@
     var ch=BYID[state.chapter]; if(!ch){ box.style.display='none'; return; }
     var mine=null, sum=0, n=0;
     RATEALL.forEach(function(r){ if(r.chapter_id===ch.id){ sum+=r.score; n++; if(USER && r.user_id===USER.id) mine=r.score; } });
-    if(boxId==='rateBar'){ var q=document.createElement('span'); q.className='rate-q'; q.textContent= mine? 'Ваша оценка' : 'Как вам глава?'; box.appendChild(q); }
+    if(boxId==='rateBar'){ var q=document.createElement('span'); q.className='rate-q'; q.textContent= mine? 'Ваша оценка' : 'Оцените главу'; box.appendChild(q); }
     var stars=document.createElement('div'); stars.className='stars';
     for(var i=1;i<=5;i++){ (function(i){ var st=document.createElement('span'); st.className='star'+(mine>=i?' fill':''); st.textContent='★'; st.onclick=function(){ setRating(i); }; stars.appendChild(st); })(i); }
     box.appendChild(stars);
@@ -3338,8 +3361,8 @@
     var rs=RATEALL.filter(function(r){return r.chapter_id===chId;});
     var ravg=rs.length? rs.reduce(function(a,b){return a+b.score;},0)/rs.length : 0;
     var disc=DISCALL.filter(function(d){return d.chapter_id===chId;}).length;
-    var rx={confused:0,drag:0,strong:0,ai:0};
-    REACTALL.forEach(function(x){ if(x.chapter_id===chId && rx[x.kind]!=null) rx[x.kind]++; });
+    var rx={confused:0,drag:0,strong:0,ai:0}, notes=0;
+    SMARKS.forEach(function(x){ if(x.chapter_id===chId){ if(rx[x.kind]!=null) rx[x.kind]++; else if(x.kind==='note') notes++; } });
     var ps=PROGALL.filter(function(p){return p.chapter_id===chId;});
     var started=0, finished=0, sumf=0;
     ps.forEach(function(p){ if(p.max_frac>0.05){ started++; sumf+=p.max_frac; if(p.max_frac>=0.9) finished++; } });
@@ -3347,7 +3370,7 @@
     var likes=0, last=0;
     edits.forEach(function(c){ likes+=likeInfo(c.id).count; if(c.ts>last) last=c.ts; });
     DISCALL.forEach(function(d){ if(d.chapter_id===chId){ var t=Date.parse(d.created_at); if(t>last) last=t; } });
-    return {edits:edits.length, open:open, done:edits.length-open, ravg:ravg, rn:rs.length, disc:disc, rx:rx,
+    return {edits:edits.length, open:open, done:edits.length-open, ravg:ravg, rn:rs.length, disc:disc, rx:rx, notes:notes,
             started:started, finished:finished, avgf:avgf, likes:likes, last:last};
   }
   function isWeak(st){ return (st.rn>0 && st.ravg<3) || (st.rx.confused+st.rx.drag+st.rx.ai>=2) || (st.started>=2 && st.avgf<0.6); }
@@ -3373,7 +3396,7 @@
       tdR.setAttribute('data-label','Дочитываемость'); tr.appendChild(tdR);
       var td2=document.createElement('td'); td2.innerHTML = st.rn? ('★ '+st.ravg.toFixed(1)+' <span class="muted">('+st.rn+')</span>') : '<span class="muted">—</span>'; td2.setAttribute('data-label','Оценка'); tr.appendChild(td2);
       var td3=document.createElement('td'); td3.className='dash-x';
-      td3.innerHTML='\u{1F914} '+st.rx.confused+'  \u{1F634} '+st.rx.drag+'  \u{1F525} '+st.rx.strong+'  \u{1F916} '+st.rx.ai; td3.setAttribute('data-label','Реакции'); tr.appendChild(td3);
+      td3.innerHTML='\u{1F914} '+st.rx.confused+'  \u{1F634} '+st.rx.drag+'  \u{1F525} '+st.rx.strong+'  \u{1F916} '+st.rx.ai+(st.notes?('  \u270E '+st.notes):''); td3.setAttribute('data-label','Метки'); tr.appendChild(td3);
       var td4=document.createElement('td'); td4.innerHTML = st.edits? (st.open+'/'+st.done+' <span class="muted">о/г</span>'+(st.likes?(' · ♥'+st.likes):'')) : (st.likes?('♥'+st.likes):'<span class="muted">—</span>'); td4.setAttribute('data-label','Правки'); tr.appendChild(td4);
       var td5=document.createElement('td'); td5.innerHTML = st.disc? String(st.disc) : '<span class="muted">—</span>'; td5.setAttribute('data-label','Обсуждение'); tr.appendChild(td5);
       var td6=document.createElement('td'); td6.className='dash-x'; td6.innerHTML = st.last? ('<span class="muted">'+fmtTime(st.last)+'</span>') : '<span class="muted">—</span>'; td6.setAttribute('data-label','Активность'); tr.appendChild(td6);
@@ -3509,14 +3532,6 @@
     updateCount();
     document.getElementById('scroller').addEventListener('mouseup', function(){ setTimeout(onSelect,10); });
     document.getElementById('scroller').addEventListener('touchend', function(){ setTimeout(onSelect,30); });
-    // режим погружения: тап по тексту прячет/возвращает интерфейс
-    document.getElementById('scroller').addEventListener('click', function(e){
-      var sel=''; try{ sel=String(window.getSelection()); }catch(_){}
-      if(sel) return;                                                    // идёт выделение — не переключаем
-      if(e.target.closest('a, button, input, textarea, select, label, img, svg, mark, .supp-add, .supp-del')) return;
-      var app=document.getElementById('app'); app.classList.toggle('immersive');
-      if(app.classList.contains('immersive') && !lsGet('bp_immersed')){ lsSet('bp_immersed','1'); toast('Тап по тексту вернёт панель'); }
-    });
 
     // PWA: офлайн-оболочка + индикатор сети
     if('serviceWorker' in navigator){ try{ navigator.serviceWorker.register('sw.js'); }catch(_){} }
