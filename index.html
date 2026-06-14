@@ -117,6 +117,7 @@
   .menu{position:absolute; top:46px; right:0; z-index:50; min-width:216px; background:var(--card);
     border:1px solid var(--line); border-radius:var(--r-m); box-shadow:var(--shadow-lg); padding:6px; display:none}
   .menu.open{display:block; animation:pop .14s ease}
+  #panelToolsMenu{position:fixed; z-index:90}
   @keyframes pop{from{opacity:0; transform:translateY(-4px)} to{opacity:1; transform:none}}
   .menu-item{display:flex; align-items:center; gap:9px; width:100%; text-align:left; padding:10px 11px;
     border:none; background:transparent; color:var(--ink); font-size:14px; border-radius:var(--r-s)}
@@ -837,7 +838,7 @@
   #markView .mv-del{display:block; margin-top:9px; border:1px solid var(--line-2); background:transparent; color:var(--muted); border-radius:8px; padding:5px 10px; font-size:12.5px; cursor:pointer; font-family:inherit}
   #markView .mv-del:hover{border-color:var(--danger); color:var(--danger)}
 
-  @media(max-width:640px){
+  @media(max-width:560px){
     #panel{ left:0; right:0; top:auto; bottom:0; width:100%; max-width:100%; height:90vh; border-left:none;
       border-radius:22px 22px 0 0; transform:translateY(102%); box-shadow:0 -10px 44px rgba(0,0,0,.20) }
     .sheet-grab{ display:block }
@@ -942,17 +943,7 @@
     <div class="sheet-grab" id="panelGrab" aria-hidden="true"></div>
     <div class="row">
       <h3 id="panelTitle">Отклики</h3>
-      <div class="menu-wrap">
-        <button class="iconbtn" id="btnPanelTools" title="Инструменты" aria-label="Инструменты" style="display:none"><svg class="i i-fill" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg></button>
-        <div class="menu" id="panelToolsMenu">
-          <button class="menu-item" id="btnChapterNote">Заметка к главе</button>
-          <button class="menu-item" id="btnCopyAll">Скопировать всё для модели</button>
-          <button class="menu-item" id="btnArchive">Архив версий</button>
-          <div class="menu-sep"></div>
-          <button class="menu-item" id="btnSaveJson">Сохранить в файл (.json)</button>
-          <button class="menu-item" id="btnLoadJson">Загрузить из файла (.json)</button>
-        </div>
-      </div>
+      <button class="iconbtn" id="btnPanelTools" title="Инструменты" aria-label="Инструменты" style="display:none"><svg class="i i-fill" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg></button>
       <button class="iconbtn" id="btnPanelClose" aria-label="Закрыть">✕</button>
     </div>
     <div class="ptabs" id="ptabs">
@@ -970,6 +961,15 @@
     </div>
   </div>
 </aside>
+
+<div class="menu" id="panelToolsMenu">
+  <button class="menu-item" id="btnChapterNote">Заметка к главе</button>
+  <button class="menu-item" id="btnCopyAll">Скопировать всё для модели</button>
+  <button class="menu-item" id="btnArchive">Архив версий</button>
+  <div class="menu-sep"></div>
+  <button class="menu-item" id="btnSaveJson">Сохранить в файл (.json)</button>
+  <button class="menu-item" id="btnLoadJson">Загрузить из файла (.json)</button>
+</div>
 
 <!-- comment editor -->
 <div id="overlay"></div>
@@ -1237,8 +1237,11 @@
   function currentBook(){ return state.book||'main'; }
 
   // ====== ВЕРСИЯ ПРИЛОЖЕНИЯ (повышать с каждым апдейтом HTML) ======
-  var APP_VERSION='5.9';
+  var APP_VERSION='5.10';
   var APP_CHANGELOG=[
+    {v:'5.10', items:[
+      'Исправлено: свайп вниз по меню «···» теперь закрывает только это меню, а не всю панель.',
+    ]},
     {v:'5.9', items:[
       'Панель откликов перерисована в духе iOS: на телефоне — низовой лист с ручкой, аккуратные вкладки, карточки обсуждения.',
       'Инструменты редактора убраны в меню «···» — вкладка «Правки» больше не забита.',
@@ -2304,12 +2307,14 @@
     }
     enableSheetDrag(document.getElementById('readSheet'));
     enableSheetDrag(document.getElementById('moreMenu'));
+    enableSheetDrag(document.getElementById('panelToolsMenu'));
     (function(){
       var el=document.getElementById('panel'); if(!el) return;
       var head=el.querySelector('.panel-head')||el; var y0=0,dy=0,drag=false;
       head.addEventListener('touchstart', function(e){
-        if(window.innerWidth>640 || e.touches.length!==1){ drag=false; return; }
-        if(e.target.closest('button, a, input, select, textarea, .menu-item, .seg-btn')){ drag=false; return; }
+        if(window.innerWidth>560 || e.touches.length!==1){ drag=false; return; }
+        if(document.querySelector('.menu.open')){ drag=false; return; }
+        if(e.target.closest('button, a, input, select, textarea, .menu, .menu-item, .seg-btn')){ drag=false; return; }
         y0=e.touches[0].clientY; dy=0; drag=true;
       }, {passive:true});
       head.addEventListener('touchmove', function(e){
