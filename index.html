@@ -933,6 +933,39 @@
   .fire-bar a:hover{ text-decoration:underline }
   .fire-x{ margin-left:auto; cursor:pointer; color:var(--muted); font-size:13px; padding:2px 4px }
   @media(max-width:560px){ .dsp-fire{ font-size:12px; padding:7px 10px } }
+
+  /* ===== Карта базы: динамика, фильтры, карточка ===== */
+  .kb-fresh{ color:var(--accent); font-weight:700; font-size:12.5px; margin-left:8px; white-space:nowrap }
+  .kb-chips{ display:flex; flex-wrap:wrap; gap:6px; margin:10px 0 2px }
+  .kb-chip{ padding:5px 11px; border:1px solid var(--line); background:var(--card); color:var(--muted); border-radius:999px; font-size:12px; font-weight:600; cursor:pointer; font-family:inherit }
+  .kb-chip.on{ background:var(--accent); border-color:var(--accent); color:#fff }
+  .kb-call{ margin-top:10px; font-size:12.5px; line-height:1.5; color:var(--read); background:var(--accent-tint); border:1px solid var(--line); border-radius:10px; padding:9px 12px }
+  .kb-call b{ color:var(--ink) }
+  .kb-call.ghost{ background:transparent; color:var(--muted) } .kb-call.ghost b{ color:var(--muted) }
+  @keyframes kbFade{ from{opacity:0} to{opacity:1} }
+  @keyframes kbTwinkle{ 0%,100%{opacity:.82} 50%{opacity:1} }
+  @keyframes kbPulse{ 0%{ transform:scale(1); opacity:.55 } 100%{ transform:scale(2.6); opacity:0 } }
+  .kb-svg{ animation:kbFade .6s ease both }
+  .kb-core{ animation:kbTwinkle 4s ease-in-out infinite }
+  .kb-node{ cursor:pointer }
+  .kb-node:hover .kb-core{ opacity:1 }
+  .kb-dim{ opacity:.16 }
+  .kb-pulse{ transform-box:fill-box; transform-origin:center; animation:kbPulse 1.8s ease-out infinite }
+  @media (prefers-reduced-motion: reduce){ .kb-core,.kb-pulse,.kb-svg{ animation:none } }
+  .kb-card-ov{ position:fixed; inset:0; z-index:240; background:rgba(0,0,0,.45); display:none; align-items:flex-end; justify-content:center }
+  .kb-card{ background:var(--bg); width:100%; max-width:560px; max-height:84vh; overflow:auto; border-radius:18px 18px 0 0; padding:20px 20px calc(24px + env(safe-area-inset-bottom,0px)); position:relative; animation:kbFade .2s ease both }
+  @media(min-width:560px){ .kb-card-ov{ align-items:center } .kb-card{ border-radius:18px } }
+  .kb-card-x{ position:absolute; top:14px; right:14px; width:32px; height:32px; border:1px solid var(--line-2); background:var(--card); border-radius:9px; font-size:15px; cursor:pointer; color:var(--muted) }
+  .kb-card-h{ display:flex; align-items:center; gap:9px; padding-right:38px }
+  .kb-card-h h3{ margin:0; font-size:18px; font-weight:700; color:var(--ink); line-height:1.25 }
+  .kb-card-h .kb-dot{ width:12px; height:12px }
+  .kb-badges{ display:flex; flex-wrap:wrap; gap:6px; margin:11px 0 }
+  .kb-badge{ font-family:var(--font-mono); font-size:11px; padding:2px 9px; border-radius:999px; border:1px solid var(--line); color:var(--muted) }
+  .kb-claim{ font-size:15px; color:var(--ink); line-height:1.5; margin:6px 0 12px; font-weight:500 }
+  .kb-card-sec{ margin:11px 0; font-size:13px; color:var(--read); line-height:1.5 }
+  .kb-card-sec b{ display:block; font-family:var(--font-mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-bottom:3px }
+  .kb-card-sec a{ color:var(--accent); text-decoration:none; word-break:break-all } .kb-card-sec a:hover{ text-decoration:underline }
+  .kb-chs{ display:flex; flex-wrap:wrap; gap:5px }
 </style>
 </head>
 <body>
@@ -1085,6 +1118,7 @@
   </div>
   <div class="dsp-body" id="dspBody"></div>
 </div>
+<div id="kbCard" class="kb-card-ov"></div>
 
 <!-- comment editor -->
 <div id="overlay"></div>
@@ -1352,8 +1386,11 @@
   function currentBook(){ return state.book||'main'; }
 
   // ====== ВЕРСИЯ ПРИЛОЖЕНИЯ (повышать с каждым апдейтом HTML) ======
-  var APP_VERSION='5.15';
+  var APP_VERSION='5.16';
   var APP_CHANGELOG=[
+    {v:'5.16', items:[
+      '«Карта базы» ожила: звёзды мягко мерцают, а теории, изменившиеся с прошлого захода, подсвечиваются пульсом и счётчиком ✦. Узлы кликабельны — тап открывает карточку теории (утверждение, оговорки, источник, ссылка, главы, соседи). Добавлены фильтры (inbox / проверено / в книге / спорные) и блок «спорные требуют внимания» + белые пятна базы.',
+    ]},
     {v:'5.15', items:[
       'В Диспетчерской появилась кнопка «Запустить Гермеса» — ручной запуск надзорной сессии; после запуска показывает ссылку на сессию. Кнопка блокируется на время запроса.',
     ]},
@@ -3793,7 +3830,7 @@
 
   var dspChan=null, dspRtTimer=null, dspEditing=false;
   function openDispatch(){ if(!isAdmin) return; document.getElementById('dispatch').classList.add('open'); document.body.style.overflow='hidden'; dspRealtimeOn(); dspBadges(); dspTab(dspCur); }
-  function closeDispatch(){ document.getElementById('dispatch').classList.remove('open'); document.body.style.overflow=''; dspRealtimeOff(); }
+  function closeDispatch(){ if(dspCur==='kb'){ lsSet('kb_seen', String(Date.now())); } document.getElementById('dispatch').classList.remove('open'); document.body.style.overflow=''; dspRealtimeOff(); }
   function dspRealtimeOn(){
     if(dspChan || !SB) return;
     try{
@@ -3831,6 +3868,9 @@
     }
   }
   function dspTab(name){
+    var prev=dspCur;
+    if(name==='kb' && prev!=='kb'){ KB_SEEN_AT=(+lsGet('kb_seen')||0); dspKbFilter=''; }
+    if(prev==='kb' && name!=='kb'){ lsSet('kb_seen', String(Date.now())); }
     dspCur=name; dspFilterCb=null;
     var tabs=document.querySelectorAll('#dispatch .dsp-tabs button');
     for(var i=0;i<tabs.length;i++) tabs[i].classList.toggle('on', tabs[i].getAttribute('data-dt')===name);
@@ -4129,113 +4169,117 @@
   // ===================== Карта базы знаний (научбаза / research) =====================
   var KB_ROB={solid:'#f0c46a', mixed:'#d99a4e', contested:'#e0705f', weak:'#8f9aa3', inbox:'#6f6a62'};
   var KB_ROB_RU={solid:'надёжные', mixed:'смешанные', contested:'спорные', weak:'слабые', inbox:'без оценки'};
+  var KB_SRC={}, KB_SEEN_AT=0, dspKbFilter='';
   function kbColor(r){ return KB_ROB[r]||KB_ROB.inbox; }
   function kbKey(id){ return String(id).split('_')[0]; }
   function kbHash(s){ var h=0,i; s=String(s); for(i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))|0; return Math.abs(h); }
+  function kbRecent(s){ if(!KB_SEEN_AT) return false; var t=new Date(s.updated_at||s.created_at).getTime(); return t && t>KB_SEEN_AT; }
 
   async function renderKB(){
     var body=document.getElementById('dspBody');
-    body.innerHTML='<div id="dspList"><div class="dsp-load">Собираю базу…</div></div>';
-    var r=await SB.from('sources').select('id,title,claim,robustness,status,chapters,created_at').order('created_at');
-    var list=document.getElementById('dspList');
+    if(!document.getElementById('kbList')) body.innerHTML='<div id="kbList"><div class="dsp-load">Собираю базу…</div></div>';
+    var r=await SB.from('sources').select('id,title,claim,robustness,status,chapters,authors,year,ref,notes,created_at,updated_at').order('created_at');
+    var list=document.getElementById('kbList'); if(!list){ body.innerHTML='<div id="kbList"></div>'; list=document.getElementById('kbList'); }
     if(r.error){ list.innerHTML=dspErr('Нет доступа к базе: '+r.error.message); return; }
     var S=r.data||[];
     if(!S.length){ list.innerHTML='<div class="dsp-empty">База знаний пока пуста. Появится здесь по мере работы Афины (research).</div>'; return; }
+    KB_SRC={}; S.forEach(function(s){ KB_SRC[s.id]=s; });
 
-    // chapter-key -> part (from in-memory BOOK), and part order
     var keyPart={}, partOrder=[], seenP={};
     (BOOK||[]).forEach(function(c){ keyPart[kbKey(c.id)]=c.part||'—'; if(!(c.part in seenP)){ seenP[c.part]=1; partOrder.push(c.part||'—'); } });
     function clusterKey(s){ var chs=s.chapters||[]; if(chs.length){ var k=kbKey(chs[0]); return keyPart[k]||('гл. '+k); } return '— вне глав'; }
     function partShort(p){ if(/^гл\. /.test(p)) return p.slice(4); if(/Введ/.test(p)) return 'Вв'; var m=p.match(/Часть\s+([IVX]+)/); if(m) return m[1]; return p.slice(0,4); }
 
-    // counts
     var st={inbox:0,verified:0,in_book:0,rejected:0}, rob={solid:0,mixed:0,weak:0,contested:0};
     S.forEach(function(s){ if(s.status in st) st[s.status]++; if(s.robustness in rob) rob[s.robustness]++; });
     var covered={}; S.forEach(function(s){ (s.chapters||[]).forEach(function(c){ covered[kbKey(c)]=1; }); });
     var allKeys={}; (BOOK||[]).forEach(function(c){ allKeys[kbKey(c.id)]=1; });
     var nChap=Object.keys(allKeys).length||33, nCov=Object.keys(covered).length;
+    var recentN=S.filter(kbRecent).length;
+    var filter=dspKbFilter;
+    function matches(s){ return !filter || (filter==='contested' ? s.robustness==='contested' : s.status===filter); }
 
-    // cluster sources
     var clusters={}, corder=[];
     S.forEach(function(s){ var p=clusterKey(s); if(!clusters[p]){ clusters[p]=[]; corder.push(p); } clusters[p].push(s); });
     corder.sort(function(a,b){ var ia=partOrder.indexOf(a), ib=partOrder.indexOf(b); if(ia<0)ia=99; if(ib<0)ib=99; return ia-ib; });
 
-    // layout: clusters on a ring, nodes around each cluster centre
-    var W=720,H=540, cx=W/2, cy=H/2, Rclust=Math.min(W,H)/2-96, nC=corder.length||1;
-    var pos={};
+    var W=720,H=540, cx=W/2, cy=H/2, Rclust=Math.min(W,H)/2-96, nC=corder.length||1, pos={};
     corder.forEach(function(p, ci){
-      var ca=-Math.PI/2 + ci*(2*Math.PI/nC);
-      var clx=cx+Rclust*Math.cos(ca), cly=cy+Rclust*Math.sin(ca);
+      var ca=-Math.PI/2 + ci*(2*Math.PI/nC), clx=cx+Rclust*Math.cos(ca), cly=cy+Rclust*Math.sin(ca);
       var arr=clusters[p], k=arr.length, rr=14+k*7;
       arr.forEach(function(s, j){
-        var a=(k===1)? ca : (j*(2*Math.PI/k)+(kbHash(p)%10)*0.1);
-        var jit=(kbHash(s.id)%100/100-0.5)*9;
+        var a=(k===1)? ca : (j*(2*Math.PI/k)+(kbHash(p)%10)*0.1), jit=(kbHash(s.id)%100/100-0.5)*9;
         pos[s.id]={ x: clx+(k===1?0:rr)*Math.cos(a)+jit, y: cly+(k===1?0:rr)*Math.sin(a)+jit*0.6 };
       });
     });
-
-    // edges: shared chapter
     var edges=[];
     for(var i=0;i<S.length;i++) for(var j2=i+1;j2<S.length;j2++){
       var ca2=S[i].chapters||[], cb=S[j2].chapters||[];
       if(ca2.some(function(x){ return cb.indexOf(x)>=0; }) && pos[S[i].id] && pos[S[j2].id]) edges.push([pos[S[i].id],pos[S[j2].id]]);
     }
 
-    // build SVG
     var svg='<svg viewBox="0 0 '+W+' '+H+'" class="kb-svg" preserveAspectRatio="xMidYMid meet">';
     svg+='<defs><radialGradient id="kbsky" cx="50%" cy="44%" r="78%"><stop offset="0%" stop-color="#251e30"/><stop offset="55%" stop-color="#1a1622"/><stop offset="100%" stop-color="#0e0c14"/></radialGradient></defs>';
-    svg+='<rect x="0" y="0" width="'+W+'" height="'+H+'" rx="16" fill="#15121c"/>';
-    svg+='<rect x="0" y="0" width="'+W+'" height="'+H+'" rx="16" fill="url(#kbsky)"/>';
+    svg+='<rect width="'+W+'" height="'+H+'" rx="16" fill="#15121c"/><rect width="'+W+'" height="'+H+'" rx="16" fill="url(#kbsky)"/>';
     edges.forEach(function(e){ svg+='<line x1="'+e[0].x.toFixed(1)+'" y1="'+e[0].y.toFixed(1)+'" x2="'+e[1].x.toFixed(1)+'" y2="'+e[1].y.toFixed(1)+'" stroke="#caa86a" stroke-opacity="0.15" stroke-width="1"/>'; });
     corder.forEach(function(p,ci){
-      var ca=-Math.PI/2+ci*(2*Math.PI/nC);
-      var lx=cx+(Rclust+44)*Math.cos(ca), ly=cy+(Rclust+44)*Math.sin(ca)+4;
+      var ca=-Math.PI/2+ci*(2*Math.PI/nC), lx=cx+(Rclust+44)*Math.cos(ca), ly=cy+(Rclust+44)*Math.sin(ca)+4;
       svg+='<text x="'+lx.toFixed(0)+'" y="'+ly.toFixed(0)+'" class="kb-clab" text-anchor="middle">'+dspEsc(partShort(p))+'</text>';
     });
     S.forEach(function(s){
       var pp=pos[s.id]; if(!pp) return;
       var col=kbColor(s.robustness), reach=(s.chapters||[]).length, rad=5+Math.min(Math.max(reach-1,0),4)*2;
-      var X=pp.x.toFixed(1), Y=pp.y.toFixed(1);
+      var X=pp.x.toFixed(1), Y=pp.y.toFixed(1), mt=matches(s), rec=kbRecent(s);
+      var dl=(kbHash(s.id)%40)/10;
       var tip=dspEsc(s.title)+' — '+dspEsc(KB_ROB_RU[s.robustness]||s.robustness)+', '+dspEsc(s.status)+(reach?(' · '+(s.chapters||[]).join(', ')):'');
-      var g='';
-      if(s.status==='in_book'){ g='<circle cx="'+X+'" cy="'+Y+'" r="'+(rad*2.4).toFixed(1)+'" fill="'+col+'" opacity="0.22"/><circle cx="'+X+'" cy="'+Y+'" r="'+rad+'" fill="'+col+'"/><circle cx="'+X+'" cy="'+Y+'" r="'+(rad+2.5).toFixed(1)+'" fill="none" stroke="'+col+'" stroke-opacity="0.55"/>'; }
-      else if(s.status==='verified'){ g='<circle cx="'+X+'" cy="'+Y+'" r="'+(rad*1.9).toFixed(1)+'" fill="'+col+'" opacity="0.12"/><circle cx="'+X+'" cy="'+Y+'" r="'+rad+'" fill="'+col+'"/>'; }
-      else if(s.status==='rejected'){ g='<circle cx="'+X+'" cy="'+Y+'" r="'+rad+'" fill="#666" opacity="0.4"/>'; }
-      else { g='<circle cx="'+X+'" cy="'+Y+'" r="'+rad+'" fill="'+col+'" fill-opacity="0.14" stroke="'+col+'" stroke-width="1.5"/>'; }
-      svg+='<g><title>'+tip+'</title>'+g+'</g>';
+      var pulse=(rec&&mt)?'<circle class="kb-pulse" cx="'+X+'" cy="'+Y+'" r="'+rad+'" fill="none" stroke="'+col+'" stroke-width="2"/>':'';
+      var core='style="animation-delay:'+dl.toFixed(1)+'s"';
+      var g;
+      if(s.status==='in_book') g='<circle cx="'+X+'" cy="'+Y+'" r="'+(rad*2.4).toFixed(1)+'" fill="'+col+'" opacity="0.22"/><circle class="kb-core" '+core+' cx="'+X+'" cy="'+Y+'" r="'+rad+'" fill="'+col+'"/><circle cx="'+X+'" cy="'+Y+'" r="'+(rad+2.5).toFixed(1)+'" fill="none" stroke="'+col+'" stroke-opacity="0.55"/>';
+      else if(s.status==='verified') g='<circle cx="'+X+'" cy="'+Y+'" r="'+(rad*1.9).toFixed(1)+'" fill="'+col+'" opacity="0.12"/><circle class="kb-core" '+core+' cx="'+X+'" cy="'+Y+'" r="'+rad+'" fill="'+col+'"/>';
+      else if(s.status==='rejected') g='<circle class="kb-core" '+core+' cx="'+X+'" cy="'+Y+'" r="'+rad+'" fill="#666" opacity="0.4"/>';
+      else g='<circle class="kb-core" '+core+' cx="'+X+'" cy="'+Y+'" r="'+rad+'" fill="'+col+'" fill-opacity="0.14" stroke="'+col+'" stroke-width="1.5"/>';
+      svg+='<g class="kb-node'+(mt?'':' kb-dim')+'" data-act="kb-open" data-id="'+dspEsc(s.id)+'"><title>'+tip+'</title>'+pulse+g+'</g>';
     });
     svg+='</svg>';
 
-    // pipeline funnel
     var pipe='<div class="kb-pipe">'+kbStage('Inbox',st.inbox,'inbox')
       +'<span class="kb-arrow">→</span>'+kbStage('Проверено',st.verified,'verified')
       +'<span class="kb-arrow">→</span>'+kbStage('В книге',st.in_book,'in_book')
       +(st.rejected?('<span class="kb-arrow">·</span>'+kbStage('Отклонено',st.rejected,'rejected')):'')+'</div>';
-
-    // robustness stacked bar
     function seg(v,c,lbl){ return v?('<span class="kb-seg" style="flex:'+v+';background:'+c+'" title="'+lbl+': '+v+'"></span>'):''; }
     var robbar='<div class="kb-robbar">'+seg(rob.solid,KB_ROB.solid,'надёжные')+seg(rob.mixed,KB_ROB.mixed,'смешанные')+seg(rob.weak,KB_ROB.weak,'слабые')+seg(rob.contested,KB_ROB.contested,'спорные')+'</div>'
       +'<div class="kb-roblegend">'+kbRobL('solid',rob.solid)+kbRobL('mixed',rob.mixed)+kbRobL('weak',rob.weak)+kbRobL('contested',rob.contested)+'</div>';
 
-    var head='<div class="kb-stat"><b>'+S.length+'</b> теорий · '+st.verified+' проверено · '+st.in_book+' в книге · покрыто '+nCov+'/'+nChap+' глав</div>';
+    var head='<div class="kb-stat"><b>'+S.length+'</b> теорий · '+st.verified+' проверено · '+st.in_book+' в книге · покрыто '+nCov+'/'+nChap+' глав'
+      +(recentN?' <span class="kb-fresh">✦ '+recentN+' с прошлого захода</span>':'')+'</div>';
+    function chip(v,l){ return '<button class="kb-chip'+(filter===v?' on':'')+'" data-act="kb-filter" data-v="'+v+'">'+l+'</button>'; }
+    var chips='<div class="kb-chips">'+chip('','все '+S.length)+chip('inbox','inbox '+st.inbox)+chip('verified','проверено '+st.verified)+chip('in_book','в книге '+st.in_book)+chip('contested','спорные '+rob.contested)+'</div>';
     var leg='<div class="kb-legend">'
       +'<span class="kb-li"><span class="kb-dot" style="background:'+KB_ROB.solid+'"></span>надёжные</span>'
       +'<span class="kb-li"><span class="kb-dot" style="background:'+KB_ROB.mixed+'"></span>смешанные</span>'
       +'<span class="kb-li"><span class="kb-dot" style="background:'+KB_ROB.contested+'"></span>спорные</span>'
       +'<span class="kb-li"><span class="kb-ring"></span>в inbox</span>'
       +'<span class="kb-li"><span class="kb-dot" style="background:#cbb88f"></span>проверено</span>'
-      +'<span class="kb-li">размер — охват глав</span></div>';
+      +'<span class="kb-li">размер — охват глав · тап по звезде — карточка</span></div>';
+
+    // callouts: contested needing attention + coverage gaps
+    var contestedNames=S.filter(function(s){ return s.robustness==='contested'; }).map(function(s){ return s.title; });
+    var callout='';
+    if(contestedNames.length) callout+='<div class="kb-call"><b>Спорные ('+contestedNames.length+')</b> — взять только робастный компонент или не брать: '+dspEsc(contestedNames.slice(0,6).join(' · '))+(contestedNames.length>6?' …':'')+'</div>';
+    var gaps=nChap-nCov;
+    if(gaps>0) callout+='<div class="kb-call ghost">Без источников: '+gaps+' из '+nChap+' глав — белые пятна базы.</div>';
 
     var dayset={}; S.forEach(function(s){ if(s.created_at) dayset[String(s.created_at).slice(0,10)]=1; });
     var growth=(Object.keys(dayset).length<2)
-      ? '<div class="dsp-note">База засеяна '+dspEsc(dspDate(S[0].created_at))+'. Динамика пополнения появится здесь по мере добавления теорий Афиной.</div>'
+      ? '<div class="dsp-note">Засеяно '+dspEsc(dspDate(S[0].created_at))+'. Дополняй базу — ✦ свежие изменения подсветятся при следующем заходе, график роста оживёт с разными датами.</div>'
       : kbGrowthChart(S);
 
-    list.innerHTML=head
+    list.innerHTML=head+chips
       +'<div class="kb-section-t">Конвейер проверки</div>'+pipe
       +'<div class="kb-section-t">Надёжность доказательств</div>'+robbar
       +'<div class="kb-section-t">Граф базы — теории сгруппированы по темам</div>'
-      +'<div class="kb-sky">'+svg+'</div>'+leg+growth;
+      +'<div class="kb-sky">'+svg+'</div>'+leg+callout+growth;
   }
   function kbStage(lbl,n,cls){ return '<span class="kb-stage k-'+cls+'"><b>'+n+'</b><span>'+dspEsc(lbl)+'</span></span>'; }
   function kbRobL(k,v){ return '<span class="kb-rl"><span class="kb-dot" style="background:'+KB_ROB[k]+'"></span>'+dspEsc(KB_ROB_RU[k])+' '+v+'</span>'; }
@@ -4245,6 +4289,25 @@
     var bars=keys.map(function(d){ cum+=days[d]; return '<span class="kb-gbar" style="height:'+Math.max(Math.round(cum/max*60),3)+'px" title="'+d+': '+cum+'"></span>'; }).join('');
     return '<div class="kb-section-t">Рост базы</div><div class="kb-growth">'+bars+'</div>';
   }
+  function kbRefUrl(ref){ ref=String(ref||'').trim(); if(/^https?:\/\//.test(ref)) return ref.split(/\s/)[0]; var first=ref.split(/[\s;,]/)[0]; if(first.indexOf('.')>0 && first.indexOf('@')<0) return 'https://'+first; return ''; }
+  function kbOpenCard(id){
+    var s=KB_SRC[id]; if(!s) return;
+    var col=kbColor(s.robustness), chs=s.chapters||[];
+    var neigh=[]; Object.keys(KB_SRC).forEach(function(k){ if(k===id) return; var o=KB_SRC[k]; if((o.chapters||[]).some(function(c){ return chs.indexOf(c)>=0; })) neigh.push(o.title); });
+    var url=kbRefUrl(s.ref), refHtml = s.ref ? (url? '<a href="'+dspEsc(url)+'" target="_blank" rel="noopener">'+dspEsc(s.ref)+' ↗</a>' : dspEsc(s.ref)) : '';
+    var html='<div class="kb-card"><button class="kb-card-x" data-act="kb-close">✕</button>'
+      +'<div class="kb-card-h"><span class="kb-dot" style="background:'+col+'"></span><h3>'+dspEsc(s.title)+'</h3></div>'
+      +'<div class="kb-badges"><span class="kb-badge" style="border-color:'+col+';color:'+col+'">'+dspEsc(KB_ROB_RU[s.robustness]||s.robustness)+'</span><span class="kb-badge">'+dspEsc(s.status)+'</span>'+(s.year?'<span class="kb-badge">'+dspEsc(s.year)+'</span>':'')+(kbRecent(s)?'<span class="kb-badge" style="border-color:'+col+';color:'+col+'">✦ свежее</span>':'')+'</div>'
+      +(s.claim?'<div class="kb-claim">'+dspEsc(s.claim)+'</div>':'')
+      +(s.notes?'<div class="kb-card-sec"><b>Оговорки — что НЕ утверждать</b><div>'+dspEsc(s.notes)+'</div></div>':'')
+      +(s.authors?'<div class="kb-card-sec"><b>Источник</b><div>'+dspEsc(s.authors)+'</div></div>':'')
+      +(refHtml?'<div class="kb-card-sec"><b>Ссылка</b><div>'+refHtml+'</div></div>':'')
+      +(chs.length?'<div class="kb-card-sec"><b>Главы</b><div class="kb-chs">'+chs.map(function(c){ return '<span class="dsp-chip ghost">'+dspEsc(c)+'</span>'; }).join('')+'</div></div>':'')
+      +(neigh.length?'<div class="kb-card-sec"><b>Рядом по темам</b><div>'+dspEsc(neigh.slice(0,8).join(' · '))+'</div></div>':'')
+      +'</div>';
+    var ov=document.getElementById('kbCard'); if(ov){ ov.innerHTML=html; ov.style.display='flex'; }
+  }
+  function kbCloseCard(){ var ov=document.getElementById('kbCard'); if(ov){ ov.style.display='none'; ov.innerHTML=''; } }
 
   function paraDiff(liveMd, draftMd){
     var A=String(liveMd||'').split(/\n\s*\n/).map(function(s){ return s.trim(); }).filter(Boolean);
@@ -4264,6 +4327,7 @@
     var c=document.getElementById('dspClose'); if(c) c.onclick=closeDispatch;
     var rf=document.getElementById('dspRefresh'); if(rf) rf.onclick=function(){ dspBadges(); dspTab(dspCur); };
     var fb=document.getElementById('dspFire'); if(fb) fb.onclick=fireRoutine;
+    var kc=document.getElementById('kbCard'); if(kc) kc.addEventListener('click', function(e){ if(e.target===kc || (e.target.closest && e.target.closest('[data-act="kb-close"]'))) kbCloseCard(); });
     var tb=document.querySelectorAll('#dispatch .dsp-tabs button');
     for(var i=0;i<tb.length;i++){ (function(t){ t.onclick=function(){ dspTab(t.getAttribute('data-dt')); }; })(tb[i]); }
     var bd=document.getElementById('dspBody');
@@ -4280,6 +4344,8 @@
         else if(act==='brief-edit') editBrief(x.getAttribute('data-role'));
         else if(act==='brief-save') saveBrief(x.getAttribute('data-role'));
         else if(act==='brief-cancel'){ dspEditing=false; renderBriefs(); }
+        else if(act==='kb-open') kbOpenCard(x.getAttribute('data-id'));
+        else if(act==='kb-filter'){ dspKbFilter=x.getAttribute('data-v'); renderKB(); }
         else if(act==='diff'){ var d=document.getElementById('diff-'+id); if(d) d.style.display=(d.style.display==='none'?'':'none'); }
       });
       bd.addEventListener('change', function(e){
