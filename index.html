@@ -922,6 +922,17 @@
   .kb-clab{ fill:#d8c49a; font-family:var(--font-mono); font-size:12px; opacity:.66 }
   .kb-growth{ display:flex; align-items:flex-end; gap:5px; height:66px; padding:4px 0 }
   .kb-gbar{ width:16px; background:var(--accent); border-radius:3px 3px 0 0; display:block }
+
+  /* fire-routine button + result bar */
+  .dsp-head{ flex-wrap:wrap; gap:8px }
+  .dsp-fire{ color:var(--accent); border-color:var(--accent) }
+  .dsp-fire:hover{ background:var(--accent-tint) }
+  .dsp-fire:disabled{ opacity:.55; cursor:default }
+  .fire-bar{ display:flex; align-items:center; gap:8px; padding:9px 18px; background:var(--accent-tint); border-bottom:1px solid var(--line); font-size:13px; color:var(--ink) }
+  .fire-bar a{ color:var(--accent); font-weight:600; text-decoration:none }
+  .fire-bar a:hover{ text-decoration:underline }
+  .fire-x{ margin-left:auto; cursor:pointer; color:var(--muted); font-size:13px; padding:2px 4px }
+  @media(max-width:560px){ .dsp-fire{ font-size:12px; padding:7px 10px } }
 </style>
 </head>
 <body>
@@ -1056,10 +1067,12 @@
   <div class="dsp-head">
     <h2>Диспетчерская</h2>
     <div class="dsp-head-r">
+      <button class="btn dsp-fire" id="dspFire">Запустить Гермеса</button>
       <button class="btn" id="dspRefresh">Обновить</button>
       <button class="iconbtn" id="dspClose" aria-label="Закрыть">✕</button>
     </div>
   </div>
+  <div class="fire-bar" id="fireBar" style="display:none"></div>
   <div class="dsp-tabs">
     <button data-dt="bus" class="on">Шина<span class="dsp-badge" id="dbgBus"></span></button>
     <button data-dt="pub">Публикация<span class="dsp-badge" id="dbgPub"></span></button>
@@ -1339,8 +1352,11 @@
   function currentBook(){ return state.book||'main'; }
 
   // ====== ВЕРСИЯ ПРИЛОЖЕНИЯ (повышать с каждым апдейтом HTML) ======
-  var APP_VERSION='5.14';
+  var APP_VERSION='5.15';
   var APP_CHANGELOG=[
+    {v:'5.15', items:[
+      'В Диспетчерской появилась кнопка «Запустить Гермеса» — ручной запуск надзорной сессии; после запуска показывает ссылку на сессию. Кнопка блокируется на время запроса.',
+    ]},
     {v:'5.14', items:[
       'В Диспетчерскую добавлена «Карта базы» — живая визуализация научной базы: граф теорий по темам (цвет — надёжность, заливка — стадия проверки, размер — охват глав), конвейер inbox→проверено→в книге и шкала надёжности. Обновляется в реальном времени по мере наполнения базы.',
     ]},
@@ -3790,6 +3806,30 @@
   }
   function dspRealtimeOff(){ if(dspChan){ try{ SB.removeChannel(dspChan); }catch(e){} dspChan=null; } clearTimeout(dspRtTimer); }
   function dspOnChange(){ clearTimeout(dspRtTimer); dspRtTimer=setTimeout(function(){ dspBadges(); if(!dspEditing) dspTab(dspCur); }, 450); }
+  var fireBusy=false;
+  async function fireRoutine(){
+    if(fireBusy || !SB) return;
+    if(!confirm('Запустить надзорную сессию Гермеса? Расходует дневной лимит рутин.')) return;
+    var btn=document.getElementById('dspFire');
+    fireBusy=true; if(btn){ btn.disabled=true; btn.textContent='Запускаю…'; }
+    try{
+      var res=await SB.functions.invoke('fire-routine', { body:{ text:'Ручной запуск из диспетчерской' } });
+      if(res.error) throw res.error;
+      var d=res.data||{}, url=d.claude_code_session_url||d.session_url||'';
+      var bar=document.getElementById('fireBar');
+      if(bar){
+        bar.innerHTML=(url? ('Гермес запущен · <a href="'+dspEsc(url)+'" target="_blank" rel="noopener">открыть сессию ↗</a>') : 'Гермес запущен.')+'<span class="fire-x" id="fireX">✕</span>';
+        bar.style.display='';
+        var fx=document.getElementById('fireX'); if(fx) fx.onclick=function(){ bar.style.display='none'; };
+      }
+      if(typeof toast==='function') toast('Гермес запущен');
+    }catch(e){
+      var msg=(e&&(e.message||e.error))? (e.message||e.error) : String(e||'ошибка');
+      if(typeof toast==='function') toast('Не удалось запустить: '+msg); else alert('Не удалось запустить: '+msg);
+    } finally {
+      fireBusy=false; if(btn){ btn.disabled=false; btn.textContent='Запустить Гермеса'; }
+    }
+  }
   function dspTab(name){
     dspCur=name; dspFilterCb=null;
     var tabs=document.querySelectorAll('#dispatch .dsp-tabs button');
@@ -4223,6 +4263,7 @@
     var b=document.getElementById('btnDispatch'); if(b) b.onclick=function(){ closeMenus(); openDispatch(); };
     var c=document.getElementById('dspClose'); if(c) c.onclick=closeDispatch;
     var rf=document.getElementById('dspRefresh'); if(rf) rf.onclick=function(){ dspBadges(); dspTab(dspCur); };
+    var fb=document.getElementById('dspFire'); if(fb) fb.onclick=fireRoutine;
     var tb=document.querySelectorAll('#dispatch .dsp-tabs button');
     for(var i=0;i<tb.length;i++){ (function(t){ t.onclick=function(){ dspTab(t.getAttribute('data-dt')); }; })(tb[i]); }
     var bd=document.getElementById('dspBody');
