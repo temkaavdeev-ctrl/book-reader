@@ -22,6 +22,7 @@
      Его заполняют один раз; при обновлениях index.html этот файл не трогаем. -->
 <script src="config.js"></script>
 <style>
+
   /* =========================================================
      Читальня — design system "reading instrument"
      Display: Inter · Reading: Spectral · Data: JetBrains Mono
@@ -932,7 +933,7 @@
   .fire-bar a{ color:var(--accent); font-weight:600; text-decoration:none }
   .fire-bar a:hover{ text-decoration:underline }
   .fire-x{ margin-left:auto; cursor:pointer; color:var(--muted); font-size:13px; padding:2px 4px }
-  @media(max-width:560px){ .dsp-fire{ font-size:12px; padding:7px 10px } }
+  @media(max-width:560px){ .dsp-fire{ font-size:12px; padding:7px 10px } .dsp-fire .fire-label{ display:none } .dsp-fire::before{ content:'⚡' } }
 
   /* ===== Карта базы: динамика, фильтры, карточка ===== */
   .kb-fresh{ color:var(--accent); font-weight:700; font-size:12.5px; margin-left:8px; white-space:nowrap }
@@ -966,6 +967,129 @@
   .kb-card-sec b{ display:block; font-family:var(--font-mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-bottom:3px }
   .kb-card-sec a{ color:var(--accent); text-decoration:none; word-break:break-all } .kb-card-sec a:hover{ text-decoration:underline }
   .kb-chs{ display:flex; flex-wrap:wrap; gap:5px }
+
+  /* ===== KB: force layout, tooltip, search ===== */
+  .kb-nlab{ fill:#c8b88a; font-family:var(--font-mono); font-size:8.5px; opacity:.75; pointer-events:none }
+  .kb-search-inp{ flex:1 1 120px; min-width:80px; height:32px; padding:0 10px; border:1px solid var(--line-2); border-radius:999px; background:var(--card); color:var(--ink); font-size:12.5px; font-family:inherit; outline:none }
+  .kb-search-inp:focus{ border-color:var(--accent) }
+  .kb-sky{ position:relative }
+  .kb-tip{ position:absolute; z-index:20; pointer-events:none; display:none; background:rgba(14,12,20,.92); border:1px solid rgba(202,168,106,.28); border-radius:10px; padding:8px 11px; max-width:190px; box-shadow:0 4px 20px rgba(0,0,0,.45) }
+  .kbt-title{ font-size:12px; font-weight:700; color:#e8d9bc; line-height:1.35 }
+  .kbt-meta{ font-size:11px; color:#9a9086; margin-top:3px }
+  .kbt-badge{ display:inline-block; margin-top:4px; font-family:var(--font-mono); font-size:10px; padding:1px 7px; border-radius:999px; background:rgba(143,90,35,.35); color:#f0c46a }
+  .kb-dim .kb-nlab{ display:none }
+  .kb-dim{ opacity:.13 }
+
+  /* Capitalise first letter on all UI chips and mini labels */
+  .kb-chip{ text-transform: capitalize }
+  .kbt-meta{ text-transform: capitalize }
+
+  /* ===== SYMPTOM + TRYIT reader boxes ===== */
+  #content .symptom-box,#content .tryit-box{ border-radius:10px; padding:14px 16px; margin:22px 0; line-height:1.6 }
+  #content .symptom-box{ background:color-mix(in srgb,var(--warn) 9%,var(--bg)); background:#fdf8ee; border-left:3px solid var(--warn) }
+  #content .tryit-box{   background:color-mix(in srgb,var(--good) 8%,var(--bg)); background:#eef5ee; border-left:3px solid var(--good) }
+  #content .symptom-tag,#content .tryit-tag{ font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:.10em; text-transform:uppercase; margin-bottom:6px }
+  #content .symptom-tag{ color:var(--warn) }
+  #content .tryit-tag{   color:var(--good) }
+  #content .symptom-box p,#content .tryit-box p{ margin:0; font-size:15px; color:var(--read) }
+  @media(prefers-color-scheme:dark){
+    #content .symptom-box{ background:rgba(185,131,34,.10) }
+    #content .tryit-box{   background:rgba(47,125,79,.10) }
+    #content .theory-box{  background:rgba(143,90,35,.13) }
+    #content mark.s-hl{ background:rgba(240,216,74,.22) }
+    #content mark.s-hl-cur{ background:rgba(240,216,74,.60); color:var(--ink) }
+  }
+
+  /* ===== KB list view (mobile fallback) ===== */
+  .kb-listview{ margin:8px 0 }
+  .kb-lkind{ font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:.10em; text-transform:uppercase; color:var(--muted); padding:10px 0 4px }
+  .kb-lcard{ display:flex; align-items:center; gap:10px; padding:9px 4px; border-bottom:1px solid var(--line); cursor:pointer; border-radius:8px }
+  .kb-lcard:last-child{ border-bottom:none }
+  .kb-lcard:hover{ background:var(--accent-tint) }
+  .kb-lbullet{ width:10px; height:10px; border-radius:50%; flex-shrink:0 }
+  .kb-lbody{ flex:1 1 0; min-width:0 }
+  .kb-ltitle{ font-size:14px; font-weight:600; color:var(--ink); line-height:1.3 }
+  .kb-lmeta{ font-size:11.5px; color:var(--muted); margin-top:2px }
+  .kb-lfresh{ color:var(--accent); font-size:11px; flex-shrink:0 }
+  .kb-lcard.kb-dim{ opacity:.25 }
+
+  /* ===== Realtime status dot ===== */
+  .rt-dot{ width:8px; height:8px; border-radius:50%; background:var(--line-2); display:inline-block; flex-shrink:0; transition:background .4s }
+  .rt-dot--on{ background:#4caf67 }
+
+  /* ===== PWA update bar ===== */
+  .update-bar{ position:fixed; bottom:env(safe-area-inset-bottom,0px); bottom:0; left:0; right:0; z-index:300; background:var(--accent); color:#fff; padding:12px 18px; display:flex; align-items:center; justify-content:space-between; gap:12px; font-size:14px; font-weight:500; box-shadow:0 -2px 16px rgba(0,0,0,.20) }
+  .update-bar .btn{ background:rgba(255,255,255,.18); color:#fff; border-color:rgba(255,255,255,.4); font-size:13px; font-weight:700; padding:7px 16px; flex-shrink:0 }
+  .update-bar .btn:hover{ background:rgba(255,255,255,.28) }
+
+  /* ===== THEORY: term name + trigger footer ===== */
+  #content .theory-name{ font-size:13.5px; font-weight:700; color:var(--ink); margin-bottom:9px; line-height:1.3 }
+  #content .theory-trigger{ margin-top:10px; padding-top:9px; border-top:1px solid var(--line); font-size:12px; color:var(--muted); font-style:italic }
+  #content .theory-trigger span{ margin-right:5px; font-style:normal; opacity:.7 }
+
+  /* ===== Margin map ===== */
+  #marginMap{ position:fixed; right:0; top:56px; bottom:24px; width:24px; z-index:60; pointer-events:none }
+  .mm-dot{ position:absolute; right:0; width:24px; height:24px; border-radius:50%; border:none; cursor:pointer; pointer-events:auto; background:transparent; padding:0 }
+  .mm-dot::before{ content:''; position:absolute; inset:50%; transform:translate(-50%,-50%); width:7px; height:7px; border-radius:50%; background:var(--mc,#caa86a); opacity:.78; transition:opacity .15s,width .15s,height .15s }
+  .mm-dot:hover::before{ opacity:1; width:11px; height:11px }
+  @media(max-width:560px){ #marginMap{ right:0; width:20px } .mm-dot{ width:20px; height:20px } .mm-dot::before{ width:5px; height:5px } }
+
+  /* ===== Chapter search bar ===== */
+  #chapSearchBar{ display:flex; align-items:center; gap:6px; padding:8px 14px; background:var(--card); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:55; flex-wrap:wrap }
+  #chapSearchInp{ flex:1 1 160px; min-width:100px; height:34px; padding:0 11px; border:1px solid var(--line-2); border-radius:9px; background:var(--bg); color:var(--ink); font-size:14px; font-family:inherit; outline:none }
+  #chapSearchInp:focus{ border-color:var(--accent) }
+  #csCount{ font-size:12px; color:var(--muted); min-width:52px; text-align:center; flex-shrink:0 }
+  .cs-btn{ width:32px; height:32px; border:1px solid var(--line-2); border-radius:8px; background:var(--card); color:var(--ink); font-size:14px; cursor:pointer; flex-shrink:0 }
+  .cs-btn:hover{ background:var(--accent-tint) }
+  .cs-close{ color:var(--muted) }
+  #content mark.s-hl{ background:#f0d84a55; border-radius:3px; color:inherit }
+  #content mark.s-hl-cur{ background:#f0d84a; border-radius:3px; color:var(--ink) }
+
+  /* ===== md editor in publish panel ===== */
+  .pub-md-editor{ margin-top:10px; border-top:1px solid var(--line); padding-top:10px }
+  .mde-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; font-size:13px; font-weight:600; color:var(--ink) }
+  .mde-file-lbl{ cursor:pointer; font-size:12px; font-weight:500 } .mde-file{ display:none }
+  .mde-ta{ width:100%; min-height:280px; box-sizing:border-box; padding:11px 13px; border:1px solid var(--line-2); border-radius:10px; background:var(--bg); color:var(--ink); font-family:var(--font-mono); font-size:12px; line-height:1.55; resize:vertical; tab-size:2 }
+  .mde-ta:focus{ outline:none; border-color:var(--accent) }
+  .mde-footer{ display:flex; align-items:center; gap:8px; margin-top:8px; flex-wrap:wrap }
+  .mde-wc{ font-family:var(--font-mono); font-size:11px; color:var(--muted); flex:1 1 auto }
+
+  /* ===== KB Panel (Концепты главы) ===== */
+  #kbPanel{ margin:28px 0 8px }
+  .kbp-toggle{ display:flex; align-items:center; gap:8px; width:100%; background:none; border:none; border-top:1px solid var(--line); padding:14px 0 0; cursor:pointer; text-align:left; font-family:var(--font-ui); -webkit-user-select:none; user-select:none }
+  .kbp-lbl{ font-family:var(--font-mono); font-size:10.5px; font-weight:700; letter-spacing:.10em; text-transform:uppercase; color:var(--muted) }
+  .kbp-cnt{ background:var(--accent); color:#fff; font-family:var(--font-mono); font-size:10px; font-weight:700; border-radius:999px; padding:1px 7px; min-width:18px; text-align:center; display:none }
+  .kbp-cnt:not(:empty){ display:inline-block }
+  .kbp-arr{ margin-left:auto; font-size:13px; color:var(--muted) }
+  .kbp-body{ margin-top:6px }
+  .kbp-empty{ font-size:13px; color:var(--muted); padding:10px 0 }
+  .kbp-node{ border-bottom:1px solid var(--line) }
+  .kbp-node:last-child{ border-bottom:none }
+  .kbp-row{ display:flex; align-items:center; gap:10px; padding:11px 0; cursor:pointer; -webkit-user-select:none; user-select:none }
+  .kbp-row:hover .kbp-title{ color:var(--accent) }
+  .kbp-rob{ width:10px; height:10px; border-radius:50%; flex-shrink:0 }
+  .kbp-meta{ flex:1 1 0; min-width:0 }
+  .kbp-title{ font-size:15px; font-weight:600; color:var(--ink); line-height:1.3 }
+  .kbp-kind{ font-size:11px; color:var(--muted); margin-top:1px; font-family:var(--font-mono) }
+  .kbp-expand-arr{ color:var(--muted); font-size:14px; flex-shrink:0; transition:transform .2s }
+  .kbp-open .kbp-expand-arr{ transform:rotate(90deg) }
+  .kbp-detail{ padding:0 0 14px 20px; border-left:2px solid var(--line) }
+  .kbp-prov{ display:flex; align-items:flex-start; gap:8px; margin-bottom:8px; flex-wrap:wrap }
+  .kbp-rob-badge{ font-family:var(--font-mono); font-size:10px; font-weight:700; padding:2px 8px; border-radius:999px; color:#fff; flex-shrink:0 }
+  .kbp-rob-note{ font-size:12px; color:var(--muted); line-height:1.45 }
+  .kbp-claim{ font-size:14.5px; color:var(--read); line-height:1.6; margin-bottom:10px }
+  .kbp-kontr{ font-size:12.5px; color:var(--muted); line-height:1.5; padding:8px 10px; background:color-mix(in srgb,var(--danger) 8%,transparent); background:rgba(188,69,60,.07); border-radius:8px; margin-bottom:8px }
+  .kbp-kontr-lbl{ font-weight:700; color:var(--danger); margin-right:5px }
+  .kbp-src{ font-size:11.5px; color:var(--muted); font-family:var(--font-mono); line-height:1.5; margin-bottom:8px }
+  .kbp-rels{ display:flex; flex-direction:column; gap:4px }
+  .kbp-rel{ display:flex; align-items:center; gap:6px; background:none; border:none; text-align:left; padding:5px 0; cursor:pointer; font-family:var(--font-ui) }
+  .kbp-rel:hover .kbp-rel-title{ color:var(--accent) }
+  .kbp-rel-type{ font-family:var(--font-mono); font-size:10px; color:var(--muted); flex-shrink:0; background:var(--line); border-radius:4px; padding:2px 6px; margin-right:6px }
+  .kbp-rel-title{ font-size:13px; color:var(--ink); font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:220px }
+  .kbp-neighbor{ margin-top:10px; padding:10px 12px; background:var(--card); border:1px solid var(--line); border-radius:10px }
+  .kbp-nb-head{ display:flex; align-items:center; gap:8px; margin-bottom:6px }
+  .kbp-nb-head b{ flex:1; font-size:13.5px; color:var(--ink) }
+  .kbp-nb-close{ background:none; border:none; color:var(--muted); cursor:pointer; font-size:13px; padding:0 }
 </style>
 </head>
 <body>
@@ -999,6 +1123,7 @@
             <button class="menu-item" id="btnShelf">Полка</button>
             <button class="menu-item" id="btnJourney">Мой прогресс</button>
             <button class="menu-item" id="btnBookmarks">Закладки</button>
+            <button class="menu-item" id="btnChapSearch">Поиск по главе</button>
             <button class="menu-item" id="btnBookLog">Что нового в книге</button>
             <button class="menu-item" id="btnBell">Уведомления<span id="bellBadge" class="mi-badge" style="display:none">0</span></button>
             <div class="menu-sep" id="editorSep" style="display:none"></div>
@@ -1037,9 +1162,18 @@
       </div>
     </div>
     <div id="scroller">
+      <!-- chapter search bar (hidden by default) -->
+      <div id="chapSearchBar" style="display:none">
+        <input id="chapSearchInp" type="search" placeholder="Поиск по тексту главы…" autocomplete="off">
+        <span id="csCount"></span>
+        <button class="cs-btn" id="csPrev" title="Предыдущее (↑)">↑</button>
+        <button class="cs-btn" id="csNext" title="Следующее (↓)">↓</button>
+        <button class="cs-btn cs-close" id="csClose" title="Закрыть (Esc)">✕</button>
+      </div>
       <div id="content"></div>
       <div class="chapter-end">
         <div class="chap-end-mark" aria-hidden="true">· · ·</div>
+        <div id="kbPanel"></div>
         <div id="rateBar"></div>
         <button id="discCTA" class="disc-cta" style="display:none"></button>
         <div id="suppBox" style="display:none"></div>
@@ -1100,7 +1234,8 @@
   <div class="dsp-head">
     <h2>Диспетчерская</h2>
     <div class="dsp-head-r">
-      <button class="btn dsp-fire" id="dspFire">Запустить Гермеса</button>
+      <span class="rt-dot" id="dspRtDot" title="Realtime"></span>
+      <button class="btn dsp-fire" id="dspFire"><span class="fire-label">Запустить Гермеса</span></button>
       <button class="btn" id="dspRefresh">Обновить</button>
       <button class="iconbtn" id="dspClose" aria-label="Закрыть">✕</button>
     </div>
@@ -1119,6 +1254,15 @@
   <div class="dsp-body" id="dspBody"></div>
 </div>
 <div id="kbCard" class="kb-card-ov"></div>
+
+<!-- margin map (mark position indicators) -->
+<div id="marginMap" aria-hidden="true"></div>
+
+<!-- pwa update bar -->
+<div id="updateBar" class="update-bar" style="display:none">
+  <span>Новая версия готова</span>
+  <button class="btn" id="updateBtn">Обновить</button>
+</div>
 
 <!-- comment editor -->
 <div id="overlay"></div>
@@ -1386,8 +1530,29 @@
   function currentBook(){ return state.book||'main'; }
 
   // ====== ВЕРСИЯ ПРИЛОЖЕНИЯ (повышать с каждым апдейтом HTML) ======
-  var APP_VERSION='5.16';
+  var APP_VERSION='5.23';
   var APP_CHANGELOG=[
+    {v:'5.23', items:[
+      'Панель «Концепты главы» в потоке чтения: после текста — сворачиваемая полка с теориями и эффектами, привязанными к главе. Раскрой концепт — увидишь бейдж надёжности, главное утверждение, оговорки для спорных теорий, источник и смысловые связи. Тап по соседнему концепту — показывает его утверждение прямо здесь, без перехода. Загружается по требованию.',
+    ]},
+    {v:'5.22', items:[
+      'Публикация: кнопка «📄 md» у каждого черновика открывает inline-редактор — можно вставить текст или загрузить .md файл, видно количество слов и символов. По кнопке «Сохранить черновик» контент сразу записывается в chapter_versions без лимита на размер.',
+    ]},
+    {v:'5.21', items:[
+      'Мобильный аудит: точки маргинальной карты теперь 24px touch target (было 5px — нетапабельно); карта базы на мобиле переключается на список вместо SVG-графа; тёмная тема для блоков «Теория»; поиск по главе закрывается при смене главы и скроллит страницу наверх при открытии; кнопка Гермеса сжимается до ⚡ на узких экранах.',
+    ]},
+    {v:'5.20', items:[
+      'Теоретические блоки теперь показывают название теории из term= (например «Kahneman & Tversky / Prospect Theory») и контекст из trigger= — единый стиль с SYMPTOM/TRYIT. Маргинальная карта: цветные точки на правом краю страницы показывают, где в главе стоят метки — кликните, чтобы прокрутить. Поиск по главе: нажмите / или Ctrl+F, или «Поиск по главе» в меню «···».',
+    ]},
+    {v:'5.19', items:[
+      'Метки на тексте теперь обновляются в реальном времени — чужие реакции появляются без перезагрузки страницы. PWA: при деплое новой версии внизу экрана появляется «Новая версия готова → Обновить» — одно касание вместо «удали и переустанови».',
+    ]},
+    {v:'5.18', items:[
+      'В тексте глав теперь рендерятся маркеры SYMPTOM («Узнаёте?») и TRYIT («На практике») — янтарный и зелёный блоки, которые раньше вырезались. В Диспетчерской появился индикатор realtime-соединения (зелёная точка рядом с «Запустить Гермеса»). Метки статусов и надёжности в Научбазе переведены на русский. Полировка капитализации.',
+    ]},
+    {v:'5.17', items:[
+      'Карта базы: force-directed layout — узлы больше не лепятся в блоб, а расходятся под действием физики (отталкивание + спринги рёбер + притяжение к кластеру). Туман-ореолы вокруг кластеров. Ховер по узлу показывает мини-карточку. Метки для ключевых узлов «в книге». Поиск по названию без перезагрузки. Умные рёбра: при фильтре подсвечиваются связанные узлы, в полном виде — тихий фон.',
+    ]},
     {v:'5.16', items:[
       '«Карта базы» ожила: звёзды мягко мерцают, а теории, изменившиеся с прошлого захода, подсвечиваются пульсом и счётчиком ✦. Узлы кликабельны — тап открывает карточку теории (утверждение, оговорки, источник, ссылка, главы, соседи). Добавлены фильтры (inbox / проверено / в книге / спорные) и блок «спорные требуют внимания» + белые пятна базы.',
     ]},
@@ -1729,8 +1894,11 @@
       h+='</blockquote>';
       return '\n\n'+h+'\n\n';
     });
-    // theory blocks -> callout (always shown)
-    md = md.replace(/<!--\s*THEORY-START[\s\S]*?-->([\s\S]*?)<!--\s*THEORY-END\s*-->/g, function(m, body){
+    // theory blocks -> callout with term name + optional trigger footer
+    md = md.replace(/<!--\s*THEORY-START([\s\S]*?)-->([\s\S]*?)<!--\s*THEORY-END\s*-->/g, function(m, head, body){
+      var termM=head.match(/term=([^|>]+)/); var term=termM?termM[1].trim():'';
+      var trigM=head.match(/trigger=([^|>]+)/); var trig=trigM?trigM[1].trim():'';
+      var showTrig=trig&&trig.toLowerCase()!==term.toLowerCase()&&trig.length<80;
       body = body.replace(/<!--[\s\S]*?-->/g,'').trim();
       if(!body) return '';
       var inner;
@@ -1739,7 +1907,24 @@
         catch(e){ inner = '<p>'+body+'</p>'; }
       } else { inner = '<p>'+body+'</p>'; }
       inner = inner.replace(/\n+/g,'');
-      return '\n\n<div class="theory-box"><div class="theory-tag">Теория</div>'+inner+'</div>\n\n';
+      return '\n\n<div class="theory-box">'
+        +'<div class="theory-tag">Теория</div>'
+        +(term?'<div class="theory-name">'+escapeHtml(term)+'</div>':'')
+        +inner
+        +(showTrig?'<div class="theory-trigger"><span>↳</span> '+escapeHtml(trig)+'</div>':'')
+        +'</div>\n\n';
+    });
+    // symptom -> recognition callout
+    md = md.replace(/<!--\s*SYMPTOM:\s*([\s\S]*?)-->/g, function(m, text){
+      text = text.replace(/\s+/g,' ').trim();
+      if(!text) return '';
+      return '\n\n<div class="symptom-box"><div class="symptom-tag">Узнаёте?</div><p>'+escapeHtml(text)+'</p></div>\n\n';
+    });
+    // tryit -> actionable exercise
+    md = md.replace(/<!--\s*TRYIT:\s*([\s\S]*?)-->/g, function(m, text){
+      text = text.split('|')[0].replace(/\s+/g,' ').trim();
+      if(!text) return '';
+      return '\n\n<div class="tryit-box"><div class="tryit-tag">На практике</div><p>'+escapeHtml(text)+'</p></div>\n\n';
     });
     // diagrams without a marker -> anchor after the relevant heading
     var anchors=(BYID[state.chapter] && BYID[state.chapter].figs) || null;
@@ -1899,7 +2084,9 @@
     var cont=document.getElementById('content');
     var c=BYID[state.chapter];
     if(!c){ cont.innerHTML='<p style="color:var(--muted)">'+(BOOK.length?'Выберите главу слева.':'Книга ещё загружается…')+'</p>'; document.getElementById('topTitle').textContent=''; document.getElementById('chapNav').innerHTML=''; var rb=document.getElementById('reactBar'); if(rb){rb.style.display='none';rb.innerHTML='';} return; }
-    var _changed = (cont._ch !== c.id); cont._ch = c.id;
+    var _changed = (cont._ch !== c.id);
+    if(_changed){ CS_MATCHES=[]; CS_IDX=-1; CS_Q=''; var cbar=document.getElementById('chapSearchBar'); if(cbar) cbar.style.display='none'; }
+    cont._ch = c.id;
     cont.innerHTML = renderMd(c.md);
     if(_changed){ cont.classList.remove('enter'); void cont.offsetWidth; cont.classList.add('enter'); }
     document.getElementById('topTitle').textContent = c.title;
@@ -1908,7 +2095,7 @@
       var _meta=document.createElement('div'); _meta.className='chap-meta'; _meta.textContent='≈ '+_m+' мин чтения';
       if((c.changelog && c.changelog.length) || canModerate()){ _meta.appendChild(document.createTextNode('  ·  ')); var _cl=document.createElement('button'); _cl.className='chap-changed-link'; _cl.textContent='Что изменилось'; _cl.onclick=function(){ openChapLog(c.id); }; _meta.appendChild(_cl); }
       _h1.insertAdjacentElement('afterend', _meta); }
-    fillFigures(); highlightChapter(); renderSpotMarks(); renderChapNav(); renderRate('rateBar'); renderReactBar(); renderDiscCTA(); renderSupp(); renderReadProgress(); refreshBookLogDot();
+    fillFigures(); highlightChapter(); renderSpotMarks(); renderMarginMap(); renderKBPanel(); renderChapNav(); renderRate('rateBar'); renderReactBar(); renderDiscCTA(); renderSupp(); renderReadProgress(); refreshBookLogDot();
   }
 
   function openChapter(id, scrollToTop){
@@ -2007,6 +2194,249 @@
     Object.keys(groups).forEach(function(k){ var g=groups[k]; var m=g[0]; var heat=Math.min(g.length,3);
       applyHighlight(c, m.start_off, m.end_off, 'sm_'+m.id, 'spot-'+dominantKind(g)+' heat-'+heat, 'smk'); });
   }
+  // ── Концепты главы (KB panel in reading flow) ────────────────────────────
+  var kbpOpen=false, kbpChId=null, kbpRows=[];
+  var KBP_ROB_COL={solid:'var(--good)',mixed:'var(--warn)',contested:'var(--danger)',weak:'var(--muted)'};
+  var KBP_ROB_RU={solid:'надёжная',mixed:'смешанная',contested:'спорная',weak:'слабая'};
+  var KBP_REL={refines:'уточняет',contradicts:'противоречит',prerequisite:'нужна для','mechanism-of':'механизм чего','same-family':'одна семья','competes-with':'конкурирует с','instance-of':'частный случай'};
+  var KB_KIND_SHORT={theory:'Теория',effect:'Эффект',frame:'Рамка',phenomenon:'Феномен',method:'Метод',term:'Термин'};
+
+  function renderKBPanel(){
+    var panel=document.getElementById('kbPanel'); if(!panel) return;
+    var ch=BYID[state.chapter];
+    if(!ch){ panel.innerHTML=''; return; }
+    var open=kbpOpen;
+    panel.innerHTML='<div class="kbp-toggle" id="kbpBtn">'
+      +'<span class="kbp-lbl">Концепты главы</span>'
+      +'<span class="kbp-cnt" id="kbpCnt"></span>'
+      +'<span class="kbp-arr" id="kbpArr">'+(open?'∧':'∨')+'</span>'
+      +'</div>'
+      +'<div class="kbp-body" id="kbpBody" style="display:'+(open?'':'none')+'">'
+      +(open?'<div class="dsp-load">Загрузка…</div>':'')
+      +'</div>';
+    if(!panel._wired){
+      panel._wired=true;
+      panel.addEventListener('click',function(e){
+        var t=e.target.closest('[data-kbp]'); if(!t) return;
+        var act=t.getAttribute('data-kbp'), slug=t.getAttribute('data-slug');
+        if(act==='toggle-panel') kbpTogglePanel();
+        else if(act==='expand') kbpExpand(slug);
+        else if(act==='neighbor') kbpNeighbor(slug, t.closest('.kbp-node'));
+      });
+    }
+    var btn=document.getElementById('kbpBtn'); if(btn) btn.setAttribute('data-kbp','toggle-panel');
+    if(open) kbpLoad();
+  }
+  function kbpTogglePanel(){
+    kbpOpen=!kbpOpen;
+    var body=document.getElementById('kbpBody'), arr=document.getElementById('kbpArr');
+    if(body) body.style.display=kbpOpen?'':'none';
+    if(arr) arr.textContent=kbpOpen?'∧':'∨';
+    if(kbpOpen && !body.dataset.loaded) kbpLoad();
+  }
+  async function kbpLoad(){
+    var body=document.getElementById('kbpBody'); if(!body) return;
+    var chId=state.chapter; if(!chId) return;
+    if(body.dataset.loaded===chId) return;
+    body.innerHTML='<div class="dsp-load">Загрузка концептов…</div>';
+    if(!SB||!USER){ body.innerHTML='<div class="kbp-empty">Войдите, чтобы видеть концепты.</div>'; return; }
+    var r=await SB.rpc('kb_for_chapter',{p_chapter:chId});
+    if(r.error||chId!==state.chapter) return;
+    kbpRows=r.data||[]; kbpChId=chId;
+    body.dataset.loaded=chId;
+    var cnt=document.getElementById('kbpCnt');
+    if(cnt) cnt.textContent=kbpRows.length||'';
+    if(!kbpRows.length){
+      body.innerHTML='<div class="kbp-empty">Концепты для этой главы ещё не размечены.</div>';
+      return;
+    }
+    body.innerHTML=kbpRows.map(function(n){
+      var col=KBP_ROB_COL[n.robustness]||'var(--muted)';
+      var kind=KB_KIND_SHORT[n.kind]||n.kind;
+      return '<div class="kbp-node" id="kbpn-'+escapeHtml(n.slug)+'">'
+        +'<div class="kbp-row" data-kbp="expand" data-slug="'+escapeHtml(n.slug)+'">'
+          +'<span class="kbp-rob" style="background:'+col+'"></span>'
+          +'<div class="kbp-meta"><div class="kbp-title">'+escapeHtml(n.title)+'</div>'
+            +'<div class="kbp-kind">'+escapeHtml(kind)+(n.role==='home'?' · ключевой':'')+'</div></div>'
+          +'<span class="kbp-expand-arr">›</span>'
+        +'</div>'
+        +'<div class="kbp-detail" id="kbpd-'+escapeHtml(n.slug)+'" style="display:none"></div>'
+        +'</div>';
+    }).join('');
+  }
+  async function kbpExpand(slug){
+    // Toggle: close if already open
+    var detail=document.getElementById('kbpd-'+slug);
+    var node_el=document.getElementById('kbpn-'+slug);
+    if(!detail||!node_el) return;
+    var isOpen=detail.style.display!=='none';
+    // Close all
+    document.querySelectorAll('#kbPanel .kbp-detail').forEach(function(d){ d.style.display='none'; });
+    document.querySelectorAll('#kbPanel .kbp-expand-arr').forEach(function(a){ a.textContent='›'; });
+    document.querySelectorAll('#kbPanel .kbp-node').forEach(function(n){ n.classList.remove('kbp-open'); });
+    if(isOpen) return;
+    // Open
+    node_el.classList.add('kbp-open');
+    var arr=node_el.querySelector('.kbp-expand-arr'); if(arr) arr.textContent='∨';
+    detail.style.display='';
+    if(detail.dataset.loaded){ detail.scrollIntoView({behavior:'smooth',block:'nearest'}); return; }
+    detail.innerHTML='<div class="dsp-load" style="padding:8px 0">Загрузка…</div>';
+    var r=await SB.rpc('kb_node_bundle',{p_slug:slug});
+    if(r.error){ detail.innerHTML='<div class="kbp-empty">Не удалось загрузить.</div>'; return; }
+    var b=r.data||{};
+    var col=KBP_ROB_COL[b.robustness]||'var(--muted)';
+    var body=b.body||{};
+    var claim=body['\u0441\u0443\u0442\u044c']||''; // body.суть
+    var note=b.robustness_note||'';
+    var sources=body['\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a\u0438']||''; // body.источники
+    var kontr=body['\u043a\u043e\u043d\u0442\u0440\u0442\u0435\u043e\u0440\u0438\u044f']||''; // body.контртеория
+    var edges=(b.edges||[]).filter(function(e){ return e.strength==='strong'||e.strength==='medium'; }).slice(0,3);
+    var robHtml='<div class="kbp-prov">'
+      +'<span class="kbp-rob-badge" style="background:'+col+'">'+escapeHtml(KBP_ROB_RU[b.robustness]||b.robustness)+'</span>'
+      +(note?'<span class="kbp-rob-note">'+escapeHtml(note)+'</span>':'')
+      +'</div>';
+    var claimHtml=claim?('<div class="kbp-claim">'+escapeHtml(claim)+'</div>'):'';
+    var kontrHtml=(kontr&&(b.robustness==='mixed'||b.robustness==='contested'))?
+      '<div class="kbp-kontr"><span class="kbp-kontr-lbl">Спорное:</span> '+escapeHtml(kontr.slice(0,220))+(kontr.length>220?'…':'')+'</div>':'';
+    var srcHtml=sources?('<div class="kbp-src">'+escapeHtml(sources.slice(0,180))+(sources.length>180?'…':'')+'</div>'):'';
+    var edgesHtml=edges.length?('<div class="kbp-rels">'+edges.map(function(e){
+      var lbl=(e.direction==='out'?KBP_REL[e.relation]:KBP_REL[e.relation])||e.relation;
+      return '<button class="kbp-rel" data-kbp="neighbor" data-slug="'+escapeHtml(e.other)+'"><span class="kbp-rel-type">'+escapeHtml(lbl)+'</span><span class="kbp-rel-title">'+escapeHtml(e.other_title||e.other)+'</span></button>';
+    }).join('')+'</div>'):'';
+    detail.innerHTML=robHtml+claimHtml+kontrHtml+srcHtml+edgesHtml;
+    detail.dataset.loaded='1';
+    detail.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+  async function kbpNeighbor(slug, nodeEl){
+    if(!nodeEl) return;
+    var prev=nodeEl.querySelector('.kbp-neighbor'); if(prev) prev.remove();
+    var nb=document.createElement('div'); nb.className='kbp-neighbor';
+    nb.innerHTML='<div class="dsp-load" style="padding:6px 0">Загрузка…</div>';
+    nodeEl.appendChild(nb);
+    var r=await SB.rpc('kb_node_bundle',{p_slug:slug});
+    if(r.error){ nb.innerHTML='<div class="kbp-empty">Нет данных.</div>'; return; }
+    var b=r.data||{}, col=KBP_ROB_COL[b.robustness]||'var(--muted)';
+    var body=b.body||{};
+    var claim=body['\u0441\u0443\u0442\u044c']||'';
+    nb.innerHTML='<div class="kbp-nb-head"><span class="kbp-rob" style="background:'+col+'"></span>'
+      +'<b>'+escapeHtml(b.title||slug)+'</b>'
+      +'<button class="kbp-nb-close" data-kbp="neighbor" data-slug="__close">✕</button></div>'
+      +(claim?('<div class="kbp-claim">'+escapeHtml(claim)+'</div>'):'');
+    var closeBtn=nb.querySelector('.kbp-nb-close');
+    if(closeBtn) closeBtn.onclick=function(){ nb.remove(); };
+    nb.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+
+  // ── Margin map (mark position indicators on right edge) ──────────────────
+  var MARK_COLORS={confused:'#f0c46a',drag:'#8f9aa3',strong:'#4caf67',ai:'#8f5a23',bookmark:'#e0705f',note:'#6ab4f5'};
+  function renderMarginMap(){
+    var map=document.getElementById('marginMap'); if(!map) return;
+    map.innerHTML='';
+    var ch=BYID[state.chapter]; if(!ch||!spotMarksVisible()) return;
+    var totalLen=Math.max((ch.md||'').length,1);
+    var marks=SMARKS.filter(function(m){
+      return m.chapter_id===state.chapter && m.end_off>m.start_off && (m.kind!=='bookmark'||( USER&&m.user_id===USER.id));
+    });
+    if(!marks.length) return;
+    // Deduplicate overlapping positions into bands
+    marks.forEach(function(m){
+      var frac=Math.min(m.start_off/totalLen,0.97);
+      var dot=document.createElement('button');
+      dot.className='mm-dot';
+      dot.style.cssText='top:'+(frac*86+5).toFixed(1)+'%;--mc:'+(MARK_COLORS[m.kind]||'#caa86a');
+      dot.title=kindLabel(m.kind)+(m.quote?': '+m.quote.slice(0,55):'');
+      dot.setAttribute('aria-label',dot.title);
+      var off=m.start_off;
+      dot.onclick=function(){ scrollToCharOffset(off); };
+      map.appendChild(dot);
+    });
+  }
+  function scrollToCharOffset(offset){
+    var c=document.getElementById('content'); if(!c) return;
+    var walker=document.createTreeWalker(c,NodeFilter.SHOW_TEXT,null,false);
+    var curr=0;
+    while(walker.nextNode()){
+      var node=walker.currentNode, len=node.textContent.length;
+      if(curr+len>=offset){
+        try{
+          var range=document.createRange();
+          range.setStart(node,Math.min(offset-curr,len));
+          range.setEnd(node,Math.min(offset-curr,len));
+          var rect=range.getBoundingClientRect();
+          window.scrollTo({top:window.scrollY+rect.top-140,behavior:'smooth'});
+        }catch(e){
+          var frac=offset/Math.max((BYID[state.chapter]&&BYID[state.chapter].md||'').length,1);
+          window.scrollTo({top:(document.documentElement.scrollHeight-window.innerHeight)*frac,behavior:'smooth'});
+        }
+        return;
+      }
+      curr+=len;
+    }
+  }
+
+  // ── Chapter full-text search ──────────────────────────────────────────────
+  var CS_MATCHES=[], CS_IDX=-1, CS_Q='';
+  function chapSearchOpen(){
+    var bar=document.getElementById('chapSearchBar'); if(!bar) return;
+    bar.style.display='flex';
+    var scr=document.getElementById('scroller'); if(scr) scr.scrollTop=0;
+    var inp=document.getElementById('chapSearchInp');
+    if(inp){ if(CS_Q) inp.value=CS_Q; inp.focus(); inp.select(); }
+  }
+  function chapSearchClose(){
+    var bar=document.getElementById('chapSearchBar'); if(bar) bar.style.display='none';
+    chapSearchClear(); CS_Q='';
+  }
+  function chapSearchClear(){
+    document.querySelectorAll('#content .s-hl').forEach(function(m){
+      if(m.parentNode){ m.parentNode.insertBefore(document.createTextNode(m.textContent),m); m.parentNode.removeChild(m); }
+    });
+    try{ document.getElementById('content').normalize(); }catch(e){}
+    CS_MATCHES=[]; CS_IDX=-1;
+    csCount(0,0);
+  }
+  function chapSearchRun(q){
+    chapSearchClear(); CS_Q=q;
+    if(!q||q.length<1){ return; }
+    var c=document.getElementById('content'); if(!c) return;
+    var lower=q.toLowerCase();
+    var walker=document.createTreeWalker(c,NodeFilter.SHOW_TEXT,null,false);
+    var nodes=[]; while(walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(function(node){
+      if(!node.parentNode) return;
+      var tag=(node.parentNode.tagName||'').toUpperCase();
+      if(tag==='SCRIPT'||tag==='STYLE'||tag==='MARK') return;
+      var text=node.textContent, idx=text.toLowerCase().indexOf(lower);
+      while(idx>=0 && node.parentNode){
+        var hl=document.createElement('mark');
+        hl.className='s-hl'; hl.textContent=text.slice(idx,idx+q.length);
+        var after=document.createTextNode(text.slice(idx+q.length));
+        node.parentNode.insertBefore(document.createTextNode(text.slice(0,idx)),node);
+        node.parentNode.insertBefore(hl,node);
+        node.parentNode.insertBefore(after,node);
+        node.parentNode.removeChild(node);
+        CS_MATCHES.push(hl); node=after; text=after.textContent;
+        idx=text.toLowerCase().indexOf(lower);
+      }
+    });
+    if(CS_MATCHES.length){ CS_IDX=0; csScroll(0); }
+    csCount(CS_MATCHES.length, CS_MATCHES.length?1:0);
+  }
+  function csScroll(i){
+    CS_MATCHES.forEach(function(m){m.classList.remove('s-hl-cur');});
+    var m=CS_MATCHES[i]; if(!m) return;
+    m.classList.add('s-hl-cur');
+    m.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  function csStep(dir){
+    if(!CS_MATCHES.length) return;
+    CS_IDX=(CS_IDX+dir+CS_MATCHES.length)%CS_MATCHES.length;
+    csScroll(CS_IDX); csCount(CS_MATCHES.length,CS_IDX+1);
+  }
+  function csCount(total,cur){
+    var el=document.getElementById('csCount');
+    if(el) el.textContent=total?cur+' / '+total:(CS_Q?'Не найдено':'');
+  }
   function showMarkPop(range){
     var pop=document.getElementById('markPop'); if(!pop) return;
     var eb=pop.querySelector('.mp-edit'); if(eb) eb.style.display = canContribute()? '' : 'none';
@@ -2095,7 +2525,6 @@
     });
     showModal('bookmarksModal');
   }
-  (function(){ var b=document.getElementById('btnBookmarks'); if(b) b.onclick=function(){ closeMenus(); openBookmarks(); }; var c=document.getElementById('bmClose'); if(c) c.onclick=closeModals; })();
 
   // ---------- editor modal ----------
   var curTag='';
@@ -2406,16 +2835,43 @@
   }
   document.getElementById('overlay').onclick=closeModals;
   document.addEventListener('keydown', function(e){
-    if(e.key==='Escape'){ closeModals(); return; }
+    if(e.key==='Escape'){
+      var bar=document.getElementById('chapSearchBar');
+      if(bar&&bar.style.display!=='none'){ chapSearchClose(); return; }
+      closeModals(); return;
+    }
     var tn=(e.target && e.target.tagName || '').toLowerCase();
     if(tn==='input' || tn==='textarea') return;
     if(document.querySelector('.modal.show')) return;
+    // '/' or Ctrl+F → chapter search
+    if((e.key==='/'&&!e.ctrlKey&&!e.metaKey)||(e.key==='f'&&(e.ctrlKey||e.metaKey))){
+      if(state.chapter){ e.preventDefault(); closeMenus(); chapSearchOpen(); return; }
+    }
     var i=chapterIndex(state.chapter);
     if(e.key==='ArrowRight' && BOOK[i+1]) openChapter(BOOK[i+1].id);
     else if(e.key==='ArrowLeft' && BOOK[i-1]) openChapter(BOOK[i-1].id);
   });
 
-  function togglePanel(open){
+  // Chapter search wiring
+  (function(){
+    var b=document.getElementById('btnChapSearch');
+    if(b) b.onclick=function(){ closeMenus(); chapSearchOpen(); };
+    var inp=document.getElementById('chapSearchInp');
+    if(inp){
+      var t=null;
+      inp.addEventListener('input',function(){ clearTimeout(t); var v=this.value; t=setTimeout(function(){ chapSearchRun(v); },200); });
+      inp.addEventListener('keydown',function(e){
+        if(e.key==='Enter'){ e.preventDefault(); csStep(e.shiftKey?-1:1); }
+        if(e.key==='Escape'){ chapSearchClose(); }
+      });
+    }
+    var p=document.getElementById('csPrev'); if(p) p.onclick=function(){ csStep(-1); };
+    var n=document.getElementById('csNext'); if(n) n.onclick=function(){ csStep(1); };
+    var cl=document.getElementById('csClose'); if(cl) cl.onclick=chapSearchClose;
+    var bm=document.getElementById('btnBookmarks');
+    if(bm) bm.onclick=function(){ closeMenus(); openBookmarks(); };
+    var c=document.getElementById('bmClose'); if(c) c.onclick=closeModals;
+  })();  function togglePanel(open){
     var p=document.getElementById('panel');
     if(open===undefined) open=!p.classList.contains('open');
     p.classList.toggle('open', open);
@@ -2801,7 +3257,7 @@
       prevSeen = (PROFILES[USER.id] && PROFILES[USER.id].last_seen)? Date.parse(PROFILES[USER.id].last_seen) : 0;
       await loadSocial(); await loadProgress(); await loadLikes(); await loadSpotMarks();
       await loadBooks(); setBookTitle();
-      startPresence(); updateBell(); renderReactBar(); applyRoleUI(); setupRealtime();
+      startPresence(); updateBell(); renderReactBar(); applyRoleUI(); setupRealtime(); setupPWAUpdate();
       if(panelOpen()) renderPanel();
       maybeWelcome();
       setTimeout(function(){ try{ showBookLogBanner(); }catch(_){} }, 1400);
@@ -3433,6 +3889,7 @@
     if(d.comments) jobs.push(loadComments());   // includes replies
     if(d.likes)    jobs.push(loadLikes());
     if(d.social)   jobs.push(loadSocial());      // discussions + ratings + reactions
+    if(d.marks)    jobs.push(loadSpotMarks().then(function(){ if(state.chapter) try{ renderChapter(); }catch(_){} }));
     Promise.all(jobs).then(refreshLiveUI, refreshLiveUI);
   }
   function rtBump(kind){ rtDirty[kind]=true; clearTimeout(rtTimer); rtTimer=setTimeout(rtFlush, 350); }
@@ -3441,12 +3898,38 @@
     try{
       rtChannel=SB.channel('feedback-live');
       [['reactions','social'],['ratings','social'],['discussions','social'],
-       ['comments','comments'],['replies','comments'],['comment_likes','likes']
+       ['comments','comments'],['replies','comments'],['comment_likes','likes'],
+       ['spot_marks','marks']
       ].forEach(function(t){
         rtChannel.on('postgres_changes', {event:'*', schema:'public', table:t[0]}, function(){ rtBump(t[1]); });
       });
       rtChannel.subscribe();
     }catch(e){}
+  }
+  function setupPWAUpdate(){
+    if(!('serviceWorker' in navigator)) return;
+    var _wired=false;
+    function showBar(reg){
+      var bar=document.getElementById('updateBar'); if(!bar||bar._shown) return;
+      bar._shown=true; bar.style.display='flex';
+      var btn=document.getElementById('updateBtn');
+      if(btn) btn.onclick=function(){
+        if(reg.waiting) reg.waiting.postMessage('skipWaiting');
+        bar.style.display='none';
+      };
+      if(!_wired){ _wired=true;
+        navigator.serviceWorker.addEventListener('controllerchange',function(){ window.location.reload(); });
+      }
+    }
+    navigator.serviceWorker.ready.then(function(reg){
+      if(reg.waiting) showBar(reg);
+      reg.addEventListener('updatefound',function(){
+        var sw=reg.installing; if(!sw) return;
+        sw.addEventListener('statechange',function(){
+          if(sw.state==='installed' && navigator.serviceWorker.controller) showBar(reg);
+        });
+      });
+    }).catch(function(){});
   }
 
   function renderDiscCTA(){
@@ -3835,13 +4318,15 @@
     if(dspChan || !SB) return;
     try{
       var ch=SB.channel('dispatch-rt');
-      ['bus','chapter_versions','context','decisions','sources','briefs'].forEach(function(t){
+      ['bus','chapter_versions','context','decisions','sources','briefs','kb_nodes'].forEach(function(t){
         ch.on('postgres_changes', {event:'*', schema:'public', table:t}, dspOnChange);
       });
-      ch.subscribe(); dspChan=ch;
+      ch.subscribe(function(status){ dspRtDot(status==='SUBSCRIBED'); });
+      dspChan=ch;
     }catch(e){}
   }
-  function dspRealtimeOff(){ if(dspChan){ try{ SB.removeChannel(dspChan); }catch(e){} dspChan=null; } clearTimeout(dspRtTimer); }
+  function dspRtDot(on){ var d=document.getElementById('dspRtDot'); if(d) d.className='rt-dot'+(on?' rt-dot--on':''); }
+  function dspRealtimeOff(){ if(dspChan){ try{ SB.removeChannel(dspChan); }catch(e){} dspChan=null; } clearTimeout(dspRtTimer); dspRtDot(false); }
   function dspOnChange(){ clearTimeout(dspRtTimer); dspRtTimer=setTimeout(function(){ dspBadges(); if(!dspEditing) dspTab(dspCur); }, 450); }
   var fireBusy=false;
   async function fireRoutine(){
@@ -3907,8 +4392,8 @@
       return '<div class="dsp-card'+(blocker?' blocker':'')+'">'
         +'<div class="dsp-row1"><span class="dsp-route">'+dspEsc(m.src)+' → '+dspEsc(m.dst)+'</span>'
         +'<span class="dsp-chip k-'+dspEsc(m.kind)+'">'+dspEsc(m.kind)+'</span>'
-        +(m.status==='done'?'<span class="dsp-chip done">готово</span>':'')
-        +(hung?'<span class="dsp-chip warn">висит '+Math.floor(dspDays(m.created_at))+'д</span>':'')
+        +(m.status==='done'?'<span class="dsp-chip done">Готово</span>':'')
+        +(hung?'<span class="dsp-chip warn">Висит '+Math.floor(dspDays(m.created_at))+'д</span>':'')
         +'<span class="dsp-age">'+dspAgo(m.created_at)+'</span></div>'
         +'<div class="dsp-subj">'+dspEsc(m.subject)+'</div>'
         +(m.body?'<div class="dsp-text">'+dspEsc(m.body)+'</div>':'')
@@ -3956,11 +4441,56 @@
         +'<div class="dsp-acts">'
         +'<button class="dsp-btn" data-act="pub-pub" data-id="'+dspEsc(v.id)+'">Опубликовать</button>'
         +'<button class="dsp-btn ghost" data-act="pub-rej" data-id="'+dspEsc(v.id)+'">Отклонить</button>'
+        +'<button class="dsp-btn ghost" data-act="pub-md" data-id="'+dspEsc(v.id)+'" data-chapter="'+dspEsc(v.chapter_id)+'" title="Загрузить или вставить текст главы">📄 md</button>'
         +'<button class="dsp-btn ghost" data-act="diff" data-id="'+dspEsc(v.id)+'">Дифф ('+changed+')</button>'
         +'</div>'
         +'<div class="dsp-diff" id="diff-'+dspEsc(v.id)+'" style="display:none">'+(diffHtml||'<div class="df ctx">различий нет</div>')+'</div>'
+        +'<div class="pub-md-editor" id="mde-'+dspEsc(v.id)+'" style="display:none">'
+          +'<div class="mde-head"><span>Текст главы (md)</span><label class="dsp-btn ghost mde-file-lbl"><input type="file" accept=".md,text/plain" class="mde-file" data-id="'+dspEsc(v.id)+'">📁 Загрузить файл</label></div>'
+          +'<textarea class="mde-ta" id="mde-ta-'+dspEsc(v.id)+'" placeholder="Вставьте текст главы в формате Markdown…" spellcheck="false"></textarea>'
+          +'<div class="mde-footer"><span class="mde-wc" id="mde-wc-'+dspEsc(v.id)+'">0 слов</span>'
+          +'<button class="dsp-btn ghost" data-act="pub-md-cancel" data-id="'+dspEsc(v.id)+'">Отмена</button>'
+          +'<button class="dsp-btn" data-act="pub-md-save" data-id="'+dspEsc(v.id)+'">Сохранить черновик</button></div>'
+        +'</div>'
         +'</div>';
     }).join('');
+  }
+  function pubOpenMd(id){
+    var ed=document.getElementById('mde-'+id); if(!ed) return;
+    var visible=ed.style.display!=='none';
+    if(visible){ ed.style.display='none'; return; }
+    ed.style.display='';
+    var ta=document.getElementById('mde-ta-'+id); if(!ta) return;
+    ta.focus();
+    mdeUpdateWc(id);
+    // Wire file picker
+    var fi=ed.querySelector('.mde-file[data-id="'+id+'"]');
+    if(fi && !fi._wired){ fi._wired=true;
+      fi.addEventListener('change',function(){
+        var f=this.files&&this.files[0]; if(!f) return;
+        var r=new FileReader(); r.onload=function(e){ ta.value=e.target.result; mdeUpdateWc(id); }; r.readAsText(f,'utf-8');
+      });
+    }
+    ta.addEventListener('input',function(){ mdeUpdateWc(id); });
+  }
+  function mdeUpdateWc(id){
+    var ta=document.getElementById('mde-ta-'+id), wc=document.getElementById('mde-wc-'+id);
+    if(!ta||!wc) return;
+    var n=(ta.value.match(/\S+/g)||[]).length;
+    wc.textContent=n+' слов · '+ta.value.length+' симв.';
+  }
+  async function pubSaveMd(id){
+    var ta=document.getElementById('mde-ta-'+id); if(!ta) return;
+    var content=ta.value.trim();
+    if(!content){ alert('Текст пустой — ничего не сохранено.'); return; }
+    var btn=document.querySelector('[data-act="pub-md-save"][data-id="'+id+'"]');
+    if(btn){ btn.disabled=true; btn.textContent='Сохраняю…'; }
+    var r=await SB.from('chapter_versions').update({md:content,updated_at:new Date().toISOString()}).eq('id',id).eq('status','draft');
+    if(btn){ btn.disabled=false; btn.textContent='Сохранить черновик'; }
+    if(r.error){ alert('Ошибка: '+r.error.message); return; }
+    if(typeof toast==='function') toast('Черновик сохранён ('+Math.round(content.length/1024)+'КБ)');
+    var ed=document.getElementById('mde-'+id); if(ed) ed.style.display='none';
+    renderPub();
   }
   async function pubPublish(id){
     if(!confirm('Опубликовать эту версию в live?')) return;
@@ -4029,8 +4559,8 @@
   async function renderSrc(){
     var body=document.getElementById('dspBody');
     body.innerHTML='<div class="dsp-filters">'
-      +dspFsel('status',{'':'Все статусы','inbox':'inbox','verified':'verified','in_book':'в книге','rejected':'отклонено'},dspSrcF.status)
-      +dspFsel('rob',{'':'Любая надёжность','solid':'solid','mixed':'mixed','weak':'weak','contested':'contested'},dspSrcF.rob)
+      +dspFsel('status',{'':'Все статусы','inbox':'Inbox','verified':'Verified','in_book':'В книге','rejected':'Отклонено'},dspSrcF.status)
+      +dspFsel('rob',{'':'Любая надёжность','solid':'Надёжные','mixed':'Смешанные','weak':'Слабые','contested':'Спорные'},dspSrcF.rob)
       +'</div><div id="dspCounters"></div><div id="dspList"><div class="dsp-load">Загрузка…</div></div>';
     dspWireFilters(function(k,v){ dspSrcF[k]=v; renderSrc(); });
     try{
@@ -4049,11 +4579,13 @@
     if(r.error){ list.innerHTML=dspErr('Нет доступа: '+r.error.message); return; }
     var rows=r.data||[];
     if(!rows.length){ list.innerHTML='<div class="dsp-empty">Источников нет.</div>'; return; }
+    var SRC_ST={inbox:'Inbox',verified:'Проверено',in_book:'В книге',rejected:'Отклонено'};
+    var SRC_ROB={solid:'Надёжные',mixed:'Смешанные',weak:'Слабые',contested:'Спорные',inbox:'Без оценки'};
     list.innerHTML=rows.map(function(s){
       var chs=(s.chapters||[]).map(function(x){ return '<span class="dsp-chip ghost">'+dspEsc(x)+'</span>'; }).join('');
       return '<div class="dsp-card"><div class="dsp-row1">'
-        +'<span class="dsp-chip '+(s.status==='inbox'?'warn':(s.status==='rejected'?'ghost':'done'))+'">'+dspEsc(s.status||'—')+'</span>'
-        +(s.robustness?'<span class="dsp-chip">'+dspEsc(s.robustness)+'</span>':'')
+        +'<span class="dsp-chip '+(s.status==='inbox'?'warn':(s.status==='rejected'?'ghost':'done'))+'">'+dspEsc(SRC_ST[s.status]||s.status||'—')+'</span>'
+        +(s.robustness?'<span class="dsp-chip">'+dspEsc(SRC_ROB[s.robustness]||s.robustness)+'</span>':'')
         +'<span class="dsp-age">'+dspEsc(s.year||'')+'</span></div>'
         +'<div class="dsp-subj">'+dspEsc(s.title)+(s.authors?(' · '+dspEsc(s.authors)):'')+'</div>'
         +(s.claim?'<div class="dsp-text">'+dspEsc(s.claim)+'</div>':'')
@@ -4074,10 +4606,10 @@
       var rating=0; if(rt.data&&rt.data.length){ rating=rt.data.reduce(function(a,x){ return a+(x.score||0); },0)/rt.data.length; }
       var lint=await dspChapterLint();
       list.innerHTML='<div class="dsp-kpis big">'
-        +'<div class="dsp-kpi"><b>'+(pr.count||0)+'</b><span>читателей</span></div>'
-        +'<div class="dsp-kpi"><b>'+Math.round(depth*100)+'%</b><span>средняя глубина</span></div>'
-        +'<div class="dsp-kpi"><b>'+(oc.count||0)+'</b><span>открытых правок</span></div>'
-        +'<div class="dsp-kpi"><b>'+(rating?rating.toFixed(1):'—')+'</b><span>средняя оценка</span></div>'
+        +'<div class="dsp-kpi"><b>'+(pr.count||0)+'</b><span>Читателей</span></div>'
+        +'<div class="dsp-kpi"><b>'+Math.round(depth*100)+'%</b><span>Средняя глубина</span></div>'
+        +'<div class="dsp-kpi"><b>'+(oc.count||0)+'</b><span>Открытых правок</span></div>'
+        +'<div class="dsp-kpi"><b>'+(rating?rating.toFixed(1):'—')+'</b><span>Средняя оценка</span></div>'
         +'</div><div class="dsp-note">Подробный разбор по главам — в «Дашборде глав» (меню «···»).</div>'+lint;
     }catch(e){ list.innerHTML=dspErr('Ошибка: '+e.message); }
   }
@@ -4168,138 +4700,317 @@
   }
   // ===================== Карта базы знаний (научбаза / research) =====================
   var KB_ROB={solid:'#f0c46a', mixed:'#d99a4e', contested:'#e0705f', weak:'#8f9aa3', inbox:'#6f6a62'};
-  var KB_ROB_RU={solid:'надёжные', mixed:'смешанные', contested:'спорные', weak:'слабые', inbox:'без оценки'};
-  var KB_KIND_RU={theory:'теория', effect:'эффект', frame:'рамка', method:'метод', phenomenon:'феномен', term:'термин'};
+  var KB_ROB_RU={solid:'Надёжные', mixed:'Смешанные', contested:'Спорные', weak:'Слабые', inbox:'Без оценки'};
+  var KB_KIND_RU={theory:'Теория', effect:'Эффект', frame:'Рамка', method:'Метод', phenomenon:'Феномен', term:'Термин'};
   var KB_KIND_PL={theory:'Теории', effect:'Эффекты', frame:'Рамки', method:'Методы', phenomenon:'Феномены', term:'Термины'};
   var KB_KIND_ORDER=['theory','effect','frame','phenomenon','method','term'];
-  var KB_REL_RU={refines:'уточняет', contradicts:'противоречит', prerequisite:'предпосылка', 'mechanism-of':'механизм', 'same-family':'одна семья', 'competes-with':'конкурирует', 'instance-of':'частный случай'};
-  var KB_EPI_RU={'empirical-law':'эмпирический закон', 'empirical-effect':'эмпирический эффект', 'framework':'модель/рамка', 'heuristic':'эвристика', 'metaphor':'метафора', 'hypothesis':'гипотеза', 'contested-construct':'спорный конструкт'};
-  var KB_BS_RU={in_book:'в книге', candidate:'кандидат', out_of_scope:'вне охвата'};
-  var KB_SRC={}, KB_EDGES=[], KB_SEEN_AT=0, dspKbFilter='';
+  var KB_REL_RU={refines:'Уточняет', contradicts:'Противоречит', prerequisite:'Предпосылка', 'mechanism-of':'Механизм', 'same-family':'Одна семья', 'competes-with':'Конкурирует', 'instance-of':'Частный случай'};
+  var KB_EPI_RU={'empirical-law':'Эмпирический закон', 'empirical-effect':'Эмпирический эффект', 'framework':'Модель/рамка', 'heuristic':'Эвристика', 'metaphor':'Метафора', 'hypothesis':'Гипотеза', 'contested-construct':'Спорный конструкт'};
+  var KB_BS_RU={in_book:'В книге', candidate:'Кандидат', out_of_scope:'Вне охвата'};
+  var KB_SRC={}, KB_EDGES=[], KB_SEEN_AT=0, dspKbFilter='', dspKbSearch='';
+  var KB_POS={}, KB_CC={}, KB_SLUGS='', kbMatchesFn=function(){ return true; };
   function kbColor(r){ return KB_ROB[r]||KB_ROB.inbox; }
   function kbKey(id){ return String(id).split('_')[0]; }
   function kbHash(s){ var h=0,i; s=String(s); for(i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))|0; return Math.abs(h); }
-  function kbRecent(s){ if(!KB_SEEN_AT) return false; var t=new Date(s.updated_at||s.created_at).getTime(); return t && t>KB_SEEN_AT; }
+  function kbRecent(s){ if(!KB_SEEN_AT) return false; var t=new Date(s.updated_at||s.created_at).getTime(); return t&&t>KB_SEEN_AT; }
 
-  async function renderKB(){
-    var body=document.getElementById('dspBody');
-    if(!document.getElementById('kbList')) body.innerHTML='<div id="kbList"><div class="dsp-load">Собираю базу знаний…</div></div>';
-    var r=await SB.rpc('kb_graph');
-    var list=document.getElementById('kbList'); if(!list){ body.innerHTML='<div id="kbList"></div>'; list=document.getElementById('kbList'); }
-    if(r.error){ list.innerHTML=dspErr('Нет доступа к базе знаний: '+r.error.message); return; }
-    var G=r.data||{}, S=(G&&G.nodes)||[], E=(G&&G.edges)||[];
-    if(!S.length){ list.innerHTML='<div class="dsp-empty">База знаний пока пуста. Появится здесь по мере работы Афины (research).</div>'; return; }
-    KB_SRC={}; KB_EDGES=E; S.forEach(function(s){ KB_SRC[s.slug]=s; });
+  // ── Force-directed layout (Fruchterman-Reingold) ──────────────────────────
+  function kbForceLayout(S, E, W, H){
+    var kinds=[], seen={};
+    KB_KIND_ORDER.forEach(function(k){ if(!seen[k]&&S.some(function(s){return s.kind===k;})){ seen[k]=1; kinds.push(k); } });
+    S.forEach(function(s){ if(!seen[s.kind]){ seen[s.kind]=1; kinds.push(s.kind); } });
+    var nK=kinds.length||1, R=Math.min(W,H)/2-90, cc={};
+    kinds.forEach(function(k,i){ var a=-Math.PI/2+i*(2*Math.PI/nK); cc[k]={x:W/2+R*Math.cos(a),y:H/2+R*Math.sin(a)}; });
 
-    var bs={in_book:0,candidate:0,out_of_scope:0}, rob={solid:0,mixed:0,contested:0,inbox:0}, nTheory=0;
-    S.forEach(function(s){ if(s.book_status in bs) bs[s.book_status]++; if(s.robustness in rob) rob[s.robustness]++; if(s.kind==='theory') nTheory++; });
-
-    var covered={}; S.forEach(function(s){ (s.chapters||[]).forEach(function(c){ covered[kbKey(c)]=1; }); });
-    var allKeys={}; (BOOK||[]).forEach(function(c){ if(String(c.id).charAt(0)==='g') allKeys[kbKey(c.id)]=1; });
-    var nChap=Object.keys(allKeys).length||25, nCov=Object.keys(covered).length;
-    var recentN=S.filter(kbRecent).length;
-    var filter=dspKbFilter;
-    function matches(s){ if(!filter) return true; if(filter==='contested') return s.robustness==='contested'; return s.book_status===filter; }
-
-    var clusters={}; S.forEach(function(s){ var k=s.kind||'term'; (clusters[k]=clusters[k]||[]).push(s); });
-    var corder=[]; KB_KIND_ORDER.forEach(function(k){ if(clusters[k]) corder.push(k); });
-    Object.keys(clusters).forEach(function(k){ if(corder.indexOf(k)<0) corder.push(k); });
-
-    var W=720,H=560, cx=W/2, cy=H/2, Rclust=Math.min(W,H)/2-110, nC=corder.length||1, pos={};
-    corder.forEach(function(k, ci){
-      var ca=-Math.PI/2 + ci*(2*Math.PI/nC), clx=cx+Rclust*Math.cos(ca), cly=cy+Rclust*Math.sin(ca);
-      clusters[k].forEach(function(s, j){
-        var ang=j*2.399963+(kbHash(k)%6), rad=Math.sqrt(j+0.6)*6.2;
-        pos[s.slug]={ x: clx+rad*Math.cos(ang), y: cly+rad*Math.sin(ang) };
-      });
+    var N=S.length, px=[], py=[], si={};
+    S.forEach(function(s,i){
+      si[s.slug]=i;
+      var c=cc[s.kind]||{x:W/2,y:H/2};
+      var a=i*2.399963+(kbHash(s.slug)%6), r=6+Math.sqrt(i%clusters_n(s.kind,S)+1)*9;
+      px[i]=c.x+r*Math.cos(a); py[i]=c.y+r*Math.sin(a);
     });
 
+    var k=Math.sqrt(W*H/N)*0.82;
+    for(var iter=0;iter<160;iter++){
+      var cool=Math.max(0.02,1-iter/105), temp=50*cool;
+      var fx=new Array(N).fill(0), fy=new Array(N).fill(0);
+      // Repulsion
+      for(var i=0;i<N;i++) for(var j=i+1;j<N;j++){
+        var dx=px[i]-px[j], dy=py[i]-py[j];
+        var d2=Math.max(dx*dx+dy*dy,1), d=Math.sqrt(d2), f=k*k/d;
+        fx[i]+=f*dx/d; fy[i]+=f*dy/d; fx[j]-=f*dx/d; fy[j]-=f*dy/d;
+      }
+      // Spring (edges)
+      E.forEach(function(e){
+        var a=si[e.src], b=si[e.dst]; if(a==null||b==null) return;
+        var dx=px[b]-px[a], dy=py[b]-py[a], d=Math.max(Math.sqrt(dx*dx+dy*dy),0.01);
+        var f=d/k*(e.strength==='strong'?0.7:e.strength==='weak'?0.25:0.45);
+        fx[a]+=f*dx/d; fy[a]+=f*dy/d; fx[b]-=f*dx/d; fy[b]-=f*dy/d;
+      });
+      // Cluster gravity (decreases over iterations)
+      var grav=Math.max(0.03, 0.10*(1-iter/80));
+      S.forEach(function(s,i){ var c=cc[s.kind]||{x:W/2,y:H/2}; fx[i]+=(c.x-px[i])*grav; fy[i]+=(c.y-py[i])*grav; });
+      // Apply
+      for(var i=0;i<N;i++){
+        var fm=Math.sqrt(fx[i]*fx[i]+fy[i]*fy[i]);
+        if(fm>temp){fx[i]=fx[i]/fm*temp;fy[i]=fy[i]/fm*temp;}
+        px[i]=Math.max(28,Math.min(W-28,px[i]+fx[i]));
+        py[i]=Math.max(28,Math.min(H-28,py[i]+fy[i]));
+      }
+    }
+    var pos={}; S.forEach(function(s,i){pos[s.slug]={x:px[i],y:py[i]};});
+    return {pos:pos,cc:cc,kinds:kinds};
+  }
+  function clusters_n(kind, S){ var n=0; S.forEach(function(s){if(s.kind===kind)n++;}); return n||1; }
+
+  // ── Hover tooltip + live search ────────────────────────────────────────────
+  function kbWireHover(S){
+    var sky=document.querySelector('#kbList .kb-sky');
+    var tip=document.getElementById('kbTip');
+    var si=document.getElementById('kbSearch');
+    if(sky&&tip){
+      sky.addEventListener('mousemove',function(e){
+        var rect=sky.getBoundingClientRect();
+        var svgEl=sky.querySelector('svg'); if(!svgEl) return;
+        var vb=svgEl.viewBox.baseVal;
+        var scaleX=vb.width/rect.width, scaleY=vb.height/rect.height;
+        var mx=(e.clientX-rect.left)*scaleX, my=(e.clientY-rect.top)*scaleY;
+        var best=null, bestD=9999;
+        S.forEach(function(s){
+          var p=KB_POS[s.slug]; if(!p) return;
+          var dx=p.x-mx, dy=p.y-my, d=Math.sqrt(dx*dx+dy*dy);
+          var r=5+Math.min(s.degree||0,9)+8;
+          if(d<r&&d<bestD){bestD=d;best=s;}
+        });
+        if(best){
+          var col=kbColor(best.robustness);
+          tip.innerHTML='<div class="kbt-title">'+dspEsc(best.title)+'</div>'
+            +'<div class="kbt-meta"><span style="color:'+col+'">●</span> '
+            +dspEsc(KB_ROB_RU[best.robustness]||best.robustness)
+            +' · '+dspEsc(KB_KIND_RU[best.kind]||best.kind)
+            +(best.degree?' · '+best.degree+' связ.':'')+'</div>'
+            +(best.book_status==='in_book'?'<div class="kbt-badge">в книге</div>':'');
+          var lx=Math.min(e.clientX-rect.left+14, rect.width-184);
+          var ly=Math.max(4, e.clientY-rect.top-54);
+          tip.style.left=lx+'px'; tip.style.top=ly+'px'; tip.style.display='block';
+        } else { tip.style.display='none'; }
+      });
+      sky.addEventListener('mouseleave',function(){tip.style.display='none';});
+      sky.addEventListener('click',function(){tip.style.display='none';});
+    }
+    if(si){
+      si.value=dspKbSearch;
+      si.addEventListener('input',function(){
+        dspKbSearch=this.value.toLowerCase().trim();
+        kbApplySearch(S);
+      });
+      si.addEventListener('keydown',function(e){ if(e.key==='Escape'){dspKbSearch='';this.value='';kbApplySearch(S);} });
+    }
+  }
+  function kbApplySearch(S){
+    var q=dspKbSearch;
+    S.forEach(function(s){
+      var esc=typeof CSS!=='undefined'&&CSS.escape?CSS.escape(s.slug):s.slug.replace(/[^\w-]/g,'\\$&');
+      var el=document.querySelector('#kbList .kb-node[data-id="'+esc+'"]');
+      if(!el) return;
+      var ok=kbMatchesFn(s)&&(!q||s.title.toLowerCase().indexOf(q)>=0||(s.claim||'').toLowerCase().indexOf(q)>=0);
+      el.classList.toggle('kb-dim',!ok);
+    });
+  }
+
+  // ── Main render ────────────────────────────────────────────────────────────
+  async function renderKB(){
+    var body=document.getElementById('dspBody');
+    if(!document.getElementById('kbList')) body.innerHTML='<div id="kbList"><div class="dsp-load">Собираю карту…</div></div>';
+    var r=await SB.rpc('kb_graph');
+    var list=document.getElementById('kbList'); if(!list){body.innerHTML='<div id="kbList"></div>';list=document.getElementById('kbList');}
+    if(r.error){list.innerHTML=dspErr('Нет доступа: '+r.error.message);return;}
+    var G=r.data||{}, S=(G&&G.nodes)||[], E=(G&&G.edges)||[];
+    if(!S.length){list.innerHTML='<div class="dsp-empty">База знаний пока пуста.</div>';return;}
+
+    KB_SRC={}; KB_EDGES=E; S.forEach(function(s){KB_SRC[s.slug]=s;});
+
+    // Counts
+    var bs={in_book:0,candidate:0,out_of_scope:0}, rob={solid:0,mixed:0,contested:0,inbox:0}, nTheory=0;
+    S.forEach(function(s){if(s.book_status in bs)bs[s.book_status]++;if(s.robustness in rob)rob[s.robustness]++;if(s.kind==='theory')nTheory++;});
+    var covered={}; S.forEach(function(s){(s.chapters||[]).forEach(function(c){covered[kbKey(c)]=1;});});
+    var allKeys={}; (BOOK||[]).forEach(function(c){if(String(c.id).charAt(0)==='g')allKeys[kbKey(c.id)]=1;});
+    var nChap=Object.keys(allKeys).length||25, nCov=Object.keys(covered).length;
+    var recentN=S.filter(kbRecent).length;
+
+    // Filter + search matches
+    var filter=dspKbFilter, q=dspKbSearch;
+    kbMatchesFn=function(s){
+      var fOk=!filter||(filter==='contested'?s.robustness==='contested':s.book_status===filter);
+      var sOk=!q||s.title.toLowerCase().indexOf(q)>=0||(s.claim||'').toLowerCase().indexOf(q)>=0;
+      return fOk&&sOk;
+    };
+
+    // Force layout (cached by node set)
+    var W=780, H=600;
+    var slugKey=S.map(function(s){return s.slug;}).sort().join(',');
+    if(slugKey!==KB_SLUGS||!Object.keys(KB_POS).length){
+      var layout=kbForceLayout(S,E,W,H);
+      KB_POS=layout.pos; KB_CC=layout.cc; KB_SLUGS=slugKey;
+    }
+    var pos=KB_POS, cc=KB_CC;
+
+    // Top hubs (top-12 in_book by degree) get labels
+    var topHubs={};
+    S.filter(function(s){return s.book_status==='in_book';})
+      .sort(function(a,b){return (b.degree||0)-(a.degree||0);})
+      .slice(0,12).forEach(function(s){topHubs[s.slug]=1;});
+
+    // ── SVG ────────────────────────────────────────────────────────────────
+    var anyFilter=!!(filter||q);
     var svg='<svg viewBox="0 0 '+W+' '+H+'" class="kb-svg" preserveAspectRatio="xMidYMid meet">';
     svg+='<defs><radialGradient id="kbsky" cx="50%" cy="44%" r="78%"><stop offset="0%" stop-color="#251e30"/><stop offset="55%" stop-color="#1a1622"/><stop offset="100%" stop-color="#0e0c14"/></radialGradient></defs>';
     svg+='<rect width="'+W+'" height="'+H+'" rx="16" fill="#15121c"/><rect width="'+W+'" height="'+H+'" rx="16" fill="url(#kbsky)"/>';
+
+    // Cluster halos (nebula rings behind each cluster)
+    Object.keys(cc).forEach(function(k){
+      var c=cc[k], nodes=S.filter(function(s){return s.kind===k;}), n=nodes.length;
+      if(!n) return;
+      // compute actual spread of nodes
+      var minX=W,maxX=0,minY=H,maxY=0;
+      nodes.forEach(function(s){var p=pos[s.slug];if(!p) return;minX=Math.min(minX,p.x);maxX=Math.max(maxX,p.x);minY=Math.min(minY,p.y);maxY=Math.max(maxY,p.y);});
+      var rx=Math.max((maxX-minX)/2+22,28), ry=Math.max((maxY-minY)/2+22,28);
+      var cx2=((minX+maxX)/2).toFixed(1), cy2=((minY+maxY)/2).toFixed(1);
+      svg+='<ellipse cx="'+cx2+'" cy="'+cy2+'" rx="'+rx.toFixed(1)+'" ry="'+ry.toFixed(1)+'" fill="rgba(202,168,106,0.035)" stroke="rgba(202,168,106,0.10)" stroke-width="1" rx="'+(rx).toFixed(1)+'"/>';
+    });
+
+    // Edges
     E.forEach(function(e){
       var a=pos[e.src], b=pos[e.dst]; if(!a||!b) return;
+      var sa=KB_SRC[e.src], sb=KB_SRC[e.dst];
+      var aOk=sa&&kbMatchesFn(sa), bOk=sb&&kbMatchesFn(sb);
       var hot=(e.relation==='contradicts'||e.relation==='competes-with');
-      var col=hot?'#e0705f':'#caa86a', op=hot?0.34:0.16, w=(e.strength==='strong')?1.4:(e.strength==='weak'?0.7:1);
-      svg+='<line x1="'+a.x.toFixed(1)+'" y1="'+a.y.toFixed(1)+'" x2="'+b.x.toFixed(1)+'" y2="'+b.y.toFixed(1)+'" stroke="'+col+'" stroke-opacity="'+(filter?op*0.4:op).toFixed(2)+'" stroke-width="'+w+'"'+(hot?' stroke-dasharray="3 2"':'')+'/>';
+      var col=hot?'#e0705f':'#caa86a';
+      var op;
+      if(anyFilter) op=aOk&&bOk?0.60:aOk||bOk?0.12:0.02;
+      else op=hot?0.22:0.10;
+      var w=(e.strength==='strong')?1.8:(e.strength==='weak'?0.6:1.1);
+      svg+='<line x1="'+a.x.toFixed(1)+'" y1="'+a.y.toFixed(1)+'" x2="'+b.x.toFixed(1)+'" y2="'+b.y.toFixed(1)+'" stroke="'+col+'" stroke-opacity="'+op.toFixed(2)+'" stroke-width="'+w+'"'+(hot?' stroke-dasharray="4 2"':'')+'/>';
     });
-    corder.forEach(function(k,ci){
-      var ca=-Math.PI/2+ci*(2*Math.PI/nC), lx=cx+(Rclust+52)*Math.cos(ca), ly=cy+(Rclust+52)*Math.sin(ca)+4;
-      svg+='<text x="'+lx.toFixed(0)+'" y="'+ly.toFixed(0)+'" class="kb-clab" text-anchor="middle">'+dspEsc(KB_KIND_PL[k]||k)+'</text>';
+
+    // Cluster kind labels (at computed halo centre)
+    Object.keys(cc).forEach(function(k){
+      var nodes=S.filter(function(s){return s.kind===k;}); if(!nodes.length) return;
+      var minX=W,maxX=0,minY=H,maxY=0;
+      nodes.forEach(function(s){var p=pos[s.slug];if(!p) return;minX=Math.min(minX,p.x);maxX=Math.max(maxX,p.x);minY=Math.min(minY,p.y);maxY=Math.max(maxY,p.y);});
+      var cx2=((minX+maxX)/2).toFixed(1);
+      var ly=(minY-18).toFixed(1);
+      svg+='<text x="'+cx2+'" y="'+ly+'" class="kb-clab" text-anchor="middle">'+dspEsc(KB_KIND_PL[k]||k)+'</text>';
     });
+
+    // Nodes
     S.forEach(function(s){
       var pp=pos[s.slug]; if(!pp) return;
       var col=kbColor(s.robustness), rad=5+Math.min(s.degree||0,9)*1.0;
-      var X=pp.x.toFixed(1), Y=pp.y.toFixed(1), mt=matches(s), rec=kbRecent(s);
-      var dl=(kbHash(s.slug)%40)/10, nb=(s.chapters||[]).length;
-      var tip=dspEsc(s.title)+' — '+dspEsc(KB_KIND_RU[s.kind]||s.kind)+', '+dspEsc(KB_ROB_RU[s.robustness]||s.robustness)+', '+dspEsc(KB_BS_RU[s.book_status]||s.book_status)+(nb?(' · '+nb+' гл.'):'');
-      var pulse=(rec&&mt)?'<circle class="kb-pulse" cx="'+X+'" cy="'+Y+'" r="'+(rad+2).toFixed(1)+'" fill="none" stroke="'+col+'" stroke-width="2"/>':'';
+      var X=pp.x.toFixed(1), Y=pp.y.toFixed(1), mt=kbMatchesFn(s), rec=kbRecent(s);
+      var dl=(kbHash(s.slug)%40)/10;
+      var pulse=rec&&mt?'<circle class="kb-pulse" cx="'+X+'" cy="'+Y+'" r="'+(rad+3).toFixed(1)+'" fill="none" stroke="'+col+'" stroke-width="2"/>':'';
       var core='style="animation-delay:'+dl.toFixed(1)+'s"';
       var g;
-      if(s.book_status==='in_book') g='<circle cx="'+X+'" cy="'+Y+'" r="'+(rad*2.4).toFixed(1)+'" fill="'+col+'" opacity="0.22"/><circle class="kb-core" '+core+' cx="'+X+'" cy="'+Y+'" r="'+rad+'" fill="'+col+'"/><circle cx="'+X+'" cy="'+Y+'" r="'+(rad+2.5).toFixed(1)+'" fill="none" stroke="'+col+'" stroke-opacity="0.55"/>';
-      else if(s.book_status==='out_of_scope') g='<circle class="kb-core" '+core+' cx="'+X+'" cy="'+Y+'" r="'+rad+'" fill="#666" opacity="0.4"/>';
-      else g='<circle class="kb-core" '+core+' cx="'+X+'" cy="'+Y+'" r="'+rad+'" fill="'+col+'" fill-opacity="0.16" stroke="'+col+'" stroke-width="1.5"/>';
-      svg+='<g class="kb-node'+(mt?'':' kb-dim')+'" data-act="kb-open" data-id="'+dspEsc(s.slug)+'"><title>'+tip+'</title>'+pulse+g+'</g>';
+      if(s.book_status==='in_book')
+        g='<circle cx="'+X+'" cy="'+Y+'" r="'+(rad*2.2).toFixed(1)+'" fill="'+col+'" opacity="0.18"/><circle class="kb-core" '+core+' cx="'+X+'" cy="'+Y+'" r="'+rad+'" fill="'+col+'"/><circle cx="'+X+'" cy="'+Y+'" r="'+(rad+2.5).toFixed(1)+'" fill="none" stroke="'+col+'" stroke-opacity="0.5" stroke-width="1.2"/>';
+      else if(s.book_status==='out_of_scope')
+        g='<circle class="kb-core" '+core+' cx="'+X+'" cy="'+Y+'" r="'+rad+'" fill="#555" opacity="0.35"/>';
+      else
+        g='<circle class="kb-core" '+core+' cx="'+X+'" cy="'+Y+'" r="'+rad+'" fill="'+col+'" fill-opacity="0.16" stroke="'+col+'" stroke-width="1.5"/>';
+      // Label for top hubs
+      var label='';
+      if(topHubs[s.slug]&&mt){
+        var t=s.title.length>15?s.title.slice(0,14)+'…':s.title;
+        label='<text x="'+X+'" y="'+(pp.y+rad+9).toFixed(1)+'" class="kb-nlab" text-anchor="middle">'+dspEsc(t)+'</text>';
+      }
+      svg+='<g class="kb-node'+(mt?'':' kb-dim')+'" data-act="kb-open" data-id="'+dspEsc(s.slug)+'"><title>'+dspEsc(s.title)+'</title>'+pulse+g+label+'</g>';
     });
     svg+='</svg>';
 
+    // Pipeline
     var pipe='<div class="kb-pipe">'+kbStage('Кандидаты',bs.candidate,'inbox')
       +'<span class="kb-arrow">→</span>'+kbStage('В книге',bs.in_book,'in_book')
       +(bs.out_of_scope?('<span class="kb-arrow">·</span>'+kbStage('Вне охвата',bs.out_of_scope,'rejected')):'')+'</div>';
-    function seg(v,c,lbl){ return v?('<span class="kb-seg" style="flex:'+v+';background:'+c+'" title="'+lbl+': '+v+'"></span>'):''; }
+    // Robustness bar
+    function seg(v,c,l){return v?('<span class="kb-seg" style="flex:'+v+';background:'+c+'" title="'+l+': '+v+'"></span>'):'';};
     var robbar='<div class="kb-robbar">'+seg(rob.solid,KB_ROB.solid,'надёжные')+seg(rob.mixed,KB_ROB.mixed,'смешанные')+seg(rob.contested,KB_ROB.contested,'спорные')+seg(rob.inbox,KB_ROB.inbox,'без оценки')+'</div>'
       +'<div class="kb-roblegend">'+kbRobL('solid',rob.solid)+kbRobL('mixed',rob.mixed)+kbRobL('contested',rob.contested)+kbRobL('inbox',rob.inbox)+'</div>';
 
-    var head='<div class="kb-stat"><b>'+S.length+'</b> узлов · '+nTheory+' теорий · '+bs.in_book+' в книге · '+E.length+' связей · покрыто '+nCov+'/'+nChap+' глав'
-      +(recentN?' <span class="kb-fresh">✦ '+recentN+' с прошлого захода</span>':'')+'</div>';
-    function chip(v,l){ return '<button class="kb-chip'+(filter===v?' on':'')+'" data-act="kb-filter" data-v="'+v+'">'+l+'</button>'; }
-    var chips='<div class="kb-chips">'+chip('','все '+S.length)+chip('in_book','в книге '+bs.in_book)+chip('candidate','кандидаты '+bs.candidate)+chip('contested','спорные '+rob.contested)+'</div>';
+    var head='<div class="kb-stat"><b>'+S.length+'</b> узлов · '+nTheory+' теорий · '+bs.in_book+' в книге · '+E.length+' связей · покрыто '+nCov+'/'+nChap+' глав'+(recentN?' <span class="kb-fresh">✦ '+recentN+' с прошлого захода</span>':'')+'</div>';
+    function chip(v,l){return '<button class="kb-chip'+(filter===v?' on':'')+'" data-act="kb-filter" data-v="'+v+'">'+l+'</button>';}
+    var chips='<div class="kb-chips">'+chip('','Все '+S.length)+chip('in_book','В книге '+bs.in_book)+chip('candidate','Кандидаты '+bs.candidate)+chip('contested','Спорные '+rob.contested)
+      +'<input class="kb-search-inp" id="kbSearch" type="search" placeholder="Поиск по названию…" autocomplete="off"></div>';
+
     var leg='<div class="kb-legend">'
-      +'<span class="kb-li"><span class="kb-dot" style="background:'+KB_ROB.solid+'"></span>надёжные</span>'
-      +'<span class="kb-li"><span class="kb-dot" style="background:'+KB_ROB.mixed+'"></span>смешанные</span>'
-      +'<span class="kb-li"><span class="kb-dot" style="background:'+KB_ROB.contested+'"></span>спорные</span>'
-      +'<span class="kb-li"><span class="kb-ring"></span>кандидат</span>'
-      +'<span class="kb-li">залит — в книге · размер — число связей · красная линия — спор/конкуренция · тап — карточка</span></div>';
+      +'<span class="kb-li"><span class="kb-dot" style="background:'+KB_ROB.solid+'"></span>Надёжные</span>'
+      +'<span class="kb-li"><span class="kb-dot" style="background:'+KB_ROB.mixed+'"></span>Смешанные</span>'
+      +'<span class="kb-li"><span class="kb-dot" style="background:'+KB_ROB.contested+'"></span>Спорные</span>'
+      +'<span class="kb-li"><span class="kb-ring"></span>Кандидат</span>'
+      +'<span class="kb-li">Размер — число связей · Залит — в книге · ↔ Спор/конкуренция</span></div>';
 
-    // callouts: contested needing attention + coverage gaps
-    var contestedNames=S.filter(function(s){ return s.robustness==='contested'; }).map(function(s){ return s.title; });
+    var contestedList=S.filter(function(s){return s.robustness==='contested';});
     var callout='';
-    if(contestedNames.length) callout+='<div class="kb-call"><b>Спорные ('+contestedNames.length+')</b> — взять только робастный компонент или не брать: '+dspEsc(contestedNames.slice(0,6).join(' · '))+(contestedNames.length>6?' …':'')+'</div>';
-    var gaps=nChap-nCov;
-    if(gaps>0) callout+='<div class="kb-call ghost">Без узлов базы: '+gaps+' из '+nChap+' глав — белые пятна карты.</div>';
+    if(contestedList.length) callout+='<div class="kb-call"><b>Спорные ('+contestedList.length+')</b>: '+dspEsc(contestedList.slice(0,6).map(function(s){return s.title;}).join(' · '))+(contestedList.length>6?' …':'')+'</div>';
+    var gaps=nChap-nCov; if(gaps>0) callout+='<div class="kb-call ghost">Без узлов базы: '+gaps+' из '+nChap+' глав.</div>';
 
-    var dayset={}; S.forEach(function(s){ if(s.created_at) dayset[String(s.created_at).slice(0,10)]=1; });
-    var growth=(Object.keys(dayset).length<2)
-      ? '<div class="dsp-note">Засеяно '+dspEsc(dspDate(S[0].created_at))+'. Дополняй базу — ✦ свежие изменения подсветятся при следующем заходе, график роста оживёт с разными датами.</div>'
-      : kbGrowthChart(S);
+    var dayset={}; S.forEach(function(s){if(s.created_at)dayset[String(s.created_at).slice(0,10)]=1;});
+    var growth=Object.keys(dayset).length<2
+      ?'<div class="dsp-note">Засеяно '+dspEsc(dspDate(S[0].created_at))+'. График роста оживёт по мере добавления теорий.</div>'
+      :kbGrowthChart(S);
 
     list.innerHTML=head+chips
       +'<div class="kb-section-t">Включение в книгу</div>'+pipe
       +'<div class="kb-section-t">Надёжность доказательств</div>'+robbar
-      +'<div class="kb-section-t">Граф базы — узлы сгруппированы по типу, рёбра — смысловые связи</div>'
-      +'<div class="kb-sky">'+svg+'</div>'+leg+callout+growth;
+      +'<div class="kb-section-t">Граф базы — узлы по типу, рёбра — смысловые связи</div>'
+      +(kbIsMobile()?kbListView(S,E):('<div class="kb-sky"><div id="kbTip" class="kb-tip"></div>'+svg+'</div>'+leg))
+      +callout+growth;
+
+    kbWireHover(S);
   }
-  function kbStage(lbl,n,cls){ return '<span class="kb-stage k-'+cls+'"><b>'+n+'</b><span>'+dspEsc(lbl)+'</span></span>'; }
-  function kbRobL(k,v){ return '<span class="kb-rl"><span class="kb-dot" style="background:'+KB_ROB[k]+'"></span>'+dspEsc(KB_ROB_RU[k])+' '+v+'</span>'; }
+  function kbIsMobile(){ return (window.innerWidth||document.documentElement.clientWidth) < 600; }
+  function kbListView(S,E){
+    var byKind={};
+    KB_KIND_ORDER.forEach(function(k){ if(S.some(function(s){return s.kind===k;})) byKind[k]=[]; });
+    S.forEach(function(s){ if(!byKind[s.kind]) byKind[s.kind]=[]; byKind[s.kind].push(s); });
+    var filter=dspKbFilter;
+    var html='<div class="kb-listview">';
+    Object.keys(byKind).forEach(function(k){
+      var items=byKind[k];
+      html+='<div class="kb-lkind">'+dspEsc(KB_KIND_PL[k]||k)+'</div>';
+      items.forEach(function(s){
+        var col=kbColor(s.robustness), mt=kbMatchesFn(s);
+        var neigh=[]; (E||[]).forEach(function(e){ var other=null; if(e.src===s.slug)other=e.dst;else if(e.dst===s.slug)other=e.src;else return; if(KB_SRC[other]) neigh.push(other); });
+        html+='<div class="kb-lcard'+(mt?'':' kb-dim')+'" data-act="kb-open" data-id="'+dspEsc(s.slug)+'">'
+          +'<span class="kb-lbullet" style="background:'+col+'"></span>'
+          +'<div class="kb-lbody"><div class="kb-ltitle">'+dspEsc(s.title)+'</div>'
+          +'<div class="kb-lmeta">'+dspEsc(KB_BS_RU[s.book_status]||s.book_status)+(neigh.length?' · '+neigh.length+' связ.':'')+'</div></div>'
+          +(kbRecent(s)?'<span class="kb-lfresh">✦</span>':'')
+          +'</div>';
+      });
+    });
+    html+='</div>';
+    return html;
+  }
+  function kbStage(lbl,n,cls){return '<span class="kb-stage k-'+cls+'"><b>'+n+'</b><span>'+dspEsc(lbl)+'</span></span>';}
+  function kbRobL(k,v){return '<span class="kb-rl"><span class="kb-dot" style="background:'+KB_ROB[k]+'"></span>'+dspEsc(KB_ROB_RU[k])+' '+v+'</span>';}
   function kbGrowthChart(S){
-    var days={}; S.forEach(function(s){ var d=String(s.created_at).slice(0,10); days[d]=(days[d]||0)+1; });
+    var days={}; S.forEach(function(s){if(s.created_at)days[String(s.created_at).slice(0,10)]=(days[String(s.created_at).slice(0,10)]||0)+1;});
     var keys=Object.keys(days).sort(), cum=0, max=S.length||1;
-    var bars=keys.map(function(d){ cum+=days[d]; return '<span class="kb-gbar" style="height:'+Math.max(Math.round(cum/max*60),3)+'px" title="'+d+': '+cum+'"></span>'; }).join('');
+    var bars=keys.map(function(d){cum+=days[d];return '<span class="kb-gbar" style="height:'+Math.max(Math.round(cum/max*60),3)+'px" title="'+d+': '+cum+'"></span>';}).join('');
     return '<div class="kb-section-t">Рост базы</div><div class="kb-growth">'+bars+'</div>';
   }
-  function kbRefUrl(ref){ ref=String(ref||'').trim(); if(/^https?:\/\//.test(ref)) return ref.split(/\s/)[0]; var first=ref.split(/[\s;,]/)[0]; if(first.indexOf('.')>0 && first.indexOf('@')<0) return 'https://'+first; return ''; }
+  function kbRefUrl(ref){ref=String(ref||'').trim();if(/^https?:\/\//.test(ref))return ref.split(/\s/)[0];var first=ref.split(/[\s;,]/)[0];if(first.indexOf('.')>0&&first.indexOf('@')<0)return 'https://'+first;return '';}
   function kbOpenCard(slug){
     var s=KB_SRC[slug]; if(!s) return;
     var col=kbColor(s.robustness), chs=s.chapters||[], tags=s.tags||[];
-    var neigh=[];
-    (KB_EDGES||[]).forEach(function(e){
-      var other=null;
-      if(e.src===slug) other=e.dst; else if(e.dst===slug) other=e.src; else return;
-      var o=KB_SRC[other]; if(!o) return;
-      neigh.push((KB_REL_RU[e.relation]||e.relation)+': '+o.title);
+    var neigh=[]; (KB_EDGES||[]).forEach(function(e){
+      var other=null; if(e.src===slug)other=e.dst;else if(e.dst===slug)other=e.src;else return;
+      var o=KB_SRC[other]; if(!o) return; neigh.push((KB_REL_RU[e.relation]||e.relation)+': '+o.title);
     });
-    var byAxis={}; tags.forEach(function(t){ (byAxis[t.axis]=byAxis[t.axis]||[]).push(t.label); });
-    var tagHtml=Object.keys(byAxis).map(function(ax){ return '<div class="kb-chs">'+byAxis[ax].map(function(l){ return '<span class="dsp-chip ghost">'+dspEsc(l)+'</span>'; }).join('')+'</div>'; }).join('');
+    var byAxis={}; tags.forEach(function(t){(byAxis[t.axis]=byAxis[t.axis]||[]).push(t.label);});
+    var tagHtml=Object.keys(byAxis).map(function(ax){return '<div class="kb-chs">'+byAxis[ax].map(function(l){return '<span class="dsp-chip ghost">'+dspEsc(l)+'</span>';}).join('')+'</div>';}).join('');
+    var url=kbRefUrl(s.ref), refHtml=s.ref?(url?'<a href="'+dspEsc(url)+'" target="_blank" rel="noopener">'+dspEsc(s.ref)+' ↗</a>':dspEsc(s.ref)):'';
     var html='<div class="kb-card"><button class="kb-card-x" data-act="kb-close">✕</button>'
       +'<div class="kb-card-h"><span class="kb-dot" style="background:'+col+'"></span><h3>'+dspEsc(s.title)+'</h3></div>'
       +'<div class="kb-badges"><span class="kb-badge">'+dspEsc(KB_KIND_RU[s.kind]||s.kind)+'</span>'
@@ -4308,14 +5019,14 @@
         +'<span class="kb-badge">'+dspEsc(KB_BS_RU[s.book_status]||s.book_status)+'</span>'
         +(kbRecent(s)?'<span class="kb-badge" style="border-color:'+col+';color:'+col+'">✦ свежее</span>':'')+'</div>'
       +(s.claim?'<div class="kb-claim">'+dspEsc(s.claim)+'</div>':'')
-      +(s.robustness_note?'<div class="kb-card-sec"><b>Оговорки — границы применимости</b><div>'+dspEsc(s.robustness_note)+'</div></div>':'')
+      +(s.robustness_note?'<div class="kb-card-sec"><b>Оговорки — что НЕ утверждать</b><div>'+dspEsc(s.robustness_note)+'</div></div>':'')
       +(tagHtml?'<div class="kb-card-sec"><b>Грани</b>'+tagHtml+'</div>':'')
-      +(chs.length?'<div class="kb-card-sec"><b>Главы</b><div class="kb-chs">'+chs.map(function(c){ return '<span class="dsp-chip ghost">'+dspEsc(c)+'</span>'; }).join('')+'</div></div>':'')
+      +(chs.length?'<div class="kb-card-sec"><b>Главы</b><div class="kb-chs">'+chs.map(function(c){return '<span class="dsp-chip ghost">'+dspEsc(c)+'</span>';}).join('')+'</div></div>':'')
       +(neigh.length?'<div class="kb-card-sec"><b>Связи ('+neigh.length+')</b><div>'+dspEsc(neigh.slice(0,12).join(' · '))+(neigh.length>12?' …':'')+'</div></div>':'')
       +'</div>';
-    var ov=document.getElementById('kbCard'); if(ov){ ov.innerHTML=html; ov.style.display='flex'; }
+    var ov=document.getElementById('kbCard'); if(ov){ov.innerHTML=html;ov.style.display='flex';}
   }
-  function kbCloseCard(){ var ov=document.getElementById('kbCard'); if(ov){ ov.style.display='none'; ov.innerHTML=''; } }
+  function kbCloseCard(){var ov=document.getElementById('kbCard');if(ov){ov.style.display='none';ov.innerHTML='';}}
 
   function paraDiff(liveMd, draftMd){
     var A=String(liveMd||'').split(/\n\s*\n/).map(function(s){ return s.trim(); }).filter(Boolean);
@@ -4347,6 +5058,9 @@
         else if(act==='bus-reply') busReply(id, x.getAttribute('data-src'));
         else if(act==='pub-pub') pubPublish(id);
         else if(act==='pub-rej') pubReject(id);
+        else if(act==='pub-md') pubOpenMd(id);
+        else if(act==='pub-md-save') pubSaveMd(id);
+        else if(act==='pub-md-cancel'){ var ed=document.getElementById('mde-'+id); if(ed) ed.style.display='none'; }
         else if(act==='dec-export') decExportAll();
         else if(act==='briefs-export') briefsExportAll();
         else if(act==='brief-edit') editBrief(x.getAttribute('data-role'));
