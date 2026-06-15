@@ -4169,7 +4169,13 @@
   // ===================== Карта базы знаний (научбаза / research) =====================
   var KB_ROB={solid:'#f0c46a', mixed:'#d99a4e', contested:'#e0705f', weak:'#8f9aa3', inbox:'#6f6a62'};
   var KB_ROB_RU={solid:'надёжные', mixed:'смешанные', contested:'спорные', weak:'слабые', inbox:'без оценки'};
-  var KB_SRC={}, KB_SEEN_AT=0, dspKbFilter='';
+  var KB_KIND_RU={theory:'теория', effect:'эффект', frame:'рамка', method:'метод', phenomenon:'феномен', term:'термин'};
+  var KB_KIND_PL={theory:'Теории', effect:'Эффекты', frame:'Рамки', method:'Методы', phenomenon:'Феномены', term:'Термины'};
+  var KB_KIND_ORDER=['theory','effect','frame','phenomenon','method','term'];
+  var KB_REL_RU={refines:'уточняет', contradicts:'противоречит', prerequisite:'предпосылка', 'mechanism-of':'механизм', 'same-family':'одна семья', 'competes-with':'конкурирует', 'instance-of':'частный случай'};
+  var KB_EPI_RU={'empirical-law':'эмпирический закон', 'empirical-effect':'эмпирический эффект', 'framework':'модель/рамка', 'heuristic':'эвристика', 'metaphor':'метафора', 'hypothesis':'гипотеза', 'contested-construct':'спорный конструкт'};
+  var KB_BS_RU={in_book:'в книге', candidate:'кандидат', out_of_scope:'вне охвата'};
+  var KB_SRC={}, KB_EDGES=[], KB_SEEN_AT=0, dspKbFilter='';
   function kbColor(r){ return KB_ROB[r]||KB_ROB.inbox; }
   function kbKey(id){ return String(id).split('_')[0]; }
   function kbHash(s){ var h=0,i; s=String(s); for(i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))|0; return Math.abs(h); }
@@ -4177,98 +4183,90 @@
 
   async function renderKB(){
     var body=document.getElementById('dspBody');
-    if(!document.getElementById('kbList')) body.innerHTML='<div id="kbList"><div class="dsp-load">Собираю базу…</div></div>';
-    var r=await SB.from('sources').select('id,title,claim,robustness,status,chapters,authors,year,ref,notes,created_at,updated_at').order('created_at');
+    if(!document.getElementById('kbList')) body.innerHTML='<div id="kbList"><div class="dsp-load">Собираю базу знаний…</div></div>';
+    var r=await SB.rpc('kb_graph');
     var list=document.getElementById('kbList'); if(!list){ body.innerHTML='<div id="kbList"></div>'; list=document.getElementById('kbList'); }
-    if(r.error){ list.innerHTML=dspErr('Нет доступа к базе: '+r.error.message); return; }
-    var S=r.data||[];
+    if(r.error){ list.innerHTML=dspErr('Нет доступа к базе знаний: '+r.error.message); return; }
+    var G=r.data||{}, S=(G&&G.nodes)||[], E=(G&&G.edges)||[];
     if(!S.length){ list.innerHTML='<div class="dsp-empty">База знаний пока пуста. Появится здесь по мере работы Афины (research).</div>'; return; }
-    KB_SRC={}; S.forEach(function(s){ KB_SRC[s.id]=s; });
+    KB_SRC={}; KB_EDGES=E; S.forEach(function(s){ KB_SRC[s.slug]=s; });
 
-    var keyPart={}, partOrder=[], seenP={};
-    (BOOK||[]).forEach(function(c){ keyPart[kbKey(c.id)]=c.part||'—'; if(!(c.part in seenP)){ seenP[c.part]=1; partOrder.push(c.part||'—'); } });
-    function clusterKey(s){ var chs=s.chapters||[]; if(chs.length){ var k=kbKey(chs[0]); return keyPart[k]||('гл. '+k); } return '— вне глав'; }
-    function partShort(p){ if(/^гл\. /.test(p)) return p.slice(4); if(/Введ/.test(p)) return 'Вв'; var m=p.match(/Часть\s+([IVX]+)/); if(m) return m[1]; return p.slice(0,4); }
+    var bs={in_book:0,candidate:0,out_of_scope:0}, rob={solid:0,mixed:0,contested:0,inbox:0}, nTheory=0;
+    S.forEach(function(s){ if(s.book_status in bs) bs[s.book_status]++; if(s.robustness in rob) rob[s.robustness]++; if(s.kind==='theory') nTheory++; });
 
-    var st={inbox:0,verified:0,in_book:0,rejected:0}, rob={solid:0,mixed:0,weak:0,contested:0};
-    S.forEach(function(s){ if(s.status in st) st[s.status]++; if(s.robustness in rob) rob[s.robustness]++; });
     var covered={}; S.forEach(function(s){ (s.chapters||[]).forEach(function(c){ covered[kbKey(c)]=1; }); });
-    var allKeys={}; (BOOK||[]).forEach(function(c){ allKeys[kbKey(c.id)]=1; });
-    var nChap=Object.keys(allKeys).length||33, nCov=Object.keys(covered).length;
+    var allKeys={}; (BOOK||[]).forEach(function(c){ if(String(c.id).charAt(0)==='g') allKeys[kbKey(c.id)]=1; });
+    var nChap=Object.keys(allKeys).length||25, nCov=Object.keys(covered).length;
     var recentN=S.filter(kbRecent).length;
     var filter=dspKbFilter;
-    function matches(s){ return !filter || (filter==='contested' ? s.robustness==='contested' : s.status===filter); }
+    function matches(s){ if(!filter) return true; if(filter==='contested') return s.robustness==='contested'; return s.book_status===filter; }
 
-    var clusters={}, corder=[];
-    S.forEach(function(s){ var p=clusterKey(s); if(!clusters[p]){ clusters[p]=[]; corder.push(p); } clusters[p].push(s); });
-    corder.sort(function(a,b){ var ia=partOrder.indexOf(a), ib=partOrder.indexOf(b); if(ia<0)ia=99; if(ib<0)ib=99; return ia-ib; });
+    var clusters={}; S.forEach(function(s){ var k=s.kind||'term'; (clusters[k]=clusters[k]||[]).push(s); });
+    var corder=[]; KB_KIND_ORDER.forEach(function(k){ if(clusters[k]) corder.push(k); });
+    Object.keys(clusters).forEach(function(k){ if(corder.indexOf(k)<0) corder.push(k); });
 
-    var W=720,H=540, cx=W/2, cy=H/2, Rclust=Math.min(W,H)/2-96, nC=corder.length||1, pos={};
-    corder.forEach(function(p, ci){
+    var W=720,H=560, cx=W/2, cy=H/2, Rclust=Math.min(W,H)/2-110, nC=corder.length||1, pos={};
+    corder.forEach(function(k, ci){
       var ca=-Math.PI/2 + ci*(2*Math.PI/nC), clx=cx+Rclust*Math.cos(ca), cly=cy+Rclust*Math.sin(ca);
-      var arr=clusters[p], k=arr.length, rr=14+k*7;
-      arr.forEach(function(s, j){
-        var a=(k===1)? ca : (j*(2*Math.PI/k)+(kbHash(p)%10)*0.1), jit=(kbHash(s.id)%100/100-0.5)*9;
-        pos[s.id]={ x: clx+(k===1?0:rr)*Math.cos(a)+jit, y: cly+(k===1?0:rr)*Math.sin(a)+jit*0.6 };
+      clusters[k].forEach(function(s, j){
+        var ang=j*2.399963+(kbHash(k)%6), rad=Math.sqrt(j+0.6)*6.2;
+        pos[s.slug]={ x: clx+rad*Math.cos(ang), y: cly+rad*Math.sin(ang) };
       });
     });
-    var edges=[];
-    for(var i=0;i<S.length;i++) for(var j2=i+1;j2<S.length;j2++){
-      var ca2=S[i].chapters||[], cb=S[j2].chapters||[];
-      if(ca2.some(function(x){ return cb.indexOf(x)>=0; }) && pos[S[i].id] && pos[S[j2].id]) edges.push([pos[S[i].id],pos[S[j2].id]]);
-    }
 
     var svg='<svg viewBox="0 0 '+W+' '+H+'" class="kb-svg" preserveAspectRatio="xMidYMid meet">';
     svg+='<defs><radialGradient id="kbsky" cx="50%" cy="44%" r="78%"><stop offset="0%" stop-color="#251e30"/><stop offset="55%" stop-color="#1a1622"/><stop offset="100%" stop-color="#0e0c14"/></radialGradient></defs>';
     svg+='<rect width="'+W+'" height="'+H+'" rx="16" fill="#15121c"/><rect width="'+W+'" height="'+H+'" rx="16" fill="url(#kbsky)"/>';
-    edges.forEach(function(e){ svg+='<line x1="'+e[0].x.toFixed(1)+'" y1="'+e[0].y.toFixed(1)+'" x2="'+e[1].x.toFixed(1)+'" y2="'+e[1].y.toFixed(1)+'" stroke="#caa86a" stroke-opacity="0.15" stroke-width="1"/>'; });
-    corder.forEach(function(p,ci){
-      var ca=-Math.PI/2+ci*(2*Math.PI/nC), lx=cx+(Rclust+44)*Math.cos(ca), ly=cy+(Rclust+44)*Math.sin(ca)+4;
-      svg+='<text x="'+lx.toFixed(0)+'" y="'+ly.toFixed(0)+'" class="kb-clab" text-anchor="middle">'+dspEsc(partShort(p))+'</text>';
+    E.forEach(function(e){
+      var a=pos[e.src], b=pos[e.dst]; if(!a||!b) return;
+      var hot=(e.relation==='contradicts'||e.relation==='competes-with');
+      var col=hot?'#e0705f':'#caa86a', op=hot?0.34:0.16, w=(e.strength==='strong')?1.4:(e.strength==='weak'?0.7:1);
+      svg+='<line x1="'+a.x.toFixed(1)+'" y1="'+a.y.toFixed(1)+'" x2="'+b.x.toFixed(1)+'" y2="'+b.y.toFixed(1)+'" stroke="'+col+'" stroke-opacity="'+(filter?op*0.4:op).toFixed(2)+'" stroke-width="'+w+'"'+(hot?' stroke-dasharray="3 2"':'')+'/>';
+    });
+    corder.forEach(function(k,ci){
+      var ca=-Math.PI/2+ci*(2*Math.PI/nC), lx=cx+(Rclust+52)*Math.cos(ca), ly=cy+(Rclust+52)*Math.sin(ca)+4;
+      svg+='<text x="'+lx.toFixed(0)+'" y="'+ly.toFixed(0)+'" class="kb-clab" text-anchor="middle">'+dspEsc(KB_KIND_PL[k]||k)+'</text>';
     });
     S.forEach(function(s){
-      var pp=pos[s.id]; if(!pp) return;
-      var col=kbColor(s.robustness), reach=(s.chapters||[]).length, rad=5+Math.min(Math.max(reach-1,0),4)*2;
+      var pp=pos[s.slug]; if(!pp) return;
+      var col=kbColor(s.robustness), rad=5+Math.min(s.degree||0,9)*1.0;
       var X=pp.x.toFixed(1), Y=pp.y.toFixed(1), mt=matches(s), rec=kbRecent(s);
-      var dl=(kbHash(s.id)%40)/10;
-      var tip=dspEsc(s.title)+' — '+dspEsc(KB_ROB_RU[s.robustness]||s.robustness)+', '+dspEsc(s.status)+(reach?(' · '+(s.chapters||[]).join(', ')):'');
-      var pulse=(rec&&mt)?'<circle class="kb-pulse" cx="'+X+'" cy="'+Y+'" r="'+rad+'" fill="none" stroke="'+col+'" stroke-width="2"/>':'';
+      var dl=(kbHash(s.slug)%40)/10, nb=(s.chapters||[]).length;
+      var tip=dspEsc(s.title)+' — '+dspEsc(KB_KIND_RU[s.kind]||s.kind)+', '+dspEsc(KB_ROB_RU[s.robustness]||s.robustness)+', '+dspEsc(KB_BS_RU[s.book_status]||s.book_status)+(nb?(' · '+nb+' гл.'):'');
+      var pulse=(rec&&mt)?'<circle class="kb-pulse" cx="'+X+'" cy="'+Y+'" r="'+(rad+2).toFixed(1)+'" fill="none" stroke="'+col+'" stroke-width="2"/>':'';
       var core='style="animation-delay:'+dl.toFixed(1)+'s"';
       var g;
-      if(s.status==='in_book') g='<circle cx="'+X+'" cy="'+Y+'" r="'+(rad*2.4).toFixed(1)+'" fill="'+col+'" opacity="0.22"/><circle class="kb-core" '+core+' cx="'+X+'" cy="'+Y+'" r="'+rad+'" fill="'+col+'"/><circle cx="'+X+'" cy="'+Y+'" r="'+(rad+2.5).toFixed(1)+'" fill="none" stroke="'+col+'" stroke-opacity="0.55"/>';
-      else if(s.status==='verified') g='<circle cx="'+X+'" cy="'+Y+'" r="'+(rad*1.9).toFixed(1)+'" fill="'+col+'" opacity="0.12"/><circle class="kb-core" '+core+' cx="'+X+'" cy="'+Y+'" r="'+rad+'" fill="'+col+'"/>';
-      else if(s.status==='rejected') g='<circle class="kb-core" '+core+' cx="'+X+'" cy="'+Y+'" r="'+rad+'" fill="#666" opacity="0.4"/>';
-      else g='<circle class="kb-core" '+core+' cx="'+X+'" cy="'+Y+'" r="'+rad+'" fill="'+col+'" fill-opacity="0.14" stroke="'+col+'" stroke-width="1.5"/>';
-      svg+='<g class="kb-node'+(mt?'':' kb-dim')+'" data-act="kb-open" data-id="'+dspEsc(s.id)+'"><title>'+tip+'</title>'+pulse+g+'</g>';
+      if(s.book_status==='in_book') g='<circle cx="'+X+'" cy="'+Y+'" r="'+(rad*2.4).toFixed(1)+'" fill="'+col+'" opacity="0.22"/><circle class="kb-core" '+core+' cx="'+X+'" cy="'+Y+'" r="'+rad+'" fill="'+col+'"/><circle cx="'+X+'" cy="'+Y+'" r="'+(rad+2.5).toFixed(1)+'" fill="none" stroke="'+col+'" stroke-opacity="0.55"/>';
+      else if(s.book_status==='out_of_scope') g='<circle class="kb-core" '+core+' cx="'+X+'" cy="'+Y+'" r="'+rad+'" fill="#666" opacity="0.4"/>';
+      else g='<circle class="kb-core" '+core+' cx="'+X+'" cy="'+Y+'" r="'+rad+'" fill="'+col+'" fill-opacity="0.16" stroke="'+col+'" stroke-width="1.5"/>';
+      svg+='<g class="kb-node'+(mt?'':' kb-dim')+'" data-act="kb-open" data-id="'+dspEsc(s.slug)+'"><title>'+tip+'</title>'+pulse+g+'</g>';
     });
     svg+='</svg>';
 
-    var pipe='<div class="kb-pipe">'+kbStage('Inbox',st.inbox,'inbox')
-      +'<span class="kb-arrow">→</span>'+kbStage('Проверено',st.verified,'verified')
-      +'<span class="kb-arrow">→</span>'+kbStage('В книге',st.in_book,'in_book')
-      +(st.rejected?('<span class="kb-arrow">·</span>'+kbStage('Отклонено',st.rejected,'rejected')):'')+'</div>';
+    var pipe='<div class="kb-pipe">'+kbStage('Кандидаты',bs.candidate,'inbox')
+      +'<span class="kb-arrow">→</span>'+kbStage('В книге',bs.in_book,'in_book')
+      +(bs.out_of_scope?('<span class="kb-arrow">·</span>'+kbStage('Вне охвата',bs.out_of_scope,'rejected')):'')+'</div>';
     function seg(v,c,lbl){ return v?('<span class="kb-seg" style="flex:'+v+';background:'+c+'" title="'+lbl+': '+v+'"></span>'):''; }
-    var robbar='<div class="kb-robbar">'+seg(rob.solid,KB_ROB.solid,'надёжные')+seg(rob.mixed,KB_ROB.mixed,'смешанные')+seg(rob.weak,KB_ROB.weak,'слабые')+seg(rob.contested,KB_ROB.contested,'спорные')+'</div>'
-      +'<div class="kb-roblegend">'+kbRobL('solid',rob.solid)+kbRobL('mixed',rob.mixed)+kbRobL('weak',rob.weak)+kbRobL('contested',rob.contested)+'</div>';
+    var robbar='<div class="kb-robbar">'+seg(rob.solid,KB_ROB.solid,'надёжные')+seg(rob.mixed,KB_ROB.mixed,'смешанные')+seg(rob.contested,KB_ROB.contested,'спорные')+seg(rob.inbox,KB_ROB.inbox,'без оценки')+'</div>'
+      +'<div class="kb-roblegend">'+kbRobL('solid',rob.solid)+kbRobL('mixed',rob.mixed)+kbRobL('contested',rob.contested)+kbRobL('inbox',rob.inbox)+'</div>';
 
-    var head='<div class="kb-stat"><b>'+S.length+'</b> теорий · '+st.verified+' проверено · '+st.in_book+' в книге · покрыто '+nCov+'/'+nChap+' глав'
+    var head='<div class="kb-stat"><b>'+S.length+'</b> узлов · '+nTheory+' теорий · '+bs.in_book+' в книге · '+E.length+' связей · покрыто '+nCov+'/'+nChap+' глав'
       +(recentN?' <span class="kb-fresh">✦ '+recentN+' с прошлого захода</span>':'')+'</div>';
     function chip(v,l){ return '<button class="kb-chip'+(filter===v?' on':'')+'" data-act="kb-filter" data-v="'+v+'">'+l+'</button>'; }
-    var chips='<div class="kb-chips">'+chip('','все '+S.length)+chip('inbox','inbox '+st.inbox)+chip('verified','проверено '+st.verified)+chip('in_book','в книге '+st.in_book)+chip('contested','спорные '+rob.contested)+'</div>';
+    var chips='<div class="kb-chips">'+chip('','все '+S.length)+chip('in_book','в книге '+bs.in_book)+chip('candidate','кандидаты '+bs.candidate)+chip('contested','спорные '+rob.contested)+'</div>';
     var leg='<div class="kb-legend">'
       +'<span class="kb-li"><span class="kb-dot" style="background:'+KB_ROB.solid+'"></span>надёжные</span>'
       +'<span class="kb-li"><span class="kb-dot" style="background:'+KB_ROB.mixed+'"></span>смешанные</span>'
       +'<span class="kb-li"><span class="kb-dot" style="background:'+KB_ROB.contested+'"></span>спорные</span>'
-      +'<span class="kb-li"><span class="kb-ring"></span>в inbox</span>'
-      +'<span class="kb-li"><span class="kb-dot" style="background:#cbb88f"></span>проверено</span>'
-      +'<span class="kb-li">размер — охват глав · тап по звезде — карточка</span></div>';
+      +'<span class="kb-li"><span class="kb-ring"></span>кандидат</span>'
+      +'<span class="kb-li">залит — в книге · размер — число связей · красная линия — спор/конкуренция · тап — карточка</span></div>';
 
     // callouts: contested needing attention + coverage gaps
     var contestedNames=S.filter(function(s){ return s.robustness==='contested'; }).map(function(s){ return s.title; });
     var callout='';
     if(contestedNames.length) callout+='<div class="kb-call"><b>Спорные ('+contestedNames.length+')</b> — взять только робастный компонент или не брать: '+dspEsc(contestedNames.slice(0,6).join(' · '))+(contestedNames.length>6?' …':'')+'</div>';
     var gaps=nChap-nCov;
-    if(gaps>0) callout+='<div class="kb-call ghost">Без источников: '+gaps+' из '+nChap+' глав — белые пятна базы.</div>';
+    if(gaps>0) callout+='<div class="kb-call ghost">Без узлов базы: '+gaps+' из '+nChap+' глав — белые пятна карты.</div>';
 
     var dayset={}; S.forEach(function(s){ if(s.created_at) dayset[String(s.created_at).slice(0,10)]=1; });
     var growth=(Object.keys(dayset).length<2)
@@ -4276,9 +4274,9 @@
       : kbGrowthChart(S);
 
     list.innerHTML=head+chips
-      +'<div class="kb-section-t">Конвейер проверки</div>'+pipe
+      +'<div class="kb-section-t">Включение в книгу</div>'+pipe
       +'<div class="kb-section-t">Надёжность доказательств</div>'+robbar
-      +'<div class="kb-section-t">Граф базы — теории сгруппированы по темам</div>'
+      +'<div class="kb-section-t">Граф базы — узлы сгруппированы по типу, рёбра — смысловые связи</div>'
       +'<div class="kb-sky">'+svg+'</div>'+leg+callout+growth;
   }
   function kbStage(lbl,n,cls){ return '<span class="kb-stage k-'+cls+'"><b>'+n+'</b><span>'+dspEsc(lbl)+'</span></span>'; }
@@ -4290,20 +4288,30 @@
     return '<div class="kb-section-t">Рост базы</div><div class="kb-growth">'+bars+'</div>';
   }
   function kbRefUrl(ref){ ref=String(ref||'').trim(); if(/^https?:\/\//.test(ref)) return ref.split(/\s/)[0]; var first=ref.split(/[\s;,]/)[0]; if(first.indexOf('.')>0 && first.indexOf('@')<0) return 'https://'+first; return ''; }
-  function kbOpenCard(id){
-    var s=KB_SRC[id]; if(!s) return;
-    var col=kbColor(s.robustness), chs=s.chapters||[];
-    var neigh=[]; Object.keys(KB_SRC).forEach(function(k){ if(k===id) return; var o=KB_SRC[k]; if((o.chapters||[]).some(function(c){ return chs.indexOf(c)>=0; })) neigh.push(o.title); });
-    var url=kbRefUrl(s.ref), refHtml = s.ref ? (url? '<a href="'+dspEsc(url)+'" target="_blank" rel="noopener">'+dspEsc(s.ref)+' ↗</a>' : dspEsc(s.ref)) : '';
+  function kbOpenCard(slug){
+    var s=KB_SRC[slug]; if(!s) return;
+    var col=kbColor(s.robustness), chs=s.chapters||[], tags=s.tags||[];
+    var neigh=[];
+    (KB_EDGES||[]).forEach(function(e){
+      var other=null;
+      if(e.src===slug) other=e.dst; else if(e.dst===slug) other=e.src; else return;
+      var o=KB_SRC[other]; if(!o) return;
+      neigh.push((KB_REL_RU[e.relation]||e.relation)+': '+o.title);
+    });
+    var byAxis={}; tags.forEach(function(t){ (byAxis[t.axis]=byAxis[t.axis]||[]).push(t.label); });
+    var tagHtml=Object.keys(byAxis).map(function(ax){ return '<div class="kb-chs">'+byAxis[ax].map(function(l){ return '<span class="dsp-chip ghost">'+dspEsc(l)+'</span>'; }).join('')+'</div>'; }).join('');
     var html='<div class="kb-card"><button class="kb-card-x" data-act="kb-close">✕</button>'
       +'<div class="kb-card-h"><span class="kb-dot" style="background:'+col+'"></span><h3>'+dspEsc(s.title)+'</h3></div>'
-      +'<div class="kb-badges"><span class="kb-badge" style="border-color:'+col+';color:'+col+'">'+dspEsc(KB_ROB_RU[s.robustness]||s.robustness)+'</span><span class="kb-badge">'+dspEsc(s.status)+'</span>'+(s.year?'<span class="kb-badge">'+dspEsc(s.year)+'</span>':'')+(kbRecent(s)?'<span class="kb-badge" style="border-color:'+col+';color:'+col+'">✦ свежее</span>':'')+'</div>'
+      +'<div class="kb-badges"><span class="kb-badge">'+dspEsc(KB_KIND_RU[s.kind]||s.kind)+'</span>'
+        +(s.epistemic_status?'<span class="kb-badge">'+dspEsc(KB_EPI_RU[s.epistemic_status]||s.epistemic_status)+'</span>':'')
+        +'<span class="kb-badge" style="border-color:'+col+';color:'+col+'">'+dspEsc(KB_ROB_RU[s.robustness]||s.robustness)+'</span>'
+        +'<span class="kb-badge">'+dspEsc(KB_BS_RU[s.book_status]||s.book_status)+'</span>'
+        +(kbRecent(s)?'<span class="kb-badge" style="border-color:'+col+';color:'+col+'">✦ свежее</span>':'')+'</div>'
       +(s.claim?'<div class="kb-claim">'+dspEsc(s.claim)+'</div>':'')
-      +(s.notes?'<div class="kb-card-sec"><b>Оговорки — что НЕ утверждать</b><div>'+dspEsc(s.notes)+'</div></div>':'')
-      +(s.authors?'<div class="kb-card-sec"><b>Источник</b><div>'+dspEsc(s.authors)+'</div></div>':'')
-      +(refHtml?'<div class="kb-card-sec"><b>Ссылка</b><div>'+refHtml+'</div></div>':'')
+      +(s.robustness_note?'<div class="kb-card-sec"><b>Оговорки — границы применимости</b><div>'+dspEsc(s.robustness_note)+'</div></div>':'')
+      +(tagHtml?'<div class="kb-card-sec"><b>Грани</b>'+tagHtml+'</div>':'')
       +(chs.length?'<div class="kb-card-sec"><b>Главы</b><div class="kb-chs">'+chs.map(function(c){ return '<span class="dsp-chip ghost">'+dspEsc(c)+'</span>'; }).join('')+'</div></div>':'')
-      +(neigh.length?'<div class="kb-card-sec"><b>Рядом по темам</b><div>'+dspEsc(neigh.slice(0,8).join(' · '))+'</div></div>':'')
+      +(neigh.length?'<div class="kb-card-sec"><b>Связи ('+neigh.length+')</b><div>'+dspEsc(neigh.slice(0,12).join(' · '))+(neigh.length>12?' …':'')+'</div></div>':'')
       +'</div>';
     var ov=document.getElementById('kbCard'); if(ov){ ov.innerHTML=html; ov.style.display='flex'; }
   }
