@@ -899,6 +899,29 @@
   .dsp-err{ color:var(--danger) }
   .dsp-ta{ width:100%; min-height:260px; box-sizing:border-box; padding:11px 13px; border:1px solid var(--line-2); border-radius:10px; background:var(--card); color:var(--ink); font-family:var(--font-mono); font-size:12.5px; line-height:1.55; resize:vertical }
   .dsp-ta:focus{ outline:none; border-color:var(--accent) }
+
+  /* ===== Карта базы знаний (research) ===== */
+  .kb-stat{ font-size:14px; color:var(--read); margin-bottom:4px } .kb-stat b{ font-size:18px; color:var(--ink) }
+  .kb-section-t{ font-family:var(--font-mono); font-size:10.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin:18px 0 8px }
+  .kb-pipe{ display:flex; align-items:stretch; gap:6px; flex-wrap:wrap }
+  .kb-stage{ flex:1 1 72px; min-width:72px; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:10px 8px; text-align:center; display:flex; flex-direction:column; gap:1px }
+  .kb-stage b{ font-size:21px; font-weight:700; color:var(--ink); line-height:1.05 } .kb-stage span{ font-size:11px; color:var(--muted) }
+  .kb-stage.k-inbox{ border-color:var(--warn) }
+  .kb-stage.k-verified b{ color:var(--good) }
+  .kb-stage.k-in_book{ border-color:var(--accent); background:var(--accent-tint) } .kb-stage.k-in_book b{ color:var(--accent) }
+  .kb-stage.k-rejected{ opacity:.7 }
+  .kb-arrow{ display:flex; align-items:center; color:var(--muted); font-size:15px }
+  .kb-robbar{ display:flex; height:16px; border-radius:8px; overflow:hidden; border:1px solid var(--line); background:var(--line) }
+  .kb-seg{ display:block; min-width:2px }
+  .kb-roblegend,.kb-legend{ display:flex; flex-wrap:wrap; gap:12px; margin-top:8px; font-size:12px; color:var(--muted) }
+  .kb-rl,.kb-li{ display:flex; align-items:center; gap:5px }
+  .kb-dot{ width:10px; height:10px; border-radius:50%; display:inline-block; flex:0 0 auto }
+  .kb-ring{ width:10px; height:10px; border-radius:50%; border:1.6px solid var(--muted); display:inline-block; flex:0 0 auto }
+  .kb-sky{ margin-top:6px; border-radius:16px; overflow:hidden; line-height:0; background:#15121c }
+  .kb-svg{ width:100%; height:auto; display:block }
+  .kb-clab{ fill:#d8c49a; font-family:var(--font-mono); font-size:12px; opacity:.66 }
+  .kb-growth{ display:flex; align-items:flex-end; gap:5px; height:66px; padding:4px 0 }
+  .kb-gbar{ width:16px; background:var(--accent); border-radius:3px 3px 0 0; display:block }
 </style>
 </head>
 <body>
@@ -1043,6 +1066,7 @@
     <button data-dt="ctx">Контекст</button>
     <button data-dt="dec">Решения</button>
     <button data-dt="src">Научбаза<span class="dsp-badge" id="dbgSrc"></span></button>
+    <button data-dt="kb">Карта базы</button>
     <button data-dt="health">Здоровье</button>
     <button data-dt="briefs">Брифы</button>
   </div>
@@ -1315,8 +1339,11 @@
   function currentBook(){ return state.book||'main'; }
 
   // ====== ВЕРСИЯ ПРИЛОЖЕНИЯ (повышать с каждым апдейтом HTML) ======
-  var APP_VERSION='5.13';
+  var APP_VERSION='5.14';
   var APP_CHANGELOG=[
+    {v:'5.14', items:[
+      'В Диспетчерскую добавлена «Карта базы» — живая визуализация научной базы: граф теорий по темам (цвет — надёжность, заливка — стадия проверки, размер — охват глав), конвейер inbox→проверено→в книге и шкала надёжности. Обновляется в реальном времени по мере наполнения базы.',
+    ]},
     {v:'5.13', items:[
       'Диспетчерская теперь живая: шина и панели обновляются в реальном времени без кнопки. Брифы можно править прямо в Диспетчерской (со слиянием при конфликте версий), плюс предупреждение, если по одной роли за час писали разные треды.',
     ]},
@@ -3767,7 +3794,7 @@
     dspCur=name; dspFilterCb=null;
     var tabs=document.querySelectorAll('#dispatch .dsp-tabs button');
     for(var i=0;i<tabs.length;i++) tabs[i].classList.toggle('on', tabs[i].getAttribute('data-dt')===name);
-    var fn={bus:renderBus,pub:renderPub,ctx:renderCtx,dec:renderDec,src:renderSrc,health:renderHealth,briefs:renderBriefs}[name];
+    var fn={bus:renderBus,pub:renderPub,ctx:renderCtx,dec:renderDec,src:renderSrc,health:renderHealth,briefs:renderBriefs,kb:renderKB}[name];
     if(fn) fn();
   }
   async function dspBadges(){
@@ -3922,8 +3949,8 @@
   async function renderSrc(){
     var body=document.getElementById('dspBody');
     body.innerHTML='<div class="dsp-filters">'
-      +dspFsel('status',{'':'Все статусы','inbox':'inbox','verified':'verified'},dspSrcF.status)
-      +dspFsel('rob',{'':'Любая надёжность','strong':'strong','mixed':'mixed','weak':'weak'},dspSrcF.rob)
+      +dspFsel('status',{'':'Все статусы','inbox':'inbox','verified':'verified','in_book':'в книге','rejected':'отклонено'},dspSrcF.status)
+      +dspFsel('rob',{'':'Любая надёжность','solid':'solid','mixed':'mixed','weak':'weak','contested':'contested'},dspSrcF.rob)
       +'</div><div id="dspCounters"></div><div id="dspList"><div class="dsp-load">Загрузка…</div></div>';
     dspWireFilters(function(k,v){ dspSrcF[k]=v; renderSrc(); });
     try{
@@ -3945,7 +3972,7 @@
     list.innerHTML=rows.map(function(s){
       var chs=(s.chapters||[]).map(function(x){ return '<span class="dsp-chip ghost">'+dspEsc(x)+'</span>'; }).join('');
       return '<div class="dsp-card"><div class="dsp-row1">'
-        +'<span class="dsp-chip '+(s.status==='verified'?'done':'warn')+'">'+dspEsc(s.status||'—')+'</span>'
+        +'<span class="dsp-chip '+(s.status==='inbox'?'warn':(s.status==='rejected'?'ghost':'done'))+'">'+dspEsc(s.status||'—')+'</span>'
         +(s.robustness?'<span class="dsp-chip">'+dspEsc(s.robustness)+'</span>':'')
         +'<span class="dsp-age">'+dspEsc(s.year||'')+'</span></div>'
         +'<div class="dsp-subj">'+dspEsc(s.title)+(s.authors?(' · '+dspEsc(s.authors)):'')+'</div>'
@@ -4059,6 +4086,126 @@
     var blob=new Blob([md],{type:'text/markdown'}), u=URL.createObjectURL(blob);
     var a=document.createElement('a'); a.href=u; a.download='briefs_snapshot.md'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(u);
   }
+  // ===================== Карта базы знаний (научбаза / research) =====================
+  var KB_ROB={solid:'#f0c46a', mixed:'#d99a4e', contested:'#e0705f', weak:'#8f9aa3', inbox:'#6f6a62'};
+  var KB_ROB_RU={solid:'надёжные', mixed:'смешанные', contested:'спорные', weak:'слабые', inbox:'без оценки'};
+  function kbColor(r){ return KB_ROB[r]||KB_ROB.inbox; }
+  function kbKey(id){ return String(id).split('_')[0]; }
+  function kbHash(s){ var h=0,i; s=String(s); for(i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))|0; return Math.abs(h); }
+
+  async function renderKB(){
+    var body=document.getElementById('dspBody');
+    body.innerHTML='<div id="dspList"><div class="dsp-load">Собираю базу…</div></div>';
+    var r=await SB.from('sources').select('id,title,claim,robustness,status,chapters,created_at').order('created_at');
+    var list=document.getElementById('dspList');
+    if(r.error){ list.innerHTML=dspErr('Нет доступа к базе: '+r.error.message); return; }
+    var S=r.data||[];
+    if(!S.length){ list.innerHTML='<div class="dsp-empty">База знаний пока пуста. Появится здесь по мере работы Афины (research).</div>'; return; }
+
+    // chapter-key -> part (from in-memory BOOK), and part order
+    var keyPart={}, partOrder=[], seenP={};
+    (BOOK||[]).forEach(function(c){ keyPart[kbKey(c.id)]=c.part||'—'; if(!(c.part in seenP)){ seenP[c.part]=1; partOrder.push(c.part||'—'); } });
+    function clusterKey(s){ var chs=s.chapters||[]; if(chs.length){ var k=kbKey(chs[0]); return keyPart[k]||('гл. '+k); } return '— вне глав'; }
+    function partShort(p){ if(/^гл\. /.test(p)) return p.slice(4); if(/Введ/.test(p)) return 'Вв'; var m=p.match(/Часть\s+([IVX]+)/); if(m) return m[1]; return p.slice(0,4); }
+
+    // counts
+    var st={inbox:0,verified:0,in_book:0,rejected:0}, rob={solid:0,mixed:0,weak:0,contested:0};
+    S.forEach(function(s){ if(s.status in st) st[s.status]++; if(s.robustness in rob) rob[s.robustness]++; });
+    var covered={}; S.forEach(function(s){ (s.chapters||[]).forEach(function(c){ covered[kbKey(c)]=1; }); });
+    var allKeys={}; (BOOK||[]).forEach(function(c){ allKeys[kbKey(c.id)]=1; });
+    var nChap=Object.keys(allKeys).length||33, nCov=Object.keys(covered).length;
+
+    // cluster sources
+    var clusters={}, corder=[];
+    S.forEach(function(s){ var p=clusterKey(s); if(!clusters[p]){ clusters[p]=[]; corder.push(p); } clusters[p].push(s); });
+    corder.sort(function(a,b){ var ia=partOrder.indexOf(a), ib=partOrder.indexOf(b); if(ia<0)ia=99; if(ib<0)ib=99; return ia-ib; });
+
+    // layout: clusters on a ring, nodes around each cluster centre
+    var W=720,H=540, cx=W/2, cy=H/2, Rclust=Math.min(W,H)/2-96, nC=corder.length||1;
+    var pos={};
+    corder.forEach(function(p, ci){
+      var ca=-Math.PI/2 + ci*(2*Math.PI/nC);
+      var clx=cx+Rclust*Math.cos(ca), cly=cy+Rclust*Math.sin(ca);
+      var arr=clusters[p], k=arr.length, rr=14+k*7;
+      arr.forEach(function(s, j){
+        var a=(k===1)? ca : (j*(2*Math.PI/k)+(kbHash(p)%10)*0.1);
+        var jit=(kbHash(s.id)%100/100-0.5)*9;
+        pos[s.id]={ x: clx+(k===1?0:rr)*Math.cos(a)+jit, y: cly+(k===1?0:rr)*Math.sin(a)+jit*0.6 };
+      });
+    });
+
+    // edges: shared chapter
+    var edges=[];
+    for(var i=0;i<S.length;i++) for(var j2=i+1;j2<S.length;j2++){
+      var ca2=S[i].chapters||[], cb=S[j2].chapters||[];
+      if(ca2.some(function(x){ return cb.indexOf(x)>=0; }) && pos[S[i].id] && pos[S[j2].id]) edges.push([pos[S[i].id],pos[S[j2].id]]);
+    }
+
+    // build SVG
+    var svg='<svg viewBox="0 0 '+W+' '+H+'" class="kb-svg" preserveAspectRatio="xMidYMid meet">';
+    svg+='<defs><radialGradient id="kbsky" cx="50%" cy="44%" r="78%"><stop offset="0%" stop-color="#251e30"/><stop offset="55%" stop-color="#1a1622"/><stop offset="100%" stop-color="#0e0c14"/></radialGradient></defs>';
+    svg+='<rect x="0" y="0" width="'+W+'" height="'+H+'" rx="16" fill="#15121c"/>';
+    svg+='<rect x="0" y="0" width="'+W+'" height="'+H+'" rx="16" fill="url(#kbsky)"/>';
+    edges.forEach(function(e){ svg+='<line x1="'+e[0].x.toFixed(1)+'" y1="'+e[0].y.toFixed(1)+'" x2="'+e[1].x.toFixed(1)+'" y2="'+e[1].y.toFixed(1)+'" stroke="#caa86a" stroke-opacity="0.15" stroke-width="1"/>'; });
+    corder.forEach(function(p,ci){
+      var ca=-Math.PI/2+ci*(2*Math.PI/nC);
+      var lx=cx+(Rclust+44)*Math.cos(ca), ly=cy+(Rclust+44)*Math.sin(ca)+4;
+      svg+='<text x="'+lx.toFixed(0)+'" y="'+ly.toFixed(0)+'" class="kb-clab" text-anchor="middle">'+dspEsc(partShort(p))+'</text>';
+    });
+    S.forEach(function(s){
+      var pp=pos[s.id]; if(!pp) return;
+      var col=kbColor(s.robustness), reach=(s.chapters||[]).length, rad=5+Math.min(Math.max(reach-1,0),4)*2;
+      var X=pp.x.toFixed(1), Y=pp.y.toFixed(1);
+      var tip=dspEsc(s.title)+' — '+dspEsc(KB_ROB_RU[s.robustness]||s.robustness)+', '+dspEsc(s.status)+(reach?(' · '+(s.chapters||[]).join(', ')):'');
+      var g='';
+      if(s.status==='in_book'){ g='<circle cx="'+X+'" cy="'+Y+'" r="'+(rad*2.4).toFixed(1)+'" fill="'+col+'" opacity="0.22"/><circle cx="'+X+'" cy="'+Y+'" r="'+rad+'" fill="'+col+'"/><circle cx="'+X+'" cy="'+Y+'" r="'+(rad+2.5).toFixed(1)+'" fill="none" stroke="'+col+'" stroke-opacity="0.55"/>'; }
+      else if(s.status==='verified'){ g='<circle cx="'+X+'" cy="'+Y+'" r="'+(rad*1.9).toFixed(1)+'" fill="'+col+'" opacity="0.12"/><circle cx="'+X+'" cy="'+Y+'" r="'+rad+'" fill="'+col+'"/>'; }
+      else if(s.status==='rejected'){ g='<circle cx="'+X+'" cy="'+Y+'" r="'+rad+'" fill="#666" opacity="0.4"/>'; }
+      else { g='<circle cx="'+X+'" cy="'+Y+'" r="'+rad+'" fill="'+col+'" fill-opacity="0.14" stroke="'+col+'" stroke-width="1.5"/>'; }
+      svg+='<g><title>'+tip+'</title>'+g+'</g>';
+    });
+    svg+='</svg>';
+
+    // pipeline funnel
+    var pipe='<div class="kb-pipe">'+kbStage('Inbox',st.inbox,'inbox')
+      +'<span class="kb-arrow">→</span>'+kbStage('Проверено',st.verified,'verified')
+      +'<span class="kb-arrow">→</span>'+kbStage('В книге',st.in_book,'in_book')
+      +(st.rejected?('<span class="kb-arrow">·</span>'+kbStage('Отклонено',st.rejected,'rejected')):'')+'</div>';
+
+    // robustness stacked bar
+    function seg(v,c,lbl){ return v?('<span class="kb-seg" style="flex:'+v+';background:'+c+'" title="'+lbl+': '+v+'"></span>'):''; }
+    var robbar='<div class="kb-robbar">'+seg(rob.solid,KB_ROB.solid,'надёжные')+seg(rob.mixed,KB_ROB.mixed,'смешанные')+seg(rob.weak,KB_ROB.weak,'слабые')+seg(rob.contested,KB_ROB.contested,'спорные')+'</div>'
+      +'<div class="kb-roblegend">'+kbRobL('solid',rob.solid)+kbRobL('mixed',rob.mixed)+kbRobL('weak',rob.weak)+kbRobL('contested',rob.contested)+'</div>';
+
+    var head='<div class="kb-stat"><b>'+S.length+'</b> теорий · '+st.verified+' проверено · '+st.in_book+' в книге · покрыто '+nCov+'/'+nChap+' глав</div>';
+    var leg='<div class="kb-legend">'
+      +'<span class="kb-li"><span class="kb-dot" style="background:'+KB_ROB.solid+'"></span>надёжные</span>'
+      +'<span class="kb-li"><span class="kb-dot" style="background:'+KB_ROB.mixed+'"></span>смешанные</span>'
+      +'<span class="kb-li"><span class="kb-dot" style="background:'+KB_ROB.contested+'"></span>спорные</span>'
+      +'<span class="kb-li"><span class="kb-ring"></span>в inbox</span>'
+      +'<span class="kb-li"><span class="kb-dot" style="background:#cbb88f"></span>проверено</span>'
+      +'<span class="kb-li">размер — охват глав</span></div>';
+
+    var dayset={}; S.forEach(function(s){ if(s.created_at) dayset[String(s.created_at).slice(0,10)]=1; });
+    var growth=(Object.keys(dayset).length<2)
+      ? '<div class="dsp-note">База засеяна '+dspEsc(dspDate(S[0].created_at))+'. Динамика пополнения появится здесь по мере добавления теорий Афиной.</div>'
+      : kbGrowthChart(S);
+
+    list.innerHTML=head
+      +'<div class="kb-section-t">Конвейер проверки</div>'+pipe
+      +'<div class="kb-section-t">Надёжность доказательств</div>'+robbar
+      +'<div class="kb-section-t">Граф базы — теории сгруппированы по темам</div>'
+      +'<div class="kb-sky">'+svg+'</div>'+leg+growth;
+  }
+  function kbStage(lbl,n,cls){ return '<span class="kb-stage k-'+cls+'"><b>'+n+'</b><span>'+dspEsc(lbl)+'</span></span>'; }
+  function kbRobL(k,v){ return '<span class="kb-rl"><span class="kb-dot" style="background:'+KB_ROB[k]+'"></span>'+dspEsc(KB_ROB_RU[k])+' '+v+'</span>'; }
+  function kbGrowthChart(S){
+    var days={}; S.forEach(function(s){ var d=String(s.created_at).slice(0,10); days[d]=(days[d]||0)+1; });
+    var keys=Object.keys(days).sort(), cum=0, max=S.length||1;
+    var bars=keys.map(function(d){ cum+=days[d]; return '<span class="kb-gbar" style="height:'+Math.max(Math.round(cum/max*60),3)+'px" title="'+d+': '+cum+'"></span>'; }).join('');
+    return '<div class="kb-section-t">Рост базы</div><div class="kb-growth">'+bars+'</div>';
+  }
+
   function paraDiff(liveMd, draftMd){
     var A=String(liveMd||'').split(/\n\s*\n/).map(function(s){ return s.trim(); }).filter(Boolean);
     var B=String(draftMd||'').split(/\n\s*\n/).map(function(s){ return s.trim(); }).filter(Boolean);
