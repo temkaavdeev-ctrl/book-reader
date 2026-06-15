@@ -248,6 +248,12 @@
   .es-ic{width:42px; height:42px; stroke:var(--line-2); stroke-width:1.5; fill:none; stroke-linecap:round; stroke-linejoin:round; margin-bottom:12px}
   .es-t{font-size:16px; font-weight:600; color:var(--ink); letter-spacing:-.01em}
   .es-s{font-size:13.5px; color:var(--muted); line-height:1.5; max-width:250px; margin-top:3px}
+  #content .theory-box{margin:22px 0; padding:15px 18px 16px; background:var(--accent-tint); border:1px solid var(--line); border-left:3px solid var(--accent); border-radius:12px; font-size:.95em}
+  #content .theory-box .theory-tag{font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.6px; color:var(--accent); font-weight:600; margin-bottom:9px}
+  #content .theory-box p{margin:0 0 10px; line-height:1.62; color:var(--read)}
+  #content .theory-box p:last-child{margin-bottom:0}
+  #content .theory-box strong{color:var(--ink)}
+  #content .term{text-decoration:underline dotted; text-decoration-color:var(--accent-2); text-underline-offset:3px; text-decoration-thickness:1px}
 
   /* presence */
   .person{display:inline-flex; align-items:center; gap:5px}
@@ -843,6 +849,56 @@
       border-radius:22px 22px 0 0; transform:translateY(102%); box-shadow:0 -10px 44px rgba(0,0,0,.20) }
     .sheet-grab{ display:block }
   }
+
+  /* ===== Dispatch (admin cockpit) ===== */
+  #dispatch{ position:fixed; inset:0; z-index:200; background:var(--bg); display:none; flex-direction:column }
+  #dispatch.open{ display:flex }
+  .dsp-head{ display:flex; align-items:center; justify-content:space-between; padding:14px 18px; border-bottom:1px solid var(--line); flex:0 0 auto }
+  .dsp-head h2{ margin:0; font-size:19px; font-weight:700; letter-spacing:-.02em; color:var(--ink) }
+  .dsp-head-r{ display:flex; align-items:center; gap:10px }
+  .dsp-tabs{ display:flex; gap:6px; padding:10px 14px; border-bottom:1px solid var(--line); overflow-x:auto; -webkit-overflow-scrolling:touch; flex:0 0 auto }
+  .dsp-tabs button{ flex:0 0 auto; padding:7px 13px; border:1px solid var(--line); background:var(--card); color:var(--muted); border-radius:999px; font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap; font-family:inherit }
+  .dsp-tabs button.on{ background:var(--accent); border-color:var(--accent); color:#fff }
+  .dsp-badge{ display:none; margin-left:6px; background:var(--danger); color:#fff; border-radius:999px; padding:0 6px; font-size:11px; font-weight:700; vertical-align:middle }
+  .dsp-tabs button.on .dsp-badge{ background:rgba(255,255,255,.32) }
+  .dsp-body{ flex:1 1 auto; overflow:auto; padding:16px 14px calc(24px + env(safe-area-inset-bottom,0px)); width:100%; max-width:760px; margin:0 auto }
+  .dsp-filters{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; align-items:center }
+  .dsp-sel{ padding:7px 10px; border:1px solid var(--line-2); border-radius:9px; background:var(--card); color:var(--ink); font-size:13px; font-family:inherit }
+  .dsp-card{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:13px 15px; margin-bottom:10px }
+  .dsp-card.blocker{ border-color:var(--danger); border-left:3px solid var(--danger) }
+  .dsp-row1{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:6px }
+  .dsp-route{ font-family:var(--font-mono); font-size:12px; font-weight:700; color:var(--ink) }
+  .dsp-age{ margin-left:auto; font-size:12px; color:var(--muted); white-space:nowrap }
+  .dsp-chip{ font-family:var(--font-mono); font-size:11px; padding:2px 8px; border-radius:999px; border:1px solid var(--line); color:var(--accent); background:var(--accent-tint) }
+  .dsp-chip.ghost{ background:transparent; color:var(--muted) }
+  .dsp-chip.warn{ color:var(--warn); border-color:var(--warn); background:transparent; background:color-mix(in srgb,var(--warn) 14%,transparent) }
+  .dsp-chip.done{ color:var(--good); border-color:var(--good); background:transparent; background:color-mix(in srgb,var(--good) 14%,transparent) }
+  .dsp-chip.k-blocker{ background:var(--danger); color:#fff; border-color:var(--danger) }
+  .dsp-subj{ font-size:15px; font-weight:600; color:var(--ink); margin-bottom:4px; line-height:1.4 }
+  .dsp-text{ font-size:13.5px; color:var(--read); line-height:1.55; white-space:pre-wrap; word-wrap:break-word }
+  .dsp-text.pre{ font-family:var(--font-mono); font-size:12px }
+  .dsp-text.clamp{ max-height:170px; overflow:auto }
+  .dsp-refs{ margin-top:8px; display:flex; flex-wrap:wrap; gap:5px }
+  .dsp-by{ margin-top:6px; font-size:12px; color:var(--muted); font-style:italic }
+  .dsp-acts{ margin-top:10px; display:flex; gap:8px; flex-wrap:wrap }
+  .dsp-btn{ padding:7px 14px; border:1px solid var(--accent); background:var(--accent); color:#fff; border-radius:9px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit }
+  .dsp-btn.ghost{ background:var(--card); color:var(--accent) }
+  .dsp-diff{ margin-top:10px; border-top:1px solid var(--line); padding-top:8px; font-family:var(--font-mono); font-size:12px; line-height:1.5 }
+  .df{ padding:2px 6px; border-radius:4px; white-space:pre-wrap; margin:1px 0 }
+  .df.add{ color:var(--good); background:transparent; background:color-mix(in srgb,var(--good) 12%,transparent) }
+  .df.del{ color:var(--danger); text-decoration:line-through; background:transparent; background:color-mix(in srgb,var(--danger) 12%,transparent) }
+  .df.ctx{ color:var(--muted) }
+  .dsp-kpis{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px }
+  .dsp-kpis.big{ margin:4px 0 14px }
+  .dsp-kpi{ flex:1 1 90px; min-width:90px; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px; text-align:center }
+  .dsp-kpi b{ display:block; font-size:22px; font-weight:700; color:var(--ink); line-height:1.1 }
+  .dsp-kpi span{ font-size:12px; color:var(--muted) }
+  .dsp-kpi.warn{ border-color:var(--warn); background:transparent; background:color-mix(in srgb,var(--warn) 10%,transparent) }
+  .dsp-note{ font-size:12.5px; color:var(--muted); margin-top:10px; line-height:1.5 }
+  .dsp-load,.dsp-empty,.dsp-err{ padding:30px 10px; text-align:center; color:var(--muted); font-size:14px }
+  .dsp-err{ color:var(--danger) }
+  .dsp-ta{ width:100%; min-height:260px; box-sizing:border-box; padding:11px 13px; border:1px solid var(--line-2); border-radius:10px; background:var(--card); color:var(--ink); font-family:var(--font-mono); font-size:12.5px; line-height:1.55; resize:vertical }
+  .dsp-ta:focus{ outline:none; border-color:var(--accent) }
 </style>
 </head>
 <body>
@@ -883,6 +939,7 @@
             <button class="menu-item" id="miExport" style="display:none">Экспорт правок</button>
             <button class="menu-item" id="miMarkers" style="display:none">Редакционные маркеры</button>
             <button class="menu-item" id="btnAdmin" style="display:none">Админка</button>
+            <button class="menu-item" id="btnDispatch" style="display:none">Диспетчерская</button>
           </div>
         </div>
       </div>
@@ -969,6 +1026,27 @@
   <div class="menu-sep"></div>
   <button class="menu-item" id="btnSaveJson">Сохранить в файл (.json)</button>
   <button class="menu-item" id="btnLoadJson">Загрузить из файла (.json)</button>
+</div>
+
+<!-- dispatch (admin cockpit) -->
+<div id="dispatch">
+  <div class="dsp-head">
+    <h2>Диспетчерская</h2>
+    <div class="dsp-head-r">
+      <button class="btn" id="dspRefresh">Обновить</button>
+      <button class="iconbtn" id="dspClose" aria-label="Закрыть">✕</button>
+    </div>
+  </div>
+  <div class="dsp-tabs">
+    <button data-dt="bus" class="on">Шина<span class="dsp-badge" id="dbgBus"></span></button>
+    <button data-dt="pub">Публикация<span class="dsp-badge" id="dbgPub"></span></button>
+    <button data-dt="ctx">Контекст</button>
+    <button data-dt="dec">Решения</button>
+    <button data-dt="src">Научбаза<span class="dsp-badge" id="dbgSrc"></span></button>
+    <button data-dt="health">Здоровье</button>
+    <button data-dt="briefs">Брифы</button>
+  </div>
+  <div class="dsp-body" id="dspBody"></div>
 </div>
 
 <!-- comment editor -->
@@ -1237,8 +1315,17 @@
   function currentBook(){ return state.book||'main'; }
 
   // ====== ВЕРСИЯ ПРИЛОЖЕНИЯ (повышать с каждым апдейтом HTML) ======
-  var APP_VERSION='5.10';
+  var APP_VERSION='5.13';
   var APP_CHANGELOG=[
+    {v:'5.13', items:[
+      'Диспетчерская теперь живая: шина и панели обновляются в реальном времени без кнопки. Брифы можно править прямо в Диспетчерской (со слиянием при конфликте версий), плюс предупреждение, если по одной роли за час писали разные треды.',
+    ]},
+    {v:'5.12', items:[
+      'Добавлена «Диспетчерская» — единый экран координации для админа: шина задач, публикация черновиков с диффом по абзацам, контекст, решения, научбаза, здоровье и брифы.',
+    ]},
+    {v:'5.11', items:[
+      'Теория теперь видна как отдельная врезка (раньше текла обычными абзацами), ключевые термины — с тонким подчёркиванием.',
+    ]},
     {v:'5.10', items:[
       'Исправлено: свайп вниз по меню «···» теперь закрывает только это меню, а не всю панель.',
     ]},
@@ -1562,6 +1649,18 @@
       h+='</blockquote>';
       return '\n\n'+h+'\n\n';
     });
+    // theory blocks -> callout (always shown)
+    md = md.replace(/<!--\s*THEORY-START[\s\S]*?-->([\s\S]*?)<!--\s*THEORY-END\s*-->/g, function(m, body){
+      body = body.replace(/<!--[\s\S]*?-->/g,'').trim();
+      if(!body) return '';
+      var inner;
+      if(typeof window.marked!=='undefined'){
+        try{ inner = window.marked.parse ? window.marked.parse(body, {breaks:false, gfm:true, mangle:false, headerIds:false}) : window.marked(body); }
+        catch(e){ inner = '<p>'+body+'</p>'; }
+      } else { inner = '<p>'+body+'</p>'; }
+      inner = inner.replace(/\n+/g,'');
+      return '\n\n<div class="theory-box"><div class="theory-tag">Теория</div>'+inner+'</div>\n\n';
+    });
     // diagrams without a marker -> anchor after the relevant heading
     var anchors=(BYID[state.chapter] && BYID[state.chapter].figs) || null;
     if(anchors){ anchors.forEach(function(a){
@@ -1578,7 +1677,7 @@
         return '<span class="mk">⟦'+escapeHtml(txt)+'⟧</span>';
       });
     }
-    return md.replace(/<!--[\s\S]*?-->/g,'');
+    return md.replace(/<!--(?!\s*TERM:)[\s\S]*?-->/g,'');
   }
   function fillFigures(){
     var slots=document.querySelectorAll('#content .figslot');
@@ -1617,13 +1716,22 @@
   }
   function renderMd(md){
     var src = preprocess(md);
+    var html;
     if(typeof window.marked!=='undefined'){
       try{
-        if(window.marked.parse) return window.marked.parse(src, {breaks:false, gfm:true, mangle:false, headerIds:false});
-        return window.marked(src);
-      }catch(e){ return fallbackMd(src); }
-    }
-    return fallbackMd(src);
+        html = window.marked.parse ? window.marked.parse(src, {breaks:false, gfm:true, mangle:false, headerIds:false}) : window.marked(src);
+      }catch(e){ html = fallbackMd(src); }
+    } else { html = fallbackMd(src); }
+    return renderTerms(html);
+  }
+  function renderTerms(html){
+    html = html.replace(/<strong>([^<]*?)<\/strong>\s*<!--\s*TERM:\s*([^>]*?)\s*-->/g, function(mm, t, key){
+      return '<strong class="term" data-term="'+escapeHtml(key)+'">'+t+'</strong>';
+    });
+    html = html.replace(/([0-9A-Za-zА-Яа-яЁё=\/_-]+)([)\]».,;:!?]*)\s*<!--\s*TERM:\s*([^>]*?)\s*-->/g, function(mm, w, punct, key){
+      return '<span class="term" data-term="'+escapeHtml(key)+'">'+w+'</span>'+(punct||'');
+    });
+    return html.replace(/<!--\s*TERM:[^>]*-->/g,'');
   }
 
   // ---------- offset helpers ----------
@@ -2521,6 +2629,7 @@
     show('tabEdits', contrib);
     ['editorSep','miDash','miExport','miMarkers'].forEach(function(id){ show(id, mod); });
     show('btnAdmin', isAdmin);
+    show('btnDispatch', isAdmin);
     var ptb=document.getElementById('btnPanelTools'); if(ptb) ptb.style.display=(panelTab==='edits' && mod)?'':'none';
     if(!mod && state.markers){ state.markers=false; var mm=document.getElementById('miMarkers'); if(mm) mm.classList.remove('on'); renderChapter(); }
     if(!contrib && panelTab==='edits') setPanelTab('disc');
@@ -3625,6 +3734,371 @@
     var sess = got.data && got.data.session;
     if(!sess){ showGate('login'); }   // вход показываем только если сессии действительно нет
     await onAuth(sess);
+  })();
+
+  /* ===================== DISPATCH (admin cockpit) ===================== */
+  var dspCur='bus', dspBusF={status:'open',dst:'',kind:''}, dspDecDom='', dspSrcF={status:'',rob:''};
+  var dspFilterCb=null, DEC_ROWS=[];
+  function dspEsc(s){ return escapeHtml(s==null?'':String(s)); }
+  function dspAgo(ts){ if(!ts) return ''; var d=(Date.now()-new Date(ts).getTime())/1000; if(d<60)return'только что'; if(d<3600)return Math.floor(d/60)+' мин'; if(d<86400)return Math.floor(d/3600)+' ч'; return Math.floor(d/86400)+' д'; }
+  function dspDays(ts){ return ts?(Date.now()-new Date(ts).getTime())/86400000:0; }
+  function dspDate(ts){ try{ return new Date(ts).toLocaleDateString('ru-RU',{day:'numeric',month:'short',year:'numeric'}); }catch(e){ return ''; } }
+  function dspFsel(key,opts,cur){ var o=Object.keys(opts).map(function(k){ return '<option value="'+dspEsc(k)+'"'+(k===cur?' selected':'')+'>'+dspEsc(opts[k])+'</option>'; }).join(''); return '<select class="dsp-sel" data-fk="'+dspEsc(key)+'">'+o+'</select>'; }
+  function dspWireFilters(cb){ dspFilterCb=cb; }
+  function dspErr(msg){ return '<div class="dsp-err">'+dspEsc(msg)+'</div>'; }
+  function dspSetBadge(id,n){ var e=document.getElementById(id); if(!e) return; if(n){ e.textContent=n; e.style.display=''; } else e.style.display='none'; }
+
+  var dspChan=null, dspRtTimer=null, dspEditing=false;
+  function openDispatch(){ if(!isAdmin) return; document.getElementById('dispatch').classList.add('open'); document.body.style.overflow='hidden'; dspRealtimeOn(); dspBadges(); dspTab(dspCur); }
+  function closeDispatch(){ document.getElementById('dispatch').classList.remove('open'); document.body.style.overflow=''; dspRealtimeOff(); }
+  function dspRealtimeOn(){
+    if(dspChan || !SB) return;
+    try{
+      var ch=SB.channel('dispatch-rt');
+      ['bus','chapter_versions','context','decisions','sources','briefs'].forEach(function(t){
+        ch.on('postgres_changes', {event:'*', schema:'public', table:t}, dspOnChange);
+      });
+      ch.subscribe(); dspChan=ch;
+    }catch(e){}
+  }
+  function dspRealtimeOff(){ if(dspChan){ try{ SB.removeChannel(dspChan); }catch(e){} dspChan=null; } clearTimeout(dspRtTimer); }
+  function dspOnChange(){ clearTimeout(dspRtTimer); dspRtTimer=setTimeout(function(){ dspBadges(); if(!dspEditing) dspTab(dspCur); }, 450); }
+  function dspTab(name){
+    dspCur=name; dspFilterCb=null;
+    var tabs=document.querySelectorAll('#dispatch .dsp-tabs button');
+    for(var i=0;i<tabs.length;i++) tabs[i].classList.toggle('on', tabs[i].getAttribute('data-dt')===name);
+    var fn={bus:renderBus,pub:renderPub,ctx:renderCtx,dec:renderDec,src:renderSrc,health:renderHealth,briefs:renderBriefs}[name];
+    if(fn) fn();
+  }
+  async function dspBadges(){
+    try{
+      var b=await SB.from('bus').select('id',{count:'exact',head:true}).eq('status','open'); dspSetBadge('dbgBus', b.count);
+      var p=await SB.from('chapter_versions').select('id',{count:'exact',head:true}).eq('status','draft'); dspSetBadge('dbgPub', p.count);
+      var s=await SB.from('sources').select('id',{count:'exact',head:true}).eq('status','inbox'); dspSetBadge('dbgSrc', s.count);
+    }catch(e){}
+  }
+
+  async function renderBus(){
+    var body=document.getElementById('dspBody'), f=dspBusF;
+    body.innerHTML='<div class="dsp-filters">'
+      + dspFsel('status',{'open':'Открытые','done':'Готово','':'Все статусы'},f.status)
+      + dspFsel('dst',{'':'Любой dst','reader':'reader','book':'book','research':'research','super':'super','any':'any'},f.dst)
+      + dspFsel('kind',{'':'Любой тип','task':'task','fyi':'fyi','decision':'decision','blocker':'blocker','ack':'ack'},f.kind)
+      + '</div><div id="dspList"><div class="dsp-load">Загрузка…</div></div>';
+    dspWireFilters(function(k,v){ dspBusF[k]=v; renderBus(); });
+    var q=SB.from('bus').select('*').order('created_at',{ascending:false}).limit(200);
+    if(f.status) q=q.eq('status',f.status);
+    if(f.dst) q=q.eq('dst',f.dst);
+    if(f.kind) q=q.eq('kind',f.kind);
+    var r=await q, list=document.getElementById('dspList');
+    if(r.error){ list.innerHTML=dspErr('Нет доступа к bus: '+r.error.message); return; }
+    var rows=r.data||[];
+    if(!rows.length){ list.innerHTML='<div class="dsp-empty">Сообщений нет.</div>'; return; }
+    list.innerHTML=rows.map(function(m){
+      var blocker=(m.kind==='blocker'), hung=(m.status==='open'&&dspDays(m.created_at)>3);
+      var refs=(m.refs||[]).map(function(x){ return '<span class="dsp-chip ghost">'+dspEsc(x)+'</span>'; }).join('');
+      return '<div class="dsp-card'+(blocker?' blocker':'')+'">'
+        +'<div class="dsp-row1"><span class="dsp-route">'+dspEsc(m.src)+' → '+dspEsc(m.dst)+'</span>'
+        +'<span class="dsp-chip k-'+dspEsc(m.kind)+'">'+dspEsc(m.kind)+'</span>'
+        +(m.status==='done'?'<span class="dsp-chip done">готово</span>':'')
+        +(hung?'<span class="dsp-chip warn">висит '+Math.floor(dspDays(m.created_at))+'д</span>':'')
+        +'<span class="dsp-age">'+dspAgo(m.created_at)+'</span></div>'
+        +'<div class="dsp-subj">'+dspEsc(m.subject)+'</div>'
+        +(m.body?'<div class="dsp-text">'+dspEsc(m.body)+'</div>':'')
+        +(refs?'<div class="dsp-refs">'+refs+'</div>':'')
+        +'<div class="dsp-acts">'
+        +(m.status==='open'?'<button class="dsp-btn" data-act="bus-done" data-id="'+dspEsc(m.id)+'">Готово</button>':'')
+        +'<button class="dsp-btn ghost" data-act="bus-reply" data-id="'+dspEsc(m.id)+'" data-src="'+dspEsc(m.src)+'">Ответить</button>'
+        +'</div></div>';
+    }).join('');
+  }
+  async function busDone(id){
+    var r=await SB.from('bus').update({status:'done',updated_at:new Date().toISOString()}).eq('id',id);
+    if(r.error){ alert('Не удалось: '+r.error.message); return; }
+    dspBadges(); renderBus();
+  }
+  async function busReply(id, src){
+    var txt=prompt('Ответ (ack) для «'+src+'»:',''); if(txt==null) return; txt=txt.trim(); if(!txt) return;
+    var r=await SB.from('bus').insert({src:'super',dst:src,kind:'ack',status:'open',subject:'ack',body:txt,reply_to:id});
+    if(r.error){ alert('Не удалось: '+r.error.message); return; }
+    renderBus();
+  }
+
+  async function renderPub(){
+    var body=document.getElementById('dspBody');
+    body.innerHTML='<div id="dspList"><div class="dsp-load">Загрузка…</div></div>';
+    var r=await SB.from('chapter_versions').select('*').eq('status','draft').order('created_at',{ascending:false});
+    var list=document.getElementById('dspList');
+    if(r.error){ list.innerHTML=dspErr('Нет доступа: '+r.error.message); return; }
+    var rows=r.data||[];
+    if(!rows.length){ list.innerHTML='<div class="dsp-empty">Черновиков нет — публиковать нечего.</div>'; return; }
+    var live={}; var lr=await SB.from('chapters').select('id,title,ver,md');
+    if(!lr.error){ (lr.data||[]).forEach(function(c){ live[c.id]=c; }); }
+    list.innerHTML=rows.map(function(v){
+      var lv=live[v.chapter_id]||{}, diff=paraDiff(lv.md||'', v.md||'');
+      var changed=diff.filter(function(p){ return p.t!=='='; }).length;
+      var diffHtml=diff.map(function(p){
+        if(p.t==='='){ var s=p.s.length>90?p.s.slice(0,90)+'…':p.s; return '<div class="df ctx">'+dspEsc(s)+'</div>'; }
+        return '<div class="df '+(p.t==='+'?'add':'del')+'">'+(p.t==='+'?'+ ':'− ')+dspEsc(p.s)+'</div>';
+      }).join('');
+      return '<div class="dsp-card">'
+        +'<div class="dsp-row1"><span class="dsp-route">'+dspEsc(v.title||v.chapter_id)+'</span>'
+        +'<span class="dsp-chip">'+dspEsc((lv.ver||'—').slice(0,7))+' → '+dspEsc((v.ver||'?').slice(0,7))+'</span>'
+        +'<span class="dsp-age">'+dspAgo(v.created_at)+'</span></div>'
+        +'<div class="dsp-text">'+(v.author?('<b>'+dspEsc(v.author)+'</b> · '):'')+dspEsc(v.note||'без заметки')+'</div>'
+        +'<div class="dsp-acts">'
+        +'<button class="dsp-btn" data-act="pub-pub" data-id="'+dspEsc(v.id)+'">Опубликовать</button>'
+        +'<button class="dsp-btn ghost" data-act="pub-rej" data-id="'+dspEsc(v.id)+'">Отклонить</button>'
+        +'<button class="dsp-btn ghost" data-act="diff" data-id="'+dspEsc(v.id)+'">Дифф ('+changed+')</button>'
+        +'</div>'
+        +'<div class="dsp-diff" id="diff-'+dspEsc(v.id)+'" style="display:none">'+(diffHtml||'<div class="df ctx">различий нет</div>')+'</div>'
+        +'</div>';
+    }).join('');
+  }
+  async function pubPublish(id){
+    if(!confirm('Опубликовать эту версию в live?')) return;
+    var r=await SB.rpc('publish_version',{p_id:id});
+    if(r.error){ alert('Не удалось: '+r.error.message); return; }
+    dspBadges(); renderPub();
+  }
+  async function pubReject(id){
+    if(!confirm('Отклонить черновик (в архив)?')) return;
+    var r=await SB.from('chapter_versions').update({status:'archived'}).eq('id',id);
+    if(r.error){ alert('Не удалось: '+r.error.message); return; }
+    dspBadges(); renderPub();
+  }
+
+  async function renderCtx(){
+    var body=document.getElementById('dspBody');
+    body.innerHTML='<div id="dspList"><div class="dsp-load">Загрузка…</div></div>';
+    var r=await SB.from('context').select('*').order('role'); var list=document.getElementById('dspList');
+    if(r.error){ list.innerHTML=dspErr('Нет доступа: '+r.error.message); return; }
+    var rows=r.data||[];
+    if(!rows.length){ list.innerHTML='<div class="dsp-empty">Контекст пуст.</div>'; return; }
+    var banner=await dspConflictBanner('context_history');
+    list.innerHTML=banner+rows.map(function(c){
+      var stale=dspDays(c.updated_at)>3;
+      return '<div class="dsp-card"><div class="dsp-row1"><span class="dsp-route">'+dspEsc(c.role)+'</span>'
+        +'<span class="dsp-chip">v'+dspEsc(c.version)+'</span>'
+        +(stale?'<span class="dsp-chip warn">'+Math.floor(dspDays(c.updated_at))+'д назад</span>':'<span class="dsp-age">'+dspAgo(c.updated_at)+'</span>')
+        +'</div><div class="dsp-text pre">'+dspEsc(c.body)+'</div></div>';
+    }).join('');
+  }
+
+  async function renderDec(){
+    var body=document.getElementById('dspBody');
+    body.innerHTML='<div class="dsp-filters">'+dspFsel('domain',{'':'Все домены','reader':'reader','book':'book','research':'research','super':'super'},dspDecDom)
+      +'<button class="dsp-btn ghost" data-act="dec-export">Экспорт §17</button></div>'
+      +'<div id="dspList"><div class="dsp-load">Загрузка…</div></div>';
+    dspWireFilters(function(k,v){ dspDecDom=v; renderDec(); });
+    var q=SB.from('decisions').select('*').order('created_at',{ascending:false});
+    if(dspDecDom) q=q.eq('domain',dspDecDom);
+    var r=await q, list=document.getElementById('dspList');
+    if(r.error){ list.innerHTML=dspErr('Нет доступа: '+r.error.message); return; }
+    DEC_ROWS=r.data||[];
+    if(!DEC_ROWS.length){ list.innerHTML='<div class="dsp-empty">Решений нет.</div>'; return; }
+    list.innerHTML=DEC_ROWS.map(function(d){
+      var aff=(d.affects||[]).map(function(x){ return '<span class="dsp-chip ghost">'+dspEsc(x)+'</span>'; }).join('');
+      return '<div class="dsp-card"><div class="dsp-row1"><span class="dsp-chip">'+dspEsc(d.domain||'—')+'</span>'
+        +'<span class="dsp-age">'+dspDate(d.created_at)+'</span></div>'
+        +'<div class="dsp-subj">'+dspEsc(d.summary)+'</div>'
+        +(d.detail?'<div class="dsp-text">'+dspEsc(d.detail)+'</div>':'')
+        +(aff?'<div class="dsp-refs">'+aff+'</div>':'')
+        +(d.decided_by?'<div class="dsp-by">— '+dspEsc(d.decided_by)+'</div>':'')+'</div>';
+    }).join('');
+  }
+  function decExportAll(){
+    var md='# §17. Журнал решений\n\n';
+    DEC_ROWS.forEach(function(d){
+      md+='## '+(d.domain||'—')+' · '+dspDate(d.created_at)+'\n**'+(d.summary||'')+'**\n\n';
+      if(d.detail) md+=d.detail+'\n\n';
+      if(d.affects&&d.affects.length) md+='_Затрагивает: '+d.affects.join(', ')+'_\n\n';
+      if(d.decided_by) md+='— '+d.decided_by+'\n\n';
+    });
+    var blob=new Blob([md],{type:'text/markdown'}), u=URL.createObjectURL(blob);
+    var a=document.createElement('a'); a.href=u; a.download='journal_17.md'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(u);
+  }
+
+  async function renderSrc(){
+    var body=document.getElementById('dspBody');
+    body.innerHTML='<div class="dsp-filters">'
+      +dspFsel('status',{'':'Все статусы','inbox':'inbox','verified':'verified'},dspSrcF.status)
+      +dspFsel('rob',{'':'Любая надёжность','strong':'strong','mixed':'mixed','weak':'weak'},dspSrcF.rob)
+      +'</div><div id="dspCounters"></div><div id="dspList"><div class="dsp-load">Загрузка…</div></div>';
+    dspWireFilters(function(k,v){ dspSrcF[k]=v; renderSrc(); });
+    try{
+      var ci=await SB.from('sources').select('id',{count:'exact',head:true}).eq('status','inbox');
+      var cv=await SB.from('sources').select('id',{count:'exact',head:true}).eq('status','verified');
+      var imb=(ci.count||0)>(cv.count||0)*2 && (ci.count||0)>3;
+      document.getElementById('dspCounters').innerHTML='<div class="dsp-kpis">'
+        +'<div class="dsp-kpi'+(imb?' warn':'')+'"><b>'+(ci.count||0)+'</b><span>inbox</span></div>'
+        +'<div class="dsp-kpi"><b>'+(cv.count||0)+'</b><span>verified</span></div></div>'
+        +(imb?'<div class="dsp-note">Очередь фактчека растёт — Афина отстаёт.</div>':'');
+    }catch(e){}
+    var q=SB.from('sources').select('*').order('created_at',{ascending:false}).limit(200);
+    if(dspSrcF.status) q=q.eq('status',dspSrcF.status);
+    if(dspSrcF.rob) q=q.eq('robustness',dspSrcF.rob);
+    var r=await q, list=document.getElementById('dspList');
+    if(r.error){ list.innerHTML=dspErr('Нет доступа: '+r.error.message); return; }
+    var rows=r.data||[];
+    if(!rows.length){ list.innerHTML='<div class="dsp-empty">Источников нет.</div>'; return; }
+    list.innerHTML=rows.map(function(s){
+      var chs=(s.chapters||[]).map(function(x){ return '<span class="dsp-chip ghost">'+dspEsc(x)+'</span>'; }).join('');
+      return '<div class="dsp-card"><div class="dsp-row1">'
+        +'<span class="dsp-chip '+(s.status==='verified'?'done':'warn')+'">'+dspEsc(s.status||'—')+'</span>'
+        +(s.robustness?'<span class="dsp-chip">'+dspEsc(s.robustness)+'</span>':'')
+        +'<span class="dsp-age">'+dspEsc(s.year||'')+'</span></div>'
+        +'<div class="dsp-subj">'+dspEsc(s.title)+(s.authors?(' · '+dspEsc(s.authors)):'')+'</div>'
+        +(s.claim?'<div class="dsp-text">'+dspEsc(s.claim)+'</div>':'')
+        +(chs?'<div class="dsp-refs">'+chs+'</div>':'')+'</div>';
+    }).join('');
+  }
+
+  async function renderHealth(){
+    var body=document.getElementById('dspBody');
+    body.innerHTML='<div id="dspList"><div class="dsp-load">Загрузка…</div></div>';
+    var list=document.getElementById('dspList');
+    try{
+      var pr=await SB.from('profiles').select('user_id',{count:'exact',head:true});
+      var pg=await SB.from('progress').select('max_frac');
+      var oc=await SB.from('comments').select('id',{count:'exact',head:true}).eq('status','open');
+      var rt=await SB.from('ratings').select('score');
+      var depth=0; if(pg.data&&pg.data.length){ depth=pg.data.reduce(function(a,x){ return a+(x.max_frac||0); },0)/pg.data.length; }
+      var rating=0; if(rt.data&&rt.data.length){ rating=rt.data.reduce(function(a,x){ return a+(x.score||0); },0)/rt.data.length; }
+      var lint=await dspChapterLint();
+      list.innerHTML='<div class="dsp-kpis big">'
+        +'<div class="dsp-kpi"><b>'+(pr.count||0)+'</b><span>читателей</span></div>'
+        +'<div class="dsp-kpi"><b>'+Math.round(depth*100)+'%</b><span>средняя глубина</span></div>'
+        +'<div class="dsp-kpi"><b>'+(oc.count||0)+'</b><span>открытых правок</span></div>'
+        +'<div class="dsp-kpi"><b>'+(rating?rating.toFixed(1):'—')+'</b><span>средняя оценка</span></div>'
+        +'</div><div class="dsp-note">Подробный разбор по главам — в «Дашборде глав» (меню «···»).</div>'+lint;
+    }catch(e){ list.innerHTML=dspErr('Ошибка: '+e.message); }
+  }
+
+  var BRIEF_ROWS={};
+  async function dspConflictBanner(htable, roleFilter){
+    try{
+      var since=new Date(Date.now()-3600000).toISOString();
+      var r=await SB.from(htable).select('role,updated_by,updated_at').gte('updated_at',since);
+      if(r.error || !r.data) return '';
+      var byRole={};
+      r.data.forEach(function(h){ (byRole[h.role]=byRole[h.role]||{})[h.updated_by||'?']=1; });
+      var hot=Object.keys(byRole).filter(function(role){ return Object.keys(byRole[role]).length>1; });
+      if(roleFilter) hot=hot.filter(function(x){ return x===roleFilter; });
+      if(!hot.length) return '';
+      return '<div class="dsp-card blocker"><div class="dsp-row1"><span class="dsp-chip k-blocker">конфликт</span></div>'
+        +'<div class="dsp-text">За последний час по «'+hot.map(dspEsc).join('», «')+'» писали разные треды. Проверь, не затёрли ли друг друга.</div></div>';
+    }catch(e){ return ''; }
+  }
+  async function dspChapterLint(){
+    try{
+      var cr=await SB.from('chapters').select('id'); if(cr.error) return '';
+      var valid={}; (cr.data||[]).forEach(function(c){ valid[c.id]=1; valid[String(c.id).split('_')[0]]=1; });
+      var isCh=function(t){ return /^g\d/i.test(t); };
+      var bad={};
+      function scan(arr, where){ (arr||[]).forEach(function(t){ if(isCh(t) && !valid[t]){ (bad[t]=bad[t]||{})[where]=1; } }); }
+      var bs=await SB.from('bus').select('refs'); if(!bs.error) (bs.data||[]).forEach(function(x){ scan(x.refs,'шина'); });
+      var ds=await SB.from('decisions').select('affects'); if(!ds.error) (ds.data||[]).forEach(function(x){ scan(x.affects,'решения'); });
+      var ss=await SB.from('sources').select('chapters'); if(!ss.error) (ss.data||[]).forEach(function(x){ scan(x.chapters,'научбаза'); });
+      var keys=Object.keys(bad);
+      if(!keys.length) return '<div class="dsp-note">Целостность ссылок: битых chapter-id не найдено.</div>';
+      return '<div class="dsp-card blocker"><div class="dsp-row1"><span class="dsp-chip k-blocker">битые ссылки</span></div>'
+        +'<div class="dsp-text">Ссылки на несуществующие главы: '
+        +keys.map(function(k){ return dspEsc(k)+' ('+Object.keys(bad[k]).join(', ')+')'; }).join('; ')+'</div></div>';
+    }catch(e){ return ''; }
+  }
+  async function renderBriefs(){
+    var body=document.getElementById('dspBody');
+    body.innerHTML='<div id="dspList"><div class="dsp-load">Загрузка…</div></div>';
+    var r=await SB.from('briefs').select('*').order('role'); var list=document.getElementById('dspList');
+    if(r.error){ list.innerHTML=dspErr('Нет доступа: '+r.error.message); return; }
+    var rows=r.data||[];
+    if(!rows.length){ list.innerHTML='<div class="dsp-empty">Брифов нет.</div>'; return; }
+    BRIEF_ROWS={}; rows.forEach(function(b){ BRIEF_ROWS[b.role]=b; });
+    var banner=await dspConflictBanner('brief_history');
+    list.innerHTML='<div class="dsp-filters"><button class="dsp-btn ghost" data-act="briefs-export">Экспорт брифов (.md)</button></div>'+banner+rows.map(function(b){
+      return '<div class="dsp-card" id="brief-card-'+dspEsc(b.role)+'"><div class="dsp-row1"><span class="dsp-route">'+dspEsc(b.name||b.role)+'</span>'
+        +'<span class="dsp-chip">v'+dspEsc(b.version)+'</span><span class="dsp-age">'+dspAgo(b.updated_at)+'</span>'
+        +'<button class="dsp-btn ghost" data-act="brief-edit" data-role="'+dspEsc(b.role)+'" style="margin-left:auto">Править</button></div>'
+        +'<div class="dsp-text pre clamp">'+dspEsc(b.body)+'</div></div>';
+    }).join('');
+  }
+  function editBrief(role){
+    var b=BRIEF_ROWS[role], card=document.getElementById('brief-card-'+role); if(!b||!card) return;
+    dspEditing=true;
+    card.innerHTML='<div class="dsp-row1"><span class="dsp-route">'+dspEsc(b.name||b.role)+'</span><span class="dsp-chip">правка · v'+dspEsc(b.version)+'</span></div>'
+      +'<textarea class="dsp-ta" id="brief-ta-'+dspEsc(role)+'"></textarea>'
+      +'<div class="dsp-acts"><button class="dsp-btn" data-act="brief-save" data-role="'+dspEsc(role)+'">Сохранить</button>'
+      +'<button class="dsp-btn ghost" data-act="brief-cancel" data-role="'+dspEsc(role)+'">Отмена</button></div>';
+    var ta=document.getElementById('brief-ta-'+role); if(ta){ ta.value=b.body||''; ta.focus(); }
+  }
+  async function saveBrief(role){
+    var b=BRIEF_ROWS[role], ta=document.getElementById('brief-ta-'+role); if(!b||!ta) return;
+    var typed=ta.value;
+    var r=await SB.rpc('guarded_set',{p_table:'briefs',p_role:role,p_expected:b.version,p_body:typed,p_by:'super'});
+    if(!r.error){ dspEditing=false; renderBriefs(); return; }
+    var rr=await SB.from('briefs').select('*').eq('role',role).single();
+    if(rr.error || !rr.data){ alert('Не удалось сохранить: '+r.error.message); return; }
+    var fresh=rr.data;
+    if((fresh.body||'')===(b.body||'') && fresh.version===b.version){ alert('Не удалось сохранить: '+r.error.message); return; }
+    BRIEF_ROWS[role]=fresh;
+    var card=document.getElementById('brief-card-'+role); if(!card){ alert('Бриф изменён другим тредом, перечитал.'); return; }
+    card.innerHTML='<div class="dsp-row1"><span class="dsp-route">'+dspEsc(fresh.name||fresh.role)+'</span><span class="dsp-chip warn">конфликт → v'+dspEsc(fresh.version)+'</span></div>'
+      +'<div class="dsp-note">Бриф изменён другим тредом. Ниже — актуальная версия из БД. Слей нужное в своё поле и сохрани поверх v'+dspEsc(fresh.version)+'.</div>'
+      +'<div class="dsp-text pre clamp" style="margin:8px 0">'+dspEsc(fresh.body)+'</div>'
+      +'<textarea class="dsp-ta" id="brief-ta-'+dspEsc(role)+'"></textarea>'
+      +'<div class="dsp-acts"><button class="dsp-btn" data-act="brief-save" data-role="'+dspEsc(role)+'">Сохранить поверх v'+dspEsc(fresh.version)+'</button>'
+      +'<button class="dsp-btn ghost" data-act="brief-cancel" data-role="'+dspEsc(role)+'">Отмена</button></div>';
+    var ta2=document.getElementById('brief-ta-'+role); if(ta2){ ta2.value=typed; ta2.focus(); }
+  }
+
+  function briefsExportAll(){
+    var roles=Object.keys(BRIEF_ROWS); if(!roles.length) return;
+    var md='# Брифы — снимок ('+dspDate(new Date().toISOString())+')\n\n';
+    roles.forEach(function(role){ var b=BRIEF_ROWS[role]; md+='## '+(b.name||b.role)+' ('+b.role+') · v'+b.version+'\n\n'+(b.body||'')+'\n\n---\n\n'; });
+    var blob=new Blob([md],{type:'text/markdown'}), u=URL.createObjectURL(blob);
+    var a=document.createElement('a'); a.href=u; a.download='briefs_snapshot.md'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(u);
+  }
+  function paraDiff(liveMd, draftMd){
+    var A=String(liveMd||'').split(/\n\s*\n/).map(function(s){ return s.trim(); }).filter(Boolean);
+    var B=String(draftMd||'').split(/\n\s*\n/).map(function(s){ return s.trim(); }).filter(Boolean);
+    var n=A.length, m=B.length, dp=[], i, j;
+    for(i=0;i<=n;i++){ dp[i]=new Array(m+1).fill(0); }
+    for(i=n-1;i>=0;i--) for(j=m-1;j>=0;j--) dp[i][j]= A[i]===B[j]? dp[i+1][j+1]+1 : Math.max(dp[i+1][j], dp[i][j+1]);
+    var out=[]; i=0; j=0;
+    while(i<n&&j<m){ if(A[i]===B[j]){ out.push({t:'=',s:A[i]}); i++; j++; } else if(dp[i+1][j]>=dp[i][j+1]){ out.push({t:'-',s:A[i]}); i++; } else { out.push({t:'+',s:B[j]}); j++; } }
+    while(i<n){ out.push({t:'-',s:A[i]}); i++; }
+    while(j<m){ out.push({t:'+',s:B[j]}); j++; }
+    return out;
+  }
+
+  (function(){
+    var b=document.getElementById('btnDispatch'); if(b) b.onclick=function(){ closeMenus(); openDispatch(); };
+    var c=document.getElementById('dspClose'); if(c) c.onclick=closeDispatch;
+    var rf=document.getElementById('dspRefresh'); if(rf) rf.onclick=function(){ dspBadges(); dspTab(dspCur); };
+    var tb=document.querySelectorAll('#dispatch .dsp-tabs button');
+    for(var i=0;i<tb.length;i++){ (function(t){ t.onclick=function(){ dspTab(t.getAttribute('data-dt')); }; })(tb[i]); }
+    var bd=document.getElementById('dspBody');
+    if(bd){
+      bd.addEventListener('click', function(e){
+        var x=e.target.closest('[data-act]'); if(!x) return;
+        var act=x.getAttribute('data-act'), id=x.getAttribute('data-id');
+        if(act==='bus-done') busDone(id);
+        else if(act==='bus-reply') busReply(id, x.getAttribute('data-src'));
+        else if(act==='pub-pub') pubPublish(id);
+        else if(act==='pub-rej') pubReject(id);
+        else if(act==='dec-export') decExportAll();
+        else if(act==='briefs-export') briefsExportAll();
+        else if(act==='brief-edit') editBrief(x.getAttribute('data-role'));
+        else if(act==='brief-save') saveBrief(x.getAttribute('data-role'));
+        else if(act==='brief-cancel'){ dspEditing=false; renderBriefs(); }
+        else if(act==='diff'){ var d=document.getElementById('diff-'+id); if(d) d.style.display=(d.style.display==='none'?'':'none'); }
+      });
+      bd.addEventListener('change', function(e){
+        var s=e.target.closest('select[data-fk]'); if(!s) return;
+        if(dspFilterCb) dspFilterCb(s.getAttribute('data-fk'), s.value);
+      });
+    }
   })();
 
 })();
