@@ -1092,6 +1092,61 @@
   .kbp-nb-head{ display:flex; align-items:center; gap:8px; margin-bottom:6px }
   .kbp-nb-head b{ flex:1; font-size:13.5px; color:var(--ink) }
   .kbp-nb-close{ background:none; border:none; color:var(--muted); cursor:pointer; font-size:13px; padding:0 }
+
+  /* ===== Publish size guard ===== */
+  .pub-sizes{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:8px 0; font-size:12.5px; color:var(--muted); padding:7px 10px; border-radius:8px; background:var(--card); border:1px solid var(--line) }
+  .pub-sizes span b{ color:var(--ink) }
+  .pub-size-badge{ font-family:var(--font-mono); font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px; white-space:nowrap }
+  .pub-size-danger{ border-color:var(--danger) } .pub-size-danger .pub-size-badge{ background:var(--danger); color:#fff }
+  .pub-size-warn{ border-color:var(--warn) } .pub-size-warn .pub-size-badge{ background:var(--warn); color:#fff }
+  .pub-btn-warn{ background:var(--danger); border-color:var(--danger); color:#fff }
+  .pub-btn-warn:hover{ opacity:.88 }
+
+  /* ===== Predict → See (learning layer) ===== */
+  #content .predict-box{ margin:28px 0; padding:18px 18px 14px; border-radius:14px; border:1.5px solid color-mix(in srgb,#6b7ce8 35%,var(--line)); border:1.5px solid #b0b8e8; background:#f5f6fd; background:color-mix(in srgb,#6b7ce8 7%,var(--bg)) }
+  #content .pd-tag{ font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:.10em; text-transform:uppercase; color:#6b7ce8; margin-bottom:10px }
+  #content .pd-setup{ font-size:15px; color:var(--read); line-height:1.62; margin-bottom:12px }
+  #content .pd-q{ font-size:13px; font-weight:700; color:var(--ink); margin-bottom:8px }
+  #content .pd-choices{ display:flex; flex-direction:column; gap:7px; margin-bottom:12px }
+  #content .pd-opt{ display:flex; align-items:flex-start; gap:8px; cursor:pointer; font-size:14px; color:var(--read); line-height:1.4; padding:6px 10px; border-radius:8px; border:1px solid var(--line); background:var(--card) }
+  #content .pd-opt:hover{ border-color:#6b7ce8 }
+  #content .pd-opt input{ margin-top:3px; flex-shrink:0; accent-color:#6b7ce8 }
+  #content .pd-input{ width:100%; padding:8px 10px; border:1px solid var(--line-2); border-radius:9px; font-size:14px; font-family:var(--font-read); background:var(--card); color:var(--ink); resize:none }
+  #content .pd-input:focus{ outline:none; border-color:#6b7ce8 }
+  #content .pd-commit-btn{ padding:9px 18px; background:#6b7ce8; border:none; border-radius:9px; color:#fff; font-size:14px; font-weight:600; cursor:pointer; font-family:inherit }
+  #content .pd-commit-btn:hover{ background:#5a6ad6 }
+  #content .pd-reveal{ margin-top:14px; padding:12px 14px; border-radius:10px; background:var(--accent-tint); border-left:3px solid var(--accent); animation:kbFade .3s ease both }
+  #content .pd-actual{ font-size:14.5px; color:var(--ink); margin-bottom:8px; line-height:1.5 }
+  #content .pd-al{ font-weight:700; color:var(--accent); margin-right:6px }
+  #content .pd-gap{ font-size:13px; color:var(--muted); padding-top:8px; border-top:1px solid var(--line) }
+  #content .pd-gl{ font-weight:600; color:var(--muted); margin-right:6px }
+  #content .pd-gc{ font-style:italic }
+  @media(prefers-color-scheme:dark){
+    #content .predict-box{ background:rgba(107,124,232,.10); border-color:rgba(107,124,232,.35) }
+  }
+
+  /* ===== TWIST: predict → reveal (learning layer) ===== */
+  #content .twist-box{ border-radius:12px; padding:16px 18px 14px; margin:26px 0; line-height:1.6; background:#f6f1eb; border-left:3px solid var(--accent); background:color-mix(in srgb,var(--accent-tint) 85%,var(--bg)); }
+  #content .twist-done{ background:color-mix(in srgb,var(--good) 8%,var(--bg)); background:#eef5ee; border-left-color:var(--good) }
+  #content .twist-tag{ font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:.10em; text-transform:uppercase; color:var(--accent); margin-bottom:8px }
+  #content .twist-done .twist-tag{ color:var(--good) }
+  #content .twist-q{ font-size:16px; font-weight:700; color:var(--ink); line-height:1.4; margin-bottom:12px }
+  #content .twist-wi-row{ display:flex; align-items:flex-start; gap:8px; flex-wrap:wrap; margin-bottom:10px }
+  #content .twist-wi-lbl{ font-size:12px; color:var(--muted); flex-shrink:0; padding-top:5px }
+  #content .twist-wi-btn{ padding:5px 12px; border:1px dashed var(--line-2); border-radius:8px; background:var(--card); color:var(--read); font-size:13px; cursor:pointer; text-align:left; font-family:inherit; line-height:1.4 }
+  #content .twist-wi-btn:hover{ border-color:var(--accent); color:var(--accent) }
+  #content .twist-wi-hint{ font-size:11px; color:var(--muted); align-self:center }
+  #content .twist-input-row{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px }
+  #content .twist-inp{ flex:1 1 160px; height:38px; padding:0 12px; border:1px solid var(--line-2); border-radius:9px; background:var(--bg); color:var(--ink); font-size:14px; font-family:inherit; outline:none }
+  #content .twist-inp:focus{ border-color:var(--accent) }
+  #content .twist-commit{ padding:9px 16px; background:var(--accent); color:#fff; border:none; border-radius:9px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; white-space:nowrap }
+  #content .twist-hint{ font-size:12px; color:var(--muted) }
+  #content .twist-your{ font-size:13px; color:var(--muted); margin-bottom:8px; font-style:italic }
+  #content .twist-reveal{ font-size:16px; font-weight:700; color:var(--ink); line-height:1.45; margin-bottom:10px }
+  #content .twist-why{ font-size:14px; color:var(--read); line-height:1.6; margin-bottom:10px }
+  #content .twist-kbn{ display:flex; flex-wrap:wrap; gap:6px; margin-top:8px }
+  #content .twist-kbn-btn{ padding:4px 10px; border:1px solid var(--line); border-radius:999px; background:var(--card); color:var(--accent); font-size:12px; cursor:pointer; font-family:var(--font-mono) }
+  #content .twist-kbn-btn:hover{ border-color:var(--accent); background:var(--accent-tint) }
 </style>
 </head>
 <body>
@@ -1532,8 +1587,17 @@
   function currentBook(){ return state.book||'main'; }
 
   // ====== ВЕРСИЯ ПРИЛОЖЕНИЯ (повышать с каждым апдейтом HTML) ======
-  var APP_VERSION='5.24';
+  var APP_VERSION='5.27';
   var APP_CHANGELOG=[
+    {v:'5.27', items:[
+      'TWIST-маркеры: новый формат <!-- TWIST: id=... | commit_q=... | wrong_intuition=... | reveal=... | why=... | kb_nodes=... --> разворачивается в виджет с типичной ошибкой (тап = автозаполнение), свободным вводом и разрывом после фиксации. Прогноз в localStorage + learning_events. Тап на KB-концепт → открывает его карточку в панели.',
+    ]},
+    {v:'5.26', items:[
+      'Обучающий слой: маркер <!-- PREDICT --> в тексте главы разворачивается в блок «Предскажи → увидь». Читатель фиксирует прогноз (выбор или свободный текст), после чего видит что случилось и свой прогноз рядом. Ответ хранится в сессии и логируется в learning_events. Без баллов, без оценок — только разрыв.',
+    ]},
+    {v:'5.25', items:[
+      'Защита публикации: размер черновика vs живой главы теперь виден рядом; если черновик < 500 симв или < 25% живой — красный бейдж «заглушка» и кнопка становится предупреждающей. Ошибки publish_version теперь видны (раньше молчала). Кнопка «↩ Откатить» для восстановления главы. Карта базы: добавлена подписка на kb_edges в realtime-канал.',
+    ]},
     {v:'5.24', items:[
       'TOC: главы с частичным прогрессом (10–96%) теперь показывают тонкую полоску прочитанного — видно, где ты остановился. Свайп по зоне «Дальше/Назад» меняет главу. Исправлен баг с закрытием мини-карточки соседнего концепта.',
     ]},
@@ -1931,6 +1995,44 @@
       if(!text) return '';
       return '\n\n<div class="tryit-box"><div class="tryit-tag">На практике</div><p>'+escapeHtml(text)+'</p></div>\n\n';
     });
+    // TWIST: predict → reveal (learning layer v2 format)
+    md = md.replace(/<!--\s*TWIST:\s*([\s\S]*?)-->/g, function(m, attrs){
+      function pa(k){ var r=attrs.match(new RegExp('(?:^|\\|)\\s*'+k+'=([^|>]+)')); return r?r[1].replace(/\s+/g,' ').trim():''; }
+      var id=pa('id'), cq=pa('commit_q'), wi=pa('wrong_intuition'), reveal=pa('reveal'), why=pa('why'), kbn=pa('kb_nodes'), chapter=pa('chapter');
+      if(!id||!cq||!reveal) return '';
+      var uid='tw-'+id.replace(/[^a-z0-9]/gi,'-').toLowerCase();
+      return '\n\n<div class="twist-box" id="'+uid+'"'
+        +' data-tid="'+escapeHtml(id)+'"'
+        +' data-cq="'+escapeHtml(cq)+'"'
+        +' data-wi="'+escapeHtml(wi)+'"'
+        +' data-reveal="'+escapeHtml(reveal)+'"'
+        +' data-why="'+escapeHtml(why)+'"'
+        +' data-kbn="'+escapeHtml(kbn)+'"'
+        +' data-ch="'+escapeHtml(chapter)+'">'
+        +'</div>\n\n';
+    });
+    // predict → see (learning layer)
+    md = md.replace(/<!--\s*PREDICT:\s*([\s\S]*?)-->/g, function(m, attrs){
+      function pa(k){ var r=attrs.match(new RegExp(k+'=([^|>]+)')); return r?r[1].replace(/\s+/g,' ').trim():''; }
+      var concept=pa('concept'), setup=pa('setup'), opts=pa('options'), actual=pa('actual'), pref=pa('prompt_ref');
+      if(!setup||!actual) return '';
+      var uid='pdx-'+(pref||concept).replace(/[^a-z0-9]/gi,'-').toLowerCase().slice(0,32);
+      var optList=opts?opts.split(',').map(function(s){return s.trim();}).filter(Boolean):[];
+      var choicesHtml=optList.length
+        ? optList.map(function(o){ return '<label class="pd-opt"><input type="radio" name="'+uid+'" value="'+escapeHtml(o)+'"><span>'+escapeHtml(o)+'</span></label>'; }).join('')
+        : '<textarea class="pd-input" placeholder="Ваш прогноз…" rows="2"></textarea>';
+      return '\n\n<div class="predict-box" id="'+uid+'" data-pref="'+escapeHtml(pref)+'" data-concept="'+escapeHtml(concept)+'" data-actual="'+escapeHtml(actual)+'">'
+        +'<div class="pd-tag">Предскажи → увидь</div>'
+        +'<div class="pd-setup">'+escapeHtml(setup)+'</div>'
+        +'<div class="pd-q">Ваш прогноз:</div>'
+        +'<div class="pd-choices">'+choicesHtml+'</div>'
+        +'<button class="pd-commit-btn" data-act="pd-commit" data-uid="'+uid+'">Зафиксировать ↓</button>'
+        +'<div class="pd-reveal" style="display:none">'
+          +'<div class="pd-actual"><span class="pd-al">Что случилось:</span><span class="pd-at">'+escapeHtml(actual)+'</span></div>'
+          +'<div class="pd-gap"><span class="pd-gl">Ваш прогноз:</span><span class="pd-gc"></span></div>'
+        +'</div>'
+        +'</div>\n\n';
+    });
     // diagrams without a marker -> anchor after the relevant heading
     var anchors=(BYID[state.chapter] && BYID[state.chapter].figs) || null;
     if(anchors){ anchors.forEach(function(a){
@@ -2122,7 +2224,9 @@
       var _meta=document.createElement('div'); _meta.className='chap-meta'; _meta.textContent='≈ '+_m+' мин чтения';
       if((c.changelog && c.changelog.length) || canModerate()){ _meta.appendChild(document.createTextNode('  ·  ')); var _cl=document.createElement('button'); _cl.className='chap-changed-link'; _cl.textContent='Что изменилось'; _cl.onclick=function(){ openChapLog(c.id); }; _meta.appendChild(_cl); }
       _h1.insertAdjacentElement('afterend', _meta); }
-    fillFigures(); highlightChapter(); renderSpotMarks(); renderMarginMap(); renderKBPanel(); renderChapNav(); renderRate('rateBar'); renderReactBar(); renderDiscCTA(); renderSupp(); renderReadProgress(); refreshBookLogDot();
+    fillFigures(); highlightChapter(); renderSpotMarks(); renderMarginMap(); renderKBPanel(); renderChapNav();
+    twistFill(); pdRestore(); renderRate('rateBar'); renderReactBar(); renderDiscCTA(); renderSupp(); renderReadProgress(); refreshBookLogDot();
+    pdRestore();
   }
 
   function openChapter(id, scrollToTop){
@@ -2352,6 +2456,95 @@
     var closeBtn=nb.querySelector('.kbp-nb-close');
     if(closeBtn) closeBtn.onclick=function(e){ e.stopPropagation(); nb.remove(); };
     nb.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+
+  // ── Predict → See (learning layer) ──────────────────────────────────────
+  function pdCommit(uid){
+    var box=document.getElementById(uid); if(!box) return;
+    var committed='';
+    var radio=box.querySelector('input[type="radio"]:checked'); if(radio) committed=radio.value;
+    if(!committed){ var ta=box.querySelector('.pd-input'); if(ta) committed=ta.value.trim(); }
+    if(!committed){ if(typeof toast==='function') toast('Введите ваш прогноз'); return; }
+    var reveal=box.querySelector('.pd-reveal'); if(reveal) reveal.style.display='';
+    var gc=box.querySelector('.pd-gc'); if(gc) gc.textContent=committed;
+    box.querySelectorAll('input,textarea').forEach(function(el){ el.disabled=true; });
+    var btn=box.querySelector('.pd-commit-btn'); if(btn){ btn.disabled=true; btn.style.display='none'; }
+    box.classList.add('pd-committed');
+    try{ sessionStorage.setItem('pd:'+uid, committed); }catch(e){}
+    if(SB && USER && USER.id){
+      var pref=box.getAttribute('data-pref')||'', concept=box.getAttribute('data-concept')||'', actual=box.getAttribute('data-actual')||'';
+      SB.from('learning_events').insert({learner:USER.id, kind:'predict', concept:concept, prompt_ref:pref, committed:committed, actual:actual, outcome:'revealed', shown_back:false})
+        .then(function(r){ if(r.error) console.warn('learning_events:',r.error.message); });
+    }
+    if(reveal) reveal.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+  function pdRestore(){
+    document.querySelectorAll('.predict-box').forEach(function(box){
+      var uid=box.id, committed;
+      try{ committed=sessionStorage.getItem('pd:'+uid); }catch(e){}
+      if(!committed) return;
+      var radio=box.querySelector('input[value="'+committed.replace(/"/g,'\\"')+'"]'); if(radio) radio.checked=true;
+      var ta=box.querySelector('.pd-input'); if(ta) ta.value=committed;
+      var reveal=box.querySelector('.pd-reveal'); if(reveal) reveal.style.display='';
+      var gc=box.querySelector('.pd-gc'); if(gc) gc.textContent=committed;
+      box.querySelectorAll('input,textarea').forEach(function(el){ el.disabled=true; });
+      var btn=box.querySelector('.pd-commit-btn'); if(btn){ btn.disabled=true; btn.style.display='none'; }
+      box.classList.add('pd-committed');
+    });
+  }
+
+  function twistFill(){
+    document.querySelectorAll('#content .twist-box').forEach(function(box){
+      if(box._twFilled) return;
+      box._twFilled=true;
+      var uid=box.id, tid=box.getAttribute('data-tid');
+      var committed; try{ committed=lsGet('tw:'+tid); }catch(e){}
+      if(committed){ twistShowReveal(box,committed); return; }
+      var cq=box.getAttribute('data-cq'), wi=box.getAttribute('data-wi');
+      box.innerHTML='<div class="twist-tag">Предскажи</div>'
+        +'<div class="twist-q">'+escapeHtml(cq)+'</div>'
+        +(wi?'<div class="twist-wi-row"><span class="twist-wi-lbl">Типичная ошибка:</span>'
+            +'<button class="twist-wi-btn" data-act="twist-wi" data-uid="'+uid+'">'+escapeHtml(wi)+'</button>'
+            +'<span class="twist-wi-hint">нажми если это твоя мысль</span></div>':'')
+        +'<div class="twist-input-row">'
+        +'<input class="twist-inp" id="'+uid+'-inp" type="text" placeholder="Ваш прогноз…" autocomplete="off">'
+        +'<button class="twist-commit" data-act="twist-commit" data-uid="'+uid+'">Зафиксировать ↓</button>'
+        +'</div>'
+        +'<div class="twist-hint">Ошибиться — это и есть смысл. Прогноз не оценивается.</div>';
+    });
+  }
+  function twistShowReveal(box, committed){
+    var reveal=box.getAttribute('data-reveal'), why=box.getAttribute('data-why');
+    var kbn=(box.getAttribute('data-kbn')||'').split(',').map(function(s){return s.trim();}).filter(Boolean);
+    box.classList.add('twist-done');
+    box.innerHTML='<div class="twist-tag">Разрыв</div>'
+      +'<div class="twist-your"><b>Вы сказали:</b> '+escapeHtml(committed)+'</div>'
+      +'<div class="twist-reveal">'+escapeHtml(reveal)+'</div>'
+      +(why?'<div class="twist-why">'+escapeHtml(why)+'</div>':'')
+      +(kbn.length?'<div class="twist-kbn">'+kbn.map(function(k){
+          return '<button class="twist-kbn-btn" data-act="kbp-open-slug" data-slug="'+escapeHtml(k)+'">'+escapeHtml(k)+'</button>';
+        }).join('')+'</div>':'');
+  }
+  function twistCommit(uid){
+    var box=document.getElementById(uid); if(!box) return;
+    var inp=document.getElementById(uid+'-inp'); if(!inp) return;
+    var committed=inp.value.trim();
+    if(!committed){ if(typeof toast==='function') toast('Введите ваш прогноз'); return; }
+    var tid=box.getAttribute('data-tid');
+    try{ lsSet('tw:'+tid, committed); }catch(e){}
+    twistShowReveal(box, committed);
+    box.scrollIntoView({behavior:'smooth',block:'nearest'});
+    if(SB&&USER&&USER.id){
+      SB.from('learning_events').insert({
+        learner:USER.id, kind:'predict',
+        concept:(box.getAttribute('data-kbn')||'').split(',')[0].trim()||tid,
+        prompt_ref:tid,
+        committed:committed,
+        actual:box.getAttribute('data-reveal')||'',
+        outcome:'revealed',
+        shown_back:false
+      }).then(function(r){ if(r.error) console.warn('learning_events:',r.error.message); });
+    }
   }
 
   // ── Margin map (mark position indicators on right edge) ──────────────────
@@ -2861,6 +3054,28 @@
     editingId=null; pendingRange=null;
   }
   document.getElementById('overlay').onclick=closeModals;
+  document.addEventListener('click', function(e){
+    var t=e.target.closest('[data-act="pd-commit"]'); if(!t) return;
+    pdCommit(t.getAttribute('data-uid'));
+  });
+  document.addEventListener('click', function(e){
+    var t=e.target.closest('[data-act="twist-commit"]'); if(t){ twistCommit(t.getAttribute('data-uid')); return; }
+    t=e.target.closest('[data-act="twist-wi"]'); if(t){
+      var inp=document.getElementById(t.getAttribute('data-uid')+'-inp');
+      if(inp){ inp.value=t.textContent; inp.focus(); }
+      return;
+    }
+    // kbp-open-slug: open KB panel for a slug that might not be in current chapter
+    t=e.target.closest('[data-act="kbp-open-slug"]'); if(t){
+      var slug=t.getAttribute('data-slug');
+      // scroll to kbPanel and open it, then try to expand the node
+      var panel=document.getElementById('kbPanel'); if(!panel) return;
+      if(!kbpOpen) kbpTogglePanel();
+      panel.scrollIntoView({behavior:'smooth',block:'start'});
+      // slight delay then try to expand
+      setTimeout(function(){ kbpExpand(slug); }, 400);
+    }
+  });
   document.addEventListener('keydown', function(e){
     if(e.key==='Escape'){
       var bar=document.getElementById('chapSearchBar');
@@ -4345,7 +4560,7 @@
     if(dspChan || !SB) return;
     try{
       var ch=SB.channel('dispatch-rt');
-      ['bus','chapter_versions','context','decisions','sources','briefs','kb_nodes'].forEach(function(t){
+      ['bus','chapter_versions','context','decisions','sources','briefs','kb_nodes','kb_edges'].forEach(function(t){
         ch.on('postgres_changes', {event:'*', schema:'public', table:t}, dspOnChange);
       });
       ch.subscribe(function(status){ dspRtDot(status==='SUBSCRIBED'); });
@@ -4460,14 +4675,36 @@
         if(p.t==='='){ var s=p.s.length>90?p.s.slice(0,90)+'…':p.s; return '<div class="df ctx">'+dspEsc(s)+'</div>'; }
         return '<div class="df '+(p.t==='+'?'add':'del')+'">'+(p.t==='+'?'+ ':'− ')+dspEsc(p.s)+'</div>';
       }).join('');
+
+      // ── size guard ──────────────────────────────────────
+      var draftLen=(v.md||'').length, liveLen=(lv.md||'').length;
+      var draftKb=(draftLen/1024).toFixed(1), liveKb=(liveLen/1024).toFixed(1);
+      var ratio=liveLen>0?draftLen/liveLen:1;
+      var isEmpty=draftLen<500;
+      var isTiny=liveLen>4000&&ratio<0.25;
+      var isSmall=liveLen>4000&&ratio<0.50&&!isTiny;
+      var sizeClass=isEmpty||isTiny?'pub-size-danger':isSmall?'pub-size-warn':'pub-size-ok';
+      var sizeLabel=isEmpty?'⚠ заглушка (<500 симв)':isTiny?'⚠ возможно обрезка (<25% живой)':isSmall?'⚡ значительно меньше живой':'';
+      var sizeLine='<div class="pub-sizes '+sizeClass+'">'
+        +'<span>черновик: <b>'+draftLen+' симв ('+draftKb+' КБ)</b></span>'
+        +(liveLen?'<span>живая: '+liveLen+' симв ('+liveKb+' КБ)</span>'+'<span>→ '+(ratio*100).toFixed(0)+'%</span>':'')
+        +(sizeLabel?'<span class="pub-size-badge">'+sizeLabel+'</span>':'')
+        +'</div>';
+
+      var pubBtn=(isEmpty||isTiny)
+        ?'<button class="dsp-btn pub-btn-warn" data-act="pub-pub" data-id="'+dspEsc(v.id)+'" data-suspect="1">⚠ Публиковать всё равно</button>'
+        :'<button class="dsp-btn" data-act="pub-pub" data-id="'+dspEsc(v.id)+'">Опубликовать</button>';
+
       return '<div class="dsp-card">'
         +'<div class="dsp-row1"><span class="dsp-route">'+dspEsc(v.title||v.chapter_id)+'</span>'
         +'<span class="dsp-chip">'+dspEsc((lv.ver||'—').slice(0,7))+' → '+dspEsc((v.ver||'?').slice(0,7))+'</span>'
         +'<span class="dsp-age">'+dspAgo(v.created_at)+'</span></div>'
         +'<div class="dsp-text">'+(v.author?('<b>'+dspEsc(v.author)+'</b> · '):'')+dspEsc(v.note||'без заметки')+'</div>'
+        +sizeLine
         +'<div class="dsp-acts">'
-        +'<button class="dsp-btn" data-act="pub-pub" data-id="'+dspEsc(v.id)+'">Опубликовать</button>'
+        +pubBtn
         +'<button class="dsp-btn ghost" data-act="pub-rej" data-id="'+dspEsc(v.id)+'">Отклонить</button>'
+        +'<button class="dsp-btn ghost" data-act="pub-revert" data-id="'+dspEsc(v.chapter_id)+'" title="Откатить живую главу к предыдущей резервной копии">↩ Откатить</button>'
         +'<button class="dsp-btn ghost" data-act="pub-md" data-id="'+dspEsc(v.id)+'" data-chapter="'+dspEsc(v.chapter_id)+'" title="Загрузить или вставить текст главы">📄 md</button>'
         +'<button class="dsp-btn ghost" data-act="diff" data-id="'+dspEsc(v.id)+'">Дифф ('+changed+')</button>'
         +'</div>'
@@ -4519,11 +4756,26 @@
     var ed=document.getElementById('mde-'+id); if(ed) ed.style.display='none';
     renderPub();
   }
-  async function pubPublish(id){
-    if(!confirm('Опубликовать эту версию в live?')) return;
+  async function pubPublish(id, suspect){
+    var msg=suspect
+      ? 'ВНИМАНИЕ: черновик выглядит как заглушка или обрезан.\n\nПубликовать всё равно? Живая версия будет перезаписана.'
+      : 'Опубликовать эту версию в live?';
+    if(!confirm(msg)) return;
     var r=await SB.rpc('publish_version',{p_id:id});
-    if(r.error){ alert('Не удалось: '+r.error.message); return; }
+    if(r.error){
+      var err=r.error.message||String(r.error);
+      alert('Публикация отклонена:\n\n'+err+'\n\nПроверь размер черновика — возможно, нужно загрузить полный текст через «📄 md».');
+      return;
+    }
+    if(typeof toast==='function') toast('Опубликовано ✓');
     dspBadges(); renderPub();
+  }
+  async function pubRevert(chapterId){
+    if(!confirm('Откатить главу «'+chapterId+'» к резервной копии?\n\nЭто заменит текущую живую версию предыдущей сохранённой.')) return;
+    var r=await SB.rpc('revert_chapter',{p_chapter_id:chapterId});
+    if(r.error){ alert('Не удалось откатить: '+r.error.message); return; }
+    if(typeof toast==='function') toast('Откат выполнен: '+chapterId);
+    renderPub();
   }
   async function pubReject(id){
     if(!confirm('Отклонить черновик (в архив)?')) return;
@@ -5083,8 +5335,9 @@
         var act=x.getAttribute('data-act'), id=x.getAttribute('data-id');
         if(act==='bus-done') busDone(id);
         else if(act==='bus-reply') busReply(id, x.getAttribute('data-src'));
-        else if(act==='pub-pub') pubPublish(id);
+        else if(act==='pub-pub') pubPublish(id, x.getAttribute('data-suspect')==='1');
         else if(act==='pub-rej') pubReject(id);
+        else if(act==='pub-revert') pubRevert(id);
         else if(act==='pub-md') pubOpenMd(id);
         else if(act==='pub-md-save') pubSaveMd(id);
         else if(act==='pub-md-cancel'){ var ed=document.getElementById('mde-'+id); if(ed) ed.style.display='none'; }
