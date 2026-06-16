@@ -94,6 +94,8 @@
     font-family:var(--font-mono); font-size:10.5px; font-weight:500; border-radius:9px;
     padding:1px 7px; line-height:1.5; min-width:20px; text-align:center}
   .toc-item .tick{color:var(--good); font-size:12px; margin-left:6px; flex:0 0 auto}
+  .toc-item .toc-prog{ height:3px; width:28px; background:var(--line-2); border-radius:2px; margin-left:8px; flex:0 0 auto; overflow:hidden; align-self:center }
+  .toc-item .toc-prog i{ display:block; height:100%; background:var(--accent); opacity:.55; border-radius:2px }
 
   /* ---------- topbar ---------- */
   #main{flex:1; display:flex; flex-direction:column; min-width:0; position:relative}
@@ -1530,8 +1532,11 @@
   function currentBook(){ return state.book||'main'; }
 
   // ====== ВЕРСИЯ ПРИЛОЖЕНИЯ (повышать с каждым апдейтом HTML) ======
-  var APP_VERSION='5.23';
+  var APP_VERSION='5.24';
   var APP_CHANGELOG=[
+    {v:'5.24', items:[
+      'TOC: главы с частичным прогрессом (10–96%) теперь показывают тонкую полоску прочитанного — видно, где ты остановился. Свайп по зоне «Дальше/Назад» меняет главу. Исправлен баг с закрытием мини-карточки соседнего концепта.',
+    ]},
     {v:'5.23', items:[
       'Панель «Концепты главы» в потоке чтения: после текста — сворачиваемая полка с теориями и эффектами, привязанными к главе. Раскрой концепт — увидишь бейдж надёжности, главное утверждение, оговорки для спорных теорий, источник и смысловые связи. Тап по соседнему концепту — показывает его утверждение прямо здесь, без перехода. Загружается по требованию.',
     ]},
@@ -2063,6 +2068,15 @@
       if(n>0 && canContribute()){ var b=document.createElement('span'); b.className='badge'; b.textContent=n; it.appendChild(b); }
       if(state.read && state.read[c.id+':'+c.ver]>=0.97){ var tk=document.createElement('span'); tk.className='tick'; tk.textContent='✓'; it.appendChild(tk); }
       else if(state.read && Object.keys(state.read).some(function(k){ return k.indexOf(c.id+':')===0 && state.read[k]>=0.97; })){ var up=document.createElement('span'); up.className='toc-upd'; up.textContent='обновлено'; it.appendChild(up); }
+      else {
+        // partial progress: find any version read 10-96%
+        var partFrac=0;
+        if(state.read){ Object.keys(state.read).forEach(function(k){ if(k.indexOf(c.id+':')===0 && state.read[k]>partFrac) partFrac=state.read[k]; }); }
+        if(partFrac>=0.10){
+          var pt=document.createElement('span'); pt.className='toc-prog';
+          var pi=document.createElement('i'); pi.style.width=Math.round(partFrac*100)+'%'; pt.appendChild(pi); it.appendChild(pt);
+        }
+      }
       it.onclick=function(){ openChapter(c.id); if(window.innerWidth<=820) toggleSidebar(false); };
       toc.appendChild(it);
     });
@@ -2078,6 +2092,19 @@
     if(next){ var nb=document.createElement('button'); nb.className='next';
       nb.innerHTML='<div class="lbl">Дальше →</div><div class="ttl">'+escapeHtml(next.title)+'</div>';
       nb.onclick=function(){ openChapter(next.id); }; nav.appendChild(nb); }
+    // Swipe on the nav area: horizontal swipe > 60px → change chapter
+    if(!nav._sw){ nav._sw=true;
+      var tx=0, ty=0, swiping=false;
+      nav.addEventListener('touchstart',function(e){ var t=e.touches[0]; tx=t.clientX; ty=t.clientY; swiping=true; },{passive:true});
+      nav.addEventListener('touchend',function(e){
+        if(!swiping) return; swiping=false;
+        var t=e.changedTouches[0], dx=t.clientX-tx, dy=t.clientY-ty;
+        if(Math.abs(dx)<60||Math.abs(dy)>Math.abs(dx)*0.8) return;
+        var ii=chapterIndex(state.chapter);
+        if(dx<0 && BOOK[ii+1]) openChapter(BOOK[ii+1].id);
+        else if(dx>0 && BOOK[ii-1]) openChapter(BOOK[ii-1].id);
+      });
+    }
   }
 
   function renderChapter(){
@@ -2320,10 +2347,10 @@
     var claim=body['\u0441\u0443\u0442\u044c']||'';
     nb.innerHTML='<div class="kbp-nb-head"><span class="kbp-rob" style="background:'+col+'"></span>'
       +'<b>'+escapeHtml(b.title||slug)+'</b>'
-      +'<button class="kbp-nb-close" data-kbp="neighbor" data-slug="__close">✕</button></div>'
+      +'<button class="kbp-nb-close">✕</button></div>'
       +(claim?('<div class="kbp-claim">'+escapeHtml(claim)+'</div>'):'');
     var closeBtn=nb.querySelector('.kbp-nb-close');
-    if(closeBtn) closeBtn.onclick=function(){ nb.remove(); };
+    if(closeBtn) closeBtn.onclick=function(e){ e.stopPropagation(); nb.remove(); };
     nb.scrollIntoView({behavior:'smooth',block:'nearest'});
   }
 
