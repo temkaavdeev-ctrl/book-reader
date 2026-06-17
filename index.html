@@ -1184,6 +1184,12 @@
   #content .proof-kbn-row{ display:flex; flex-wrap:wrap; gap:6px }
   #content .proof-kbn{ padding:3px 10px; border:1px solid var(--line); border-radius:999px; background:var(--card); color:var(--accent); font-size:12px; cursor:pointer; font-family:var(--font-mono) }
   #content .proof-kbn:hover{ border-color:var(--accent); background:var(--accent-tint) }
+
+  /* ===== Publish: part/ord guard ===== */
+  .pub-part-warn{ margin:8px 0; padding:10px 12px; border:1px solid var(--warn); border-radius:9px; font-size:13px; color:var(--read); background:color-mix(in srgb,var(--warn) 7%,var(--bg)) }
+  .pub-part-row{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:8px }
+  .pub-part-row label{ font-size:12px; color:var(--muted); display:flex; align-items:center; gap:5px }
+  .pub-part-inp{ height:30px; padding:0 8px; border:1px solid var(--line-2); border-radius:7px; background:var(--bg); color:var(--ink); font-size:13px; font-family:inherit }
 </style>
 </head>
 <body>
@@ -1624,8 +1630,11 @@
   function currentBook(){ return state.book||'main'; }
 
   // ====== ВЕРСИЯ ПРИЛОЖЕНИЯ (повышать с каждым апдейтом HTML) ======
-  var APP_VERSION='5.29';
+  var APP_VERSION='5.30';
   var APP_CHANGELOG=[
+    {v:'5.30', items:[
+      'Исправлен баг публикации tail: новые главы без part/ord теперь получают предупреждение с полями для заполнения прямо в панели; сообщение об ошибке различает «не заполнен part» от «обрезка md». publish_version и publish_version_force обновлены: book_id несут оба, null part/ord обрабатываются через coalesce. cv_commit принимает p_part и p_ord.',
+    ]},
     {v:'5.29', items:[
       'PROOF-маркер: <!-- PROOF: id=... | anchor="фраза" | claim=... | source=... | kb_nodes=... | status=solid --> — фраза в прозе получает пунктирное подчёркивание, тап открывает карточку с источником, утверждением, статусом надёжности и чипами KB-концептов. По умолчанию текст чистый, глубина — по запросу.',
     ]},
@@ -4887,6 +4896,17 @@
         +(sizeLabel?'<span class="pub-size-badge">'+sizeLabel+'</span>':'')
         +'</div>';
 
+      // ── part/ord guard (tail chapters) ─────────────────
+      var noPartOrd=!lv.id && (!v.part || !v.ord);  // new chapter without part/ord
+      var partLine=noPartOrd
+        ?'<div class="pub-part-warn">⚠ Новая глава без <b>part</b> или <b>ord</b> — публикация упадёт. Укажи значения:'
+          +'<div class="pub-part-row">'
+          +'<label>part <input class="pub-part-inp" id="pp-part-'+dspEsc(v.id)+'" type="text" value="'+dspEsc(v.part||'')+'" placeholder="напр. main" style="width:110px"></label>'
+          +'<label>ord <input class="pub-part-inp" id="pp-ord-'+dspEsc(v.id)+'" type="number" value="'+dspEsc(String(v.ord||''))+'" placeholder="1" style="width:64px"></label>'
+          +'<button class="dsp-btn" data-act="pub-patch-part" data-id="'+dspEsc(v.id)+'">Сохранить</button>'
+          +'</div></div>'
+        :'';
+
       var pubBtn=(isEmpty||isTiny)
         ?'<button class="dsp-btn pub-btn-warn" data-act="pub-pub" data-id="'+dspEsc(v.id)+'" data-suspect="1">⚠ Публиковать всё равно</button>'
         :'<button class="dsp-btn" data-act="pub-pub" data-id="'+dspEsc(v.id)+'">Опубликовать</button>';
@@ -4896,7 +4916,7 @@
         +'<span class="dsp-chip">'+dspEsc((lv.ver||'—').slice(0,7))+' → '+dspEsc((v.ver||'?').slice(0,7))+'</span>'
         +'<span class="dsp-age">'+dspAgo(v.created_at)+'</span></div>'
         +'<div class="dsp-text">'+(v.author?('<b>'+dspEsc(v.author)+'</b> · '):'')+dspEsc(v.note||'без заметки')+'</div>'
-        +sizeLine
+        +sizeLine+partLine
         +'<div class="dsp-acts">'
         +pubBtn
         +'<button class="dsp-btn ghost" data-act="pub-rej" data-id="'+dspEsc(v.id)+'">Отклонить</button>'
@@ -4960,11 +4980,27 @@
     var r=await SB.rpc('publish_version',{p_id:id});
     if(r.error){
       var err=r.error.message||String(r.error);
-      alert('Публикация отклонена:\n\n'+err+'\n\nПроверь размер черновика — возможно, нужно загрузить полный текст через «📄 md».');
+      var hint=/part|null value|null constraint|not.null/i.test(err)
+        ? '\n\nПричина: не заполнены поля part или ord. Заполни их в карточке выше и сохрани перед публикацией.'
+        : /500|25%|вчетверо|заглушка|обрезка/i.test(err)
+        ? '\n\nПроверь размер черновика через «📄 md».'
+        : '';
+      alert('Публикация отклонена:\n\n'+err+hint);
       return;
     }
     if(typeof toast==='function') toast('Опубликовано ✓');
     dspBadges(); renderPub();
+  }
+  async function pubPatchPart(id){
+    var partEl=document.getElementById('pp-part-'+id);
+    var ordEl=document.getElementById('pp-ord-'+id);
+    if(!partEl||!ordEl){ return; }
+    var part=partEl.value.trim(), ord=parseInt(ordEl.value,10)||null;
+    if(!part){ if(typeof toast==='function') toast('Укажи part'); return; }
+    var r=await SB.from('chapter_versions').update({part:part, ord:ord}).eq('id',id).eq('status','draft');
+    if(r.error){ alert('Не удалось сохранить: '+r.error.message); return; }
+    if(typeof toast==='function') toast('part/ord сохранены');
+    renderPub();
   }
   async function pubRevert(chapterId){
     if(!confirm('Откатить главу «'+chapterId+'» к резервной копии?\n\nЭто заменит текущую живую версию предыдущей сохранённой.')) return;
@@ -5534,6 +5570,7 @@
         else if(act==='pub-pub') pubPublish(id, x.getAttribute('data-suspect')==='1');
         else if(act==='pub-rej') pubReject(id);
         else if(act==='pub-revert') pubRevert(id);
+        else if(act==='pub-patch-part') pubPatchPart(id);
         else if(act==='pub-md') pubOpenMd(id);
         else if(act==='pub-md-save') pubSaveMd(id);
         else if(act==='pub-md-cancel'){ var ed=document.getElementById('mde-'+id); if(ed) ed.style.display='none'; }
