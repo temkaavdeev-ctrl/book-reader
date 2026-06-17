@@ -1125,42 +1125,46 @@
     #content .predict-box{ background:rgba(107,124,232,.10); border-color:rgba(107,124,232,.35) }
   }
 
-    /* ===== TWIST: pm-decision mechanic ===== */
+      /* ===== TWIST: opt_X buttons + range slider ===== */
   #content .twist-box{ position:relative; border-radius:12px; padding:16px 18px 14px; margin:26px 0; line-height:1.6; background:var(--accent-tint); border-left:3px solid var(--accent) }
   #content .twist-done{ background:color-mix(in srgb,var(--good) 8%,var(--bg)); background:#eef5ee; border-left-color:var(--good) }
   #content .twist-tag{ font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:.10em; text-transform:uppercase; color:var(--accent); margin-bottom:8px }
   #content .twist-done .twist-tag{ color:var(--good) }
   #content .twist-q{ font-size:16px; font-weight:700; color:var(--ink); line-height:1.4; margin-bottom:14px }
-  #content .twist-moves{ display:flex; flex-direction:column; gap:8px; margin-bottom:12px }
-  #content .twist-move{ display:flex; align-items:flex-start; gap:10px; padding:10px 13px; border:1.5px solid var(--line-2); border-radius:10px; background:var(--card); cursor:pointer; font-family:inherit; text-align:left; transition:border-color .15s,background .15s }
-  #content .twist-move:hover{ border-color:var(--accent); background:var(--accent-tint) }
-  #content .twist-move.twist-trap{ border-style:dashed; opacity:.85 }
-  #content .tm-lbl{ font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--accent); flex-shrink:0; margin-top:1px }
-  #content .tm-text{ font-size:14px; color:var(--read); line-height:1.4 }
-  #content .twist-conf{ margin-top:2px; margin-bottom:10px }
-  #content .twist-conf-lbl{ font-size:12px; color:var(--muted); display:block; margin-bottom:6px }
-  #content .twist-conf-opts{ display:flex; gap:4px }
-  #content .tco{ width:36px; height:36px; border:1.5px solid var(--line-2); border-radius:8px; background:var(--card); color:var(--muted); font-size:14px; font-weight:600; cursor:pointer; font-family:inherit }
-  #content .tco.tco-sel{ border-color:var(--accent); background:var(--accent); color:#fff }
-  #content .twist-conf-ends{ display:flex; justify-content:space-between; font-size:10px; color:var(--muted); margin-top:3px; width:188px }
-  #content .twist-input-row{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px }
-  #content .twist-inp{ flex:1 1 160px; height:38px; padding:0 12px; border:1.5px solid var(--line-2); border-radius:9px; background:var(--bg); color:var(--ink); font-size:14px; font-family:inherit; outline:none }
-  #content .twist-inp:focus{ border-color:var(--accent) }
-  #content .twist-commit{ padding:9px 16px; background:var(--accent); color:#fff; border:none; border-radius:9px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit }
-  #content .twist-hint{ font-size:12px; color:var(--muted); margin-top:4px }
+  /* Option buttons */
+  #content .twist-opts{ display:flex; flex-direction:column; gap:7px; margin-bottom:14px }
+  #content .twist-opt{ display:block; width:100%; padding:11px 14px; border:1.5px solid var(--line-2); border-radius:10px; background:var(--card); cursor:pointer; font-family:inherit; text-align:left; font-size:14px; color:var(--read); line-height:1.4; transition:border-color .15s,background .15s }
+  #content .twist-opt:hover{ border-color:var(--accent); background:var(--accent-tint) }
+  #content .twist-opt.twist-trap{ border-style:dashed; opacity:.88 }
+  /* Verdict colors on reveal */
+  #content .opt-correct{ color:var(--good) }
+  #content .opt-wrong{ color:var(--danger) }
+  #content .opt-partial{ color:var(--warn) }
+  #content .twist-verdict{ font-weight:700 }
+  #content .twist-feedback{ font-size:13.5px; color:var(--read); line-height:1.5; margin:6px 0 12px; padding:9px 12px; border-radius:8px; background:var(--bg); border-left:3px solid var(--line-2) }
+  #content .twist-feedback.opt-correct{ border-left-color:var(--good) }
+  #content .twist-feedback.opt-wrong{ border-left-color:var(--danger) }
+  #content .twist-feedback.opt-partial{ border-left-color:var(--warn) }
+  /* Confidence slider */
+  #content .twist-conf{ margin-bottom:10px }
+  #content .twist-conf-lbl{ font-size:12px; color:var(--muted); margin-bottom:7px; display:block }
+  #content .twist-conf-val{ font-weight:700; color:var(--accent); margin:0 2px }
+  #content .twist-range{ width:100%; height:5px; -webkit-appearance:none; appearance:none; background:linear-gradient(to right,var(--accent) 40%,var(--line-2) 40%); border-radius:3px; outline:none; cursor:pointer; margin-bottom:4px }
+  #content .twist-range::-webkit-slider-thumb{ -webkit-appearance:none; width:22px; height:22px; border-radius:50%; background:var(--accent); border:2.5px solid #fff; box-shadow:0 1px 5px rgba(0,0,0,.2); cursor:pointer }
+  #content .twist-range::-moz-range-thumb{ width:20px; height:20px; border-radius:50%; background:var(--accent); border:2.5px solid #fff; cursor:pointer }
+  #content .twist-conf-ends{ display:flex; justify-content:space-between; font-size:10px; color:var(--muted) }
+  #content .twist-hint{ font-size:12px; color:var(--muted) }
   #content .twist-your{ font-size:13px; color:var(--muted); margin-bottom:8px }
   #content .twist-reveal{ font-size:16px; font-weight:700; color:var(--ink); line-height:1.45; margin-bottom:10px }
   #content .twist-why{ font-size:14px; color:var(--read); line-height:1.6; margin-bottom:10px }
   #content .twist-kbn{ display:flex; flex-wrap:wrap; gap:6px; margin-top:8px }
   #content .twist-kbn-btn{ padding:4px 10px; border:1px solid var(--line); border-radius:999px; background:var(--card); color:var(--accent); font-size:12px; cursor:pointer; font-family:var(--font-mono) }
-  /* Narrative overlay */
+  #content .twist-kbn-btn:hover{ border-color:var(--accent); background:var(--accent-tint) }
   #content .twist-narr{ position:absolute; inset:0; background:rgba(21,18,28,.88); border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; z-index:10 }
   #content .twist-narr-inner{ font-size:18px; font-weight:700; color:#e8d9bc; text-align:center; padding:0 24px; min-height:28px }
   #content .twist-narr-skip{ background:transparent; border:1px solid rgba(255,255,255,.25); color:rgba(255,255,255,.6); border-radius:8px; padding:6px 16px; font-size:12px; cursor:pointer; font-family:inherit }
-  /* Lock (blur text below until commit) */
   #content .twist-lock{ filter:blur(5px); user-select:none; pointer-events:none; transition:filter .5s,opacity .5s; opacity:.4 }
   #content .twist-lock.twist-unlocked{ filter:none; opacity:1; pointer-events:auto; user-select:auto }
-  /* Stats */
   #content .tws-head{ font-size:12px; color:var(--muted); margin-bottom:8px; margin-top:10px; padding-top:10px; border-top:1px solid var(--line) }
   #content .tws-row{ display:flex; align-items:center; gap:8px; margin-bottom:5px }
   #content .tws-me .tws-label{ font-weight:700; color:var(--accent) }
@@ -1171,8 +1175,7 @@
   #content .tws-pct{ font-size:11px; color:var(--muted); flex:0 0 28px; text-align:right }
   #content .twist-stats-load{ font-size:11px; color:var(--muted) }
 
-
-  /* ===== PROOF: inline citation with expandable card ===== */
+/* ===== PROOF: inline citation with expandable card ===== */
   #content .proof-a{ border-bottom:1.5px dotted var(--muted); cursor:pointer; color:inherit; transition:border-color .15s }
   #content .proof-a:hover{ border-bottom-color:var(--accent) }
   #content .proof-card{ border-radius:10px; padding:12px 14px; margin:6px 0 16px; background:var(--card); border:1px solid var(--line); box-shadow:0 2px 12px rgba(0,0,0,.08) }
@@ -1630,8 +1633,11 @@
   function currentBook(){ return state.book||'main'; }
 
   // ====== ВЕРСИЯ ПРИЛОЖЕНИЯ (повышать с каждым апдейтом HTML) ======
-  var APP_VERSION='5.30';
+  var APP_VERSION='5.31';
   var APP_CHANGELOG=[
+    {v:'5.31', items:[
+      'TWIST: свободный ввод заменён тапабельными кнопками-вариантами (формат opt_a/b/c/d с ::verdict::feedback). Варианты перемешиваются детерминированно по id сцены. Уверенность — слайдер 1–5. После выбора: подсветка правильного/неправильного + feedback под кнопкой + разрыв.',
+    ]},
     {v:'5.30', items:[
       'Исправлен баг публикации tail: новые главы без part/ord теперь получают предупреждение с полями для заполнения прямо в панели; сообщение об ошибке различает «не заполнен part» от «обрезка md». publish_version и publish_version_force обновлены: book_id несут оба, null part/ord обрабатываются через coalesce. cv_commit принимает p_part и p_ord.',
     ]},
@@ -2054,7 +2060,14 @@
       var reveal=pa('reveal'), why=pa('why'), kbn=pa('kb_nodes'), chapter=pa('chapter');
       var mechanic=pa('mechanic')||'default';
       if(!id||!cq||!reveal) return '';
+      // Parse opt_a/b/c/d/e (new format: text ::verdict:: feedback)
+      var opts=[]; ['a','b','c','d','e'].forEach(function(l){
+        var raw=pa('opt_'+l); if(!raw) return;
+        var pp=raw.split('::');
+        opts.push({text:pp[0].trim(), verdict:(pp[1]||'wrong').trim(), feedback:(pp[2]||'').trim()});
+      });
       var uid='tw-'+id.replace(/[^a-z0-9]/gi,'-').toLowerCase();
+      var optsAttr=opts.length?JSON.stringify(opts).replace(/"/g,'&quot;'):'';
       return '\n\n<div class="twist-box" id="'+uid+'"'
         +' data-tid="'+escapeHtml(id)+'"'
         +' data-mechanic="'+escapeHtml(mechanic)+'"'
@@ -2064,8 +2077,9 @@
         +' data-reveal="'+escapeHtml(reveal)+'"'
         +' data-why="'+escapeHtml(why)+'"'
         +' data-kbn="'+escapeHtml(kbn)+'"'
-        +' data-ch="'+escapeHtml(chapter)+'">'
-        +'</div>\n\n'
+        +' data-ch="'+escapeHtml(chapter)+'"'
+        +(optsAttr?' data-opts="'+optsAttr+'"':'')
+        +'></div>\n\n'
         +'<div class="twist-lock" data-for="'+uid+'"></div>\n\n';
     });
     // PROOF: inline citation with expandable card (tail layer II)
@@ -2597,39 +2611,40 @@
       if(box._twFilled) return; box._twFilled=true;
       var uid=box.id, tid=box.getAttribute('data-tid');
       var saved; try{ saved=JSON.parse(lsGet('tw:'+tid)||'null'); }catch(e){}
-      if(saved){ twistShowReveal(box, saved.choice, saved.conf); twistUnlock(uid); return; }
-      var cq=box.getAttribute('data-cq'), trap=box.getAttribute('data-trap');
-      var moves=(box.getAttribute('data-moves')||'').split(';').map(function(s){return s.trim();}).filter(Boolean);
-      var hasMoves=moves.length>0;
-      var movesHtml=hasMoves
-        ? '<div class="twist-moves">'+moves.map(function(mo,i){
-            var lbl=['А','Б','В'][i]||String.fromCharCode(65+i);
-            var isTrap=trap&&mo.toLowerCase().indexOf(trap.toLowerCase())>=0;
-            return '<button class="twist-move'+(isTrap?' twist-trap':'')+'" data-act="twist-pick" data-uid="'+uid+'" data-choice="'+escapeHtml(mo)+'">'
-              +'<span class="tm-lbl">'+lbl+'</span><span class="tm-text">'+escapeHtml(mo)+'</span></button>';
-          }).join('')+'</div>'
-        : '<div class="twist-input-row"><input class="twist-inp" id="'+uid+'-inp" type="text" placeholder="Твой прогноз…" autocomplete="off">'
-          +'<button class="twist-commit" data-act="twist-commit-free" data-uid="'+uid+'">Зафиксировать</button></div>';
+      if(saved){ twistShowReveal(box, saved.choice, saved.conf, saved.verdict, saved.feedback); twistUnlock(uid); return; }
+      var cq=box.getAttribute('data-cq');
+      // Parse opts (new format) or fall back to moves= (legacy)
+      var opts=[];
+      try{ var raw=box.getAttribute('data-opts'); if(raw) opts=JSON.parse(raw.replace(/&quot;/g,'"')); }catch(e){}
+      if(!opts.length){
+        // legacy moves= format
+        var moves=(box.getAttribute('data-moves')||'').split(';').map(function(s){return s.trim();}).filter(Boolean);
+        var trap=box.getAttribute('data-trap')||'';
+        moves.forEach(function(m){ opts.push({text:m, verdict:'wrong', feedback:'', _legacy:true, _trap:trap&&m.toLowerCase().indexOf(trap.toLowerCase())>=0}); });
+      }
+      // Deterministic shuffle by tid hash
+      var h=0; for(var i=0;i<tid.length;i++) h=(h*31+tid.charCodeAt(i))|0; h=Math.abs(h);
+      var shuf=opts.slice(); for(var i=shuf.length-1;i>0;i--){ var j=h%(i+1); h=(h*1664525+1013904223)>>>0; var t=shuf[i]; shuf[i]=shuf[j]; shuf[j]=t; }
+      // Build opts HTML
+      var optsHtml='<div class="twist-opts">'
+        +shuf.map(function(o){
+          var trapClass=o._trap?' twist-trap':'';
+          return '<button class="twist-opt'+trapClass+'" data-act="twist-pick" data-uid="'+uid+'" data-choice="'+escapeHtml(o.text)+'" data-verdict="'+escapeHtml(o.verdict)+'" data-feedback="'+escapeHtml(o.feedback)+'">'+escapeHtml(o.text)+'</button>';
+        }).join('')+'</div>';
+      // Confidence slider
+      var confHtml='<div class="twist-conf">'
+        +'<div class="twist-conf-lbl">Насколько уверен? <span class="twist-conf-val" id="'+uid+'-cv">3</span><span style="color:var(--muted);font-size:11px">/5</span></div>'
+        +'<input class="twist-range" id="'+uid+'-range" type="range" min="1" max="5" value="3" step="1">'
+        +'<div class="twist-conf-ends"><span>совсем нет</span><span>полностью</span></div>'
+        +'</div>';
       box.innerHTML='<div class="twist-tag">Предскажи</div>'
         +'<div class="twist-q">'+escapeHtml(cq)+'</div>'
-        +movesHtml
-        +'<div class="twist-conf" id="'+uid+'-conf">'
-          +'<span class="twist-conf-lbl">Насколько уверен?</span>'
-          +'<div class="twist-conf-opts">'
-          +'<button class="tco" data-v="1">1</button><button class="tco" data-v="2">2</button>'
-          +'<button class="tco tco-sel" data-v="3">3</button>'
-          +'<button class="tco" data-v="4">4</button><button class="tco" data-v="5">5</button>'
-          +'</div>'
-          +'<span class="twist-conf-ends"><span>совсем нет</span><span>полностью</span></span>'
-        +'</div>'
+        +optsHtml+confHtml
         +'<div class="twist-hint">Ошибиться — и есть смысл. Прогноз не оценивается.</div>';
-      // Wire conf buttons
-      var confEl=document.getElementById(uid+'-conf');
-      if(confEl){ confEl.addEventListener('click',function(e){
-        var b=e.target.closest('.tco'); if(!b) return;
-        confEl.querySelectorAll('.tco').forEach(function(x){x.classList.remove('tco-sel');});
-        b.classList.add('tco-sel');
-      }); }
+      // Wire range → live label
+      var rng=document.getElementById(uid+'-range');
+      var cv=document.getElementById(uid+'-cv');
+      if(rng&&cv) rng.addEventListener('input',function(){ cv.textContent=this.value; });
     });
     // Lock text below uncommitted TWIST boxes
     document.querySelectorAll('#content .twist-lock').forEach(function(lock){
@@ -2639,7 +2654,6 @@
       var tid=box.getAttribute('data-tid');
       var saved; try{ saved=JSON.parse(lsGet('tw:'+tid)||'null'); }catch(e){}
       if(saved){ lock.classList.add('twist-unlocked'); return; }
-      // Scoop next sibling elements (not headings or other twists) into this lock div
       var node=lock.nextElementSibling;
       while(node && !node.matches('h1,h2,h3,h4,.twist-box,.twist-lock')){
         var next=node.nextElementSibling;
@@ -2653,33 +2667,34 @@
     if(lock) lock.classList.add('twist-unlocked');
   }
   function twistGetConf(uid){
-    var sel=document.querySelector('#'+uid+'-conf .tco-sel');
-    return sel?parseInt(sel.getAttribute('data-v'),10):3;
+    var r=document.getElementById(uid+'-range'); return r?parseInt(r.value,10):3;
   }
   function twistPick(uid, choice){
-    var conf=twistGetConf(uid);
-    twistCommit(uid, choice, conf);
+    var btn=document.querySelector('#'+uid+' .twist-opt[data-choice="'+CSS.escape(choice)+'"]');
+    var verdict=btn?btn.getAttribute('data-verdict'):'wrong';
+    var feedback=btn?btn.getAttribute('data-feedback'):'';
+    twistCommit(uid, choice, twistGetConf(uid), verdict, feedback);
   }
-  function twistCommit(uid, choice, conf){
+  function twistCommit(uid, choice, conf, verdict, feedback){
     var box=document.getElementById(uid); if(!box) return;
     var tid=box.getAttribute('data-tid');
-    if(!choice){ if(typeof toast==='function') toast('Введи твой прогноз'); return; }
+    if(!choice){ if(typeof toast==='function') toast('Выбери вариант'); return; }
+    verdict=verdict||'wrong'; conf=conf||3;
     var mechanic=box.getAttribute('data-mechanic')||'default';
-    var saved={choice:choice, conf:conf||3, ts:Date.now()};
+    var saved={choice:choice, conf:conf, verdict:verdict, feedback:feedback||'', ts:Date.now()};
     try{ lsSet('tw:'+tid, JSON.stringify(saved)); }catch(e){}
-    // Narrative for pm-decision before reveal
     var narr=TWIST_NARR[mechanic];
     if(narr&&choice){
-      twistNarrative(box, narr, choice, function(){ twistShowReveal(box,choice,conf); twistUnlock(uid); });
+      twistNarrative(box, narr, choice, function(){ twistShowReveal(box,choice,conf,verdict,feedback); twistUnlock(uid); });
     } else {
-      twistShowReveal(box, choice, conf); twistUnlock(uid);
+      twistShowReveal(box,choice,conf,verdict,feedback); twistUnlock(uid);
     }
     if(SB&&USER&&USER.id){
       SB.from('learning_events').insert({
         learner:USER.id, kind:'predict',
         concept:(box.getAttribute('data-kbn')||'').split(',')[0].trim()||tid,
         prompt_ref:tid, committed:choice, actual:box.getAttribute('data-reveal')||'',
-        outcome:'revealed', shown_back:false
+        outcome:verdict, shown_back:false
       }).then(function(r){ if(r.error) console.warn('learning_events:',r.error.message); });
     }
   }
@@ -2701,13 +2716,16 @@
     }
     step();
   }
-  function twistShowReveal(box, choice, conf){
+  function twistShowReveal(box, choice, conf, verdict, feedback){
     var reveal=box.getAttribute('data-reveal'), why=box.getAttribute('data-why');
     var kbn=(box.getAttribute('data-kbn')||'').split(',').map(function(s){return s.trim();}).filter(Boolean);
     var tid=box.getAttribute('data-tid');
+    var vClass={correct:'opt-correct',wrong:'opt-wrong',partial:'opt-partial'}[verdict]||'opt-wrong';
+    var vIcon={correct:'✓',wrong:'✗',partial:'≈'}[verdict]||'✗';
     box.classList.add('twist-done'); box.classList.remove('twist-narr-active');
     box.innerHTML='<div class="twist-tag">Разрыв</div>'
-      +'<div class="twist-your">Ты выбрал: <b>'+escapeHtml(choice)+'</b>'+(conf?' · уверенность '+conf+'/5':'')+'</div>'
+      +'<div class="twist-your">Ты выбрал: <span class="twist-verdict '+vClass+'">'+vIcon+' '+escapeHtml(choice)+'</span>'+(conf?' · уверенность '+conf+'/5':'')+'</div>'
+      +(feedback?'<div class="twist-feedback '+vClass+'">'+escapeHtml(feedback)+'</div>':'')
       +'<div class="twist-reveal">'+escapeHtml(reveal)+'</div>'
       +(why?'<div class="twist-why">'+escapeHtml(why)+'</div>':'')
       +'<div class="twist-stats" id="tws-'+escapeHtml(tid)+'"><span class="twist-stats-load">Загружаю статистику…</span></div>'
