@@ -56,6 +56,11 @@
     --shadow:0 8px 28px rgba(0,0,0,.5); --shadow-lg:0 20px 54px rgba(0,0,0,.6);
     --ring:rgba(215,166,100,.45);
   }
+  html[data-theme="dark"] #content .twist-box{ background:rgba(215,166,100,.09) }
+  html[data-theme="dark"] #content .twist-done{ background:rgba(95,176,126,.12) }
+  html[data-theme="dark"] #content .twist-opt{ border-color:var(--line) }
+  html[data-theme="dark"] #content .twist-metric{ background:var(--panel) }
+  html[data-theme="dark"] #content .twist-ambig-col{ background:var(--panel) }
   *{box-sizing:border-box}
   html{background:var(--bg)}
   html,body{margin:0;height:100%}
@@ -1000,6 +1005,11 @@
     #content .theory-box{  background:rgba(143,90,35,.13) }
     #content mark.s-hl{ background:rgba(240,216,74,.22) }
     #content mark.s-hl-cur{ background:rgba(240,216,74,.60); color:var(--ink) }
+    #content .twist-box{ background:rgba(215,166,100,.09) }
+    #content .twist-done{ background:rgba(95,176,126,.12) }
+    #content .twist-opt{ border-color:var(--line) }
+    #content .twist-metric{ background:var(--panel) }
+    #content .twist-ambig-col{ background:var(--panel) }
   }
 
   /* ===== KB list view (mobile fallback) ===== */
@@ -1127,7 +1137,7 @@
 
         /* ===== TWIST: 2-step commit + typed reveal ===== */
   #content .twist-box{ position:relative; border-radius:12px; padding:16px 18px 14px; margin:26px 0; line-height:1.6; background:var(--accent-tint); border-left:3px solid var(--accent) }
-  #content .twist-done{ background:color-mix(in srgb,var(--good) 8%,var(--bg)); background:#eef5ee; border-left-color:var(--good) }
+  #content .twist-done{ background:color-mix(in srgb,var(--good) 10%,var(--bg)); border-left-color:var(--good) }
   #content .twist-tag{ font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:.10em; text-transform:uppercase; color:var(--accent); margin-bottom:8px }
   #content .twist-done .twist-tag{ color:var(--good) }
   #content .twist-q{ font-size:16px; font-weight:700; color:var(--ink); line-height:1.4; margin-bottom:14px }
@@ -1153,7 +1163,7 @@
   #content .twist-your{ font-size:13px; color:var(--muted); margin-bottom:8px }
   #content .twist-verdict{ font-weight:700 }
   #content .opt-correct{ color:var(--good) } #content .opt-wrong{ color:var(--danger) } #content .opt-partial{ color:var(--warn) }
-  #content .twist-feedback{ font-size:13.5px; color:var(--read); line-height:1.5; margin:6px 0 12px; padding:9px 12px; border-radius:8px; background:var(--bg); border-left:3px solid var(--line-2) }
+  #content .twist-feedback{ font-size:13.5px; color:var(--read); line-height:1.5; margin:6px 0 12px; padding:9px 12px; border-radius:8px; background:var(--card); border-left:3px solid var(--line-2) }
   #content .twist-feedback.opt-correct{ border-left-color:var(--good) }
   #content .twist-feedback.opt-wrong{ border-left-color:var(--danger) }
   #content .twist-feedback.opt-partial{ border-left-color:var(--warn) }
@@ -1244,6 +1254,8 @@
             <button class="menu-item" id="btnChapSearch">Поиск по главе</button>
             <button class="menu-item" id="btnBookLog">Что нового в книге</button>
             <button class="menu-item" id="btnBell">Уведомления<span id="bellBadge" class="mi-badge" style="display:none">0</span></button>
+            <div class="menu-sep"></div>
+            <button class="menu-item" id="btnResetChap">↺ Сбросить предсказания</button>
             <div class="menu-sep" id="editorSep" style="display:none"></div>
             <button class="menu-item" id="miDash" style="display:none">Дашборд глав</button>
             <button class="menu-item" id="miExport" style="display:none">Экспорт правок</button>
@@ -1648,8 +1660,11 @@
   function currentBook(){ return state.book||'main'; }
 
   // ====== ВЕРСИЯ ПРИЛОЖЕНИЯ (повышать с каждым апдейтом HTML) ======
-  var APP_VERSION='5.33';
+  var APP_VERSION='5.34';
   var APP_CHANGELOG=[
+    {v:'5.34', items:[
+      'Тёмная тема для TWIST: убран хардкод #eef5ee, добавлены dark-mode overrides (оба механизма: data-theme=dark и prefers-color-scheme). Меню «…»: кнопка «↺ Сбросить предсказания» — чистит localStorage TWIST этой главы и возвращает все виджеты в неотвеченное состояние (learning_events не трогает).',
+    ]},
     {v:'5.33', items:[
       'TWIST: добавлен reveal_kind=расхождение (цифры расходятся: + зелёный, − красный, поэтапно). Разделитель ribbon_lines изменён на ;; (безопасно для прозы). Финальный формат маркера согласован с Каллиопой.',
     ]},
@@ -2636,6 +2651,33 @@
       'Ответ:'
     ]
   };
+  function resetChapterProgress(){
+    // Clear all TWIST localStorage keys for current chapter's TWIST ids
+    var twistIds=[];
+    document.querySelectorAll('#content .twist-box[data-tid]').forEach(function(b){
+      twistIds.push(b.getAttribute('data-tid'));
+    });
+    if(!twistIds.length){ if(typeof toast==='function') toast('Нет предсказаний для сброса'); return; }
+    twistIds.forEach(function(tid){
+      try{ localStorage.removeItem('tw:'+tid); }catch(e){}
+    });
+    // Re-render the chapter reading content (TWIST boxes only — reset _twFilled flags and re-run twistFill)
+    document.querySelectorAll('#content .twist-box').forEach(function(b){
+      delete b._twFilled;
+      b.classList.remove('twist-done');
+      b.innerHTML='';
+    });
+    // Re-lock text below TWIST boxes
+    document.querySelectorAll('#content .twist-lock').forEach(function(lock){
+      lock.classList.remove('twist-unlocked');
+      delete lock._locked;
+      // Move children back to parent (reverse the scoop)
+      var parent=lock.parentNode;
+      while(lock.firstChild){ parent.insertBefore(lock.firstChild, lock.nextSibling); }
+    });
+    twistFill();
+    if(typeof toast==='function') toast('↺ Предсказания сброшены — можно пройти заново');
+  }
   function twistFill(){
     document.querySelectorAll('#content .twist-box').forEach(function(box){
       if(box._twFilled) return; box._twFilled=true;
@@ -3457,6 +3499,8 @@
   (function(){
     var bv=document.getElementById('btnView'); if(bv) bv.onclick=function(e){ toggleMenu('readSheet', e); refreshMarksSeg(); };
     var bm=document.getElementById('btnMore'); if(bm) bm.onclick=function(e){ toggleMenu('moreMenu', e); };
+    var btnReset=document.getElementById('btnResetChap');
+    if(btnReset) btnReset.onclick=function(){ resetChapterProgress(); closeMenus(); };
     var rs=document.getElementById('readSheet'); if(rs) rs.addEventListener('click', function(e){ e.stopPropagation(); });
     var mm=document.getElementById('moreMenu'); if(mm) mm.addEventListener('click', function(e){ e.stopPropagation(); if(e.target.closest('.menu-item')) closeMenus(); });
     var bpt=document.getElementById('btnPanelTools'); if(bpt) bpt.onclick=function(e){ toggleMenu('panelToolsMenu', e); };
