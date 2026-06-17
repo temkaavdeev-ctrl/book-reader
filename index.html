@@ -1171,6 +1171,19 @@
   #content .tws-pct{ font-size:11px; color:var(--muted); flex:0 0 28px; text-align:right }
   #content .twist-stats-load{ font-size:11px; color:var(--muted) }
 
+
+  /* ===== PROOF: inline citation with expandable card ===== */
+  #content .proof-a{ border-bottom:1.5px dotted var(--muted); cursor:pointer; color:inherit; transition:border-color .15s }
+  #content .proof-a:hover{ border-bottom-color:var(--accent) }
+  #content .proof-card{ border-radius:10px; padding:12px 14px; margin:6px 0 16px; background:var(--card); border:1px solid var(--line); box-shadow:0 2px 12px rgba(0,0,0,.08) }
+  #content .proof-h{ display:flex; align-items:center; justify-content:space-between; margin-bottom:8px }
+  #content .proof-st{ font-family:var(--font-mono); font-size:10px; font-weight:700; padding:2px 8px; border-radius:999px; color:#fff }
+  #content .proof-x{ background:none; border:none; color:var(--muted); cursor:pointer; font-size:13px; padding:0 }
+  #content .proof-claim{ font-size:14px; color:var(--read); line-height:1.55; margin-bottom:7px }
+  #content .proof-src{ font-size:12px; color:var(--muted); font-style:italic; margin-bottom:8px }
+  #content .proof-kbn-row{ display:flex; flex-wrap:wrap; gap:6px }
+  #content .proof-kbn{ padding:3px 10px; border:1px solid var(--line); border-radius:999px; background:var(--card); color:var(--accent); font-size:12px; cursor:pointer; font-family:var(--font-mono) }
+  #content .proof-kbn:hover{ border-color:var(--accent); background:var(--accent-tint) }
 </style>
 </head>
 <body>
@@ -1611,8 +1624,11 @@
   function currentBook(){ return state.book||'main'; }
 
   // ====== ВЕРСИЯ ПРИЛОЖЕНИЯ (повышать с каждым апдейтом HTML) ======
-  var APP_VERSION='5.28';
+  var APP_VERSION='5.29';
   var APP_CHANGELOG=[
+    {v:'5.29', items:[
+      'PROOF-маркер: <!-- PROOF: id=... | anchor="фраза" | claim=... | source=... | kb_nodes=... | status=solid --> — фраза в прозе получает пунктирное подчёркивание, тап открывает карточку с источником, утверждением, статусом надёжности и чипами KB-концептов. По умолчанию текст чистый, глубина — по запросу.',
+    ]},
     {v:'5.28', items:[
       'TWIST v2 — pm-decision механика: три хода-кнопки (А/Б/В) вместо свободного ввода, ставка уверенности 1–5, текст ниже маркера скрыт размытием до выбора, после фиксации — анимированный релиз-нарратив «выкатываю…→аналитика…→ответ», статистика «ты против N читателей». Диаграмма trust_poles добавлена в базу (g11b исправлен).',
     ]},
@@ -2043,6 +2059,40 @@
         +'</div>\n\n'
         +'<div class="twist-lock" data-for="'+uid+'"></div>\n\n';
     });
+    // PROOF: inline citation with expandable card (tail layer II)
+    (function(){
+      var proofList=[];
+      md.replace(/<!--\s*PROOF:\s*([\s\S]*?)-->/g, function(m, attrs, offset){
+        function pa(k){ var r=attrs.match(new RegExp('(?:^|\\|)\\s*'+k+'=("?)([^"|>]+)\\1')); return r?r[2].replace(/\s+/g,' ').trim():''; }
+        proofList.push({m:m, offset:offset,
+          id:pa('id'), anchor:pa('anchor'), claim:pa('claim'),
+          source:pa('source'), kbn:pa('kb_nodes'), status:pa('status')||'solid'});
+        return m;
+      });
+      proofList.reverse().forEach(function(p){
+        var pid='proof-'+(p.id||p.anchor.slice(0,15)).replace(/[^a-z0-9]/gi,'-').toLowerCase();
+        var col={solid:'var(--good)',mixed:'var(--warn)',contested:'var(--danger)'}[p.status]||'var(--muted)';
+        var stRu={solid:'надёжный',mixed:'смешанный',contested:'спорный'}[p.status]||p.status;
+        var kbns=(p.kbn||'').split(',').filter(Boolean).map(function(k){
+          k=k.trim();
+          return '<button class="proof-kbn" data-act="kbp-open-slug" data-slug="'+escapeHtml(k)+'">'+escapeHtml(k)+'</button>';
+        }).join('');
+        var card='\n<div class="proof-card" id="'+pid+'" style="display:none">'
+          +'<div class="proof-h"><span class="proof-st" style="background:'+col+'">'+escapeHtml(stRu)+'</span>'
+          +'<button class="proof-x" data-act="proof-x" data-pid="'+pid+'">✕</button></div>'
+          +(p.claim?'<div class="proof-claim">'+escapeHtml(p.claim)+'</div>':'')
+          +(p.source?'<div class="proof-src">'+escapeHtml(p.source)+'</div>':'')
+          +(kbns?'<div class="proof-kbn-row">'+kbns+'</div>':'')
+          +'</div>\n';
+        var pre=md.substring(0, p.offset);
+        var post=md.substring(p.offset+p.m.length);
+        if(p.anchor){
+          var ai=pre.lastIndexOf(p.anchor);
+          if(ai>=0) pre=pre.substring(0,ai)+'<span class="proof-a" data-pid="'+pid+'">'+escapeHtml(p.anchor)+'</span>'+pre.substring(ai+p.anchor.length);
+        }
+        md=pre+card+post;
+      });
+    })();
     // predict → see (learning layer)
     md = md.replace(/<!--\s*PREDICT:\s*([\s\S]*?)-->/g, function(m, attrs){
       function pa(k){ var r=attrs.match(new RegExp(k+'=([^|>]+)')); return r?r[1].replace(/\s+/g,' ').trim():''; }
@@ -3190,6 +3240,17 @@
     pdCommit(t.getAttribute('data-uid'));
   });
   document.addEventListener('click', function(e){
+    // PROOF: inline citation anchor + close
+    var tp=e.target.closest('.proof-a'); if(tp){
+      var pid=tp.getAttribute('data-pid'), card=document.getElementById(pid);
+      if(card){ var vis=card.style.display!=='none';
+        document.querySelectorAll('#content .proof-card').forEach(function(c){c.style.display='none';});
+        if(!vis){ card.style.display=''; card.scrollIntoView({behavior:'smooth',block:'nearest'}); }
+      } return;
+    }
+    tp=e.target.closest('[data-act="proof-x"]'); if(tp){
+      var c=document.getElementById(tp.getAttribute('data-pid')); if(c) c.style.display='none'; return;
+    }
     var t=e.target.closest('[data-act="twist-pick"]'); if(t){ twistPick(t.getAttribute('data-uid'), t.getAttribute('data-choice')); return; }
     t=e.target.closest('[data-act="twist-commit-free"]'); if(t){
       var uid2=t.getAttribute('data-uid');
