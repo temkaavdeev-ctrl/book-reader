@@ -1241,50 +1241,71 @@
   .pub-part-row label{ font-size:12px; color:var(--muted); display:flex; align-items:center; gap:5px }
   .pub-part-inp{ height:30px; padding:0 8px; border:1px solid var(--line-2); border-radius:7px; background:var(--bg); color:var(--ink); font-size:13px; font-family:inherit }
 
-  /* ===== KB Mode (База знаний) ===== */
+    /* ===== KB Mode (База знаний) ===== */
   #kbMode{ position:fixed; inset:0; z-index:60; background:var(--bg); display:none; flex-direction:column }
   .kbm-inner{ display:flex; flex-direction:column; flex:1; overflow:hidden }
-  .kbm-head{ display:flex; align-items:center; gap:12px; padding:14px 16px 10px; border-bottom:1px solid var(--line); flex-shrink:0 }
+  /* Header */
+  .kbm-head{ display:flex; align-items:center; gap:10px; padding:14px 16px 10px; border-bottom:1px solid var(--line); flex-shrink:0 }
   .kbm-title{ font-size:20px; font-weight:700; margin:0; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
-  .kbm-count{ font-family:var(--font-mono); font-size:11px; color:var(--muted); white-space:nowrap }
-  .kbm-search-row{ padding:10px 14px 6px; flex-shrink:0 }
-  .kbm-q{ width:100%; height:38px; padding:0 12px; border:1.5px solid var(--line-2); border-radius:10px; background:var(--card); color:var(--ink); font-size:14px; font-family:inherit; outline:none; box-sizing:border-box }
+  .kbm-count{ font-family:var(--font-mono); font-size:11px; color:var(--muted); white-space:nowrap; letter-spacing:.03em }
+  /* Search */
+  .kbm-search-row{ padding:10px 14px 0; flex-shrink:0; position:relative }
+  .kbm-search-row::before{ content:'🔍'; position:absolute; left:26px; top:50%; transform:translateY(-20%); font-size:14px; pointer-events:none }
+  .kbm-q{ width:100%; height:40px; padding:0 12px 0 34px; border:1.5px solid var(--line-2); border-radius:12px; background:var(--card); color:var(--ink); font-size:14px; font-family:inherit; outline:none; box-sizing:border-box; transition:border-color .15s }
   .kbm-q:focus{ border-color:var(--accent) }
-  .kbm-filters{ padding:0 14px 8px; flex-shrink:0; display:flex; flex-direction:column; gap:6px }
-  .kbm-frow{ display:flex; flex-wrap:wrap; gap:5px }
-  .kbm-chip{ padding:4px 10px; border:1.5px solid var(--line-2); border-radius:999px; background:var(--card); font-size:12px; color:var(--muted); cursor:pointer; font-family:inherit; white-space:nowrap; transition:border-color .15s,background .15s,color .15s }
-  .kbm-chip.kbm-fsel{ border-color:var(--accent); background:var(--accent-tint); color:var(--accent); font-weight:600 }
-  .kbm-frob.kbm-fsel{ border-color:var(--fc,var(--accent)); background:color-mix(in srgb,var(--fc,var(--accent)) 12%,var(--bg)); color:var(--fc,var(--accent)) }
-  .kbm-flike.kbm-fsel{ border-color:var(--danger); background:color-mix(in srgb,var(--danger) 10%,var(--bg)); color:var(--danger) }
-  .kbm-cards{ flex:1; overflow-y:auto; padding:8px 14px 80px; display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; align-content:start }
-  .kbm-card{ background:var(--card); border:1.5px solid var(--line); border-radius:12px; padding:12px 12px 36px; cursor:pointer; position:relative; transition:border-color .15s; min-height:90px }
-  .kbm-card:hover{ border-color:var(--accent) }
-  .kbm-card-top{ display:flex; align-items:center; gap:6px; margin-bottom:7px; flex-wrap:wrap }
-  .kbm-kind{ font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--muted) }
-  .kbm-rob{ font-family:var(--font-mono); font-size:9.5px; font-weight:700; padding:1px 6px; border-radius:999px; color:#fff; letter-spacing:.03em }
-  .kbm-card-title{ font-size:13.5px; font-weight:700; color:var(--ink); line-height:1.35; margin-bottom:5px }
-  .kbm-card-claim{ font-size:12px; color:var(--muted); line-height:1.5 }
-  .kbm-heart{ position:absolute; bottom:10px; right:10px; background:none; border:none; font-size:17px; color:var(--muted); cursor:pointer; padding:2px; transition:color .15s }
-  .kbm-heart:hover, .kbm-liked .kbm-heart{ color:var(--danger) }
-  /* Detail */
+  /* Filters — compact 2-row horizontal scroll */
+  .kbm-filters{ padding:8px 14px 4px; flex-shrink:0 }
+  .kf-row{ display:flex; gap:5px; overflow-x:auto; padding-bottom:6px; -webkit-overflow-scrolling:touch }
+  .kf-row::-webkit-scrollbar{ display:none }
+  .kf-btn{ display:inline-flex; align-items:center; gap:5px; padding:5px 11px; border:1.5px solid var(--line-2); border-radius:999px; background:var(--card); font-size:12.5px; color:var(--muted); cursor:pointer; font-family:inherit; white-space:nowrap; flex-shrink:0; transition:all .15s }
+  .kf-btn:hover{ border-color:var(--accent); color:var(--accent) }
+  .kf-btn.kf-sel{ border-color:var(--accent); background:var(--accent-tint); color:var(--accent); font-weight:600 }
+  .kf-dot{ width:7px; height:7px; border-radius:50%; flex-shrink:0 }
+  .kf-like{ }
+  .kf-like.kf-like-sel{ border-color:var(--danger); background:color-mix(in srgb,var(--danger) 10%,var(--bg)); color:var(--danger) }
+  /* Cards grid */
+  .kbm-cards{ flex:1; overflow-y:auto; padding:10px 12px 80px; display:grid; grid-template-columns:repeat(auto-fill,minmax(158px,1fr)); gap:9px; align-content:start }
+  /* Card: colored top accent by kind */
+  .kbm-card{ background:var(--card); border:1.5px solid var(--line); border-radius:13px; padding:0 12px 38px; cursor:pointer; position:relative; transition:border-color .15s,box-shadow .15s; overflow:hidden }
+  .kbm-card:hover{ border-color:var(--kc,var(--accent)); box-shadow:0 2px 14px rgba(0,0,0,.08) }
+  .kbm-card-accent{ height:4px; background:var(--kc,var(--accent)); margin:0 -12px 10px; border-radius:0 }
+  .kbm-card-meta{ display:flex; align-items:center; gap:6px; margin-bottom:7px }
+  .kbm-kind-sm{ font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--kc,var(--muted)); flex:1 }
+  .kbm-rdot{ width:8px; height:8px; border-radius:50%; flex-shrink:0 }
+  .kbm-rwarn{ font-size:10px; color:var(--danger); font-family:var(--font-mono); font-weight:700 }
+  .kbm-card-title{ font-size:13.5px; font-weight:700; color:var(--ink); line-height:1.35; margin-bottom:6px }
+  .kbm-card-claim{ font-size:11.5px; color:var(--muted); line-height:1.5 }
+  .kbm-heart{ position:absolute; bottom:10px; right:10px; background:none; border:none; font-size:17px; color:var(--line-2); cursor:pointer; padding:4px; transition:color .15s; line-height:1 }
+  .kbm-heart:hover{ color:var(--danger) }
+  .kbm-heart.kbm-liked{ color:var(--danger) }
+  /* Detail panel */
   .kbm-det{ background:var(--bg) }
   #kbmDetBody{ flex:1; overflow-y:auto; padding:16px 18px 80px }
   .kbm-d-meta{ display:flex; flex-wrap:wrap; align-items:center; gap:7px; margin-bottom:12px }
+  .kbm-kind{ font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--muted) }
+  .kbm-rob{ font-family:var(--font-mono); font-size:9.5px; font-weight:700; padding:2px 7px; border-radius:999px; color:#fff; letter-spacing:.03em }
   .kbm-es{ font-family:var(--font-mono); font-size:10px; color:var(--muted); letter-spacing:.04em }
   .kbm-like-btn{ display:inline-flex; align-items:center; gap:6px; padding:7px 14px; border:1.5px solid var(--line-2); border-radius:999px; background:var(--card); font-size:13px; color:var(--muted); cursor:pointer; font-family:inherit; margin-bottom:14px; transition:border-color .15s,color .15s }
   .kbm-like-btn.kbm-liked{ border-color:var(--danger); color:var(--danger) }
-  .kbm-d-claim{ font-size:15.5px; color:var(--read); line-height:1.65; margin-bottom:14px; font-family:var(--font-read) }
-  .kbm-d-note{ font-size:13px; color:var(--muted); line-height:1.55; padding:10px 12px; background:var(--card); border-radius:8px; margin-bottom:10px }
-  .kbm-d-kontr{ font-size:13px; color:var(--read); line-height:1.5; padding:10px 12px; background:color-mix(in srgb,var(--danger) 7%,var(--bg)); border-radius:8px; margin-bottom:10px }
-  .kbm-d-ex{ font-size:13px; color:var(--muted); line-height:1.5; padding:8px 12px; border-left:2px solid var(--line-2); margin-bottom:10px }
-  .kbm-d-src{ font-size:11.5px; color:var(--muted); font-family:var(--font-mono); line-height:1.5; margin-bottom:14px }
-  .kbm-d-edges{ margin-top:14px; padding-top:14px; border-top:1px solid var(--line) }
-  .kbm-d-edges-lbl{ font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:.10em; text-transform:uppercase; color:var(--muted); margin-bottom:8px }
-  .kbm-edge-chip{ display:inline-flex; align-items:center; gap:7px; padding:7px 12px; border:1.5px solid var(--line); border-radius:10px; background:var(--card); cursor:pointer; font-size:13px; color:var(--read); font-family:inherit; margin:0 5px 6px 0; transition:border-color .15s }
-  .kbm-edge-chip:hover{ border-color:var(--accent); color:var(--accent) }
-  .kbm-rel-tag{ font-family:var(--font-mono); font-size:10px; color:var(--muted); background:var(--line); border-radius:4px; padding:1px 6px }
+  .kbm-d-claim{ font-size:15.5px; color:var(--read); line-height:1.65; margin-bottom:16px; font-family:var(--font-read) }
+  /* Section system for all 8 body fields */
+  .kbm-sec{ margin-bottom:12px; padding:10px 13px; border-radius:10px; background:var(--card); border:1px solid var(--line) }
+  .kbm-sec-lbl{ font-family:var(--font-mono); font-size:10.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-bottom:6px }
+  .kbm-sec-lbl-app{ color:var(--accent) }
+  .kbm-sec-body{ font-size:13.5px; color:var(--read); line-height:1.6 }
+  .kbm-sec-app{ border-color:color-mix(in srgb,var(--accent) 30%,var(--line)); background:var(--accent-tint) }
+  .kbm-sec-app .kbm-sec-body{ color:var(--read) }
+  .kbm-sec-note{ border-color:color-mix(in srgb,var(--warn) 30%,var(--line)); background:color-mix(in srgb,var(--warn) 6%,var(--bg)) }
+  .kbm-sec-kontr{ border-color:color-mix(in srgb,var(--danger) 25%,var(--line)); background:color-mix(in srgb,var(--danger) 6%,var(--bg)) }
+  .kbm-sec-kontr .kbm-sec-lbl{ color:var(--danger) }
+  .kbm-sec-ana{ border-style:dashed }
+  .kbm-d-src{ font-size:11px; color:var(--muted); font-family:var(--font-mono); line-height:1.5; margin-top:14px; padding-top:12px; border-top:1px solid var(--line) }
+  /* Back button */
+  .kbm-back-btn{ display:flex; align-items:center; gap:5px; padding:4px 10px; border-radius:8px; background:var(--card); border:1px solid var(--line); min-width:0; max-width:160px }
+  .kbm-back-arr{ font-size:16px; flex-shrink:0 }
+  .kbm-back-lbl{ font-size:12px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:120px; font-family:var(--font-mono) }
 
-  /* ===== KB Mode: related cards strip (graph navigation) ===== */
+/* ===== KB Mode: related cards strip (graph navigation) ===== */
   .kbm-related{ margin-top:18px; padding-top:14px; border-top:1px solid var(--line) }
   .kbm-rel-strip{ display:flex; gap:10px; overflow-x:auto; padding-bottom:12px; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; cursor:grab }
   .kbm-rel-strip:active{ cursor:grabbing }
@@ -1765,8 +1786,14 @@
   function currentBook(){ return state.book||'main'; }
 
   // ====== ВЕРСИЯ ПРИЛОЖЕНИЯ (повышать с каждым апдейтом HTML) ======
-  var APP_VERSION='5.37';
+  var APP_VERSION='5.39';
   var APP_CHANGELOG=[
+    {v:'5.39', items:[
+      'База знаний — полная карточка: добавлены все 8 полей body_struct. Механизм (⚙ как работает), Аналогия (◎ для запоминания), Пример, Применение в продукте (📱 выделено цветом — самое ценное для PM), История/происхождение (📖), Устойчивость и Критика для спорных. Источник — в низу. Порядок соответствует логике освоения концепта.',
+    ]},
+    {v:'5.38', items:[
+      'База знаний — редизайн: карточки с цветной полоской по типу (Эффект=янтарь, Теория=синий, Рамка=фиолетовый, Феномен=тёмно-бирюзовый, Метод=зелёный). Надёжность — цветная точка вместо повторяющегося бейджа (только для спорных/смешанных добавляется подпись). Фильтры — горизонтальный скролл в 2 строки, не занимают весь экран.',
+    ]},
     {v:'5.37', items:[
       'База знаний: граф-навигация. Рядом с деталью концепта — горизонтальная лента связанных карточек (тип связи + надёжность + название + суть). Тап → переход на ту карточку, данные берутся из кеша (без запросов). Кнопка «Назад» показывает название предыдущего концепта — можно вернуться к нему. История навигации хранится в стеке.',
     ]},
@@ -4152,30 +4179,45 @@
     kbmBuildFilters(); kbmRender();
   }
 
+  var KBM_KIND_COL={effect:'#8f5a23',theory:'#3b6fa0',frame:'#7356a0',phenomenon:'#2b7d7a',method:'#2f7d4f',term:'#8c8475'};
+
   function kbmBuildFilters(){
     var el=document.getElementById('kbmFilters'); if(!el) return;
-    var kinds=['','effect','theory','frame','phenomenon','method','term'];
-    var robs=['','solid','mixed','contested'];
-    var chips='<div class="kbm-frow">';
-    kinds.forEach(function(k){
-      chips+='<button class="kbm-chip kbm-fkind'+(KBM.filter.kind===k?' kbm-fsel':'')+'" data-fkind="'+k+'">'+(k?KBM_KIND[k]:'Все')+'</button>';
-    });
-    chips+='</div><div class="kbm-frow">';
-    robs.forEach(function(r){
-      var col=r?KBM_ROB_COL[r]:'';
-      chips+='<button class="kbm-chip kbm-frob'+(KBM.filter.rob===r?' kbm-fsel':'')+'" data-frob="'+r+'"'+(col?' style="--fc:'+col+'"':'')+'>'+( r?KBM_ROB[r]:'Все')+'</button>';
-    });
-    chips+='<button class="kbm-chip kbm-flike'+(KBM.filter.likedOnly?' kbm-fsel':'')+'">♥ понравившиеся</button>';
-    chips+='</div>';
-    el.innerHTML=chips;
-    el.addEventListener('click',function(e){
-      var t=e.target.closest('[data-fkind]');
-      if(t){ KBM.filter.kind=t.getAttribute('data-fkind'); kbmBuildFilters(); kbmRender(); return; }
-      t=e.target.closest('[data-frob]');
-      if(t){ KBM.filter.rob=t.getAttribute('data-frob'); kbmBuildFilters(); kbmRender(); return; }
-      t=e.target.closest('.kbm-flike');
-      if(t){ KBM.filter.likedOnly=!KBM.filter.likedOnly; kbmBuildFilters(); kbmRender(); return; }
-    });
+    // Row 1: kind filters with color dots
+    var kindItems=[
+      {k:'',lbl:'Все'},
+      {k:'effect',lbl:'Эффект'},{k:'theory',lbl:'Теория'},
+      {k:'frame',lbl:'Рамка'},{k:'phenomenon',lbl:'Феномен'},
+      {k:'method',lbl:'Метод'},{k:'term',lbl:'Термин'}
+    ];
+    var robItems=[
+      {r:'',lbl:'Любая'},
+      {r:'solid',lbl:'Подтверждена'},{r:'mixed',lbl:'Смешанная'},
+      {r:'contested',lbl:'Спорная'}
+    ];
+    var row1=kindItems.map(function(it){
+      var active=KBM.filter.kind===it.k;
+      var col=it.k?KBM_KIND_COL[it.k]:'';
+      var dot=it.k?'<span class="kf-dot" style="background:'+col+'"></span>':'';
+      return '<button class="kf-btn'+(active?' kf-sel':'')+'" data-fkind="'+it.k+'"'+(col&&active?' style="border-color:'+col+';color:'+col+'"':'')+'>'+dot+it.lbl+'</button>';
+    }).join('');
+    var row2=robItems.map(function(it){
+      var active=KBM.filter.rob===it.r;
+      var col=it.r?KBM_ROB_COL[it.r]:'';
+      var dot=it.r?'<span class="kf-dot" style="background:'+col+'"></span>':'';
+      return '<button class="kf-btn'+(active?' kf-sel':'')+'" data-frob="'+it.r+'"'+(col&&active?' style="border-color:'+col+';color:'+col+'"':'')+'>'+dot+it.lbl+'</button>';
+    }).join('');
+    var likeActive=KBM.filter.likedOnly;
+    var row3='<button class="kf-btn kf-like'+(likeActive?' kf-sel kf-like-sel':'')+'" data-like="1">♥ Понравившиеся</button>';
+    el.innerHTML='<div class="kf-row">'+row1+'</div>'
+      +'<div class="kf-row">'+row2+row3+'</div>';
+    if(!el._wired){ el._wired=true;
+      el.addEventListener('click',function(e){
+        var t=e.target.closest('[data-fkind]'); if(t){ KBM.filter.kind=t.getAttribute('data-fkind'); kbmBuildFilters(); kbmRender(); return; }
+        t=e.target.closest('[data-frob]'); if(t){ KBM.filter.rob=t.getAttribute('data-frob'); kbmBuildFilters(); kbmRender(); return; }
+        t=e.target.closest('[data-like]'); if(t){ KBM.filter.likedOnly=!KBM.filter.likedOnly; kbmBuildFilters(); kbmRender(); }
+      });
+    }
   }
 
   function kbmFiltered(){
@@ -4195,17 +4237,21 @@
     var cnt=document.getElementById('kbmCount'); if(cnt) cnt.textContent=nodes.length+' из '+KBM.nodes.length;
     if(!nodes.length){ el.innerHTML='<div class="dsp-empty">Ничего не найдено</div>'; return; }
     el.innerHTML=nodes.map(function(n){
-      var col=KBM_ROB_COL[n.robustness]||'var(--muted)';
+      var kCol=KBM_KIND_COL[n.kind]||'var(--muted)';
+      var rCol=KBM_ROB_COL[n.robustness]||'var(--muted)';
       var liked=KBM.likes.has(n.slug);
-      var claim=(n.claim||'').slice(0,100)+(n.claim&&n.claim.length>100?'…':'');
-      return '<div class="kbm-card" data-kbm-slug="'+escapeHtml(n.slug)+'">'
-        +'<div class="kbm-card-top">'
-        +'<span class="kbm-kind">'+escapeHtml(KBM_KIND[n.kind]||n.kind)+'</span>'
-        +'<span class="kbm-rob" style="background:'+col+'">'+escapeHtml(KBM_ROB[n.robustness]||n.robustness)+'</span>'
+      var claim=(n.claim||'').slice(0,95)+(n.claim&&n.claim.length>95?'…':'');
+      var isWarn=n.robustness==='contested'||n.robustness==='mixed';
+      return '<div class="kbm-card" data-kbm-slug="'+escapeHtml(n.slug)+'" style="--kc:'+kCol+'">'
+        +'<div class="kbm-card-accent"></div>'
+        +'<div class="kbm-card-meta">'
+        +'<span class="kbm-kind-sm">'+escapeHtml(KBM_KIND[n.kind]||n.kind)+'</span>'
+        +'<span class="kbm-rdot" style="background:'+rCol+'" title="'+escapeHtml(KBM_ROB[n.robustness]||'')+'"></span>'
+        +(isWarn?'<span class="kbm-rwarn">'+escapeHtml(KBM_ROB[n.robustness])+'</span>':'')
         +'</div>'
         +'<div class="kbm-card-title">'+escapeHtml(n.title)+'</div>'
         +(claim?'<div class="kbm-card-claim">'+escapeHtml(claim)+'</div>':'')
-        +'<button class="kbm-heart" data-kbm-like="'+escapeHtml(n.slug)+'" title="'+(liked?'В избранном':'В избранное')+'">'+(liked?'♥':'♡')+'</button>'
+        +'<button class="kbm-heart'+(liked?' kbm-liked':'')+'" data-kbm-like="'+escapeHtml(n.slug)+'">'+(liked?'♥':'♡')+'</button>'
         +'</div>';
     }).join('');
   }
@@ -4250,15 +4296,23 @@
     if(r.error||!r.data){ if(body) body.innerHTML='<div class="dsp-load">Не удалось загрузить.</div>'; return; }
     var b=r.data, bd=b.body||{};
     var col=KBM_ROB_COL[b.robustness]||'var(--muted)';
+    var kCol=KBM_KIND_COL[b.kind]||'var(--accent)';
     var liked=KBM.likes.has(slug);
+    // All 8 body fields
     var claim=bd['\u0441\u0443\u0442\u044c']||'';
-    var note=b.robustness_note||'';
-    var src=bd['\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a\u0438']||'';
+    var mechanism=bd['\u043c\u0435\u0445\u0430\u043d\u0438\u0437\u043c']||'';
+    var analogy=bd['\u0430\u043d\u0430\u043b\u043e\u0433\u0438\u044f']||'';
+    var story=bd['\u0438\u0441\u0442\u043e\u0440\u0438\u044f']||'';
+    var application=bd['\u043f\u0440\u0438\u043c\u0435\u043d\u0435\u043d\u0438\u0435']||'';
     var ex=bd['\u043f\u0440\u0438\u043c\u0435\u0440']||'';
     var kontr=bd['\u043a\u043e\u043d\u0442\u0440\u0442\u0435\u043e\u0440\u0438\u044f']||'';
+    var src=bd['\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a\u0438']||'';
+    var note=b.robustness_note||'';
     var edges=(b.edges||[]).filter(function(e){return e.strength!=='weak';}).slice(0,10);
     if(title) title.textContent=b.title||slug;
-    // Build related cards using cached KBM.nodes for claim+robustness
+    // Helper: section with label
+    function sec(lbl,icon,txt,cls){ return txt?'<div class="kbm-sec '+(cls||'')+'"><div class="kbm-sec-lbl">'+icon+' '+lbl+'</div><div class="kbm-sec-body">'+escapeHtml(txt)+'</div></div>':''; }
+    // Related cards strip from cache
     var relCardsHtml='';
     if(edges.length){
       relCardsHtml='<div class="kbm-related">'
@@ -4282,20 +4336,36 @@
         }).join('')
         +'</div></div>';
     }
-    var html='<div class="kbm-d-meta">'
-      +'<span class="kbm-kind">'+escapeHtml(KBM_KIND[b.kind]||b.kind)+'</span>'
+    var html=
+      // Meta + like
+      '<div class="kbm-d-meta">'
+      +'<span class="kbm-kind" style="color:'+kCol+'">'+escapeHtml(KBM_KIND[b.kind]||b.kind)+'</span>'
       +'<span class="kbm-rob" style="background:'+col+'">'+escapeHtml(KBM_ROB[b.robustness]||b.robustness)+'</span>'
       +(b.epistemic_status?'<span class="kbm-es">'+escapeHtml(KBM_ES[b.epistemic_status]||b.epistemic_status)+'</span>':'')
       +'</div>'
       +'<button class="kbm-like-btn'+(liked?' kbm-liked':'')+'" id="kbmDetHeart" data-kbm-like="'+escapeHtml(slug)+'">'
         +(liked?'♥ В избранном':'♡ В избранное')+'</button>'
+      // 1. Суть — главное утверждение
       +(claim?'<div class="kbm-d-claim">'+escapeHtml(claim)+'</div>':'')
-      +(note?'<div class="kbm-d-note"><b>Об устойчивости:</b> '+escapeHtml(note)+'</div>':'')
+      // 2. Механизм — почему и как работает
+      +sec('Механизм','⚙',mechanism,'kbm-sec-mech')
+      // 3. Аналогия — мнемоника
+      +sec('Аналогия','◎',analogy,'kbm-sec-ana')
+      // 4. Пример — конкретный кейс
+      +sec('Пример','→',ex,'kbm-sec-ex')
+      // 5. Применение в продукте — самое ценное для PM
+      +(application?'<div class="kbm-sec kbm-sec-app"><div class="kbm-sec-lbl kbm-sec-lbl-app">📱 Применение в продукте</div><div class="kbm-sec-body">'+escapeHtml(application)+'</div></div>':'')
+      // 6. История / происхождение
+      +sec('История','📖',story,'kbm-sec-hist')
+      // 7. Устойчивость
+      +(note?'<div class="kbm-sec kbm-sec-note"><div class="kbm-sec-lbl">🔍 Об устойчивости</div><div class="kbm-sec-body">'+escapeHtml(note)+'</div></div>':'')
+      // 8. Критика (только для contested/mixed)
       +(kontr&&(b.robustness==='contested'||b.robustness==='mixed')
-        ?'<div class="kbm-d-kontr"><b>Критика:</b> '+escapeHtml(kontr.slice(0,400))+'</div>':'')
-      +(ex?'<div class="kbm-d-ex"><b>Пример:</b> '+escapeHtml(ex.slice(0,300))+'</div>':'')
+        ?'<div class="kbm-sec kbm-sec-kontr"><div class="kbm-sec-lbl">⚠ Критика</div><div class="kbm-sec-body">'+escapeHtml(kontr)+'</div></div>':'')
+      // 9. Связанные концепты (граф-навигация)
       +relCardsHtml
-      +(src?'<div class="kbm-d-src">'+escapeHtml(src.slice(0,200))+'</div>':'');
+      // 10. Источник
+      +(src?'<div class="kbm-d-src">'+escapeHtml(src)+'</div>':'');
     if(body){
       body.innerHTML=html;
       body.addEventListener('click',function(e){
@@ -4303,74 +4373,6 @@
         var nav=e.target.closest('[data-kbm-nav]'); if(nav){ kbmDetail(nav.getAttribute('data-kbm-nav')); }
       });
     }
-  }
-
-  function kbmBuildFilters(){
-    var el=document.getElementById('kbmFilters'); if(!el) return;
-    var kinds=['','effect','theory','frame','phenomenon','method','term'];
-    var robs=['','solid','mixed','contested'];
-    var chips='<div class="kbm-frow">';
-    kinds.forEach(function(k){
-      chips+='<button class="kbm-chip kbm-fkind'+(KBM.filter.kind===k?' kbm-fsel':'')+'" data-fkind="'+k+'">'+(k?KBM_KIND[k]:'Все')+'</button>';
-    });
-    chips+='</div><div class="kbm-frow">';
-    robs.forEach(function(r){
-      var col=r?KBM_ROB_COL[r]:'';
-      chips+='<button class="kbm-chip kbm-frob'+(KBM.filter.rob===r?' kbm-fsel':'')+'" data-frob="'+r+'"'+(col?' style="--fc:'+col+'"':'')+'>'+( r?KBM_ROB[r]:'Все')+'</button>';
-    });
-    chips+='<button class="kbm-chip kbm-flike'+(KBM.filter.likedOnly?' kbm-fsel':'')+'">♥ понравившиеся</button>';
-    chips+='</div>';
-    el.innerHTML=chips;
-    el.addEventListener('click',function(e){
-      var t=e.target.closest('[data-fkind]');
-      if(t){ KBM.filter.kind=t.getAttribute('data-fkind'); kbmBuildFilters(); kbmRender(); return; }
-      t=e.target.closest('[data-frob]');
-      if(t){ KBM.filter.rob=t.getAttribute('data-frob'); kbmBuildFilters(); kbmRender(); return; }
-      t=e.target.closest('.kbm-flike');
-      if(t){ KBM.filter.likedOnly=!KBM.filter.likedOnly; kbmBuildFilters(); kbmRender(); return; }
-    });
-  }
-
-  function kbmFiltered(){
-    var q=(KBM.filter.q||'').toLowerCase().trim();
-    return KBM.nodes.filter(function(n){
-      if(KBM.filter.kind && n.kind!==KBM.filter.kind) return false;
-      if(KBM.filter.rob && n.robustness!==KBM.filter.rob) return false;
-      if(KBM.filter.likedOnly && !KBM.likes.has(n.slug)) return false;
-      if(q){
-        return (n.title||'').toLowerCase().includes(q)||(n.claim||'').toLowerCase().includes(q);
-      }
-      return true;
-    });
-  }
-
-  function kbmRender(){
-    var el=document.getElementById('kbmCards'); if(!el) return;
-    var nodes=kbmFiltered();
-    var cnt=document.getElementById('kbmCount'); if(cnt) cnt.textContent=nodes.length+' из '+KBM.nodes.length;
-    if(!nodes.length){ el.innerHTML='<div class="dsp-empty">Ничего не найдено</div>'; return; }
-    el.innerHTML=nodes.map(function(n){
-      var col=KBM_ROB_COL[n.robustness]||'var(--muted)';
-      var liked=KBM.likes.has(n.slug);
-      var claim=(n.claim||'').slice(0,100)+(n.claim&&n.claim.length>100?'…':'');
-      return '<div class="kbm-card" data-kbm-slug="'+escapeHtml(n.slug)+'">'
-        +'<div class="kbm-card-top">'
-        +'<span class="kbm-kind">'+escapeHtml(KBM_KIND[n.kind]||n.kind)+'</span>'
-        +'<span class="kbm-rob" style="background:'+col+'">'+escapeHtml(KBM_ROB[n.robustness]||n.robustness)+'</span>'
-        +'</div>'
-        +'<div class="kbm-card-title">'+escapeHtml(n.title)+'</div>'
-        +(claim?'<div class="kbm-card-claim">'+escapeHtml(claim)+'</div>':'')
-        +'<button class="kbm-heart" data-kbm-like="'+escapeHtml(n.slug)+'" title="'+(liked?'В избранном':'В избранное')+'">'+(liked?'♥':'♡')+'</button>'
-        +'</div>';
-    }).join('');
-    el.addEventListener('click',function(e){
-      var like=e.target.closest('[data-kbm-like]');
-      if(like){ e.stopPropagation(); kbmLikeToggle(like.getAttribute('data-kbm-like')); return; }
-      var card=e.target.closest('[data-kbm-slug]');
-      if(card) kbmDetail(card.getAttribute('data-kbm-slug'));
-    },{once:true});
-    // re-wire (event listener with once:true means re-wire on each render)
-    // Actually use delegation approach — just override each render
   }
 
   async function kbmLikeToggle(slug){
@@ -4393,51 +4395,6 @@
       var nl=KBM.likes.has(slug);
       dh.textContent=nl?'♥ В избранном':'♡ В избранное';
       dh.classList.toggle('kbm-liked',nl);
-    }
-  }
-
-  async function kbmDetail(slug){
-    kbmShowDetail();
-    var title=document.getElementById('kbmDetTitle'); if(title) title.textContent='…';
-    var body=document.getElementById('kbmDetBody'); if(body) body.innerHTML='<div class="dsp-load">Загрузка…</div>';
-    var r=await SB.rpc('kb_node_bundle',{p_slug:slug});
-    if(r.error||!r.data){ if(body) body.innerHTML='<div class="dsp-load">Не удалось загрузить.</div>'; return; }
-    var b=r.data, bd=b.body||{};
-    var col=KBM_ROB_COL[b.robustness]||'var(--muted)';
-    var liked=KBM.likes.has(slug);
-    var claim=bd['\u0441\u0443\u0442\u044c']||'';
-    var note=b.robustness_note||'';
-    var src=bd['\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a\u0438']||'';
-    var ex=bd['\u043f\u0440\u0438\u043c\u0435\u0440']||'';
-    var kontr=bd['\u043a\u043e\u043d\u0442\u0440\u0442\u0435\u043e\u0440\u0438\u044f']||'';
-    var edges=(b.edges||[]).filter(function(e){return e.strength!=='weak';}).slice(0,8);
-    if(title) title.textContent=b.title||slug;
-    var html='<div class="kbm-d-meta">'
-      +'<span class="kbm-kind">'+escapeHtml(KBM_KIND[b.kind]||b.kind)+'</span>'
-      +'<span class="kbm-rob" style="background:'+col+'">'+escapeHtml(KBM_ROB[b.robustness]||b.robustness)+'</span>'
-      +(b.epistemic_status?'<span class="kbm-es">'+escapeHtml(KBM_ES[b.epistemic_status]||b.epistemic_status)+'</span>':'')
-      +'</div>'
-      +'<button class="kbm-like-btn'+(liked?' kbm-liked':'')+'" id="kbmDetHeart" data-kbm-like="'+escapeHtml(slug)+'">'
-        +(liked?'♥ В избранном':'♡ В избранное')+'</button>'
-      +(claim?'<div class="kbm-d-claim">'+escapeHtml(claim)+'</div>':'')
-      +(note?'<div class="kbm-d-note"><b>Об устойчивости:</b> '+escapeHtml(note)+'</div>':'')
-      +(kontr&&(b.robustness==='contested'||b.robustness==='mixed')
-        ?'<div class="kbm-d-kontr"><b>Критика:</b> '+escapeHtml(kontr.slice(0,400))+'</div>':'')
-      +(ex?'<div class="kbm-d-ex"><b>Пример:</b> '+escapeHtml(ex.slice(0,300))+'</div>':'')
-      +(src?'<div class="kbm-d-src">'+escapeHtml(src.slice(0,200))+'</div>':'')
-      +(edges.length?'<div class="kbm-d-edges"><div class="kbm-d-edges-lbl">Связанные концепты</div>'
-        +edges.map(function(e){
-          var relLabel=KBM_REL[e.relation]||e.relation;
-          return '<button class="kbm-edge-chip" data-kbm-nav="'+escapeHtml(e.other)+'">'
-            +'<span class="kbm-rel-tag">'+escapeHtml(relLabel)+'</span>'
-            +escapeHtml(e.other_title||e.other)+'</button>';
-        }).join('')+'</div>':'');
-    if(body){
-      body.innerHTML=html;
-      body.addEventListener('click',function(e){
-        var like=e.target.closest('[data-kbm-like]'); if(like){ kbmLikeToggle(like.getAttribute('data-kbm-like')); return; }
-        var nav=e.target.closest('[data-kbm-nav]'); if(nav){ kbmDetail(nav.getAttribute('data-kbm-nav')); }
-      });
     }
   }
 
