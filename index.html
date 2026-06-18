@@ -1770,6 +1770,19 @@
 .cn-nav-ic{ width:20px; text-align:center; opacity:.85 }
 .cn-nav-sep{ height:1px; background:rgba(220,190,150,.12); margin:8px 22px }
 .cn-nav-acct{ font-size:12px; color:#a99a82; padding:2px 22px 8px; word-break:break-all }
+
+/* ── Card navigation: directional slide + streaming detail (smooth forward/back) ── */
+#kbmDetCard{ will-change:transform,opacity }
+@keyframes kbmCardFwd{ from{ opacity:0; transform:translateX(40px) } to{ opacity:1; transform:none } }
+@keyframes kbmCardBack{ from{ opacity:0; transform:translateX(-40px) } to{ opacity:1; transform:none } }
+#kbmDetCard.kbm-card-fwd{ animation:kbmCardFwd .28s cubic-bezier(.22,.61,.36,1) both }
+#kbmDetCard.kbm-card-back{ animation:kbmCardBack .28s cubic-bezier(.22,.61,.36,1) both }
+@keyframes kbmSecStream{ from{ opacity:0; transform:translateY(8px) } to{ opacity:1; transform:none } }
+.kbm-sections.kbm-stream-in{ animation:kbmSecStream .32s ease .02s both }
+.kbm-detail-pending{ min-height:140px }
+@media (prefers-reduced-motion:reduce){
+  #kbmDetCard.kbm-card-fwd,#kbmDetCard.kbm-card-back,.kbm-sections.kbm-stream-in{ animation:none }
+}
 </style>
 </head>
 <body>
@@ -4787,7 +4800,7 @@
     var c=document.getElementById('shelfClose'); if(c) c.onclick=hideShelf; })();
 
   // ── KB Mode («База знаний») ───────────────────────────────────────────────
-  var KBM={nodes:[],edges:[],scenarios:[],bySlug:{},findings:{conjectures:[],laws:[]},conjByNode:{},likes:new Set(),loaded:false,liker:null,currentSlug:null,
+  var KBM={nodes:[],edges:[],scenarios:[],bySlug:{},findings:{conjectures:[],laws:[]},conjByNode:{},likes:new Set(),loaded:false,liker:null,currentSlug:null,bundles:{},
            lens:'layer', region:null, scenarioSlug:null, findingSlug:null, lawSlug:null, q:''};
   var KBM_HISTORY=[]; // navigation stack: [{slug, title}]
   var KBM_KIND={effect:'Эффект',theory:'Теория',frame:'Рамка',phenomenon:'Феномен',method:'Метод',term:'Термин'};
@@ -6086,10 +6099,43 @@
     }
   }
   function kbmShowDetail(){
-    document.getElementById('kbmList').style.display='none';
-    var d=document.getElementById('kbmDet'); d.style.display='flex';
+    var list=document.getElementById('kbmList'), d=document.getElementById('kbmDet');
+    var wasHidden = !d.style.display || d.style.display==='none';
+    list.style.display='none'; d.style.display='flex';
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-    if(!reduce){ d.classList.remove('kbm-det-enter'); void d.offsetWidth; d.classList.add('kbm-det-enter'); }
+    // Panel "enter" only when arriving from the list — card↔card navigation slides the card itself, not the whole panel.
+    if(wasHidden && !reduce){ d.classList.remove('kbm-det-enter'); void d.offsetWidth; d.classList.add('kbm-det-enter'); }
+    else d.classList.remove('kbm-det-enter');
+  }
+  // Instant card shell: hero (kind · robustness · core · claim · like) straight from the already-loaded
+  // node, so navigation never shows a spinner. The heavy sections stream into #kbmDetSections afterwards.
+  function kbmRenderCard(slug, node, dir){
+    var body=document.getElementById('kbmDetBody'); if(!body) return;
+    var title=document.getElementById('kbmDetTitle'); if(title) title.textContent=node.title||slug;
+    var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    var kind=node.kind, rob=node.robustness, epi=node.epistemic_status, claim=node.claim||'';
+    var col=KBM_ROB_COL[rob]||'var(--muted)', kCol=KBM_KIND_COL[kind]||'var(--accent)';
+    var liked=KBM.likes.has(slug), core=kbmIsCore(node);
+    var hero='<div class="kbm-d-meta">'
+      +(core?'<span class="kbm-d-core">★ Несущий концепт</span>':'')
+      +(kind?'<span class="kbm-kind" style="color:'+kCol+'">'+escapeHtml(KBM_KIND[kind]||kind)+'</span>':'')
+      +(rob?'<span class="kbm-rob" style="background:'+col+'">'+escapeHtml(KBM_ROB[rob]||rob)+'</span>':'')
+      +(epi?'<span class="kbm-es">'+escapeHtml(KBM_ES[epi]||epi)+'</span>':'')
+      +'</div>'
+      +'<button class="kbm-like-btn'+(liked?' kbm-liked':'')+'" id="kbmDetHeart" data-kbm-like="'+escapeHtml(slug)+'">'+(liked?'♥ В избранном':'♡ В избранное')+'</button>'
+      +'<div class="kbm-d-claim" id="kbmDetClaim">'+escapeHtml(claim)+'</div>';
+    body.innerHTML='<div id="kbmDetCard">'+hero+'<div class="kbm-sections" id="kbmDetSections"><div class="kbm-detail-pending"></div></div></div>';
+    body.scrollTop=0;
+    var card=document.getElementById('kbmDetCard');
+    if(card && !reduce){ card.classList.remove('kbm-card-fwd','kbm-card-back'); void card.offsetWidth; card.classList.add(dir==='back'?'kbm-card-back':'kbm-card-fwd'); }
+    if(!body._kbmwired){ body._kbmwired=true;
+      body.addEventListener('click',function(e){
+        var like=e.target.closest('[data-kbm-like]'); if(like){ kbmLikeToggle(like.getAttribute('data-kbm-like')); return; }
+        var cj=e.target.closest('[data-kbm-conj]'); if(cj){ kbmFindingDetail(cj.getAttribute('data-kbm-conj')); return; }
+        var nav=e.target.closest('[data-kbm-nav]'); if(nav){ kbmDetail(nav.getAttribute('data-kbm-nav')); return; }
+        var rb=e.target.closest('[data-cd-retry]'); if(rb){ kbmDetail(rb.getAttribute('data-cd-retry'), true); }
+      });
+    }
   }
   async function kbmDetail(slug, isBack){
     // History tracking: push current to stack on forward navigation
@@ -6100,18 +6146,25 @@
     KBM.currentSlug=slug;
     kbmShowDetail();
     kbmUpdateBackBtn();
-    var title=document.getElementById('kbmDetTitle'); if(title) title.textContent='…';
-    var body=document.getElementById('kbmDetBody'); if(body) body.innerHTML='<div class="dsp-load">Загрузка…</div>';
-    var r;
-    try{ r=await withTimeout(SB.rpc('kb_node_bundle',{p_slug:slug}), 10000, 'Концепт'); }
-    catch(e){ r={error:e}; }
-    if(r.error||!r.data){
-      if(body) body.innerHTML='<div class="kbm-load-fail"><div class="kbm-load-fail-msg">Не удалось загрузить.</div>'
+    var title=document.getElementById('kbmDetTitle');
+    // 1) instant hero from already-loaded node data + directional slide (no loading flash)
+    kbmRenderCard(slug, KBM.bySlug[slug]||{}, isBack?'back':'fwd');
+    // 2) full detail: cache-first; hit the network only if this card was never loaded before
+    var b=KBM.bundles&&KBM.bundles[slug];
+    if(!b){
+      var r;
+      try{ r=await withTimeout(SB.rpc('kb_node_bundle',{p_slug:slug}), 10000, 'Концепт'); }
+      catch(e){ r={error:e}; }
+      if(KBM.currentSlug!==slug) return;                 // user navigated away while fetching → drop this render
+      if(r && !r.error && r.data){ KBM.bundles=KBM.bundles||{}; KBM.bundles[slug]=r.data; b=r.data; }
+    }
+    if(!b){
+      var sFail=document.getElementById('kbmDetSections');
+      if(sFail) sFail.innerHTML='<div class="kbm-load-fail"><div class="kbm-load-fail-msg">Не удалось загрузить детали.</div>'
         +'<button class="kbm-retry-btn" data-cd-retry="'+escapeHtml(slug)+'">Повторить</button></div>';
-      if(body){ var rb=body.querySelector('[data-cd-retry]'); if(rb) rb.onclick=function(){ kbmDetail(slug, true); }; }
       return;
     }
-    var b=r.data, bd=b.body||{};
+    var bd=b.body||{};
     var col=KBM_ROB_COL[b.robustness]||'var(--muted)';
     var kCol=KBM_KIND_COL[b.kind]||'var(--accent)';
     var liked=KBM.likes.has(slug);
@@ -6158,19 +6211,9 @@
         +'</div></div>';
     }
     var html=
-      // Meta + like
-      '<div class="kbm-d-meta">'
-      +((function(){ var cn=KBM.bySlug[slug]; return cn&&kbmIsCore(cn)?'<span class="kbm-d-core">★ Несущий концепт</span>':''; })())
-      +'<span class="kbm-kind" style="color:'+kCol+'">'+escapeHtml(KBM_KIND[b.kind]||b.kind)+'</span>'
-      +'<span class="kbm-rob" style="background:'+col+'">'+escapeHtml(KBM_ROB[b.robustness]||b.robustness)+'</span>'
-      +(b.epistemic_status?'<span class="kbm-es">'+escapeHtml(KBM_ES[b.epistemic_status]||b.epistemic_status)+'</span>':'')
-      +'</div>'
-      +'<button class="kbm-like-btn'+(liked?' kbm-liked':'')+'" id="kbmDetHeart" data-kbm-like="'+escapeHtml(slug)+'">'
-        +(liked?'♥ В избранном':'♡ В избранное')+'</button>'
-      // 1. Суть — главное утверждение
-      +(claim?'<div class="kbm-d-claim">'+escapeHtml(claim)+'</div>':'')
-      // 2. Механизм — почему и как работает
-      +sec('Механизм','⚙',mechanism,'kbm-sec-mech')
+      // hero (meta · like · claim) is already on screen — rendered instantly by kbmRenderCard.
+      // Механизм — почему и как работает
+      sec('Механизм','⚙',mechanism,'kbm-sec-mech')
       // 3. Аналогия — мнемоника
       +sec('Аналогия','◎',analogy,'kbm-sec-ana')
       // 4. Пример — конкретный кейс
@@ -6206,15 +6249,12 @@
       })()
       // 10. Источник
       +(src?'<div class="kbm-d-src">'+escapeHtml(src)+'</div>':'');
-    if(body){
-      body.innerHTML=html;
-      body.classList.remove('kbm-in'); void body.offsetWidth; body.classList.add('kbm-in');
+    var claimEl=document.getElementById('kbmDetClaim'); if(claimEl && claim && claimEl.textContent!==claim){ claimEl.textContent=claim; }
+    var sectionsEl=document.getElementById('kbmDetSections');
+    if(sectionsEl){
+      sectionsEl.innerHTML=html;
+      sectionsEl.classList.remove('kbm-stream-in'); void sectionsEl.offsetWidth; sectionsEl.classList.add('kbm-stream-in');
       if(dep){ var rc=document.getElementById('kbdRing'); if(rc) kbDrawRing(rc, dep); }
-      body.addEventListener('click',function(e){
-        var like=e.target.closest('[data-kbm-like]'); if(like){ kbmLikeToggle(like.getAttribute('data-kbm-like')); return; }
-        var cj=e.target.closest('[data-kbm-conj]'); if(cj){ kbmFindingDetail(cj.getAttribute('data-kbm-conj')); return; }
-        var nav=e.target.closest('[data-kbm-nav]'); if(nav){ kbmDetail(nav.getAttribute('data-kbm-nav')); }
-      });
     }
   }
 
