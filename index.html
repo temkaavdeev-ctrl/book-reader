@@ -1652,6 +1652,8 @@
   @media(max-width:400px){ .kbm-head .kbm-count{ display:none } }
 
   #constel{ position:fixed; inset:0; z-index:400; background:#0e0c0a; overscroll-behavior:none; touch-action:none }
+  #constel.constel-enter{ animation:constelEnter .8s ease-out both }
+  @keyframes constelEnter{ from{ opacity:0 } to{ opacity:1 } }
   #constelCanvas{ position:absolute; inset:0; width:100%; height:100%; display:block; cursor:grab }
   #constelCanvas:active{ cursor:grabbing }
   .constel-top{ position:absolute; top:0; left:0; right:0; display:flex; align-items:center; gap:12px; padding:calc(12px + env(safe-area-inset-top,0px)) 16px 12px; background:linear-gradient(#0e0c0aee, #0e0c0a00); pointer-events:none; z-index:2 }
@@ -2176,8 +2178,11 @@
   }
 
   // ====== ВЕРСИЯ ПРИЛОЖЕНИЯ (повышать с каждым апдейтом HTML) ======
-  var APP_VERSION='5.57';
+  var APP_VERSION='5.58';
   var APP_CHANGELOG=[
+    {v:'5.58', items:[
+      'Приложение теперь открывается прямо в Созвездие: при запуске мягко проявляется тёплый космос, а звёзды слетаются в созвездие, как только загрузится карта знаний. Книга и полка никуда не делись — они в одном-двух касаниях (закрыть Созвездие, потом Карту).',
+    ]},
     {v:'5.57', items:[
       'Созвездие стало заметно плавнее и больше не подтормаживает: звёзды и их свечение рисуются из заранее готовых заготовок, а кадр обновляется только когда что-то движется — телефон не греется и не тратит заряд впустую.',
       'Приближение теперь непрерывное: вместо трёх резких ступеней идеи проявляются постепенно по мере того, как вы подлетаете ближе — сперва крупные хабы, затем всё остальное. И названия больше не наезжают друг на друга: при тесноте остаётся более важное.',
@@ -4490,7 +4495,7 @@
       await loadBooks(); setBookTitle();
       startPresence(); updateBell(); renderReactBar(); applyRoleUI(); setupRealtime(); setupPWAUpdate();
       if(panelOpen()) renderPanel();
-      maybeWelcome();
+      if(!maybeWelcome()) constelLand();   // нет приветствия → сразу в Созвездие (дефолт-посадка)
       setTimeout(function(){ try{ showBookLogBanner(); }catch(_){} }, 1400);
     } finally { authInFlight=null; }
   }
@@ -4544,9 +4549,9 @@
     return sets[Math.floor(Math.random()*sets.length)];
   }
   function maybeWelcome(){
-    if(welcomeShown) return; welcomeShown=true;
-    if(!prevSeen){ onboarding=true; showWelcome(true, []); return; }   // первый визит — онбординг
-    if(Date.now()-prevSeen < 8*3600*1000) return;              // меньше 8 часов — не беспокоим
+    if(welcomeShown) return false; welcomeShown=true;
+    if(!prevSeen){ onboarding=true; showWelcome(true, []); return true; }   // первый визит — онбординг
+    if(Date.now()-prevSeen < 8*3600*1000) return false;              // меньше 8 часов — не беспокоим
     var items=[];
     var nUpd=BOOK.filter(function(b){ return b.updated && Date.parse(b.updated)>prevSeen; }).length;
     var nDisc=DISCALL.filter(function(d){ return Date.parse(d.created_at)>prevSeen && !(USER && d.user_id===USER.id); }).length;
@@ -4555,6 +4560,7 @@
     if(nDisc) items.push('новых сообщений в обсуждениях: '+nDisc);
     if(canContribute() && nEd) items.push('новых правок: '+nEd);
     showWelcome(false, items);
+    return true;
   }
   function showWelcome(first, items){
     var nm=(USER && PROFILES[USER.id] && PROFILES[USER.id].name)||'';
@@ -4590,7 +4596,7 @@
     }
     setTimeout(function(){ showModal('welcomeModal'); }, 450);
   }
-  (function(){ var b=document.getElementById('wcClose'); if(b) b.onclick=function(){ closeModals(); if(onboarding){ onboarding=false; showShelf(); } }; })();
+  (function(){ var b=document.getElementById('wcClose'); if(b) b.onclick=function(){ var wasOnb=onboarding; closeModals(); onboarding=false; if(landingMode()==='constel'){ constelLand(); } else if(wasOnb){ showShelf(); } }; })();
 
   // chapter info (version + date)
 
@@ -5554,6 +5560,46 @@
     CN.dragging=false; CN.assembling=false;
     var ov=document.getElementById('constel'); if(ov) ov.style.display='none';
     CN.sel=null;
+  }
+  // Default landing: drop straight into the constellation. The warm cosmos appears
+  // immediately (fade-in); the stars fly into formation the moment the graph is loaded.
+  function cnLandStart(){
+    var ov=document.getElementById('constel'); if(!ov) return;
+    ov.style.display='block';
+    ov.classList.remove('constel-enter'); void ov.offsetWidth; ov.classList.add('constel-enter'); // (re)start fade-in
+    CN.on=true; CN.sel=null; CN.hint=true; CN.target=null; CN.dragging=false;
+    CN.nodes=[]; CN.edges=[];                                   // nothing yet — paint the bare cosmos
+    var chip=document.getElementById('constelChip'); if(chip) chip.style.display='none';
+    var cnt=document.getElementById('constelCount'); if(cnt) cnt.textContent=' · собираю…';
+    var h=document.getElementById('constelHint'); if(h) h.classList.add('constel-hint-gone');
+    cnResize();
+    cnInvalidate();                                             // one frame: empty warm cosmos
+    var tries=0;
+    (function wait(){
+      if(!CN.on) return;                                        // user closed it while loading
+      if(KBM.loaded && (KBM.nodes||[]).length){
+        if(cnt) cnt.textContent=' · '+(KBM.nodes||[]).length+' идей';
+        if(h) h.classList.remove('constel-hint-gone');
+        cnBuild(); cnFit(); cnWire();
+        var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+        if(!reduce) cnAssemble(); else cnInvalidate();
+        haptic(8);
+        setTimeout(function(){ ov.classList.remove('constel-enter'); }, 760);
+        return;
+      }
+      if(++tries>150){ cnClose(); return; }                    // ~15s timeout → fall back to the Карта underneath
+      setTimeout(wait, 100);
+    })();
+  }
+  function landingMode(){ return (state && state.landing) || 'constel'; }  // default landing = constellation
+  var _constelLanded=false;
+  function constelLand(){
+    if(_constelLanded) return;
+    if(!SB || !USER) return;
+    if(landingMode()!=='constel') return;
+    _constelLanded=true;
+    openKbMode();        // backdrop = Карта; this also kicks off kbmLoad()
+    cnLandStart();       // cosmos now; stars assemble when the graph arrives
   }
   (function(){
     var b=document.getElementById('kbmConstelBtn'); if(b) b.onclick=cnOpen;
