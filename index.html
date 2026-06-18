@@ -42,6 +42,7 @@
     --mk-bg:#f4ebd9; --mk-line:#e6d6b4; --mk-fg:#9b7338;
     --shadow:0 6px 24px rgba(60,45,20,.10); --shadow-lg:0 18px 48px rgba(50,38,18,.20);
     --ring:rgba(143,90,35,.40);
+    --fnd:#6b54b0; --fnd-soft:#efebf8; --fnd-tint:#f7f4fd; --fnd-line:#cdc1ec;
     --r-s:8px; --r-m:12px; --r-l:16px; --r-xl:22px;
   }
   html[data-theme="dark"]{
@@ -55,6 +56,7 @@
     --mk-bg:#332c1e; --mk-line:#4a4030; --mk-fg:#cda665;
     --shadow:0 8px 28px rgba(0,0,0,.5); --shadow-lg:0 20px 54px rgba(0,0,0,.6);
     --ring:rgba(215,166,100,.45);
+    --fnd:#a896e6; --fnd-soft:#272042; --fnd-tint:#1f1a33; --fnd-line:#473c70;
   }
   html[data-theme="dark"] #content .twist-box{ background:rgba(215,166,100,.09) }
   html[data-theme="dark"] #content .twist-done{ background:rgba(95,176,126,.12) }
@@ -1548,6 +1550,125 @@
   .boot-dots i:nth-child(3){animation-delay:.36s}
   @keyframes bootDot{0%,100%{opacity:.25; transform:translateY(0)} 50%{opacity:1; transform:translateY(-4px)}}
   @media(prefers-reduced-motion:reduce){ .boot-dots i{animation:none; opacity:.6} }
+
+  /* ===== Findings layer: conjectures + laws (honest, unverified) ===== */
+  /* Indigo = the colour of a guess. Dashed = unverified. The grammar is consistent:
+     a conjecture never looks like an established edge. Honesty is structural. */
+  .kbm-fnd-banner{ display:flex; align-items:center; gap:12px; width:100%; text-align:left; background:linear-gradient(135deg, var(--fnd-tint), var(--card)); border:1.5px dashed var(--fnd-line); border-radius:14px; padding:14px 16px; margin-bottom:12px; cursor:pointer; font-family:inherit; transition:border-color .15s,box-shadow .15s }
+  .kbm-fnd-banner:hover{ border-color:var(--fnd); box-shadow:0 4px 16px color-mix(in srgb,var(--fnd) 14%,transparent) }
+  .kbm-fnd-banner-ic{ font-size:23px; color:var(--fnd); flex-shrink:0; line-height:1 }
+  .kbm-fnd-banner-txt{ display:flex; flex-direction:column; gap:2px; flex:1 }
+  .kbm-fnd-banner-txt b{ font-size:15.5px; color:var(--ink) }
+  .kbm-fnd-banner-txt span{ font-size:12.5px; color:var(--muted) }
+  .kbm-fnd-banner-go{ font-size:20px; color:var(--fnd); flex-shrink:0 }
+  /* List */
+  .kbm-fnd-intro{ font-size:13.5px; color:var(--muted); line-height:1.55; margin:4px 2px 16px }
+  .kbm-fnd-intro b{ color:var(--fnd); font-weight:600 }
+  .kbm-fnd-grouplbl{ font-family:var(--font-mono); font-size:11px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--fnd); margin:18px 2px 4px }
+  .kbm-fnd-sub{ font-size:12.5px; color:var(--muted); margin:0 2px 10px }
+  .kbm-fnd-list{ display:flex; flex-direction:column; gap:9px }
+  .kbm-fnd-tile{ display:block; width:100%; text-align:left; background:var(--card); border:1.5px dashed var(--fnd-line); border-radius:14px; padding:13px 15px; cursor:pointer; font-family:inherit; transition:border-color .15s,box-shadow .15s,transform .1s }
+  .kbm-fnd-tile:hover{ border-color:var(--fnd); box-shadow:0 4px 16px color-mix(in srgb,var(--fnd) 12%,transparent) }
+  .kbm-fnd-tile:active{ transform:scale(.99) }
+  .kbm-fnd-tile-law{ border-style:solid; border-color:var(--fnd-line); background:linear-gradient(135deg,var(--fnd-tint),var(--card)) }
+  .kbm-fnd-tile-refuted{ opacity:.55 }
+  .kbm-fnd-tile-top{ display:flex; align-items:center; gap:8px; margin-bottom:7px }
+  .kbm-fnd-kind{ font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--fnd); background:var(--fnd-soft); border-radius:999px; padding:2px 9px }
+  .kbm-fnd-kind-law{ color:var(--fnd) }
+  .kbm-fnd-tile-st{ font-family:var(--font-mono); font-size:10px; color:var(--muted) }
+  .kbm-fnd-tile-w{ margin-left:auto; font-family:var(--font-mono); font-size:11px; color:var(--fnd); opacity:.7 }
+  .kbm-fnd-tile-ep{ font-size:13.5px; font-weight:600; color:var(--ink); line-height:1.35; margin-bottom:4px }
+  .kbm-fnd-tile-lawttl{ font-size:15.5px; font-weight:700; color:var(--ink); line-height:1.3; margin-bottom:4px }
+  .kbm-fnd-tile-stmt{ font-size:12.5px; color:var(--read); line-height:1.5 }
+  /* Detail */
+  .kbm-fnd-d-top{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:2px 0 14px }
+  .kbm-fnd-kind-lg{ font-size:11px; padding:3px 11px }
+  .kbm-fnd-d-status{ font-family:var(--font-mono); font-size:11px; color:var(--muted) }
+  .kbm-fnd-d-weight{ margin-left:auto; font-family:var(--font-mono); font-size:11px; color:var(--fnd) }
+  .kbm-fnd-d-stmt{ font-size:16px; font-weight:600; color:var(--ink); line-height:1.5; margin-bottom:18px; letter-spacing:-.01em }
+  .kbm-fnd-lawttl{ font-family:var(--font-ui); font-size:21px; font-weight:700; letter-spacing:-.02em; color:var(--ink); line-height:1.2; margin:0 0 10px }
+  /* Mini-diagram — the structural honesty made visible */
+  .kbm-fnd-diagram{ display:flex; align-items:stretch; gap:0; margin:0 0 20px; background:var(--fnd-tint); border-radius:14px; padding:16px 14px }
+  .kbm-fnd-node{ font-family:inherit; font-size:13px; font-weight:600; color:var(--ink); background:var(--card); border:1.5px solid var(--fnd-line); border-radius:10px; padding:9px 12px; cursor:pointer; line-height:1.25; flex:0 1 auto; max-width:42%; transition:border-color .15s,background .15s }
+  .kbm-fnd-node:hover{ border-color:var(--fnd); background:var(--fnd-soft) }
+  .kbm-fnd-link{ flex:1; position:relative; min-width:42px; display:flex; align-items:center; justify-content:center }
+  .kbm-fnd-link::before{ content:""; position:absolute; left:6px; right:6px; top:50%; border-top:2px dashed var(--fnd); opacity:.7 }
+  .kbm-fnd-link-lbl{ position:relative; z-index:1; font-family:var(--font-mono); font-size:9.5px; letter-spacing:.03em; color:var(--fnd); background:var(--fnd-tint); padding:0 6px; text-align:center; line-height:1.2 }
+  /* Cloud (cross-cutting) */
+  .kbm-fnd-cloud{ margin:0 0 20px; background:var(--fnd-tint); border:1.5px dashed var(--fnd); border-radius:14px; padding:14px }
+  .kbm-fnd-cloud-lbl{ font-family:var(--font-mono); font-size:10px; letter-spacing:.04em; color:var(--fnd); margin-bottom:10px; text-align:center }
+  .kbm-fnd-cloud-nodes{ display:flex; flex-wrap:wrap; gap:7px; justify-content:center }
+  .kbm-fnd-cloud .kbm-fnd-node{ max-width:none }
+  /* Sections */
+  .kbm-fnd-sec{ margin-bottom:18px }
+  .kbm-fnd-sec-lbl{ font-family:var(--font-mono); font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-bottom:7px }
+  .kbm-fnd-sec-txt{ font-size:14px; color:var(--read); line-height:1.6 }
+  /* Falsifier — the badge of scientific honesty: how this guess could be killed */
+  .kbm-fnd-sec-falsi{ background:var(--fnd-tint); border-left:3px solid var(--fnd); border-radius:0 10px 10px 0; padding:11px 14px }
+  .kbm-fnd-sec-falsi .kbm-fnd-sec-lbl{ color:var(--fnd) }
+  .kbm-fnd-sec-gen .kbm-fnd-sec-lbl{ color:var(--fnd) }
+  /* Evidence registry */
+  .kbm-fnd-evlist{ display:flex; flex-direction:column; gap:8px }
+  .kbm-fnd-ev{ border:1px solid var(--line); border-radius:10px; padding:10px 12px; background:var(--card) }
+  .kbm-fnd-ev-sup{ border-left:3px solid var(--good) }
+  .kbm-fnd-ev-ref{ border-left:3px solid var(--danger) }
+  .kbm-fnd-ev-head{ display:flex; align-items:center; gap:8px; margin-bottom:5px }
+  .kbm-fnd-ev-dir{ font-size:12px; font-weight:700; color:var(--ink) }
+  .kbm-fnd-ev-cls{ font-family:var(--font-mono); font-size:10px; color:var(--muted) }
+  .kbm-fnd-ev-delta{ margin-left:auto; font-family:var(--font-mono); font-size:11px; color:var(--fnd) }
+  .kbm-fnd-ev-basis{ font-size:12.5px; color:var(--read); line-height:1.5 }
+  .kbm-fnd-ev-by{ font-family:var(--font-mono); font-size:10px; color:var(--muted); margin-top:5px }
+  /* Honest weight note — the soul of the layer */
+  .kbm-fnd-wnote{ font-size:12px; color:var(--muted); line-height:1.55; margin-top:10px; padding:10px 12px; background:var(--fnd-tint); border-radius:10px }
+  .kbm-fnd-wnote b{ color:var(--fnd); font-weight:600 }
+  /* Promoted marker */
+  .kbm-fnd-promoted{ font-size:12.5px; color:var(--read); line-height:1.5; margin:0 0 18px; padding:11px 14px; background:color-mix(in srgb,var(--good) 9%,var(--bg)); border-left:3px solid var(--good); border-radius:0 10px 10px 0 }
+  /* Links to law / born conjectures */
+  .kbm-fnd-lawlink, .kbm-fnd-bornlink, .kbm-fnd-lawttl{ }
+  .kbm-fnd-lawlink{ display:block; width:100%; text-align:left; font-family:inherit; font-size:14px; font-weight:600; color:var(--fnd); background:var(--fnd-tint); border:1.5px solid var(--fnd-line); border-radius:10px; padding:11px 14px; cursor:pointer; transition:border-color .15s }
+  .kbm-fnd-lawlink:hover{ border-color:var(--fnd) }
+  .kbm-fnd-bornlist{ display:flex; flex-direction:column; gap:7px }
+  .kbm-fnd-bornlink{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; width:100%; text-align:left; font-family:inherit; font-size:13px; color:var(--read); background:var(--card); border:1.5px dashed var(--fnd-line); border-radius:10px; padding:10px 13px; cursor:pointer; line-height:1.4; transition:border-color .15s }
+  .kbm-fnd-bornlink:hover{ border-color:var(--fnd) }
+  @media(max-width:720px){
+    .kbm-fnd-d-stmt{ font-size:16.5px }
+    .kbm-fnd-node{ font-size:13.5px }
+    .kbm-fnd-lawttl{ font-size:22px }
+  }
+
+  /* Conjecture marker inside a concept card — dashed, indigo, clearly "a guess about this" */
+  .kbm-d-conj{ margin:18px 0 4px; padding:13px 14px; background:var(--fnd-tint); border:1.5px dashed var(--fnd-line); border-radius:14px }
+  .kbm-d-conj-lbl{ font-family:var(--font-mono); font-size:10.5px; font-weight:700; letter-spacing:.05em; color:var(--fnd); margin-bottom:9px }
+  .kbm-d-conj-link{ display:flex; align-items:center; gap:9px; width:100%; text-align:left; background:var(--card); border:1px solid var(--fnd-line); border-radius:10px; padding:9px 12px; cursor:pointer; font-family:inherit; margin-bottom:6px; transition:border-color .15s }
+  .kbm-d-conj-link:last-child{ margin-bottom:0 }
+  .kbm-d-conj-link:hover{ border-color:var(--fnd) }
+  .kbm-d-conj-txt{ flex:1; font-size:13px; color:var(--read); line-height:1.35 }
+  .kbm-d-conj-arr{ color:var(--fnd); flex-shrink:0 }
+
+  /* ===== Constellation — the whole graph as a warm-dark cosmos ===== */
+  .kbm-constel-btn{ margin-left:auto; display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg, color-mix(in srgb,var(--accent) 22%,transparent), transparent); border:1px solid var(--line-2); color:var(--accent); font-family:inherit; font-size:13px; font-weight:600; padding:7px 13px; border-radius:999px; cursor:pointer; transition:border-color .15s, background .15s }
+  .kbm-constel-btn:hover{ border-color:var(--accent); background:color-mix(in srgb,var(--accent) 12%,transparent) }
+  .kbm-constel-btn span{ letter-spacing:-.01em }
+  @media(max-width:400px){ .kbm-head .kbm-count{ display:none } }
+
+  #constel{ position:fixed; inset:0; z-index:400; background:#0e0c0a; overscroll-behavior:none; touch-action:none }
+  #constelCanvas{ position:absolute; inset:0; width:100%; height:100%; display:block; cursor:grab }
+  #constelCanvas:active{ cursor:grabbing }
+  .constel-top{ position:absolute; top:0; left:0; right:0; display:flex; align-items:center; gap:12px; padding:calc(12px + env(safe-area-inset-top,0px)) 16px 12px; background:linear-gradient(#0e0c0aee, #0e0c0a00); pointer-events:none; z-index:2 }
+  .constel-top > *{ pointer-events:auto }
+  .constel-close, .constel-reset{ width:38px; height:38px; border-radius:50%; border:1px solid rgba(220,190,150,.22); background:rgba(30,24,18,.7); color:#e8d9c5; font-size:17px; cursor:pointer; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(8px); transition:border-color .15s }
+  .constel-close:hover, .constel-reset:hover{ border-color:rgba(220,190,150,.5) }
+  .constel-reset{ margin-left:auto }
+  .constel-ttl{ font-family:var(--font-ui); font-size:16px; font-weight:700; color:#f0e4d2; letter-spacing:-.01em; text-shadow:0 1px 4px rgba(0,0,0,.6) }
+  .constel-ttl span{ font-weight:400; color:#b7a892; font-size:13px }
+  .constel-hint{ position:absolute; left:0; right:0; bottom:calc(28px + env(safe-area-inset-bottom,0px)); text-align:center; color:#c2b39c; font-size:12.5px; letter-spacing:.01em; pointer-events:none; z-index:2; text-shadow:0 1px 4px rgba(0,0,0,.7); transition:opacity .5s; opacity:.92 }
+  .constel-hint-gone{ opacity:0 }
+  .constel-chip{ position:absolute; left:50%; transform:translateX(-50%); bottom:calc(24px + env(safe-area-inset-bottom,0px)); width:min(360px,calc(100% - 28px)); background:rgba(26,21,16,.9); border:1px solid rgba(220,190,150,.28); border-radius:16px; padding:14px 16px; backdrop-filter:blur(12px); box-shadow:0 12px 40px rgba(0,0,0,.5); z-index:3; animation:constelChipIn .25s cubic-bezier(.34,1.2,.5,1) }
+  @keyframes constelChipIn{ from{ opacity:0; transform:translateX(-50%) translateY(8px) } to{ opacity:1; transform:translateX(-50%) translateY(0) } }
+  .constel-chip-kind{ font-family:var(--font-mono); font-size:10.5px; letter-spacing:.04em; text-transform:uppercase; color:#c9a86a; margin-bottom:5px }
+  .constel-chip-ttl{ font-size:16px; font-weight:600; color:#f2e7d6; line-height:1.3; margin-bottom:11px; letter-spacing:-.01em }
+  .constel-chip-go{ display:block; width:100%; text-align:center; background:linear-gradient(135deg,#caa564,#b8893f); color:#1a140d; border:none; border-radius:10px; padding:11px; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer; transition:filter .15s }
+  .constel-chip-go:hover{ filter:brightness(1.08) }
 </style>
 </head>
 <body>
@@ -1854,6 +1975,7 @@
       <button class="iconbtn" id="kbmClose" title="Закрыть">✕</button>
       <h2 class="kbm-title" id="kbmListTitle">Карта</h2>
       <span class="kbm-count" id="kbmCount"></span>
+      <button class="kbm-constel-btn" id="kbmConstelBtn" title="Созвездие — весь граф">✦<span>Созвездие</span></button>
     </div>
     <div class="kbm-search-row">
       <input class="kbm-q" id="kbmQ" type="search" placeholder="Найти концепт…" autocomplete="off">
@@ -1867,6 +1989,20 @@
       <h2 class="kbm-title" id="kbmDetTitle">…</h2>
     </div>
     <div id="kbmDetBody"></div>
+  </div>
+</div>
+<div id="constel" style="display:none">
+  <canvas id="constelCanvas"></canvas>
+  <div class="constel-top">
+    <button class="constel-close" id="constelClose" title="Закрыть">✕</button>
+    <div class="constel-ttl">Созвездие<span id="constelCount"></span></div>
+    <button class="constel-reset" id="constelReset" title="Показать всё">⊙</button>
+  </div>
+  <div class="constel-hint" id="constelHint">проведите, чтобы лететь · щипком приблизьте</div>
+  <div class="constel-chip" id="constelChip" style="display:none">
+    <div class="constel-chip-kind" id="constelChipKind"></div>
+    <div class="constel-chip-ttl" id="constelChipTtl"></div>
+    <button class="constel-chip-go" id="constelChipGo">Открыть карточку →</button>
   </div>
 </div>
 <div id="shelf" style="display:none">
@@ -2040,8 +2176,16 @@
   }
 
   // ====== ВЕРСИЯ ПРИЛОЖЕНИЯ (повышать с каждым апдейтом HTML) ======
-  var APP_VERSION='5.54';
+  var APP_VERSION='5.56';
   var APP_CHANGELOG=[
+    {v:'5.56', items:[
+      'Созвездие: весь граф знаний как тёплый космос. Кнопка «✦ Созвездие» в Карте открывает полноэкранную звёздную карту всех 317 идей — хабы светят ярче, дисциплины образуют территории, связи тянутся паутиной света.',
+      'Можно летать и приближать: дальний зум — масштаб и форма, ближний — отдельные идеи с названиями. Тап по звезде подсвечивает её связи и открывает карточку. Созвездие собирается на глазах при открытии.',
+    ]},
+    {v:'5.55', items:[
+      'Новый слой Карты — «Находки»: гипотезы и порождающие законы, которые система выдвигает сама, честно помеченные как непроверенные. Видно, чем каждую догадку можно опровергнуть, и какие свидетельства за и против.',
+      'Честность структурна: гипотеза рисуется пунктиром между концептами, не сплошной линией — догадка никогда не выглядит как установленный факт. У концептов-участников появляется пометка о гипотезе Афины.',
+    ]},
     {v:'5.54', items:[
       'Вход стал спокойнее: при загрузке видно название, а не пустой экран. На двери — короткое приветствие вместо лекции о продукте; вход и «создать пароль» теперь явно различимы — понятно, где вы впервые, а где возвращаетесь.',
       'Первый вход не требует имени: можно сразу к чтению, а представиться — по желанию. Убрано двойное «Добро пожаловать».',
@@ -4506,8 +4650,8 @@
     var c=document.getElementById('shelfClose'); if(c) c.onclick=hideShelf; })();
 
   // ── KB Mode («База знаний») ───────────────────────────────────────────────
-  var KBM={nodes:[],edges:[],scenarios:[],bySlug:{},likes:new Set(),loaded:false,liker:null,currentSlug:null,
-           lens:'layer', region:null, scenarioSlug:null, q:''};
+  var KBM={nodes:[],edges:[],scenarios:[],bySlug:{},findings:{conjectures:[],laws:[]},conjByNode:{},likes:new Set(),loaded:false,liker:null,currentSlug:null,
+           lens:'layer', region:null, scenarioSlug:null, findingSlug:null, lawSlug:null, q:''};
   var KBM_HISTORY=[]; // navigation stack: [{slug, title}]
   var KBM_KIND={effect:'Эффект',theory:'Теория',frame:'Рамка',phenomenon:'Феномен',method:'Метод',term:'Термин'};
   var KBM_ROB={solid:'Подтверждена',mixed:'Смешанная',contested:'Спорная',weak:'Предварительная'};
@@ -4542,7 +4686,7 @@
       kbmLoad();
     }
   }
-  function closeKbMode(){ document.getElementById('kbMode').style.display='none'; kbmShowList(); }
+  function closeKbMode(){ if(CN.on) cnClose(); document.getElementById('kbMode').style.display='none'; kbmShowList(); }
 
   async function kbmLoad(){
     var bodyEl=document.getElementById('kbmBody'); if(bodyEl) bodyEl.innerHTML='<div class="dsp-load">Загрузка карты…</div>';
@@ -4556,9 +4700,10 @@
       var rb=bodyEl.querySelector('[data-kbm-retry]'); if(rb) rb.onclick=function(){ kbmLoad(); };
     }
     try{
-      var [gr, lr]= await withTimeout(Promise.all([
+      var [gr, lr, fr]= await withTimeout(Promise.all([
         SB.rpc('kb_graph'),
-        SB.from('kb_likes').select('node_slug').eq('liker',kbmGetLiker())
+        SB.from('kb_likes').select('node_slug').eq('liker',kbmGetLiker()),
+        SB.rpc('kb_findings')
       ]), 12000, 'Карта');
       if(gr.error){ fail('Не удалось загрузить ('+gr.error.message+').'); return; }
       var G=gr.data||{};
@@ -4574,6 +4719,18 @@
       KBM.bySlug={};
       live.forEach(function(n){ KBM.bySlug[n.slug]=n; });
       KBM.likes=new Set(((lr&&lr.data)||[]).map(function(r){return r.node_slug;}));
+      // Findings: Afina's own conjectures + generative laws. A separate epistemic layer —
+      // honest guesses, marked unverified. Loaded here so the banner can show a count.
+      var F=(fr&&fr.data)||{};
+      KBM.findings={conjectures:(F.conjectures||[]), laws:(F.laws||[])};
+      // Index conjectures by which concept-slug they touch, so a concept card can show
+      // "Afina has a conjecture about this" without rescanning all findings each render.
+      KBM.conjByNode={};
+      KBM.findings.conjectures.forEach(function(c){
+        (c.nodes||[]).forEach(function(nd){
+          (KBM.conjByNode[nd.slug]=KBM.conjByNode[nd.slug]||[]).push(c);
+        });
+      });
       KBM.loaded=true;
       kbmRenderLens(); kbmRenderOverview();
     }catch(e){
@@ -4678,8 +4835,18 @@
       +'<span class="kbm-scen-banner-txt"><b>Ситуации</b><span>'+scenTotal+' экранов работы: чекаут, пейволл, онбординг…</span></span>'
       +'<span class="kbm-scen-banner-go">→</span>'
       +'</button>':'';
+    // Findings — Afina's own conjectures + generative laws. An epistemic layer of honest
+    // guesses, marked unverified. Structurally distinct (dashed, not solid) — Mendeleev's
+    // empty cell shown as empty. For the curious who want the edges of the map's knowledge.
+    var fnd=KBM.findings||{conjectures:[],laws:[]};
+    var fndTotal=(fnd.conjectures||[]).length+(fnd.laws||[]).length;
+    var fndBanner=fndTotal?'<button class="kbm-fnd-banner" data-findings-view="1">'
+      +'<span class="kbm-fnd-banner-ic">⌗</span>'
+      +'<span class="kbm-fnd-banner-txt"><b>Находки</b><span>'+(fnd.conjectures||[]).length+' гипотез и '+(fnd.laws||[]).length+' закона — догадки системы, ещё не проверены</span></span>'
+      +'<span class="kbm-fnd-banner-go">→</span>'
+      +'</button>':'';
     var maxCount=regions[0].count;
-    body.innerHTML=scenBanner+coreBanner+'<div class="kbm-regions">'+regions.map(function(rg){
+    body.innerHTML=scenBanner+fndBanner+coreBanner+'<div class="kbm-regions">'+regions.map(function(rg){
       var pct=Math.round(rg.count/maxCount*100);
       var landmarks=rg.landmarks.map(function(n){
         return '<span class="kbm-landmark'+(kbmIsCore(n)?' kbm-landmark-core':'')+'">'+(kbmIsCore(n)?'★ ':'')+escapeHtml(kbmShortTitle(n.title))+'</span>';
@@ -4697,6 +4864,7 @@
     if(!body._wired){ body._wired=true;
       body.addEventListener('click',function(e){
         var sv=e.target.closest('[data-scenarios-view]'); if(sv){ kbmRenderScenarios(); return; }
+        var fv=e.target.closest('[data-findings-view]'); if(fv){ kbmRenderFindings(); return; }
         var cv=e.target.closest('[data-core-view]'); if(cv){ kbmRenderCore(); return; }
         var rt=e.target.closest('[data-region]'); if(rt){ kbmRenderRegion(rt.getAttribute('data-region')); return; }
         var like=e.target.closest('[data-kbm-like]'); if(like){ e.stopPropagation(); kbmLikeToggle(like.getAttribute('data-kbm-like')); return; }
@@ -4828,6 +4996,532 @@
       +section('Рядом','↦',grp.adj,'kbm-pb-sec-adj');
   }
 
+  // ── Findings: Afina's conjectures + generative laws (honest, unverified) ──────
+  // Honesty is structural here: a guess is rendered as a guess (dashed, marked),
+  // never dressed as a fact. Mendeleev's empty cell, shown as empty.
+  var KBM_CONJ_KIND={
+    bridge:{lbl:'мост', hint:'возможная связь'},
+    gap:{lbl:'разрыв', hint:'недостающее звено'},
+    'cross-cutting':{lbl:'сквозная', hint:'свойство группы'},
+    'law-instance':{lbl:'частный случай', hint:'следствие закона'}
+  };
+  var KBM_FND_STATUS={
+    conjecture:'гипотеза', testing:'проверяется', supported:'есть поддержка',
+    refuted:'опровергнуто', promoted:'повышено до связи'
+  };
+  var KBM_LAW_DOMAIN={
+    evolutionary:'эволюционный', temporal:'временной', social:'социальный',
+    cognitive:'когнитивный', physiological:'физиологический', other:'принцип'
+  };
+  var KBM_EV_DIR={supports:'подтверждает', refutes:'опровергает'};
+  var KBM_EV_CLASS={
+    'graph-self-observation':'наблюдение графа', 'external-measurement':'внешнее измерение',
+    'mechanism-argument':'аргумент от механизма', 'refutation':'опровержение'
+  };
+  function kbmFindBySlug(slug){ return (KBM.findings.conjectures||[]).filter(function(c){return c.slug===slug;})[0]; }
+  function kbmLawBySlug(slug){ return (KBM.findings.laws||[]).filter(function(l){return l.slug===slug;})[0]; }
+  function kbmWt(w){ var n=Number(w)||0; return n.toFixed(1).replace(/\.0$/,''); }
+
+  function kbmRenderFindings(){
+    KBM.region='__findings__';
+    var body=document.getElementById('kbmBody'); if(!body) return;
+    var lt=document.getElementById('kbmListTitle'); if(lt) lt.textContent='Находки';
+    var conj=(KBM.findings.conjectures||[]), laws=(KBM.findings.laws||[]);
+    var cnt=document.getElementById('kbmCount'); if(cnt) cnt.textContent=(conj.length+laws.length)+' находок';
+    // order conjectures: bridge, gap, cross-cutting, law-instance
+    var ord={bridge:0,gap:1,'cross-cutting':2,'law-instance':3};
+    var cs=conj.slice().sort(function(a,b){ return (ord[a.kind]||9)-(ord[b.kind]||9); });
+    function conjTile(c){
+      var k=KBM_CONJ_KIND[c.kind]||{lbl:c.kind,hint:''};
+      var st=(c.status&&c.status!=='conjecture')?('<span class="kbm-fnd-tile-st kbm-fnd-st-'+escapeHtml(c.status)+'">'+(KBM_FND_STATUS[c.status]||c.status)+'</span>'):'';
+      var ep=(c.nodes||[]).map(function(n){return kbmShortTitle(n.title);});
+      var epLine=(c.kind==='cross-cutting')
+        ? ep.length+' концептов'
+        : ep.slice(0,2).join('  ·  ');
+      return '<button class="kbm-fnd-tile kbm-fnd-tile-'+escapeHtml(c.kind)+(c.status==='refuted'?' kbm-fnd-tile-refuted':'')+'" data-fnd="'+escapeHtml(c.slug)+'">'
+        +'<div class="kbm-fnd-tile-top"><span class="kbm-fnd-kind">'+escapeHtml(k.lbl)+'</span>'+st+'<span class="kbm-fnd-tile-w" title="вес подсказки">'+kbmWt(c.weight)+'</span></div>'
+        +'<div class="kbm-fnd-tile-ep">'+escapeHtml(epLine)+'</div>'
+        +'<div class="kbm-fnd-tile-stmt">'+escapeHtml((c.statement||'').slice(0,140)+((c.statement||'').length>140?'…':''))+'</div>'
+        +'</button>';
+    }
+    function lawTile(l){
+      return '<button class="kbm-fnd-tile kbm-fnd-tile-law" data-law="'+escapeHtml(l.slug)+'">'
+        +'<div class="kbm-fnd-tile-top"><span class="kbm-fnd-kind kbm-fnd-kind-law">закон · '+escapeHtml(KBM_LAW_DOMAIN[l.domain]||l.domain||'принцип')+'</span><span class="kbm-fnd-tile-w" title="вес подсказки">'+kbmWt(l.weight)+'</span></div>'
+        +'<div class="kbm-fnd-tile-lawttl">'+escapeHtml(l.title||l.slug)+'</div>'
+        +'<div class="kbm-fnd-tile-stmt">'+escapeHtml((l.statement||'').slice(0,140)+((l.statement||'').length>140?'…':''))+'</div>'
+        +'</button>';
+    }
+    var html='<button class="kbm-region-back" data-region-back-f="1">← Вся карта</button>'
+      +'<div class="kbm-fnd-intro">Догадки системы о связях, которых ещё нет в карте. Каждая помечена как <b>непроверенная</b> и показывает, чем её можно опровергнуть. Пунктир — значит гипотеза, не установленный факт.</div>';
+    if(cs.length){
+      html+='<div class="kbm-fnd-grouplbl">Гипотезы</div><div class="kbm-fnd-list">'+cs.map(conjTile).join('')+'</div>';
+    }
+    if(laws.length){
+      html+='<div class="kbm-fnd-grouplbl">Порождающие законы</div>'
+        +'<div class="kbm-fnd-sub">Принципы, из которых следуют гипотезы выше.</div>'
+        +'<div class="kbm-fnd-list">'+laws.map(lawTile).join('')+'</div>';
+    }
+    body.innerHTML=html;
+    kbmWireFindings(body);
+  }
+  function kbmWireFindings(body){
+    if(body._wiredFnd) return; body._wiredFnd=true;
+    body.addEventListener('click',function(ev){
+      var bk=ev.target.closest('[data-region-back-f]'); if(bk){ kbmRenderOverview(); return; }
+      var fb=ev.target.closest('[data-fnd-back]'); if(fb){ kbmRenderFindings(); return; }
+      var nd=ev.target.closest('[data-fnd-node]'); if(nd){ kbmDetail(nd.getAttribute('data-fnd-node')); return; }
+      var lw=ev.target.closest('[data-law]'); if(lw){ kbmLawDetail(lw.getAttribute('data-law')); return; }
+      var cj=ev.target.closest('[data-fnd]'); if(cj){ kbmFindingDetail(cj.getAttribute('data-fnd')); return; }
+    });
+  }
+  // Mini-diagram: the structural honesty made visible. Dashed link between known nodes.
+  function kbmFndDiagram(c){
+    var nodes=c.nodes||[];
+    if(c.kind==='cross-cutting'){
+      return '<div class="kbm-fnd-cloud"><div class="kbm-fnd-cloud-lbl">сквозная гипотеза · общее свойство этих концептов</div>'
+        +'<div class="kbm-fnd-cloud-nodes">'+nodes.map(function(n){
+          return '<button class="kbm-fnd-node" data-fnd-node="'+escapeHtml(n.slug)+'">'+escapeHtml(kbmShortTitle(n.title))+'</button>';
+        }).join('')+'</div></div>';
+    }
+    // bridge / gap: two endpoints + dashed link
+    var eps=nodes.filter(function(n){return n.role==='endpoint';});
+    if(eps.length<2) eps=nodes.slice(0,2);
+    var lbl=(c.kind==='gap')?'недостающее звено':'возможная связь';
+    return '<div class="kbm-fnd-diagram">'
+      +'<button class="kbm-fnd-node" data-fnd-node="'+escapeHtml(eps[0].slug)+'">'+escapeHtml(kbmShortTitle(eps[0].title))+'</button>'
+      +'<div class="kbm-fnd-link"><span class="kbm-fnd-link-lbl">'+lbl+'</span></div>'
+      +'<button class="kbm-fnd-node" data-fnd-node="'+escapeHtml(eps[1].slug)+'">'+escapeHtml(kbmShortTitle(eps[1].title))+'</button>'
+      +'</div>';
+  }
+  function kbmFindingDetail(slug){
+    var c=kbmFindBySlug(slug); if(!c){ kbmRenderFindings(); return; }
+    KBM.region='__finding__'; KBM.findingSlug=slug;
+    var body=document.getElementById('kbmBody'); if(!body) return;
+    document.getElementById('kbmList').style.display='flex';
+    document.getElementById('kbmDet').style.display='none';
+    var lt=document.getElementById('kbmListTitle'); if(lt) lt.textContent='Гипотеза';
+    var k=KBM_CONJ_KIND[c.kind]||{lbl:c.kind,hint:''};
+    var statusLbl=KBM_FND_STATUS[c.status]||c.status;
+    // evidence registry
+    var ev=(c.evidence||[]).map(function(e){
+      var sup=(e.direction==='supports');
+      return '<div class="kbm-fnd-ev '+(sup?'kbm-fnd-ev-sup':'kbm-fnd-ev-ref')+'">'
+        +'<div class="kbm-fnd-ev-head">'
+          +'<span class="kbm-fnd-ev-dir">'+escapeHtml(KBM_EV_DIR[e.direction]||e.direction)+'</span>'
+          +'<span class="kbm-fnd-ev-cls">'+escapeHtml(KBM_EV_CLASS[e.evidence_class]||e.evidence_class||'')+'</span>'
+          +'<span class="kbm-fnd-ev-delta">'+(Number(e.weight_delta)>=0?'+':'')+kbmWt(e.weight_delta)+'</span>'
+        +'</div>'
+        +(e.basis?'<div class="kbm-fnd-ev-basis">'+escapeHtml(e.basis)+'</div>':'')
+        +'<div class="kbm-fnd-ev-by">— '+escapeHtml(e.added_by||'')+(e.source_ref?(' · '+escapeHtml(e.source_ref)):'')+'</div>'
+        +'</div>';
+    }).join('');
+    var lawLink='';
+    if(c.law_id){
+      var law=(KBM.findings.laws||[]).filter(function(l){return l.id===c.law_id;})[0];
+      if(law) lawLink='<div class="kbm-fnd-sec"><div class="kbm-fnd-sec-lbl">Порождающий закон</div>'
+        +'<button class="kbm-fnd-lawlink" data-law="'+escapeHtml(law.slug)+'">'+escapeHtml(law.title)+' →</button></div>';
+    }
+    var promoted=(c.status==='promoted')?'<div class="kbm-fnd-promoted">Повышено до связи в карте — но осталось помеченным как находка по происхождению. Честность не исчезает после повышения.</div>':'';
+    body.innerHTML='<button class="kbm-region-back" data-fnd-back="1">← Находки</button>'
+      +'<div class="kbm-fnd-d-top"><span class="kbm-fnd-kind kbm-fnd-kind-lg">'+escapeHtml(k.lbl)+'</span>'
+        +'<span class="kbm-fnd-d-status">'+escapeHtml(statusLbl)+'</span>'
+        +'<span class="kbm-fnd-d-weight" title="вес подсказки">вес '+kbmWt(c.weight)+'</span></div>'
+      +'<div class="kbm-fnd-d-stmt">'+escapeHtml(c.statement||'')+'</div>'
+      +kbmFndDiagram(c)
+      +promoted
+      +(c.testable_content?'<div class="kbm-fnd-sec"><div class="kbm-fnd-sec-lbl">Что проверяемо</div><div class="kbm-fnd-sec-txt">'+escapeHtml(c.testable_content)+'</div></div>':'')
+      +(c.falsifier?'<div class="kbm-fnd-sec kbm-fnd-sec-falsi"><div class="kbm-fnd-sec-lbl">Чем опровергается</div><div class="kbm-fnd-sec-txt">'+escapeHtml(c.falsifier)+'</div></div>':'')
+      +(ev?'<div class="kbm-fnd-sec"><div class="kbm-fnd-sec-lbl">Свидетельства</div><div class="kbm-fnd-evlist">'+ev+'</div>'
+          +'<div class="kbm-fnd-wnote">Вес — сила подсказки, не подтверждение в мире. Структурное наблюдение графа показывает лишь, чего <b>мы</b> ещё не связали, не что связь существует.</div></div>':'')
+      +lawLink;
+    kbmWireFindings(body);
+  }
+  function kbmLawDetail(slug){
+    var l=kbmLawBySlug(slug); if(!l){ kbmRenderFindings(); return; }
+    KBM.region='__law__'; KBM.lawSlug=slug;
+    var body=document.getElementById('kbmBody'); if(!body) return;
+    document.getElementById('kbmList').style.display='flex';
+    document.getElementById('kbmDet').style.display='none';
+    var lt=document.getElementById('kbmListTitle'); if(lt) lt.textContent='Закон';
+    // conjectures this law generated
+    var born=(KBM.findings.conjectures||[]).filter(function(c){return c.law_id===l.id;});
+    var bornHtml=born.length?('<div class="kbm-fnd-sec"><div class="kbm-fnd-sec-lbl">Порождённые гипотезы</div><div class="kbm-fnd-bornlist">'
+      +born.map(function(c){
+        var k=KBM_CONJ_KIND[c.kind]||{lbl:c.kind};
+        return '<button class="kbm-fnd-bornlink" data-fnd="'+escapeHtml(c.slug)+'"><span class="kbm-fnd-kind">'+escapeHtml(k.lbl)+'</span>'+escapeHtml((c.statement||'').slice(0,90)+'…')+' →</button>';
+      }).join('')+'</div></div>'):'';
+    body.innerHTML='<button class="kbm-region-back" data-fnd-back="1">← Находки</button>'
+      +'<div class="kbm-fnd-d-top"><span class="kbm-fnd-kind kbm-fnd-kind-law kbm-fnd-kind-lg">закон · '+escapeHtml(KBM_LAW_DOMAIN[l.domain]||l.domain||'принцип')+'</span>'
+        +'<span class="kbm-fnd-d-status">'+escapeHtml(KBM_FND_STATUS[l.status]||l.status)+'</span>'
+        +'<span class="kbm-fnd-d-weight" title="вес подсказки">вес '+kbmWt(l.weight)+'</span></div>'
+      +'<h3 class="kbm-fnd-lawttl">'+escapeHtml(l.title||l.slug)+'</h3>'
+      +'<div class="kbm-fnd-d-stmt">'+escapeHtml(l.statement||'')+'</div>'
+      +(l.generative_prediction?'<div class="kbm-fnd-sec kbm-fnd-sec-gen"><div class="kbm-fnd-sec-lbl">Что порождает</div><div class="kbm-fnd-sec-txt">'+escapeHtml(l.generative_prediction)+'</div></div>':'')
+      +(l.falsifier?'<div class="kbm-fnd-sec kbm-fnd-sec-falsi"><div class="kbm-fnd-sec-lbl">Чем опровергается</div><div class="kbm-fnd-sec-txt">'+escapeHtml(l.falsifier)+'</div></div>':'')
+      +bornHtml
+      +'<div class="kbm-fnd-wnote">Закон — самая смелая догадка: один принцип под многими эффектами. Вес '+kbmWt(l.weight)+' отражает, насколько настойчив намёк, а не насколько он доказан.</div>';
+    kbmWireFindings(body);
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // СОЗВЕЗДИЕ — the whole graph as a living constellation.
+  // Warm-dark cosmos. Deterministic force layout (computed once, cached),
+  // canvas render with semantic zoom (far=hubs glow, near=all nodes+labels).
+  // Data is already in memory (KBM.nodes/edges/bySlug) — no fetch.
+  // ═══════════════════════════════════════════════════════════════════════
+  var CN={
+    on:false, raf:null, nodes:[], edges:[], byId:{},
+    cam:{x:0,y:0,s:1}, target:null, sel:null, hint:true,
+    drag:null, pinch:null, dpr:1, w:0, h:0, assembling:false
+  };
+  // Warm-biased hue per discipline — gold→amber→copper→rose→violet (violet ties to findings).
+  var CN_DISC_HUE={
+    'disc-behavioral-econ':38, 'disc-org-systems':18, 'disc-ux-hci':330,
+    'disc-social':350, 'disc-cognitive':50, 'disc-motivation':12,
+    'disc-neuro':280, 'disc-linguistics':200, 'disc-evolutionary':95
+  };
+  function cnHue(disc){ return (disc!=null && CN_DISC_HUE[disc]!=null)?CN_DISC_HUE[disc]:30; }
+  // Deterministic pseudo-random from a string (stable layout across devices/sessions).
+  function cnHash(str){ var h=2166136261>>>0; for(var i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,16777619); } return (h>>>0)/4294967295; }
+  function cnDiscOf(n){ var t=n.tags||[]; for(var i=0;i<t.length;i++){ if(t[i].axis==='discipline') return t[i].slug; } return null; }
+
+  // ── Layout: discipline territories (ring) + force relaxation ──────────────
+  function cnComputeLayout(){
+    var nodes=KBM.nodes||[], edges=KBM.edges||[];
+    // territory anchors: disciplines on a ring, sized by population
+    var discCount={}; nodes.forEach(function(n){ var d=cnDiscOf(n)||'_'; discCount[d]=(discCount[d]||0)+1; });
+    var discs=Object.keys(discCount).sort(function(a,b){ return discCount[b]-discCount[a]; });
+    var anchor={}; var R=620;
+    discs.forEach(function(d,i){
+      var ang=(i/discs.length)*Math.PI*2 - Math.PI/2;
+      // biggest discipline near center, smaller pushed out
+      var rad=(d==='_'?R*1.15:R*(0.30+0.62*(i/Math.max(1,discs.length-1))));
+      anchor[d]={x:Math.cos(ang)*rad, y:Math.sin(ang)*rad};
+    });
+    // init positions: near discipline anchor, deterministic jitter from slug
+    var P={};
+    nodes.forEach(function(n){
+      var d=cnDiscOf(n)||'_'; var a=anchor[d]||{x:0,y:0};
+      var r1=cnHash(n.slug), r2=cnHash(n.slug+'y');
+      var ang=r1*Math.PI*2, rad=40+r2*150;
+      P[n.slug]={x:a.x+Math.cos(ang)*rad, y:a.y+Math.sin(ang)*rad, vx:0, vy:0, n:n, d:d};
+    });
+    // edge list by slug
+    var E=[]; edges.forEach(function(e){ if(P[e.src]&&P[e.dst]) E.push([e.src,e.dst, e.strength==='strong'?1.4:e.strength==='weak'?0.55:1]); });
+    // force sim — deterministic, fixed iterations, cooling
+    var iters=240;
+    for(var it=0; it<iters; it++){
+      var t=it/iters, cool=1-t;
+      // repulsion (O(n^2) — fine at ~317): nodes push apart
+      var arr=nodes;
+      for(var i=0;i<arr.length;i++){
+        var pi=P[arr[i].slug]; if(!pi) continue;
+        for(var j=i+1;j<arr.length;j++){
+          var pj=P[arr[j].slug]; if(!pj) continue;
+          var dx=pi.x-pj.x, dy=pi.y-pj.y, d2=dx*dx+dy*dy+0.01;
+          if(d2>90000) continue; // ignore far pairs (soft cutoff)
+          var f=2600/d2;
+          var dist=Math.sqrt(d2); var fx=dx/dist*f, fy=dy/dist*f;
+          pi.vx+=fx; pi.vy+=fy; pj.vx-=fx; pj.vy-=fy;
+        }
+      }
+      // edge springs: pull connected together
+      for(var k=0;k<E.length;k++){
+        var s=P[E[k][0]], d=P[E[k][1]], w=E[k][2];
+        var dx2=d.x-s.x, dy2=d.y-s.y, dist2=Math.sqrt(dx2*dx2+dy2*dy2)+0.01;
+        var rest=90; var f2=(dist2-rest)*0.012*w;
+        var fx2=dx2/dist2*f2, fy2=dy2/dist2*f2;
+        s.vx+=fx2; s.vy+=fy2; d.vx-=fx2; d.vy-=fy2;
+      }
+      // discipline anchor pull (keeps territories) + integrate, with guards
+      for(var m=0;m<arr.length;m++){
+        var p=P[arr[m].slug]; if(!p) continue;
+        var a=anchor[p.d]||{x:0,y:0};
+        p.vx+=(a.x-p.x)*0.0016; p.vy+=(a.y-p.y)*0.0016;
+        // clamp velocity so early high-repulsion frames can't fling a node away
+        if(p.vx>40)p.vx=40; else if(p.vx<-40)p.vx=-40;
+        if(p.vy>40)p.vy=40; else if(p.vy<-40)p.vy=-40;
+        p.x+=p.vx*cool*0.85; p.y+=p.vy*cool*0.85;
+        p.vx*=0.86; p.vy*=0.86;
+        // hard radial boundary — no escapees to infinity; keeps the frame tight
+        var rr=Math.sqrt(p.x*p.x+p.y*p.y);
+        if(rr>1350){ var k=1350/rr; p.x*=k; p.y*=k; p.vx*=0.5; p.vy*=0.5; }
+      }
+    }
+    return P;
+  }
+  function cnLayoutSig(){ return (KBM.nodes||[]).length+'_'+(KBM.edges||[]).length; }
+  function cnLoadLayout(){
+    // cached deterministic layout — recompute only when the node/edge set changes
+    var sig=cnLayoutSig(), cached=null;
+    try{ var raw=localStorage.getItem('bp_constel_'+sig); if(raw) cached=JSON.parse(raw); }catch(e){}
+    var P = cached || cnComputeLayout();
+    if(!cached){ try{ localStorage.setItem('bp_constel_'+sig, JSON.stringify(P)); }catch(e){} }
+    return P;
+  }
+
+  function cnBuild(){
+    var P=cnLoadLayout();
+    CN.nodes=[]; CN.byId={};
+    (KBM.nodes||[]).forEach(function(n){
+      var p=P[n.slug]; if(!p) return;
+      var deg=n.degree||0;
+      var node={slug:n.slug, title:n.title, x:p.x, y:p.y, deg:deg,
+        r: 2.4 + Math.sqrt(deg)*1.7,            // radius by degree (hubs big)
+        hue: cnHue(cnDiscOf(n)),
+        rob: n.robustness,                       // solid/mixed/contested → brightness
+        hub: deg>=16, n:n};
+      CN.nodes.push(node); CN.byId[n.slug]=node;
+    });
+    CN.edges=[];
+    (KBM.edges||[]).forEach(function(e){
+      var a=CN.byId[e.src], b=CN.byId[e.dst]; if(!a||!b) return;
+      CN.edges.push({a:a, b:b, w:e.strength});
+    });
+  }
+
+  function cnFit(){
+    // frame the whole constellation in view (instant)
+    var f=cnFitCam(); if(f){ CN.cam.s=f.s; CN.cam.x=f.x; CN.cam.y=f.y; }
+  }
+  function cnFitCam(){
+    if(!CN.nodes.length) return null;
+    var minx=1e9,miny=1e9,maxx=-1e9,maxy=-1e9;
+    CN.nodes.forEach(function(n){ if(n.x<minx)minx=n.x; if(n.y<miny)miny=n.y; if(n.x>maxx)maxx=n.x; if(n.y>maxy)maxy=n.y; });
+    var gw=maxx-minx+120, gh=maxy-miny+120;
+    var s=Math.min(CN.w/gw, CN.h/gh)*0.92;
+    return {s:s, x:CN.w/2 - (minx+maxx)/2*s, y:CN.h/2 - (miny+maxy)/2*s};
+  }
+
+  function cnResize(){
+    var cv=document.getElementById('constelCanvas'); if(!cv) return;
+    CN.dpr=Math.min(window.devicePixelRatio||1, 2.5);
+    CN.w=cv.clientWidth; CN.h=cv.clientHeight;
+    cv.width=Math.round(CN.w*CN.dpr); cv.height=Math.round(CN.h*CN.dpr);
+  }
+
+  // world↔screen
+  function cnToScreen(x,y){ return [x*CN.cam.s+CN.cam.x, y*CN.cam.s+CN.cam.y]; }
+  function cnToWorld(sx,sy){ return [(sx-CN.cam.x)/CN.cam.s, (sy-CN.cam.y)/CN.cam.s]; }
+
+  function cnDraw(){
+    var cv=document.getElementById('constelCanvas'); if(!cv) return;
+    var g=cv.getContext('2d'); var dpr=CN.dpr;
+    g.setTransform(dpr,0,0,dpr,0,0);
+    // warm-dark cosmos background with a faint amber core glow
+    g.fillStyle='#0e0c0a'; g.fillRect(0,0,CN.w,CN.h);
+    var cg=g.createRadialGradient(CN.w*0.5,CN.h*0.46,0, CN.w*0.5,CN.h*0.46, Math.max(CN.w,CN.h)*0.7);
+    cg.addColorStop(0,'rgba(120,80,30,0.16)'); cg.addColorStop(0.5,'rgba(60,40,18,0.06)'); cg.addColorStop(1,'rgba(0,0,0,0)');
+    g.fillStyle=cg; g.fillRect(0,0,CN.w,CN.h);
+
+    var s=CN.cam.s;
+    var LOD = s<0.5 ? 'far' : (s<1.15 ? 'mid' : 'near');
+    var sel=CN.sel;
+    var selNeighbors=null;
+    if(sel){ selNeighbors={}; CN.edges.forEach(function(e){ if(e.a===sel) selNeighbors[e.b.slug]=1; else if(e.b===sel) selNeighbors[e.a.slug]=1; }); }
+
+    // ── edges ──
+    g.lineWidth=Math.max(0.4, 0.6*s);
+    if(LOD!=='far' || sel){
+      g.globalCompositeOperation='lighter';
+      CN.edges.forEach(function(e){
+        // far: only hub-to-hub; mid/near: all (faint)
+        if(LOD==='far' && !sel && !(e.a.hub&&e.b.hub)) return;
+        var hot = sel && (e.a===sel||e.b===sel);
+        if(sel && !hot){ // dim non-selected edges when something is selected
+          if(LOD==='far') return;
+        }
+        var a=cnToScreen(e.a.x,e.a.y), b=cnToScreen(e.b.x,e.b.y);
+        // cull offscreen
+        if((a[0]<-50&&b[0]<-50)||(a[0]>CN.w+50&&b[0]>CN.w+50)||(a[1]<-50&&b[1]<-50)||(a[1]>CN.h+50&&b[1]>CN.h+50)) return;
+        var alpha = hot?0.55 : (sel?0.04 : (LOD==='near'?0.10:0.07));
+        var hue=(e.a.hue+e.b.hue)/2;
+        g.strokeStyle='hsla('+hue+',55%,60%,'+alpha+')';
+        if(hot) g.lineWidth=Math.max(0.8,1.1*s); else g.lineWidth=Math.max(0.35,0.55*s);
+        g.beginPath(); g.moveTo(a[0],a[1]); g.lineTo(b[0],b[1]); g.stroke();
+      });
+      g.globalCompositeOperation='source-over';
+    }
+
+    // ── nodes ──
+    var labels=[];
+    for(var i=0;i<CN.nodes.length;i++){
+      var n=CN.nodes[i];
+      if(LOD==='far' && !n.hub) continue; // far: only suns
+      var p=cnToScreen(n.x,n.y);
+      if(p[0]<-30||p[0]>CN.w+30||p[1]<-30||p[1]>CN.h+30) continue; // cull
+      var rr=Math.max(1.1, n.r*s);
+      var dim = sel && n!==sel && !(selNeighbors&&selNeighbors[n.slug]);
+      // brightness by robustness
+      var light = n.rob==='solid'?64 : n.rob==='mixed'?56 : 48;
+      var sat = n.rob==='contested'?32 : 60;
+      var coreA = dim?0.18:1;
+      // glow
+      g.globalCompositeOperation='lighter';
+      var gr=g.createRadialGradient(p[0],p[1],0,p[0],p[1],rr*(n.hub?4.5:3));
+      gr.addColorStop(0,'hsla('+n.hue+','+sat+'%,'+light+'%,'+(dim?0.10:(n.hub?0.55:0.32))+')');
+      gr.addColorStop(1,'hsla('+n.hue+','+sat+'%,'+light+'%,0)');
+      g.fillStyle=gr; g.beginPath(); g.arc(p[0],p[1],rr*(n.hub?4.5:3),0,6.2832); g.fill();
+      g.globalCompositeOperation='source-over';
+      // core
+      g.fillStyle='hsla('+n.hue+','+sat+'%,'+(light+14)+'%,'+coreA+')';
+      g.beginPath(); g.arc(p[0],p[1],rr,0,6.2832); g.fill();
+      if(n===sel){ g.strokeStyle='rgba(255,240,220,0.9)'; g.lineWidth=2; g.beginPath(); g.arc(p[0],p[1],rr+3,0,6.2832); g.stroke(); }
+      // collect labels per LOD
+      var showLabel = (n===sel) ||
+        (LOD==='near' && (n.hub || n.deg>=6)) ||
+        (LOD==='mid' && n.hub);
+      if(showLabel && !dim) labels.push([n,p,rr]);
+    }
+    // ── labels (drawn last, on top) ──
+    g.textBaseline='middle'; g.textAlign='left';
+    labels.forEach(function(L){
+      var n=L[0],p=L[1],rr=L[2];
+      var fs=n.hub?13:11; g.font='600 '+fs+'px Inter, sans-serif';
+      var tx=p[0]+rr+5, ty=p[1];
+      var label=kbmShortTitle(n.title);
+      // subtle shadow for legibility over glow
+      g.fillStyle='rgba(0,0,0,0.55)'; g.fillText(label, tx+0.7, ty+0.7);
+      g.fillStyle = n===sel?'rgba(255,245,230,0.98)':'rgba(235,225,205,0.86)';
+      g.fillText(label, tx, ty);
+    });
+  }
+
+  function cnTick(){
+    // camera easing toward target (smooth fly-to)
+    if(CN.target){
+      var c=CN.cam, t=CN.target, e=0.12;
+      c.x+=(t.x-c.x)*e; c.y+=(t.y-c.y)*e; c.s+=(t.s-c.s)*e;
+      if(Math.abs(t.x-c.x)<0.5&&Math.abs(t.y-c.y)<0.5&&Math.abs(t.s-c.s)<0.001){ c.x=t.x;c.y=t.y;c.s=t.s; CN.target=null; }
+    }
+    cnDraw();
+    CN.raf=CN.on?requestAnimationFrame(cnTick):null;
+  }
+
+  // ── assembling animation: run the sim live for ~1.4s so it forms on screen ──
+  function cnAssemble(){
+    CN.assembling=true;
+    var P0={}; // start scattered from center
+    CN.nodes.forEach(function(n){ var r=cnHash(n.slug+'a'); P0[n.slug]={x:Math.cos(r*6.28)*30, y:Math.sin(r*6.28)*30, tx:n.x, ty:n.y}; n._ax=P0[n.slug].x; n._ay=P0[n.slug].y; });
+    var start=performance.now(), dur=1400;
+    // temporarily render from _ax/_ay
+    var realX=CN.nodes.map(function(n){return n.x;}), realY=CN.nodes.map(function(n){return n.y;});
+    CN.nodes.forEach(function(n){ n.x=n._ax; n.y=n._ay; });
+    function step(now){
+      var t=Math.min(1,(now-start)/dur), e=1-Math.pow(1-t,3); // easeOutCubic
+      CN.nodes.forEach(function(n,i){ n.x=n._ax+(realX[i]-n._ax)*e; n.y=n._ay+(realY[i]-n._ay)*e; });
+      if(t<1 && CN.on){ requestAnimationFrame(step); }
+      else { CN.nodes.forEach(function(n,i){ n.x=realX[i]; n.y=realY[i]; }); CN.assembling=false; }
+    }
+    requestAnimationFrame(step);
+  }
+
+  // ── interaction ──
+  function cnPickNode(sx,sy){
+    var best=null, bestD=24*24; // tap tolerance (screen px)
+    for(var i=0;i<CN.nodes.length;i++){
+      var n=CN.nodes[i]; var p=cnToScreen(n.x,n.y);
+      var dx=p[0]-sx, dy=p[1]-sy, d=dx*dx+dy*dy;
+      var rr=Math.max(8, n.r*CN.cam.s+6);
+      if(d<rr*rr && d<bestD){ bestD=d; best=n; }
+    }
+    return best;
+  }
+  function cnSelect(n){
+    CN.sel=n;
+    var chip=document.getElementById('constelChip');
+    if(n){
+      document.getElementById('constelChipKind').textContent=(KBM_KIND[n.n.kind]||n.n.kind)+' · '+(n.deg)+' связей';
+      document.getElementById('constelChipTtl').textContent=n.title;
+      var go=document.getElementById('constelChipGo'); go.onclick=function(){ cnClose(); kbmDetail(n.slug); };
+      chip.style.display='';
+    } else { chip.style.display='none'; }
+  }
+  function cnZoomAt(sx,sy,factor){
+    var w=cnToWorld(sx,sy);
+    CN.cam.s=Math.max(0.12, Math.min(6, CN.cam.s*factor));
+    var ns=cnToScreen(w[0],w[1]);
+    CN.cam.x+=sx-ns[0]; CN.cam.y+=sy-ns[1];
+    CN.target=null;
+  }
+  function cnHideHint(){ if(CN.hint){ CN.hint=false; var h=document.getElementById('constelHint'); if(h) h.classList.add('constel-hint-gone'); } }
+
+  function cnWire(){
+    var cv=document.getElementById('constelCanvas'); if(!cv || cv._wired) return; cv._wired=true;
+    // pointer pan + tap
+    cv.addEventListener('pointerdown',function(e){
+      cv.setPointerCapture(e.pointerId);
+      CN.drag={x:e.clientX, y:e.clientY, ox:CN.cam.x, oy:CN.cam.y, moved:false, t:Date.now()};
+    });
+    cv.addEventListener('pointermove',function(e){
+      if(!CN.drag) return;
+      var dx=e.clientX-CN.drag.x, dy=e.clientY-CN.drag.y;
+      if(Math.abs(dx)+Math.abs(dy)>4){ CN.drag.moved=true; cnHideHint(); }
+      CN.cam.x=CN.drag.ox+dx; CN.cam.y=CN.drag.oy+dy; CN.target=null;
+    });
+    cv.addEventListener('pointerup',function(e){
+      var wasDrag=CN.drag&&CN.drag.moved;
+      CN.drag=null;
+      if(!wasDrag){
+        var rect=cv.getBoundingClientRect();
+        var n=cnPickNode(e.clientX-rect.left, e.clientY-rect.top);
+        cnSelect(n); cnHideHint();
+      }
+    });
+    cv.addEventListener('pointercancel',function(){ CN.drag=null; });
+    // wheel zoom
+    cv.addEventListener('wheel',function(e){
+      e.preventDefault(); cnHideHint();
+      var rect=cv.getBoundingClientRect();
+      cnZoomAt(e.clientX-rect.left, e.clientY-rect.top, e.deltaY<0?1.12:0.89);
+    },{passive:false});
+    // pinch zoom (two-pointer)
+    var pts={};
+    cv.addEventListener('pointerdown',function(e){ pts[e.pointerId]={x:e.clientX,y:e.clientY}; });
+    cv.addEventListener('pointermove',function(e){
+      if(!pts[e.pointerId]) return; pts[e.pointerId]={x:e.clientX,y:e.clientY};
+      var ids=Object.keys(pts); if(ids.length<2) return;
+      CN.drag=null; cnHideHint();
+      var a=pts[ids[0]], b=pts[ids[1]];
+      var dist=Math.hypot(a.x-b.x,a.y-b.y);
+      var rect=cv.getBoundingClientRect();
+      var midx=(a.x+b.x)/2-rect.left, midy=(a.y+b.y)/2-rect.top;
+      if(CN.pinch){ cnZoomAt(midx,midy, dist/CN.pinch); }
+      CN.pinch=dist;
+    });
+    function clrPt(e){ delete pts[e.pointerId]; if(Object.keys(pts).length<2) CN.pinch=null; }
+    cv.addEventListener('pointerup',clrPt); cv.addEventListener('pointercancel',clrPt);
+  }
+
+  function cnOpen(){
+    if(!KBM.loaded || !(KBM.nodes||[]).length){ toast('Сначала откроется карта…'); return; }
+    var ov=document.getElementById('constel'); if(!ov) return;
+    ov.style.display='block';
+    CN.on=true; CN.sel=null; CN.hint=true;
+    document.getElementById('constelChip').style.display='none';
+    var h=document.getElementById('constelHint'); if(h) h.classList.remove('constel-hint-gone');
+    document.getElementById('constelCount').textContent=' · '+(KBM.nodes||[]).length+' идей';
+    cnResize();
+    cnBuild();
+    cnFit();
+    cnWire();
+    var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    if(!reduce) cnAssemble();
+    if(!CN.raf) cnTick();
+    haptic(8);
+  }
+  function cnClose(){
+    CN.on=false; if(CN.raf){ cancelAnimationFrame(CN.raf); CN.raf=null; }
+    var ov=document.getElementById('constel'); if(ov) ov.style.display='none';
+    CN.sel=null;
+  }
+  (function(){
+    var b=document.getElementById('kbmConstelBtn'); if(b) b.onclick=cnOpen;
+    var c=document.getElementById('constelClose'); if(c) c.onclick=cnClose;
+    var r=document.getElementById('constelReset'); if(r) r.onclick=function(){ cnSelect(null); var f=cnFitCam(); if(f) CN.target=f; };
+    window.addEventListener('resize',function(){ if(CN.on){ cnResize(); } });
+  })();
+
   // ── Region drill-in: concepts + tension lines out of region ────────────
   function kbmRenderRegion(region){
     KBM.region=region;
@@ -4910,11 +5604,14 @@
     document.getElementById('kbmList').style.display='flex';
     document.getElementById('kbmDet').style.display='none';
     KBM_HISTORY=[]; KBM.currentSlug=null;
-    // Restore whichever map view was active (core / scenarios / playbook / region / overview)
+    // Restore whichever map view was active (core / scenarios / playbook / findings / region / overview)
     if(KBM.loaded){
       if(KBM.region==='__core__') kbmRenderCore();
       else if(KBM.region==='__scenarios__') kbmRenderScenarios();
       else if(KBM.region==='__playbook__' && KBM.scenarioSlug) kbmScenarioPlaybook(KBM.scenarioSlug);
+      else if(KBM.region==='__findings__') kbmRenderFindings();
+      else if(KBM.region==='__finding__' && KBM.findingSlug) kbmFindingDetail(KBM.findingSlug);
+      else if(KBM.region==='__law__' && KBM.lawSlug) kbmLawDetail(KBM.lawSlug);
       else if(KBM.region) kbmRenderRegion(KBM.region);
       else kbmRenderOverview();
     }
@@ -4926,6 +5623,9 @@
       var sc=KBM.bySlug[KBM.scenarioSlug];
       fallback=sc?kbmShortTitle(sc.title):'Ситуация';
     } else if(KBM.region==='__scenarios__') fallback='Ситуации';
+    else if(KBM.region==='__findings__') fallback='Находки';
+    else if(KBM.region==='__finding__'){ var fc=kbmFindBySlug(KBM.findingSlug); fallback=fc?'Гипотеза':'Находки'; }
+    else if(KBM.region==='__law__') fallback='Закон';
     else fallback=KBM.region?kbmShortTitle(KBM.region):'Карта';
     if(KBM_HISTORY.length>0){
       var prev=KBM_HISTORY[KBM_HISTORY.length-1];
@@ -5042,12 +5742,30 @@
         ?'<div class="kbm-sec kbm-sec-kontr"><div class="kbm-sec-lbl">⚠ Критика</div><div class="kbm-sec-body">'+escapeHtml(kontr)+'</div></div>':'')
       // 9. Связанные концепты (граф-навигация)
       +relCardsHtml
+      // 9b. Гипотезы Афины об этом концепте — честность видна и со стороны узла
+      +(function(){
+        var cs=(KBM.conjByNode&&KBM.conjByNode[slug])||[];
+        if(!cs.length) return '';
+        return '<div class="kbm-d-conj"><div class="kbm-d-conj-lbl">⌗ Гипотезы Афины · не проверено</div>'
+          +cs.map(function(c){
+            var other=(c.nodes||[]).filter(function(n){return n.slug!==slug;})[0];
+            var k=KBM_CONJ_KIND[c.kind]||{lbl:c.kind};
+            var tail=(c.kind==='cross-cutting')?('связь с группой из '+((c.nodes||[]).length)+' концептов')
+                    :(other?('возможная связь с «'+kbmShortTitle(other.title)+'»'):'');
+            return '<button class="kbm-d-conj-link" data-kbm-conj="'+escapeHtml(c.slug)+'">'
+              +'<span class="kbm-fnd-kind">'+escapeHtml(k.lbl)+'</span>'
+              +'<span class="kbm-d-conj-txt">'+escapeHtml(tail)+'</span>'
+              +'<span class="kbm-d-conj-arr">→</span></button>';
+          }).join('')
+          +'</div>';
+      })()
       // 10. Источник
       +(src?'<div class="kbm-d-src">'+escapeHtml(src)+'</div>':'');
     if(body){
       body.innerHTML=html;
       body.addEventListener('click',function(e){
         var like=e.target.closest('[data-kbm-like]'); if(like){ kbmLikeToggle(like.getAttribute('data-kbm-like')); return; }
+        var cj=e.target.closest('[data-kbm-conj]'); if(cj){ kbmFindingDetail(cj.getAttribute('data-kbm-conj')); return; }
         var nav=e.target.closest('[data-kbm-nav]'); if(nav){ kbmDetail(nav.getAttribute('data-kbm-nav')); }
       });
     }
