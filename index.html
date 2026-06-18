@@ -2176,8 +2176,12 @@
   }
 
   // ====== ВЕРСИЯ ПРИЛОЖЕНИЯ (повышать с каждым апдейтом HTML) ======
-  var APP_VERSION='5.56';
+  var APP_VERSION='5.57';
   var APP_CHANGELOG=[
+    {v:'5.57', items:[
+      'Созвездие стало заметно плавнее и больше не подтормаживает: звёзды и их свечение рисуются из заранее готовых заготовок, а кадр обновляется только когда что-то движется — телефон не греется и не тратит заряд впустую.',
+      'Приближение теперь непрерывное: вместо трёх резких ступеней идеи проявляются постепенно по мере того, как вы подлетаете ближе — сперва крупные хабы, затем всё остальное. И названия больше не наезжают друг на друга: при тесноте остаётся более важное.',
+    ]},
     {v:'5.56', items:[
       'Созвездие: весь граф знаний как тёплый космос. Кнопка «✦ Созвездие» в Карте открывает полноэкранную звёздную карту всех 317 идей — хабы светят ярче, дисциплины образуют территории, связи тянутся паутиной света.',
       'Можно летать и приближать: дальний зум — масштаб и форма, ближний — отдельные идеи с названиями. Тап по звезде подсвечивает её связи и открывает карточку. Созвездие собирается на глазах при открытии.',
@@ -5165,14 +5169,16 @@
 
   // ═══════════════════════════════════════════════════════════════════════
   // СОЗВЕЗДИЕ — the whole graph as a living constellation.
-  // Warm-dark cosmos. Deterministic force layout (computed once, cached),
-  // canvas render with semantic zoom (far=hubs glow, near=all nodes+labels).
+  // Warm-dark cosmos. Deterministic force layout (computed once, cached).
+  // Canvas render with CONTINUOUS semantic zoom (progressive reveal + label
+  // de-collision), sprite-cached glows, and render-on-demand (no idle RAF).
   // Data is already in memory (KBM.nodes/edges/bySlug) — no fetch.
   // ═══════════════════════════════════════════════════════════════════════
   var CN={
     on:false, raf:null, nodes:[], edges:[], byId:{},
     cam:{x:0,y:0,s:1}, target:null, sel:null, hint:true,
-    drag:null, pinch:null, dpr:1, w:0, h:0, assembling:false
+    drag:null, dragging:false, pinch:null, dpr:1, w:0, h:0,
+    assembling:false, asmStart:0, asmDur:1300, bg:null
   };
   // Warm-biased hue per discipline — gold→amber→copper→rose→violet (violet ties to findings).
   var CN_DISC_HUE={
@@ -5184,6 +5190,24 @@
   // Deterministic pseudo-random from a string (stable layout across devices/sessions).
   function cnHash(str){ var h=2166136261>>>0; for(var i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,16777619); } return (h>>>0)/4294967295; }
   function cnDiscOf(n){ var t=n.tags||[]; for(var i=0;i<t.length;i++){ if(t[i].axis==='discipline') return t[i].slug; } return null; }
+
+  // ── glow sprite cache ─────────────────────────────────────────────────────
+  // Pre-render the soft radial blob ONCE per colour; in the hot loop we drawImage
+  // it (scaled) instead of building a fresh radial gradient per node per frame.
+  // ~9 hues × a few light/sat combos ⇒ a tiny cache, a big win on the draw cost.
+  var CN_SPR={};
+  function cnGlowSprite(hue,sat,light,strong){
+    var k=hue+'|'+sat+'|'+light+'|'+(strong?1:0);
+    var c=CN_SPR[k]; if(c) return c;
+    var S=64; c=document.createElement('canvas'); c.width=S; c.height=S;
+    var x=c.getContext('2d');
+    var gr=x.createRadialGradient(S/2,S/2,0, S/2,S/2,S/2);
+    gr.addColorStop(0,   'hsla('+hue+','+sat+'%,'+light+'%,'+(strong?0.60:0.40)+')');
+    gr.addColorStop(0.45,'hsla('+hue+','+sat+'%,'+light+'%,'+(strong?0.16:0.09)+')');
+    gr.addColorStop(1,   'hsla('+hue+','+sat+'%,'+light+'%,0)');
+    x.fillStyle=gr; x.fillRect(0,0,S,S);
+    CN_SPR[k]=c; return c;
+  }
 
   // ── Layout: discipline territories (ring) + force relaxation ──────────────
   function cnComputeLayout(){
@@ -5245,7 +5269,7 @@
         p.vx*=0.86; p.vy*=0.86;
         // hard radial boundary — no escapees to infinity; keeps the frame tight
         var rr=Math.sqrt(p.x*p.x+p.y*p.y);
-        if(rr>1350){ var k=1350/rr; p.x*=k; p.y*=k; p.vx*=0.5; p.vy*=0.5; }
+        if(rr>1350){ var k2=1350/rr; p.x*=k2; p.y*=k2; p.vx*=0.5; p.vy*=0.5; }
       }
     }
     return P;
@@ -5265,18 +5289,23 @@
     CN.nodes=[]; CN.byId={};
     (KBM.nodes||[]).forEach(function(n){
       var p=P[n.slug]; if(!p) return;
-      var deg=n.degree||0;
+      var deg=n.degree||0, rob=n.robustness;
       var node={slug:n.slug, title:n.title, x:p.x, y:p.y, deg:deg,
-        r: 2.4 + Math.sqrt(deg)*1.7,            // radius by degree (hubs big)
+        r: 2.2 + Math.sqrt(deg)*1.65,            // radius by degree (hubs big)
         hue: cnHue(cnDiscOf(n)),
-        rob: n.robustness,                       // solid/mixed/contested → brightness
+        sat: rob==='contested'?32:60,            // contested reads desaturated
+        light: rob==='solid'?64 : rob==='mixed'?56 : 48,  // brightness by robustness
+        rob: rob,
+        // appear-zoom: hubs emerge early (far), periphery fades in as you approach.
+        // This is what turns the old 3 hard LODs into a continuous reveal.
+        app: 0.15 + 1.4/Math.max(0.7, deg-0.3),
         hub: deg>=16, n:n};
       CN.nodes.push(node); CN.byId[n.slug]=node;
     });
     CN.edges=[];
     (KBM.edges||[]).forEach(function(e){
       var a=CN.byId[e.src], b=CN.byId[e.dst]; if(!a||!b) return;
-      CN.edges.push({a:a, b:b, w:e.strength});
+      CN.edges.push({a:a, b:b, w:e.strength, hue:(a.hue+b.hue)/2});  // hue precomputed once
     });
   }
 
@@ -5298,6 +5327,7 @@
     CN.dpr=Math.min(window.devicePixelRatio||1, 2.5);
     CN.w=cv.clientWidth; CN.h=cv.clientHeight;
     cv.width=Math.round(CN.w*CN.dpr); cv.height=Math.round(CN.h*CN.dpr);
+    CN.bg=null; // size changed — rebuild the cached background gradient
   }
 
   // world↔screen
@@ -5308,112 +5338,114 @@
     var cv=document.getElementById('constelCanvas'); if(!cv) return;
     var g=cv.getContext('2d'); var dpr=CN.dpr;
     g.setTransform(dpr,0,0,dpr,0,0);
-    // warm-dark cosmos background with a faint amber core glow
+    // warm-dark cosmos background with a faint amber core glow (gradient cached per size)
     g.fillStyle='#0e0c0a'; g.fillRect(0,0,CN.w,CN.h);
-    var cg=g.createRadialGradient(CN.w*0.5,CN.h*0.46,0, CN.w*0.5,CN.h*0.46, Math.max(CN.w,CN.h)*0.7);
-    cg.addColorStop(0,'rgba(120,80,30,0.16)'); cg.addColorStop(0.5,'rgba(60,40,18,0.06)'); cg.addColorStop(1,'rgba(0,0,0,0)');
-    g.fillStyle=cg; g.fillRect(0,0,CN.w,CN.h);
+    if(!CN.bg){
+      var cg=g.createRadialGradient(CN.w*0.5,CN.h*0.46,0, CN.w*0.5,CN.h*0.46, Math.max(CN.w,CN.h)*0.7);
+      cg.addColorStop(0,'rgba(120,80,30,0.16)'); cg.addColorStop(0.5,'rgba(60,40,18,0.06)'); cg.addColorStop(1,'rgba(0,0,0,0)');
+      CN.bg=cg;
+    }
+    g.fillStyle=CN.bg; g.fillRect(0,0,CN.w,CN.h);
 
-    var s=CN.cam.s;
-    var LOD = s<0.5 ? 'far' : (s<1.15 ? 'mid' : 'near');
-    var sel=CN.sel;
-    var selNeighbors=null;
-    if(sel){ selNeighbors={}; CN.edges.forEach(function(e){ if(e.a===sel) selNeighbors[e.b.slug]=1; else if(e.b===sel) selNeighbors[e.a.slug]=1; }); }
+    var s=CN.cam.s, sel=CN.sel;
+    var selN=null;
+    if(sel){ selN={}; CN.edges.forEach(function(e){ if(e.a===sel) selN[e.b.slug]=1; else if(e.b===sel) selN[e.a.slug]=1; }); }
 
-    // ── edges ──
-    g.lineWidth=Math.max(0.4, 0.6*s);
-    if(LOD!=='far' || sel){
+    // ── edges: alpha ramps continuously with zoom (far→none, mid→faint, near→clear) ──
+    var eBase=Math.max(0, Math.min(1,(s-0.22)*0.9));
+    if(eBase>0.012 || sel){
       g.globalCompositeOperation='lighter';
-      CN.edges.forEach(function(e){
-        // far: only hub-to-hub; mid/near: all (faint)
-        if(LOD==='far' && !sel && !(e.a.hub&&e.b.hub)) return;
+      for(var ei=0; ei<CN.edges.length; ei++){
+        var e=CN.edges[ei];
         var hot = sel && (e.a===sel||e.b===sel);
-        if(sel && !hot){ // dim non-selected edges when something is selected
-          if(LOD==='far') return;
+        if(!hot){
+          if(eBase<=0.012) continue;                       // far + nothing selected ⇒ no web
+          if(sel) continue;                                // something selected ⇒ only its edges glow
+          if(eBase<0.25 && !(e.a.hub&&e.b.hub)) continue;  // far-ish ⇒ hub skeleton reads first
         }
         var a=cnToScreen(e.a.x,e.a.y), b=cnToScreen(e.b.x,e.b.y);
-        // cull offscreen
-        if((a[0]<-50&&b[0]<-50)||(a[0]>CN.w+50&&b[0]>CN.w+50)||(a[1]<-50&&b[1]<-50)||(a[1]>CN.h+50&&b[1]>CN.h+50)) return;
-        var alpha = hot?0.55 : (sel?0.04 : (LOD==='near'?0.10:0.07));
-        var hue=(e.a.hue+e.b.hue)/2;
-        g.strokeStyle='hsla('+hue+',55%,60%,'+alpha+')';
-        if(hot) g.lineWidth=Math.max(0.8,1.1*s); else g.lineWidth=Math.max(0.35,0.55*s);
+        if((a[0]<-40&&b[0]<-40)||(a[0]>CN.w+40&&b[0]>CN.w+40)||(a[1]<-40&&b[1]<-40)||(a[1]>CN.h+40&&b[1]>CN.h+40)) continue;
+        var alpha = hot ? 0.5 : eBase*0.13;
+        g.strokeStyle='hsla('+e.hue+',55%,62%,'+alpha+')';
+        g.lineWidth = hot ? Math.max(0.8,1.1*s) : Math.max(0.32,0.5*s);
         g.beginPath(); g.moveTo(a[0],a[1]); g.lineTo(b[0],b[1]); g.stroke();
-      });
+      }
       g.globalCompositeOperation='source-over';
     }
 
-    // ── nodes ──
-    var labels=[];
+    // ── nodes: progressive reveal (alpha = smooth fn of zoom & degree) + sprite glow ──
+    var cand=[];
     for(var i=0;i<CN.nodes.length;i++){
       var n=CN.nodes[i];
-      if(LOD==='far' && !n.hub) continue; // far: only suns
+      var vis = n===sel ? 1 : Math.max(0, Math.min(1,(s-n.app)/0.22)); // fade-in band
+      if(vis<=0.012 && n!==sel) continue;
       var p=cnToScreen(n.x,n.y);
-      if(p[0]<-30||p[0]>CN.w+30||p[1]<-30||p[1]>CN.h+30) continue; // cull
-      var rr=Math.max(1.1, n.r*s);
-      var dim = sel && n!==sel && !(selNeighbors&&selNeighbors[n.slug]);
-      // brightness by robustness
-      var light = n.rob==='solid'?64 : n.rob==='mixed'?56 : 48;
-      var sat = n.rob==='contested'?32 : 60;
-      var coreA = dim?0.18:1;
-      // glow
+      if(p[0]<-40||p[0]>CN.w+40||p[1]<-40||p[1]>CN.h+40) continue;     // cull offscreen
+      var rr=Math.max(1.0, n.r*s);
+      var dim = sel && n!==sel && !(selN&&selN[n.slug]);
+      // glow via cached sprite (drawImage, no per-frame gradient)
+      var Rg=rr*(n.hub?4.3:2.9);
       g.globalCompositeOperation='lighter';
-      var gr=g.createRadialGradient(p[0],p[1],0,p[0],p[1],rr*(n.hub?4.5:3));
-      gr.addColorStop(0,'hsla('+n.hue+','+sat+'%,'+light+'%,'+(dim?0.10:(n.hub?0.55:0.32))+')');
-      gr.addColorStop(1,'hsla('+n.hue+','+sat+'%,'+light+'%,0)');
-      g.fillStyle=gr; g.beginPath(); g.arc(p[0],p[1],rr*(n.hub?4.5:3),0,6.2832); g.fill();
-      g.globalCompositeOperation='source-over';
+      g.globalAlpha=(dim?0.14:1)*vis;
+      g.drawImage(cnGlowSprite(n.hue,n.sat,n.light,n.hub), p[0]-Rg, p[1]-Rg, Rg*2, Rg*2);
+      g.globalAlpha=1; g.globalCompositeOperation='source-over';
       // core
-      g.fillStyle='hsla('+n.hue+','+sat+'%,'+(light+14)+'%,'+coreA+')';
+      g.globalAlpha=(dim?0.3:1)*Math.max(0.15,vis);
+      g.fillStyle='hsla('+n.hue+','+n.sat+'%,'+(n.light+14)+'%,1)';
       g.beginPath(); g.arc(p[0],p[1],rr,0,6.2832); g.fill();
-      if(n===sel){ g.strokeStyle='rgba(255,240,220,0.9)'; g.lineWidth=2; g.beginPath(); g.arc(p[0],p[1],rr+3,0,6.2832); g.stroke(); }
-      // collect labels per LOD
-      var showLabel = (n===sel) ||
-        (LOD==='near' && (n.hub || n.deg>=6)) ||
-        (LOD==='mid' && n.hub);
-      if(showLabel && !dim) labels.push([n,p,rr]);
+      g.globalAlpha=1;
+      if(n===sel){ g.strokeStyle='rgba(255,240,220,0.92)'; g.lineWidth=2; g.beginPath(); g.arc(p[0],p[1],rr+3,0,6.2832); g.stroke(); }
+      if((vis>0.5 || n===sel) && !dim) cand.push({n:n,p:p,rr:rr,vis:vis});
     }
-    // ── labels (drawn last, on top) ──
+
+    // ── labels: greedy de-collision by degree (highest wins), fade with the node ──
+    cand.sort(function(A,B){ if(A.n===sel)return -1; if(B.n===sel)return 1; return B.n.deg-A.n.deg; });
     g.textBaseline='middle'; g.textAlign='left';
-    labels.forEach(function(L){
-      var n=L[0],p=L[1],rr=L[2];
-      var fs=n.hub?13:11; g.font='600 '+fs+'px Inter, sans-serif';
-      var tx=p[0]+rr+5, ty=p[1];
-      var label=kbmShortTitle(n.title);
-      // subtle shadow for legibility over glow
-      g.fillStyle='rgba(0,0,0,0.55)'; g.fillText(label, tx+0.7, ty+0.7);
-      g.fillStyle = n===sel?'rgba(255,245,230,0.98)':'rgba(235,225,205,0.86)';
+    var placed=[];
+    for(var li=0; li<cand.length && placed.length<46 && li<140; li++){
+      var L=cand[li], n2=L.n, p2=L.p, rr2=L.rr;
+      var fs=n2.hub?13:11; g.font='600 '+fs+'px Inter, sans-serif';
+      var label=kbmShortTitle(n2.title);
+      var tx=p2[0]+rr2+5, ty=p2[1];
+      var wpx=g.measureText(label).width;
+      var box=[tx-2, ty-fs*0.62, tx+wpx+2, ty+fs*0.62];
+      var clash=false;
+      if(n2!==sel){ for(var pi=0; pi<placed.length; pi++){ var q=placed[pi]; if(box[0]<q[2]&&box[2]>q[0]&&box[1]<q[3]&&box[3]>q[1]){ clash=true; break; } } }
+      if(clash) continue;
+      placed.push(box);
+      var la = n2===sel?1:Math.max(0,Math.min(1,(L.vis-0.5)/0.4));   // labels fade in a touch after the dot
+      g.fillStyle='rgba(0,0,0,'+(0.55*la)+')'; g.fillText(label, tx+0.7, ty+0.7);
+      g.fillStyle = n2===sel?'rgba(255,245,230,'+la+')':'rgba(235,225,205,'+(0.86*la)+')';
       g.fillText(label, tx, ty);
-    });
+    }
   }
 
+  // ── render-on-demand: only run a frame while something is actually moving ──
+  function cnKick(){ if(CN.on && !CN.raf) CN.raf=requestAnimationFrame(cnTick); }
+  function cnInvalidate(){ cnKick(); } // schedule a single redraw (coalesces if one is pending)
   function cnTick(){
+    var now=performance.now();
+    // assembling: interpolate scatter→final (easeOutCubic)
+    if(CN.assembling){
+      var t=Math.min(1,(now-CN.asmStart)/CN.asmDur), e=1-Math.pow(1-t,3);
+      for(var i=0;i<CN.nodes.length;i++){ var n=CN.nodes[i]; n.x=n._ax+(n._tx-n._ax)*e; n.y=n._ay+(n._ty-n._ay)*e; }
+      if(t>=1){ for(var j=0;j<CN.nodes.length;j++){ var m=CN.nodes[j]; m.x=m._tx; m.y=m._ty; } CN.assembling=false; }
+    }
     // camera easing toward target (smooth fly-to)
     if(CN.target){
-      var c=CN.cam, t=CN.target, e=0.12;
-      c.x+=(t.x-c.x)*e; c.y+=(t.y-c.y)*e; c.s+=(t.s-c.s)*e;
-      if(Math.abs(t.x-c.x)<0.5&&Math.abs(t.y-c.y)<0.5&&Math.abs(t.s-c.s)<0.001){ c.x=t.x;c.y=t.y;c.s=t.s; CN.target=null; }
+      var c=CN.cam, tg=CN.target, ce=0.16;
+      c.x+=(tg.x-c.x)*ce; c.y+=(tg.y-c.y)*ce; c.s+=(tg.s-c.s)*ce;
+      if(Math.abs(tg.x-c.x)<0.4&&Math.abs(tg.y-c.y)<0.4&&Math.abs(tg.s-c.s)<0.0008){ c.x=tg.x;c.y=tg.y;c.s=tg.s; CN.target=null; }
     }
     cnDraw();
-    CN.raf=CN.on?requestAnimationFrame(cnTick):null;
+    CN.raf = (CN.on && (CN.assembling||CN.target||CN.dragging)) ? requestAnimationFrame(cnTick) : null;
   }
 
-  // ── assembling animation: run the sim live for ~1.4s so it forms on screen ──
+  // ── assembling animation: form on screen over ~1.3s ──
   function cnAssemble(){
-    CN.assembling=true;
-    var P0={}; // start scattered from center
-    CN.nodes.forEach(function(n){ var r=cnHash(n.slug+'a'); P0[n.slug]={x:Math.cos(r*6.28)*30, y:Math.sin(r*6.28)*30, tx:n.x, ty:n.y}; n._ax=P0[n.slug].x; n._ay=P0[n.slug].y; });
-    var start=performance.now(), dur=1400;
-    // temporarily render from _ax/_ay
-    var realX=CN.nodes.map(function(n){return n.x;}), realY=CN.nodes.map(function(n){return n.y;});
-    CN.nodes.forEach(function(n){ n.x=n._ax; n.y=n._ay; });
-    function step(now){
-      var t=Math.min(1,(now-start)/dur), e=1-Math.pow(1-t,3); // easeOutCubic
-      CN.nodes.forEach(function(n,i){ n.x=n._ax+(realX[i]-n._ax)*e; n.y=n._ay+(realY[i]-n._ay)*e; });
-      if(t<1 && CN.on){ requestAnimationFrame(step); }
-      else { CN.nodes.forEach(function(n,i){ n.x=realX[i]; n.y=realY[i]; }); CN.assembling=false; }
-    }
-    requestAnimationFrame(step);
+    CN.asmStart=performance.now(); CN.assembling=true;
+    CN.nodes.forEach(function(n){ var r=cnHash(n.slug+'a'); n._ax=Math.cos(r*6.2832)*22; n._ay=Math.sin(r*6.2832)*22; n._tx=n.x; n._ty=n.y; n.x=n._ax; n.y=n._ay; });
+    cnKick();
   }
 
   // ── interaction ──
@@ -5436,68 +5468,76 @@
       var go=document.getElementById('constelChipGo'); go.onclick=function(){ cnClose(); kbmDetail(n.slug); };
       chip.style.display='';
     } else { chip.style.display='none'; }
+    cnInvalidate();
   }
   function cnZoomAt(sx,sy,factor){
     var w=cnToWorld(sx,sy);
-    CN.cam.s=Math.max(0.12, Math.min(6, CN.cam.s*factor));
+    CN.cam.s=Math.max(0.10, Math.min(6, CN.cam.s*factor));
     var ns=cnToScreen(w[0],w[1]);
     CN.cam.x+=sx-ns[0]; CN.cam.y+=sy-ns[1];
-    CN.target=null;
+    CN.target=null; cnInvalidate();
   }
   function cnHideHint(){ if(CN.hint){ CN.hint=false; var h=document.getElementById('constelHint'); if(h) h.classList.add('constel-hint-gone'); } }
 
   function cnWire(){
     var cv=document.getElementById('constelCanvas'); if(!cv || cv._wired) return; cv._wired=true;
-    // pointer pan + tap
+    var pts={};
+    function activeCount(){ return Object.keys(pts).length; }
     cv.addEventListener('pointerdown',function(e){
       cv.setPointerCapture(e.pointerId);
-      CN.drag={x:e.clientX, y:e.clientY, ox:CN.cam.x, oy:CN.cam.y, moved:false, t:Date.now()};
+      pts[e.pointerId]={x:e.clientX,y:e.clientY};
+      CN.dragging=true; cnKick();
+      if(activeCount()===1){ CN.drag={x:e.clientX, y:e.clientY, ox:CN.cam.x, oy:CN.cam.y, moved:false}; }
+      else { CN.drag=null; } // second finger ⇒ pinch, cancel pan
     });
     cv.addEventListener('pointermove',function(e){
-      if(!CN.drag) return;
-      var dx=e.clientX-CN.drag.x, dy=e.clientY-CN.drag.y;
-      if(Math.abs(dx)+Math.abs(dy)>4){ CN.drag.moved=true; cnHideHint(); }
-      CN.cam.x=CN.drag.ox+dx; CN.cam.y=CN.drag.oy+dy; CN.target=null;
-    });
-    cv.addEventListener('pointerup',function(e){
-      var wasDrag=CN.drag&&CN.drag.moved;
-      CN.drag=null;
-      if(!wasDrag){
+      if(!pts[e.pointerId]) return;
+      pts[e.pointerId]={x:e.clientX,y:e.clientY};
+      var ids=Object.keys(pts);
+      if(ids.length>=2){
+        CN.drag=null; cnHideHint();
+        var a=pts[ids[0]], b=pts[ids[1]];
+        var dist=Math.hypot(a.x-b.x,a.y-b.y);
         var rect=cv.getBoundingClientRect();
-        var n=cnPickNode(e.clientX-rect.left, e.clientY-rect.top);
-        cnSelect(n); cnHideHint();
+        var midx=(a.x+b.x)/2-rect.left, midy=(a.y+b.y)/2-rect.top;
+        if(CN.pinch){ cnZoomAt(midx,midy, dist/CN.pinch); }
+        CN.pinch=dist;
+      } else if(CN.drag){
+        var dx=e.clientX-CN.drag.x, dy=e.clientY-CN.drag.y;
+        if(Math.abs(dx)+Math.abs(dy)>4){ CN.drag.moved=true; cnHideHint(); }
+        CN.cam.x=CN.drag.ox+dx; CN.cam.y=CN.drag.oy+dy; CN.target=null;
       }
     });
-    cv.addEventListener('pointercancel',function(){ CN.drag=null; });
+    function endPtr(e){
+      var wasDrag=CN.drag&&CN.drag.moved;
+      delete pts[e.pointerId];
+      if(activeCount()<2) CN.pinch=null;
+      if(activeCount()===0){
+        CN.dragging=false;
+        if(CN.drag && !wasDrag){
+          var rect=cv.getBoundingClientRect();
+          var nn=cnPickNode(e.clientX-rect.left, e.clientY-rect.top);
+          cnSelect(nn); cnHideHint();
+        }
+        CN.drag=null;
+        cnInvalidate();
+      }
+    }
+    cv.addEventListener('pointerup',endPtr);
+    cv.addEventListener('pointercancel',endPtr);
     // wheel zoom
     cv.addEventListener('wheel',function(e){
       e.preventDefault(); cnHideHint();
       var rect=cv.getBoundingClientRect();
       cnZoomAt(e.clientX-rect.left, e.clientY-rect.top, e.deltaY<0?1.12:0.89);
     },{passive:false});
-    // pinch zoom (two-pointer)
-    var pts={};
-    cv.addEventListener('pointerdown',function(e){ pts[e.pointerId]={x:e.clientX,y:e.clientY}; });
-    cv.addEventListener('pointermove',function(e){
-      if(!pts[e.pointerId]) return; pts[e.pointerId]={x:e.clientX,y:e.clientY};
-      var ids=Object.keys(pts); if(ids.length<2) return;
-      CN.drag=null; cnHideHint();
-      var a=pts[ids[0]], b=pts[ids[1]];
-      var dist=Math.hypot(a.x-b.x,a.y-b.y);
-      var rect=cv.getBoundingClientRect();
-      var midx=(a.x+b.x)/2-rect.left, midy=(a.y+b.y)/2-rect.top;
-      if(CN.pinch){ cnZoomAt(midx,midy, dist/CN.pinch); }
-      CN.pinch=dist;
-    });
-    function clrPt(e){ delete pts[e.pointerId]; if(Object.keys(pts).length<2) CN.pinch=null; }
-    cv.addEventListener('pointerup',clrPt); cv.addEventListener('pointercancel',clrPt);
   }
 
   function cnOpen(){
     if(!KBM.loaded || !(KBM.nodes||[]).length){ toast('Сначала откроется карта…'); return; }
     var ov=document.getElementById('constel'); if(!ov) return;
     ov.style.display='block';
-    CN.on=true; CN.sel=null; CN.hint=true;
+    CN.on=true; CN.sel=null; CN.hint=true; CN.target=null; CN.dragging=false;
     document.getElementById('constelChip').style.display='none';
     var h=document.getElementById('constelHint'); if(h) h.classList.remove('constel-hint-gone');
     document.getElementById('constelCount').textContent=' · '+(KBM.nodes||[]).length+' идей';
@@ -5506,20 +5546,20 @@
     cnFit();
     cnWire();
     var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-    if(!reduce) cnAssemble();
-    if(!CN.raf) cnTick();
+    if(!reduce) cnAssemble(); else cnInvalidate(); // reduced-motion ⇒ one static frame, no fly-in
     haptic(8);
   }
   function cnClose(){
     CN.on=false; if(CN.raf){ cancelAnimationFrame(CN.raf); CN.raf=null; }
+    CN.dragging=false; CN.assembling=false;
     var ov=document.getElementById('constel'); if(ov) ov.style.display='none';
     CN.sel=null;
   }
   (function(){
     var b=document.getElementById('kbmConstelBtn'); if(b) b.onclick=cnOpen;
     var c=document.getElementById('constelClose'); if(c) c.onclick=cnClose;
-    var r=document.getElementById('constelReset'); if(r) r.onclick=function(){ cnSelect(null); var f=cnFitCam(); if(f) CN.target=f; };
-    window.addEventListener('resize',function(){ if(CN.on){ cnResize(); } });
+    var r=document.getElementById('constelReset'); if(r) r.onclick=function(){ cnSelect(null); var f=cnFitCam(); if(f){ CN.target=f; cnKick(); } };
+    window.addEventListener('resize',function(){ if(CN.on){ cnResize(); cnInvalidate(); } });
   })();
 
   // ── Region drill-in: concepts + tension lines out of region ────────────
