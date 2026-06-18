@@ -1670,7 +1670,7 @@
   #constel{ position:fixed; inset:0; z-index:400; background:#0e0c0a; overscroll-behavior:none; touch-action:none }
   #constel.constel-enter{ animation:constelEnter .8s ease-out both }
   @keyframes constelEnter{ from{ opacity:0 } to{ opacity:1 } }
-  #constelCanvas{ position:absolute; inset:0; width:100%; height:100%; display:block; cursor:grab }
+  #constelCanvas{ position:absolute; inset:0; width:100%; height:100%; display:block; cursor:grab; touch-action:none; -webkit-user-select:none; user-select:none; -webkit-touch-callout:none }
   #constelCanvas:active{ cursor:grabbing }
   .constel-top{ position:absolute; top:0; left:0; right:0; display:flex; align-items:center; gap:12px; padding:calc(12px + env(safe-area-inset-top,0px)) 16px 12px; background:linear-gradient(#0e0c0aee, #0e0c0a00); pointer-events:none; z-index:2 }
   .constel-top > *{ pointer-events:auto }
@@ -1750,6 +1750,26 @@
   #constel.constel-leaving,#kbmDetBody.kbm-in,.kb-ring,.kb-burst i{ animation:none }
   #constel.constel-exploring .constel-top{ opacity:1 }
 }
+
+/* ── Карточка как лист поверх космоса (без моргания, без перезагрузки) ── */
+#kbMode.kbm-over-constel{ z-index:500; animation:kbmSheetUp .34s cubic-bezier(.2,.7,.2,1) }
+@keyframes kbmSheetUp{ from{ transform:translateY(100%) } to{ transform:none } }
+#kbMode.kbm-sheet-down{ animation:kbmSheetDown .29s cubic-bezier(.4,0,.7,1) forwards }
+@keyframes kbmSheetDown{ from{ transform:none } to{ transform:translateY(100%) } }
+@media (prefers-reduced-motion:reduce){ #kbMode.kbm-over-constel,#kbMode.kbm-sheet-down{ animation:none } }
+
+/* ── Бургер-меню навигации поверх Созвездия ── */
+.cn-nav{ position:absolute; inset:0; z-index:6 }
+.cn-nav-scrim{ position:absolute; inset:0; background:rgba(8,6,4,.5); -webkit-backdrop-filter:blur(2px); backdrop-filter:blur(2px); animation:cnNavFade .2s ease }
+@keyframes cnNavFade{ from{opacity:0} to{opacity:1} }
+.cn-nav-panel{ position:absolute; top:0; bottom:0; left:0; width:min(82%,310px); background:rgba(20,16,11,.97); border-right:1px solid rgba(220,190,150,.18); padding:calc(20px + env(safe-area-inset-top,0px)) 0 calc(18px + env(safe-area-inset-bottom,0px)); display:flex; flex-direction:column; gap:1px; box-shadow:8px 0 44px rgba(0,0,0,.55); animation:cnNavSlide .28s cubic-bezier(.2,.7,.2,1) }
+@keyframes cnNavSlide{ from{ transform:translateX(-100%) } to{ transform:none } }
+.cn-nav-h{ font-family:var(--font-mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:#a99a82; padding:4px 22px 12px }
+.cn-nav-item{ text-align:left; background:none; border:none; color:#ece1cf; font-family:var(--font-ui); font-size:16px; padding:13px 22px; cursor:pointer; display:flex; align-items:center; gap:12px; transition:background .12s }
+.cn-nav-item:hover,.cn-nav-item:active{ background:rgba(220,190,150,.09) }
+.cn-nav-ic{ width:20px; text-align:center; opacity:.85 }
+.cn-nav-sep{ height:1px; background:rgba(220,190,150,.12); margin:8px 22px }
+.cn-nav-acct{ font-size:12px; color:#a99a82; padding:2px 22px 8px; word-break:break-all }
 </style>
 </head>
 <body>
@@ -2075,19 +2095,33 @@
 <div id="constel" style="display:none">
   <canvas id="constelCanvas"></canvas>
   <div class="constel-top">
-    <button class="constel-close" id="constelClose" title="Закрыть">✕</button>
+    <button class="constel-close" id="constelMenu" title="Меню" aria-label="Меню">☰</button>
     <div class="constel-ttl">Созвездие<span id="constelCount"></span></div>
     <button class="constel-reset" id="constelReset" title="Показать всё">⊙</button>
     <button class="constel-legend" id="constelDepthBtn" title="Глубина: из чего объяснены эффекты">глубина</button>
     <button class="constel-legend" id="constelLegendBtn" title="Цвета дисциплин">цвета</button>
   </div>
-  <div class="constel-hint" id="constelHint">проведите, чтобы лететь · щипком приблизьте</div>
+  <div class="constel-hint" id="constelHint">проведите, чтобы лететь · щипком приблизьте · двумя пальцами поверните</div>
   <div class="constel-chip" id="constelChip" style="display:none">
     <div class="constel-chip-kind" id="constelChipKind"></div>
     <div class="constel-chip-ttl" id="constelChipTtl"></div>
     <button class="constel-chip-go" id="constelChipGo">Открыть карточку →</button>
   </div>
   <div id="constelLegend" style="display:none"></div>
+  <div id="cnNav" class="cn-nav" style="display:none">
+    <div class="cn-nav-scrim" id="cnNavScrim"></div>
+    <nav class="cn-nav-panel">
+      <div class="cn-nav-h">Навигация</div>
+      <button class="cn-nav-item" id="cnNavMap"><span class="cn-nav-ic">✦</span>Карта · список</button>
+      <button class="cn-nav-item" id="cnNavBook"><span class="cn-nav-ic">📖</span>Книга</button>
+      <div class="cn-nav-sep"></div>
+      <div class="cn-nav-acct" id="cnNavAcct"></div>
+      <button class="cn-nav-item" id="cnNavLogout">Выйти</button>
+      <div class="cn-nav-sep" id="cnNavAdminSep" style="display:none"></div>
+      <button class="cn-nav-item" id="cnNavAdmin" style="display:none">Админка</button>
+      <button class="cn-nav-item" id="cnNavDispatch" style="display:none">Диспетчерская</button>
+    </nav>
+  </div>
 </div>
 <div id="shelf" style="display:none">
   <div class="shelf-inner">
@@ -5292,7 +5326,7 @@
   // ═══════════════════════════════════════════════════════════════════════
   var CN={
     on:false, raf:null, nodes:[], edges:[], byId:{},
-    cam:{x:0,y:0,s:1}, target:null, sel:null, hint:true,
+    cam:{x:0,y:0,s:1}, yaw:0, pitch:0, rotTarget:null, target:null, sel:null, hint:true,
     drag:null, dragging:false, pinch:null, dpr:1, w:0, h:0,
     assembling:false, asmStart:0, asmDur:1300, bg:null
   };
@@ -5413,7 +5447,7 @@
     (KBM.nodes||[]).forEach(function(n){
       var p=P[n.slug]; if(!p) return;
       var deg=n.degree||0, rob=n.robustness, disc=cnDiscOf(n), noD=(disc==null);
-      var node={slug:n.slug, title:n.title, x:p.x, y:p.y, deg:deg,
+      var node={slug:n.slug, title:n.title, x:p.x, y:p.y, z:(cnHash(n.slug+'z')-0.5)*1000, deg:deg,
         r: 2.2 + Math.sqrt(deg)*1.65,            // radius by degree (hubs big)
         hue: noD?172:cnHue(disc),                // no discipline (PM methods) → distinct teal
         sat: noD?52:(rob==='contested'?32:60),   // contested reads desaturated
@@ -5430,7 +5464,7 @@
       var a=CN.byId[e.src], b=CN.byId[e.dst]; if(!a||!b) return;
       CN.edges.push({a:a, b:b, w:e.strength, hue:(a.hue+b.hue)/2});  // hue precomputed once
     });
-    CN._depthReady=false; CN.depth=false;
+    CN._depthReady=false; CN.depth=false; CN.yaw=0; CN.pitch=0; CN.rotTarget=null;
   }
 
   function cnFit(){
@@ -5478,7 +5512,19 @@
     // motion tier: while the camera/stars move, drop the costly label pass and reuse one transform per node
     var moving = CN.dragging || !!CN.target || CN.assembling;
     var camx=CN.cam.x, camy=CN.cam.y, sc=CN.cam.s;
-    for(var pp=0; pp<CN.nodes.length; pp++){ var np=CN.nodes[pp]; np._sx=np.x*sc+camx; np._sy=np.y*sc+camy; }
+    if(CN.depth){
+      for(var pp=0; pp<CN.nodes.length; pp++){ var np=CN.nodes[pp]; np._sx=np.x*sc+camx; np._sy=np.y*sc+camy; np._ps=1; np._z=0; }
+    } else {
+      // genuine 3D: rotate (x,y,z) by yaw (vertical axis) then pitch (horizontal), divide by perspective.
+      // Everything below already reads _sx/_sy, so the whole scene becomes volumetric from this one place.
+      var yw=CN.yaw||0, pt=CN.pitch||0, cyw=Math.cos(yw), syw=Math.sin(yw), cpt=Math.cos(pt), spt=Math.sin(pt), PERSP=3000;
+      for(var pp=0; pp<CN.nodes.length; pp++){
+        var np=CN.nodes[pp], nx=np.x, ny=np.y, nz=np.z||0;
+        var x1=nx*cyw+nz*syw, z1=nz*cyw-nx*syw;
+        var y2=ny*cpt-z1*spt, z2=ny*spt+z1*cpt, ps=PERSP/(PERSP+z2);
+        np._sx=x1*ps*sc+camx; np._sy=y2*ps*sc+camy; np._ps=ps; np._z=z2;
+      }
+    }
 
     // ── edges: alpha ramps continuously with zoom (far→none, mid→faint, near→clear) ──
     var eBase=Math.max(0, Math.min(1,(s-0.22)*0.9));
@@ -5504,15 +5550,16 @@
 
     // ── nodes: progressive reveal (alpha = smooth fn of zoom & degree) + sprite glow ──
     var cand=[];
-    for(var i=0;i<CN.nodes.length;i++){
-      var n=CN.nodes[i];
+    var order=CN.depth?CN.nodes:CN.nodes.slice().sort(function(za,zb){ return (zb._z||0)-(za._z||0); });
+    for(var i=0;i<order.length;i++){
+      var n=order[i];
       var vis = n===sel ? 1 : Math.max(0, Math.min(1,(s-n.app)/0.22)); // fade-in band
       if(sel && n!==sel && selN && selN[n.slug] && vis<0.9) vis=0.9;    // selected node reveals its neighbours
       if(CN.depth){ if(n.weighted) vis=1; else vis*=0.12; }
       if(vis<=0.012 && n!==sel) continue;
       var p=[n._sx,n._sy];
       if(p[0]<-40||p[0]>CN.w+40||p[1]<-40||p[1]>CN.h+40) continue;     // cull offscreen
-      var rr=Math.max(1.0, n.r*s);
+      var rr=Math.max(1.0, n.r*s*(n._ps||1));
       var dim = sel && n!==sel && !(selN&&selN[n.slug]);
       // glow via cached sprite (drawImage, no per-frame gradient)
       var Rg=rr*(n.hub?4.3:2.9);
@@ -5582,8 +5629,14 @@
       c.s+=(v.s+= (-k*(c.s-tg.s) - dmp*v.s)*dt )*dt;
       if(Math.abs(tg.x-c.x)<0.4&&Math.abs(tg.y-c.y)<0.4&&Math.abs(tg.s-c.s)<0.0008&&Math.abs(v.x)<3&&Math.abs(v.y)<3){ c.x=tg.x;c.y=tg.y;c.s=tg.s; v.x=v.y=v.s=0; CN.target=null; CN._lastT=0; }
     }
+    if(CN.rotTarget){
+      var rt=CN.rotTarget;
+      CN.yaw=(CN.yaw||0)+(rt.yaw-(CN.yaw||0))*0.18;
+      CN.pitch=(CN.pitch||0)+(rt.pitch-(CN.pitch||0))*0.18;
+      if(Math.abs(rt.yaw-CN.yaw)<0.002 && Math.abs(rt.pitch-CN.pitch)<0.002){ CN.yaw=rt.yaw; CN.pitch=rt.pitch; CN.rotTarget=null; }
+    }
     cnDraw();
-    CN.raf = (CN.on && (CN.assembling||CN.target||CN.dragging)) ? requestAnimationFrame(cnTick) : null;
+    CN.raf = (CN.on && (CN.assembling||CN.target||CN.dragging||CN.rotTarget)) ? requestAnimationFrame(cnTick) : null;
   }
 
   // ── assembling animation: form on screen over ~1.3s ──
@@ -5624,7 +5677,7 @@
   }
   function cnMorphTo(depth){
     if(depth && !CN._depthReady){ cnComputeDepth(); CN._depthReady=true; }
-    CN.depth=depth;
+    CN.depth=depth; CN.rotTarget={yaw:0,pitch:0};
     for(var i=0;i<CN.nodes.length;i++){ var n=CN.nodes[i];
       n._ax=n.x; n._ay=n.y;
       var t=depth?(n.dpos||n.fpos):(n.fpos||[n.x,n.y]);
@@ -5648,9 +5701,11 @@
   function cnPickNode(sx,sy){
     var best=null, bestD=24*24; // tap tolerance (screen px)
     for(var i=0;i<CN.nodes.length;i++){
-      var n=CN.nodes[i]; var p=cnToScreen(n.x,n.y);
-      var dx=p[0]-sx, dy=p[1]-sy, d=dx*dx+dy*dy;
-      var rr=Math.max(8, n.r*CN.cam.s+6);
+      var n=CN.nodes[i];
+      var px=(n._sx==null)?(n.x*CN.cam.s+CN.cam.x):n._sx;
+      var py=(n._sy==null)?(n.y*CN.cam.s+CN.cam.y):n._sy;
+      var dx=px-sx, dy=py-sy, d=dx*dx+dy*dy;
+      var rr=Math.max(8, n.r*CN.cam.s*(n._ps||1)+6);
       if(d<rr*rr && d<bestD){ bestD=d; best=n; }
     }
     return best;
@@ -5668,10 +5723,8 @@
     cnInvalidate();
   }
   function cnZoomAt(sx,sy,factor){
-    var w=cnToWorld(sx,sy);
-    CN.cam.s=Math.max(0.10, Math.min(6, CN.cam.s*factor));
-    var ns=cnToScreen(w[0],w[1]);
-    CN.cam.x+=sx-ns[0]; CN.cam.y+=sy-ns[1];
+    var s0=CN.cam.s, s1=Math.max(0.10, Math.min(6, s0*factor)), k=s1/s0;
+    CN.cam.x=sx-(sx-CN.cam.x)*k; CN.cam.y=sy-(sy-CN.cam.y)*k; CN.cam.s=s1;
     CN.target=null; cnInvalidate();
   }
   function cnHideHint(){ if(CN.hint){ CN.hint=false; var h=document.getElementById('constelHint'); if(h) h.classList.add('constel-hint-gone'); } }
@@ -5702,7 +5755,7 @@
     var pts={};
     function activeCount(){ return Object.keys(pts).length; }
     cv.addEventListener('pointerdown',function(e){
-      cv.setPointerCapture(e.pointerId);
+      try{ cv.setPointerCapture(e.pointerId); }catch(_e){}
       pts[e.pointerId]={x:e.clientX,y:e.clientY};
       CN.dragging=true; cnKick();
       if(activeCount()===1){ CN.drag={x:e.clientX, y:e.clientY, ox:CN.cam.x, oy:CN.cam.y, moved:false}; }
@@ -5718,8 +5771,12 @@
         var dist=Math.hypot(a.x-b.x,a.y-b.y);
         var rect=cv.getBoundingClientRect();
         var midx=(a.x+b.x)/2-rect.left, midy=(a.y+b.y)/2-rect.top;
+        var ang=Math.atan2(b.y-a.y,b.x-a.x), ceny=(a.y+b.y)/2;
         if(CN.pinch){ cnZoomAt(midx,midy, dist/CN.pinch); }
-        CN.pinch=dist;
+        if(!CN.depth && CN.twist!=null){ var dA=ang-CN.twist; if(dA>Math.PI)dA-=6.2832; else if(dA<-Math.PI)dA+=6.2832; CN.yaw=(CN.yaw||0)+dA; CN.rotTarget=null; }
+        if(!CN.depth && CN.ceny!=null){ var npi=(CN.pitch||0)+(ceny-CN.ceny)*0.005; if(npi>1.2)npi=1.2; else if(npi<-1.2)npi=-1.2; CN.pitch=npi; CN.rotTarget=null; }
+        CN.pinch=dist; CN.twist=ang; CN.ceny=ceny;
+        cnInvalidate();
       } else if(CN.drag){
         var dx=e.clientX-CN.drag.x, dy=e.clientY-CN.drag.y;
         if(Math.abs(dx)+Math.abs(dy)>4){ CN.drag.moved=true; cnHideHint(); var ovD=document.getElementById('constel'); if(ovD) ovD.classList.add('constel-exploring'); }
@@ -5729,7 +5786,7 @@
     function endPtr(e){
       var wasDrag=CN.drag&&CN.drag.moved;
       delete pts[e.pointerId];
-      if(activeCount()<2) CN.pinch=null;
+      if(activeCount()<2){ CN.pinch=null; CN.twist=null; CN.ceny=null; }
       if(activeCount()===0){
         CN.dragging=false;
         var ovE=document.getElementById('constel'); if(ovE) ovE.classList.remove('constel-exploring');
@@ -5768,18 +5825,35 @@
     if(!reduce) cnAssemble(); else cnInvalidate(); // reduced-motion ⇒ one static frame, no fly-in
     haptic(8);
   }
+  // Card is a sheet that rises OVER the constellation — the cosmos stays mounted underneath
+  // (paused, not torn down), so there is no flash and returning needs no rebuild.
   function cnToCard(node){
     if(!node) return;
-    var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-    if(reduce){ cnClose(); kbmDetail(node.slug); return; }
-    if(!CN.camV)CN.camV={x:0,y:0,s:0};
-    var ns=Math.min(6, Math.max(CN.cam.s*2.2, 2.2));
-    CN.target={ s:ns, x:CN.w/2 - node.x*ns, y:CN.h/2 - node.y*ns };  // fly into the chosen star
+    KBM.fromConstel=true;
+    CN.on=false; if(CN.raf){ cancelAnimationFrame(CN.raf); CN.raf=null; }   // pause cosmos, keep it mounted
     var ch=document.getElementById('constelChip'); if(ch) ch.style.display='none';
-    var ov=document.getElementById('constel'); if(ov) ov.classList.add('constel-leaving');
-    cnKick();
-    setTimeout(function(){ if(ov) ov.classList.remove('constel-leaving'); cnClose(); kbmDetail(node.slug); }, 300);
+    var km=document.getElementById('kbMode'); if(km){ km.classList.add('kbm-over-constel'); km.style.display='flex'; }
+    kbmDetail(node.slug);
   }
+  function cnReturnFromCard(){
+    var km=document.getElementById('kbMode'); if(!km) return;
+    CN.on=true; CN.target=null; cnKick();                                   // resume the preserved cosmos behind
+    var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    function done(){ km.style.display='none'; km.classList.remove('kbm-over-constel','kbm-sheet-down'); }
+    if(reduce){ done(); } else { km.classList.add('kbm-sheet-down'); setTimeout(done, 290); }
+    KBM_HISTORY=[]; KBM.currentSlug=null; KBM.fromConstel=false;
+  }
+  // Burger nav over the constellation home. Destinations that live below the cosmos
+  // (book, admin, dispatch) close it first — an intentional context switch, not a stray ✕.
+  function cnNavOpen(){
+    var nav=document.getElementById('cnNav'); if(!nav) return;
+    var acct=document.getElementById('cnNavAcct'); if(acct) acct.textContent=(typeof USER!=='undefined'&&USER&&USER.email)?USER.email:'';
+    var admin=(typeof isAdmin!=='undefined' && isAdmin);
+    ['cnNavAdmin','cnNavDispatch','cnNavAdminSep'].forEach(function(id){ var e=document.getElementById(id); if(e) e.style.display=admin?'':'none'; });
+    var lo=document.getElementById('cnNavLogout'); if(lo) lo.style.display=(typeof USER!=='undefined'&&USER)?'':'none';
+    cnLegendHide(); nav.style.display='block';
+  }
+  function cnNavClose(){ var nav=document.getElementById('cnNav'); if(nav) nav.style.display='none'; }
   function cnClose(){
     CN.on=false; if(CN.raf){ cancelAnimationFrame(CN.raf); CN.raf=null; }
     CN.dragging=false; CN.assembling=false; CN.camV=null; CN._lastT=0;
@@ -5828,8 +5902,17 @@
   }
   (function(){
     var b=document.getElementById('kbmConstelBtn'); if(b) b.onclick=cnOpen;
-    var c=document.getElementById('constelClose'); if(c) c.onclick=cnClose;
-    var r=document.getElementById('constelReset'); if(r) r.onclick=function(){ cnSelect(null); var f=cnFitCam(); if(f){ CN.target=f; cnKick(); } };
+    var cm=document.getElementById('constelMenu'); if(cm) cm.onclick=cnNavOpen;
+    var ns=document.getElementById('cnNavScrim'); if(ns) ns.onclick=cnNavClose;
+    var nMap=document.getElementById('cnNavMap'); if(nMap) nMap.onclick=function(){ cnNavClose(); cnClose(); openKbMode(); };
+    var nBook=document.getElementById('cnNavBook'); if(nBook) nBook.onclick=function(){ cnNavClose(); cnClose(); showShelf(); };
+    var nOut=document.getElementById('cnNavLogout'); if(nOut) nOut.onclick=function(){ cnNavClose(); logout(); };
+    var nAdm=document.getElementById('cnNavAdmin'); if(nAdm) nAdm.onclick=function(){ cnNavClose(); cnClose(); var b=document.getElementById('btnAdmin'); if(b) b.click(); };
+    var nDsp=document.getElementById('cnNavDispatch'); if(nDsp) nDsp.onclick=function(){ cnNavClose(); cnClose(); openDispatch(); };
+    var r=document.getElementById('constelReset'); if(r) r.onclick=function(){ cnSelect(null);
+      var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+      if(reduce){ CN.yaw=0; CN.pitch=0; CN.rotTarget=null; } else { CN.rotTarget={yaw:0,pitch:0}; }
+      var f=cnFitCam(); if(f){ CN.target=f; } cnKick(); };
     var lg=document.getElementById('constelLegendBtn'); if(lg) lg.onclick=cnLegendToggle;
     var db=document.getElementById('constelDepthBtn');
     if(db) db.onclick=function(){
@@ -5945,6 +6028,7 @@
     else if(KBM.region==='__finding__'){ var fc=kbmFindBySlug(KBM.findingSlug); fallback=fc?'Гипотеза':'Находки'; }
     else if(KBM.region==='__law__') fallback='Закон';
     else fallback=KBM.region?kbmShortTitle(KBM.region):'Карта';
+    if(KBM.fromConstel && KBM_HISTORY.length===0) fallback='Созвездие';
     if(KBM_HISTORY.length>0){
       var prev=KBM_HISTORY[KBM_HISTORY.length-1];
       var lbl=prev.title.length>22?prev.title.slice(0,20)+'…':prev.title;
@@ -5959,6 +6043,8 @@
       var goSlug=prev.slug;
       KBM.currentSlug=null; // prevent re-push
       kbmDetail(goSlug, true);
+    } else if(KBM.fromConstel){
+      cnReturnFromCard();
     } else {
       kbmShowList();
     }
