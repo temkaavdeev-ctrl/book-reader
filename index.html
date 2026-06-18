@@ -2101,7 +2101,7 @@
     <button class="constel-legend" id="constelDepthBtn" title="Глубина: из чего объяснены эффекты">глубина</button>
     <button class="constel-legend" id="constelLegendBtn" title="Цвета дисциплин">цвета</button>
   </div>
-  <div class="constel-hint" id="constelHint">проведите, чтобы лететь · щипком приблизьте · двумя пальцами поверните</div>
+  <div class="constel-hint" id="constelHint">одним пальцем — двигать · щипком — приблизить · двумя пальцами — повернуть</div>
   <div class="constel-chip" id="constelChip" style="display:none">
     <div class="constel-chip-kind" id="constelChipKind"></div>
     <div class="constel-chip-ttl" id="constelChipTtl"></div>
@@ -4598,6 +4598,9 @@
           document.getElementById('scroller').scrollTop=state.scroll[state.chapter]||0;
         } else { showSkeleton(); }
       }
+      // Поднять Созвездие сразу (поверх книги, без await до этого) и параллельно начать грузить граф —
+      // чтобы книга не мелькала, а звёзды собрались как можно раньше. Решение про приветствие — в конце.
+      if(landingMode()==='constel'){ openKbMode(); if(!CN.on) cnLandStart(); }
       // 2) комментарии (не кэшируются)
       await loadComments();
       if(BOOK.length){ renderChapter(); renderTOC(); refreshPanel(); updateCount(); }
@@ -4619,7 +4622,7 @@
       await loadBooks(); setBookTitle();
       startPresence(); updateBell(); renderReactBar(); applyRoleUI(); setupRealtime(); setupPWAUpdate();
       if(panelOpen()) renderPanel();
-      if(!maybeWelcome()) constelLand();   // нет приветствия → сразу в Созвездие (дефолт-посадка)
+      if(!maybeWelcome()){ /* космос уже поднят выше; приветствия нет → ничего не делаем */ }
       setTimeout(function(){ try{ showBookLogBanner(); }catch(_){} }, 1400);
     } finally { authInFlight=null; }
   }
@@ -4674,7 +4677,7 @@
   }
   function maybeWelcome(){
     if(welcomeShown) return false; welcomeShown=true;
-    if(!prevSeen){ onboarding=true; showWelcome(true, []); return true; }   // первый визит — онбординг
+    if(!prevSeen){ onboarding=true; cnClose(); showWelcome(true, []); return true; }   // первый визит — онбординг
     if(Date.now()-prevSeen < 8*3600*1000) return false;              // меньше 8 часов — не беспокоим
     var items=[];
     var nUpd=BOOK.filter(function(b){ return b.updated && Date.parse(b.updated)>prevSeen; }).length;
@@ -4683,7 +4686,7 @@
     if(nUpd) items.push('обновлено глав: '+nUpd);
     if(nDisc) items.push('новых сообщений в обсуждениях: '+nDisc);
     if(canContribute() && nEd) items.push('новых правок: '+nEd);
-    showWelcome(false, items);
+    cnClose(); showWelcome(false, items);
     return true;
   }
   function showWelcome(first, items){
@@ -5326,7 +5329,7 @@
   // ═══════════════════════════════════════════════════════════════════════
   var CN={
     on:false, raf:null, nodes:[], edges:[], byId:{},
-    cam:{x:0,y:0,s:1}, yaw:0, pitch:0, rotTarget:null, target:null, sel:null, hint:true,
+    cam:{x:0,y:0,s:1}, yaw:0, pitch:0, rotTarget:null, vel:null, rotVel:null, target:null, sel:null, hint:true,
     drag:null, dragging:false, pinch:null, dpr:1, w:0, h:0,
     assembling:false, asmStart:0, asmDur:1300, bg:null
   };
@@ -5510,7 +5513,7 @@
     var selN=null;
     if(sel){ selN={}; CN.edges.forEach(function(e){ if(e.a===sel) selN[e.b.slug]=1; else if(e.b===sel) selN[e.a.slug]=1; }); }
     // motion tier: while the camera/stars move, drop the costly label pass and reuse one transform per node
-    var moving = CN.dragging || !!CN.target || CN.assembling;
+    var moving = CN.dragging || !!CN.target || CN.assembling || !!CN.vel || !!CN.rotVel;
     var camx=CN.cam.x, camy=CN.cam.y, sc=CN.cam.s;
     if(CN.depth){
       for(var pp=0; pp<CN.nodes.length; pp++){ var np=CN.nodes[pp]; np._sx=np.x*sc+camx; np._sy=np.y*sc+camy; np._ps=1; np._z=0; }
@@ -5581,16 +5584,18 @@
     }
 
     // ── labels: greedy de-collision by degree (highest wins), fade with the node ──
-    if(!moving){
+    // Visible during motion too (incl. rotation) — capped a touch tighter while moving to stay smooth.
+    var labCap=moving?30:46, labScan=moving?110:140;
     cand.sort(function(A,B){ if(A.n===sel)return -1; if(B.n===sel)return 1; return B.n.deg-A.n.deg; });
     g.textBaseline='middle'; g.textAlign='left';
     var placed=[];
-    for(var li=0; li<cand.length && placed.length<46 && li<140; li++){
+    for(var li=0; li<cand.length && placed.length<labCap && li<labScan; li++){
       var L=cand[li], n2=L.n, p2=L.p, rr2=L.rr;
       var fs=n2.hub?13:11; g.font='600 '+fs+'px Inter, sans-serif';
       var label=kbmShortTitle(n2.title);
-      var tx=p2[0]+rr2+5, ty=p2[1];
-      var wpx=g.measureText(label).width;
+      var ty=p2[1], wpx=g.measureText(label).width;
+      var tx=p2[0]+rr2+5;
+      if(tx+wpx+2 > CN.w-4) tx=p2[0]-rr2-5-wpx;   // near the right edge ⇒ place label to the left, so it isn't clipped
       var box=[tx-2, ty-fs*0.62, tx+wpx+2, ty+fs*0.62];
       var clash=false;
       if(n2!==sel){ for(var pi=0; pi<placed.length; pi++){ var q=placed[pi]; if(box[0]<q[2]&&box[2]>q[0]&&box[1]<q[3]&&box[3]>q[1]){ clash=true; break; } } }
@@ -5600,7 +5605,6 @@
       g.lineWidth=3; g.lineJoin='round'; g.strokeStyle='rgba(8,6,4,'+(0.62*la)+')'; g.strokeText(label, tx, ty);
       g.fillStyle = n2===sel?'rgba(255,246,232,'+la+')':'rgba(236,226,206,'+(0.9*la)+')';
       g.fillText(label, tx, ty);
-    }
     }
   }
 
@@ -5635,8 +5639,23 @@
       CN.pitch=(CN.pitch||0)+(rt.pitch-(CN.pitch||0))*0.18;
       if(Math.abs(rt.yaw-CN.yaw)<0.002 && Math.abs(rt.pitch-CN.pitch)<0.002){ CN.yaw=rt.yaw; CN.pitch=rt.pitch; CN.rotTarget=null; }
     }
+    // inertia / fling — the cosmos keeps gliding after a flick and eases to rest (paused while a finger is down)
+    if((CN.vel||CN.rotVel) && !CN.dragging){
+      var idt=Math.min(0.05,(now-(CN._it||now))/1000)||0.016; CN._it=now;
+      if(CN.vel && !CN.target){
+        CN.cam.x+=CN.vel.x*idt; CN.cam.y+=CN.vel.y*idt;
+        var fp=Math.pow(0.04, idt); CN.vel.x*=fp; CN.vel.y*=fp;
+        if(Math.abs(CN.vel.x)<6 && Math.abs(CN.vel.y)<6) CN.vel=null;
+      }
+      if(CN.rotVel && !CN.rotTarget){
+        CN.yaw=(CN.yaw||0)+CN.rotVel.yaw*idt; CN.pitch=(CN.pitch||0)+CN.rotVel.pitch*idt;
+        if(CN.pitch>1.2)CN.pitch=1.2; else if(CN.pitch<-1.2)CN.pitch=-1.2;
+        var fr=Math.pow(0.06, idt); CN.rotVel.yaw*=fr; CN.rotVel.pitch*=fr;
+        if(Math.abs(CN.rotVel.yaw)<0.02 && Math.abs(CN.rotVel.pitch)<0.02) CN.rotVel=null;
+      }
+    } else { CN._it=0; }
     cnDraw();
-    CN.raf = (CN.on && (CN.assembling||CN.target||CN.dragging||CN.rotTarget)) ? requestAnimationFrame(cnTick) : null;
+    CN.raf = (CN.on && (CN.assembling||CN.target||CN.dragging||CN.rotTarget||CN.vel||CN.rotVel)) ? requestAnimationFrame(cnTick) : null;
   }
 
   // ── assembling animation: form on screen over ~1.3s ──
@@ -5677,7 +5696,7 @@
   }
   function cnMorphTo(depth){
     if(depth && !CN._depthReady){ cnComputeDepth(); CN._depthReady=true; }
-    CN.depth=depth; CN.rotTarget={yaw:0,pitch:0};
+    CN.depth=depth; CN.rotTarget={yaw:0,pitch:0}; CN.vel=null; CN.rotVel=null;
     for(var i=0;i<CN.nodes.length;i++){ var n=CN.nodes[i];
       n._ax=n.x; n._ay=n.y;
       var t=depth?(n.dpos||n.fpos):(n.fpos||[n.x,n.y]);
@@ -5756,6 +5775,7 @@
     function activeCount(){ return Object.keys(pts).length; }
     cv.addEventListener('pointerdown',function(e){
       try{ cv.setPointerCapture(e.pointerId); }catch(_e){}
+      CN.vel=null; CN.rotVel=null;                       // grabbing the cosmos stops any glide
       pts[e.pointerId]={x:e.clientX,y:e.clientY};
       CN.dragging=true; cnKick();
       if(activeCount()===1){ CN.drag={x:e.clientX, y:e.clientY, ox:CN.cam.x, oy:CN.cam.y, moved:false}; }
@@ -5772,22 +5792,29 @@
         var rect=cv.getBoundingClientRect();
         var midx=(a.x+b.x)/2-rect.left, midy=(a.y+b.y)/2-rect.top;
         var ang=Math.atan2(b.y-a.y,b.x-a.x), ceny=(a.y+b.y)/2;
+        var gnow=performance.now(), gdt=CN.gT?(gnow-CN.gT)/1000:0, dYaw=0, dPit=0;
         if(CN.pinch){ cnZoomAt(midx,midy, dist/CN.pinch); }
-        if(!CN.depth && CN.twist!=null){ var dA=ang-CN.twist; if(dA>Math.PI)dA-=6.2832; else if(dA<-Math.PI)dA+=6.2832; CN.yaw=(CN.yaw||0)+dA; CN.rotTarget=null; }
-        if(!CN.depth && CN.ceny!=null){ var npi=(CN.pitch||0)+(ceny-CN.ceny)*0.005; if(npi>1.2)npi=1.2; else if(npi<-1.2)npi=-1.2; CN.pitch=npi; CN.rotTarget=null; }
-        CN.pinch=dist; CN.twist=ang; CN.ceny=ceny;
+        if(!CN.depth && CN.twist!=null){ dYaw=ang-CN.twist; if(dYaw>Math.PI)dYaw-=6.2832; else if(dYaw<-Math.PI)dYaw+=6.2832; CN.yaw=(CN.yaw||0)+dYaw; CN.rotTarget=null; }
+        if(!CN.depth && CN.ceny!=null){ dPit=(ceny-CN.ceny)*0.005; var npi=(CN.pitch||0)+dPit; if(npi>1.2){npi=1.2;dPit=0;} else if(npi<-1.2){npi=-1.2;dPit=0;} CN.pitch=npi; CN.rotTarget=null; }
+        if(gdt>0.001){ CN.ryv=dYaw/gdt; CN.rpv=dPit/gdt; }
+        CN.pinch=dist; CN.twist=ang; CN.ceny=ceny; CN.gT=gnow;
         cnInvalidate();
       } else if(CN.drag){
         var dx=e.clientX-CN.drag.x, dy=e.clientY-CN.drag.y;
         if(Math.abs(dx)+Math.abs(dy)>4){ CN.drag.moved=true; cnHideHint(); var ovD=document.getElementById('constel'); if(ovD) ovD.classList.add('constel-exploring'); }
+        var pnow=performance.now();
+        if(CN.drag.lt){ var pdt=(pnow-CN.drag.lt)/1000; if(pdt>0.001){ CN.drag.vx=(e.clientX-CN.drag.lx)/pdt; CN.drag.vy=(e.clientY-CN.drag.ly)/pdt; } }
+        CN.drag.lx=e.clientX; CN.drag.ly=e.clientY; CN.drag.lt=pnow;
         CN.cam.x=CN.drag.ox+dx; CN.cam.y=CN.drag.oy+dy; CN.target=null;
       }
     });
     function endPtr(e){
       var wasDrag=CN.drag&&CN.drag.moved;
       delete pts[e.pointerId];
-      if(activeCount()<2){ CN.pinch=null; CN.twist=null; CN.ceny=null; }
+      if(activeCount()<2){ CN.pinch=null; CN.twist=null; CN.ceny=null; }   // seeds reset; fling velocities kept until full release
       if(activeCount()===0){
+        var nT=performance.now();
+        var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
         CN.dragging=false;
         var ovE=document.getElementById('constel'); if(ovE) ovE.classList.remove('constel-exploring');
         if(CN.drag && !wasDrag){
@@ -5795,6 +5822,15 @@
           var nn=cnPickNode(e.clientX-rect.left, e.clientY-rect.top);
           cnSelect(nn); cnHideHint();
         }
+        // fling: hand the last velocity to inertia if the gesture *just* ended (recent + fast enough)
+        if(!reduce){
+          if(!CN.depth && CN.gT && (nT-CN.gT)<140 && (Math.abs(CN.ryv||0)>0.06||Math.abs(CN.rpv||0)>0.06)){
+            CN.rotVel={yaw:CN.ryv||0, pitch:CN.rpv||0}; CN.rotTarget=null;
+          } else if(CN.drag && wasDrag && CN.drag.lt && (nT-CN.drag.lt)<140 && (Math.abs(CN.drag.vx||0)>40||Math.abs(CN.drag.vy||0)>40)){
+            CN.vel={x:CN.drag.vx||0, y:CN.drag.vy||0}; CN.target=null;
+          }
+        }
+        CN.gT=null; CN.ryv=0; CN.rpv=0;
         CN.drag=null;
         cnInvalidate();
       }
@@ -5856,7 +5892,7 @@
   function cnNavClose(){ var nav=document.getElementById('cnNav'); if(nav) nav.style.display='none'; }
   function cnClose(){
     CN.on=false; if(CN.raf){ cancelAnimationFrame(CN.raf); CN.raf=null; }
-    CN.dragging=false; CN.assembling=false; CN.camV=null; CN._lastT=0;
+    CN.dragging=false; CN.assembling=false; CN.camV=null; CN._lastT=0; CN.vel=null; CN.rotVel=null;
     var ov=document.getElementById('constel'); if(ov) ov.style.display='none';
     CN.sel=null; cnLegendHide();
   }
@@ -5898,7 +5934,7 @@
     if(landingMode()!=='constel') return;
     _constelLanded=true;
     openKbMode();        // backdrop = Карта; this also kicks off kbmLoad()
-    cnLandStart();       // cosmos now; stars assemble when the graph arrives
+    if(!CN.on) cnLandStart();   // cosmos now (only if not already up); stars assemble when the graph arrives
   }
   (function(){
     var b=document.getElementById('kbmConstelBtn'); if(b) b.onclick=cnOpen;
@@ -5909,7 +5945,7 @@
     var nOut=document.getElementById('cnNavLogout'); if(nOut) nOut.onclick=function(){ cnNavClose(); logout(); };
     var nAdm=document.getElementById('cnNavAdmin'); if(nAdm) nAdm.onclick=function(){ cnNavClose(); cnClose(); var b=document.getElementById('btnAdmin'); if(b) b.click(); };
     var nDsp=document.getElementById('cnNavDispatch'); if(nDsp) nDsp.onclick=function(){ cnNavClose(); cnClose(); openDispatch(); };
-    var r=document.getElementById('constelReset'); if(r) r.onclick=function(){ cnSelect(null);
+    var r=document.getElementById('constelReset'); if(r) r.onclick=function(){ cnSelect(null); CN.vel=null; CN.rotVel=null;
       var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
       if(reduce){ CN.yaw=0; CN.pitch=0; CN.rotTarget=null; } else { CN.rotTarget={yaw:0,pitch:0}; }
       var f=cnFitCam(); if(f){ CN.target=f; } cnKick(); };
@@ -7227,16 +7263,22 @@
 
     if(!SB){ showGate('config'); hideSplash(); return; }
     // мгновенно показать книгу из кэша (если есть) — чтобы возврат в приложение не мигал экраном входа
-    if(loadContentCache()){
+    var cached=loadContentCache();
+    if(cached){
       if(!state.chapter || !BYID[state.chapter]) state.chapter = BOOK.length? BOOK[0].id : null;
       renderTOC(); renderChapter();
       document.getElementById('scroller').scrollTop = state.scroll[state.chapter]||0;
-      hideSplash();
     }
+    // Если посадка — Созвездие и сессия, скорее всего, есть, поднимаем космос СРАЗУ (поверх книги, в
+    // том же кадре) — чтобы не было «книга, а потом наскок созвездия». Звёзды соберутся, когда придёт граф.
+    var hasToken=false; try{ hasToken=Object.keys(localStorage).some(function(k){ return /^sb-.*-auth-token$/.test(k); }); }catch(_){}
+    var wantConstel=(landingMode()==='constel');
+    if(wantConstel && hasToken){ cnLandStart(); }
+    if(cached || (wantConstel && hasToken)) hideSplash();
     SB.auth.onAuthStateChange(function(ev, session){ onAuth(session); });
     var got=await SB.auth.getSession();
     var sess = got.data && got.data.session;
-    if(!sess){ showGate('login'); }   // вход показываем только если сессии действительно нет
+    if(!sess){ cnClose(); showGate('login'); }   // на деле не залогинен → убрать космос, показать вход
     hideSplash();
     await onAuth(sess);
   })();
