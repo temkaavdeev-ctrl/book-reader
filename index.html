@@ -1263,6 +1263,22 @@
 
       /* ===== KB Mode (Карта) ===== */
   #kbMode{ position:fixed; inset:0; z-index:60; background:var(--bg); display:none; flex-direction:column }
+  /* «Всё как созвездие»: KB-поверхность (Карта + карточки концептов) — тёплый тёмный космос,
+     как Созвездие, независимо от темы чтения книги (книга-читалка остаётся светлой). */
+  #kbMode{
+    --bg:#100d0a; --panel:#181309; --card:#1c1710;
+    --ink:#efe4cf; --read:#dacdb6; --muted:#9d9078;
+    --line:#2d2720; --line-2:#3a3228;
+    --accent:#dcb36b; --accent-2:#e8c079; --accent-soft:#241d12; --accent-tint:#1a1510;
+    --hl:#574518; --hl-edge:#c39a3c;
+    --good:#5fb07e; --warn:#d6a84e; --danger:#d9695e;
+    --code:#221d12; --tip:#34302a; --tip-fg:#f1ece1;
+    --mk-bg:#332c1e; --mk-line:#4a4030; --mk-fg:#cda665;
+    --shadow:0 8px 28px rgba(0,0,0,.55); --shadow-lg:0 20px 54px rgba(0,0,0,.65);
+    --ring:rgba(220,179,107,.45);
+    --fnd:#a896e6; --fnd-soft:#272042; --fnd-tint:#1f1a33; --fnd-line:#473c70;
+    background:#100d0a radial-gradient(135% 90% at 50% 24%, rgba(120,82,32,.13), rgba(20,14,8,0) 58%);
+  }
   .kbm-inner{ display:flex; flex-direction:column; flex:1; overflow:hidden }
   /* Header */
   .kbm-head{ display:flex; align-items:center; gap:10px; padding:14px 16px 10px; border-bottom:1px solid var(--line); flex-shrink:0 }
@@ -1663,6 +1679,16 @@
   .constel-reset{ margin-left:auto }
   .constel-ttl{ font-family:var(--font-ui); font-size:16px; font-weight:700; color:#f0e4d2; letter-spacing:-.01em; text-shadow:0 1px 4px rgba(0,0,0,.6) }
   .constel-ttl span{ font-weight:400; color:#b7a892; font-size:13px }
+  .constel-legend{ height:38px; padding:0 14px; border-radius:19px; border:1px solid rgba(220,190,150,.22); background:rgba(30,24,18,.7); color:#e8d9c5; font-family:var(--font-ui); font-size:13px; font-weight:600; cursor:pointer; backdrop-filter:blur(8px); display:flex; align-items:center; gap:6px; transition:border-color .15s; white-space:nowrap }
+  .constel-legend:hover{ border-color:rgba(220,190,150,.5) }
+  .constel-legend.on{ border-color:rgba(220,190,150,.6); background:rgba(46,37,26,.82) }
+  #constelLegend{ position:absolute; left:16px; right:16px; bottom:calc(24px + env(safe-area-inset-bottom,0px)); max-width:340px; margin:0 auto; background:rgba(22,17,12,.93); border:1px solid rgba(220,190,150,.24); border-radius:16px; padding:14px 16px; backdrop-filter:blur(12px); box-shadow:0 12px 40px rgba(0,0,0,.5); z-index:3; animation:constelChipIn .22s cubic-bezier(.34,1.2,.5,1) }
+  .cn-leg-ttl{ font-family:var(--font-mono); font-size:10.5px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:#b7a892; margin-bottom:8px }
+  .cn-leg-row{ display:flex; align-items:center; gap:9px; padding:3px 0 }
+  .cn-leg-dot{ width:11px; height:11px; border-radius:50%; flex-shrink:0; box-shadow:0 0 7px rgba(255,220,170,.35) }
+  .cn-leg-lbl{ flex:1; font-size:13px; color:#e8dcc8 }
+  .cn-leg-n{ font-family:var(--font-mono); font-size:11px; color:#9a8c77 }
+  .cn-leg-note{ margin-top:9px; padding-top:8px; border-top:1px solid rgba(220,190,150,.14); font-size:11.5px; color:#9a8c77; line-height:1.4 }
   .constel-hint{ position:absolute; left:0; right:0; bottom:calc(28px + env(safe-area-inset-bottom,0px)); text-align:center; color:#c2b39c; font-size:12.5px; letter-spacing:.01em; pointer-events:none; z-index:2; text-shadow:0 1px 4px rgba(0,0,0,.7); transition:opacity .5s; opacity:.92 }
   .constel-hint-gone{ opacity:0 }
   .constel-chip{ position:absolute; left:50%; transform:translateX(-50%); bottom:calc(24px + env(safe-area-inset-bottom,0px)); width:min(360px,calc(100% - 28px)); background:rgba(26,21,16,.9); border:1px solid rgba(220,190,150,.28); border-radius:16px; padding:14px 16px; backdrop-filter:blur(12px); box-shadow:0 12px 40px rgba(0,0,0,.5); z-index:3; animation:constelChipIn .25s cubic-bezier(.34,1.2,.5,1) }
@@ -1999,6 +2025,7 @@
     <button class="constel-close" id="constelClose" title="Закрыть">✕</button>
     <div class="constel-ttl">Созвездие<span id="constelCount"></span></div>
     <button class="constel-reset" id="constelReset" title="Показать всё">⊙</button>
+    <button class="constel-legend" id="constelLegendBtn" title="Цвета дисциплин">цвета</button>
   </div>
   <div class="constel-hint" id="constelHint">проведите, чтобы лететь · щипком приблизьте</div>
   <div class="constel-chip" id="constelChip" style="display:none">
@@ -2006,6 +2033,7 @@
     <div class="constel-chip-ttl" id="constelChipTtl"></div>
     <button class="constel-chip-go" id="constelChipGo">Открыть карточку →</button>
   </div>
+  <div id="constelLegend" style="display:none"></div>
 </div>
 <div id="shelf" style="display:none">
   <div class="shelf-inner">
@@ -2178,8 +2206,12 @@
   }
 
   // ====== ВЕРСИЯ ПРИЛОЖЕНИЯ (повышать с каждым апдейтом HTML) ======
-  var APP_VERSION='5.58';
+  var APP_VERSION='5.59';
   var APP_CHANGELOG=[
+    {v:'5.59', items:[
+      'Карта знаний и карточки концептов теперь в той же тёплой тёмной палитре, что и Созвездие — переход между картой, карточкой и звёздами больше не режет глаз.',
+      'У Созвездия появилась легенда цветов: кнопка «цвета» показывает, какая дисциплина каким цветом светится и сколько в ней идей. Яркость звезды по-прежнему означает, насколько крепко идея подтверждена.',
+    ]},
     {v:'5.58', items:[
       'Приложение теперь открывается прямо в Созвездие: при запуске мягко проявляется тёплый космос, а звёзды слетаются в созвездие, как только загрузится карта знаний. Книга и полка никуда не делись — они в одном-двух касаниях (закрыть Созвездие, потом Карту).',
     ]},
@@ -5192,6 +5224,13 @@
     'disc-social':350, 'disc-cognitive':50, 'disc-motivation':12,
     'disc-neuro':280, 'disc-linguistics':200, 'disc-evolutionary':95
   };
+  var CN_DISC_LABEL={
+    'disc-behavioral-econ':'Поведенческая экономика', 'disc-ux-hci':'UX / HCI',
+    'disc-org-systems':'Организационные системы', 'disc-cognitive':'Когнитивная психология',
+    'disc-social':'Социальная психология', 'disc-motivation':'Мотивация / идентичность',
+    'disc-neuro':'Нейронаука / тело', 'disc-evolutionary':'Эволюция / этология',
+    'disc-linguistics':'Лингвистика интерфейса'
+  };
   function cnHue(disc){ return (disc!=null && CN_DISC_HUE[disc]!=null)?CN_DISC_HUE[disc]:30; }
   // Deterministic pseudo-random from a string (stable layout across devices/sessions).
   function cnHash(str){ var h=2166136261>>>0; for(var i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,16777619); } return (h>>>0)/4294967295; }
@@ -5469,6 +5508,7 @@
     CN.sel=n;
     var chip=document.getElementById('constelChip');
     if(n){
+      cnLegendHide();
       document.getElementById('constelChipKind').textContent=(KBM_KIND[n.n.kind]||n.n.kind)+' · '+(n.deg)+' связей';
       document.getElementById('constelChipTtl').textContent=n.title;
       var go=document.getElementById('constelChipGo'); go.onclick=function(){ cnClose(); kbmDetail(n.slug); };
@@ -5484,6 +5524,26 @@
     CN.target=null; cnInvalidate();
   }
   function cnHideHint(){ if(CN.hint){ CN.hint=false; var h=document.getElementById('constelHint'); if(h) h.classList.add('constel-hint-gone'); } }
+  // Colour legend: disciplines → hue, counted live from the loaded graph.
+  function cnLegendRender(){
+    var p=document.getElementById('constelLegend'); if(!p) return;
+    var counts={};
+    for(var i=0;i<CN.nodes.length;i++){ var d=cnDiscOf(CN.nodes[i].n)||'_'; counts[d]=(counts[d]||0)+1; }
+    var items=[]; for(var k in CN_DISC_HUE){ if(CN_DISC_HUE.hasOwnProperty(k)) items.push({slug:k, label:CN_DISC_LABEL[k]||k, hue:CN_DISC_HUE[k], n:counts[k]||0}); }
+    items.sort(function(a,b){ return b.n-a.n; });
+    var html='<div class="cn-leg-ttl">Цвет — дисциплина</div>';
+    items.forEach(function(it){ if(!it.n) return; html+='<div class="cn-leg-row"><span class="cn-leg-dot" style="background:hsl('+it.hue+',62%,63%)"></span><span class="cn-leg-lbl">'+it.label+'</span><span class="cn-leg-n">'+it.n+'</span></div>'; });
+    html+='<div class="cn-leg-note">Ярче звезда — крепче подтверждено, бледнее — спорное. Размер — число связей.</div>';
+    p.innerHTML=html;
+  }
+  function cnLegendToggle(){
+    var p=document.getElementById('constelLegend'), b=document.getElementById('constelLegendBtn'); if(!p) return;
+    var show=(p.style.display==='none' || !p.style.display);
+    if(show){ var chip=document.getElementById('constelChip'); if(chip) chip.style.display='none'; cnLegendRender(); p.style.display='block'; }
+    else { p.style.display='none'; }
+    if(b) b.classList.toggle('on', show);
+  }
+  function cnLegendHide(){ var p=document.getElementById('constelLegend'); if(p) p.style.display='none'; var b=document.getElementById('constelLegendBtn'); if(b) b.classList.remove('on'); }
 
   function cnWire(){
     var cv=document.getElementById('constelCanvas'); if(!cv || cv._wired) return; cv._wired=true;
@@ -5559,7 +5619,7 @@
     CN.on=false; if(CN.raf){ cancelAnimationFrame(CN.raf); CN.raf=null; }
     CN.dragging=false; CN.assembling=false;
     var ov=document.getElementById('constel'); if(ov) ov.style.display='none';
-    CN.sel=null;
+    CN.sel=null; cnLegendHide();
   }
   // Default landing: drop straight into the constellation. The warm cosmos appears
   // immediately (fade-in); the stars fly into formation the moment the graph is loaded.
@@ -5605,6 +5665,7 @@
     var b=document.getElementById('kbmConstelBtn'); if(b) b.onclick=cnOpen;
     var c=document.getElementById('constelClose'); if(c) c.onclick=cnClose;
     var r=document.getElementById('constelReset'); if(r) r.onclick=function(){ cnSelect(null); var f=cnFitCam(); if(f){ CN.target=f; cnKick(); } };
+    var lg=document.getElementById('constelLegendBtn'); if(lg) lg.onclick=cnLegendToggle;
     window.addEventListener('resize',function(){ if(CN.on){ cnResize(); cnInvalidate(); } });
   })();
 
