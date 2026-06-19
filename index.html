@@ -1700,6 +1700,9 @@
   .constel-ttl span{ font-weight:400; color:#b7a892; font-size:13px }
   .constel-legend{ height:38px; padding:0 14px; border-radius:19px; border:1px solid rgba(220,190,150,.22); background:rgba(30,24,18,.7); color:#e8d9c5; font-family:var(--font-ui); font-size:13px; font-weight:600; cursor:pointer; backdrop-filter:blur(8px); display:flex; align-items:center; gap:6px; transition:border-color .15s; white-space:nowrap }
   .constel-legend:hover{ border-color:rgba(220,190,150,.5) }
+  .constel-listbtn{ height:38px; padding:0 12px; border-radius:19px; border:1px solid var(--line-2); background:linear-gradient(135deg, color-mix(in srgb,var(--accent) 22%,transparent), transparent); color:var(--accent); font-family:var(--font-ui); font-size:13px; font-weight:600; cursor:pointer; backdrop-filter:blur(8px); display:flex; align-items:center; gap:6px; transition:border-color .15s,background .15s; white-space:nowrap }
+  .constel-listbtn:hover{ border-color:var(--accent); background:color-mix(in srgb,var(--accent) 12%,transparent) }
+  @media (max-width:500px){ .constel-listbtn span{ display:none } .constel-listbtn{ width:38px; padding:0; justify-content:center; font-size:16px } }
   .constel-legend.on{ border-color:rgba(220,190,150,.6); background:rgba(46,37,26,.82) }
   #constelLegend{ position:absolute; left:16px; right:16px; bottom:calc(24px + env(safe-area-inset-bottom,0px)); max-width:340px; margin:0 auto; background:rgba(22,17,12,.93); border:1px solid rgba(220,190,150,.24); border-radius:16px; padding:14px 16px; backdrop-filter:blur(12px); box-shadow:0 12px 40px rgba(0,0,0,.5); z-index:3; animation:constelChipIn .22s cubic-bezier(.34,1.2,.5,1) }
   .cn-leg-ttl{ font-family:var(--font-mono); font-size:10.5px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:#b7a892; margin-bottom:8px }
@@ -2243,7 +2246,7 @@
   <div class="kbm-inner" id="kbmList">
     <div class="kbm-head">
       <button class="iconbtn" id="kbmClose" title="Закрыть">✕</button>
-      <h2 class="kbm-title" id="kbmListTitle">Карта</h2>
+      <h2 class="kbm-title" id="kbmListTitle">Список</h2>
       <span class="kbm-count" id="kbmCount"></span>
       <button class="kbm-constel-btn" id="kbmConstelBtn" title="Созвездие — весь граф">✦<span>Созвездие</span></button>
     </div>
@@ -2265,6 +2268,7 @@
   <canvas id="constelCanvas"></canvas>
   <div class="constel-top">
     <button class="constel-close" id="constelMenu" title="Меню" aria-label="Меню">☰</button>
+    <button class="constel-listbtn" id="constelListBtn" title="Список — тот же граф списком">≣<span>Список</span></button>
     <div class="constel-ttl">Созвездие<span id="constelCount"></span></div>
     <button class="constel-reset" id="constelReset" title="Показать всё">⊙</button>
     <button class="constel-legend" id="constelDepthBtn" title="Глубина: из чего объяснены эффекты">глубина</button>
@@ -2281,7 +2285,7 @@
     <div class="cn-nav-scrim" id="cnNavScrim"></div>
     <nav class="cn-nav-panel">
       <div class="cn-nav-h">Навигация</div>
-      <button class="cn-nav-item" id="cnNavMap"><span class="cn-nav-ic">✦</span>Карта · список</button>
+      <button class="cn-nav-item" id="cnNavMap"><span class="cn-nav-ic">≣</span>Список</button>
       <button class="cn-nav-item" id="cnNavBook"><span class="cn-nav-ic">📖</span>Книга</button>
       <div class="cn-nav-sep"></div>
       <div class="cn-nav-acct" id="cnNavAcct"></div>
@@ -2390,8 +2394,7 @@
   </div>
 </div>
 <nav id="tabbar" aria-label="Навигация">
-  <button class="tab" data-view="constel" aria-label="Созвездие"><svg class="i" viewBox="0 0 24 24"><path d="M12 3.5l1.7 4.8 4.8 1.7-4.8 1.7L12 16.5l-1.7-4.8L5.5 10l4.8-1.7L12 3.5z"/><circle cx="18.5" cy="18" r="1"/><circle cx="5.5" cy="17" r="0.8"/></svg><span>Созвездие</span></button>
-  <button class="tab" data-view="base" aria-label="База"><svg class="i" viewBox="0 0 24 24"><path d="M4 6.5h16M4 12h16M4 17.5h10"/></svg><span>База</span></button>
+  <button class="tab" data-view="matchast" aria-label="Матчасть"><svg class="i" viewBox="0 0 24 24"><circle cx="6" cy="7" r="1.8"/><circle cx="17.5" cy="6" r="1.8"/><circle cx="12" cy="17.5" r="1.8"/><path d="M7.4 8.4l3.4 7.5M15.9 7.4l-2.9 8.2M8 6.8l8-.6"/></svg><span>Матчасть</span></button>
   <button class="tab" data-view="books" aria-label="Книги"><svg class="i" viewBox="0 0 24 24"><path d="M5 4.5h8.5a1.8 1.8 0 0 1 1.8 1.8v13a1.8 1.8 0 0 0-1.8-1.8H5V4.5z"/><path d="M19 6.5v13"/></svg><span>Книги</span></button>
 </nav>
 <div class="toast" id="toast"></div>
@@ -4932,10 +4935,10 @@
     var kbCard=document.createElement('div');
     kbCard.className='book-card book-card-kb';
     kbCard.innerHTML='<div class="book-cover book-cover-kb">🗺</div>'
-      +'<div class="book-title">Карта</div>'
+      +'<div class="book-title">Матчасть</div>'
       +'<div class="book-sub">Концепты, инструменты, сценарии</div>'
-      +'<div class="book-prog"><div class="bp-lbl bp-lbl-kb">Открыть карту →</div></div>';
-    kbCard.onclick=function(){ hideShelf(); openKbMode(); };
+      +'<div class="book-prog"><div class="bp-lbl bp-lbl-kb">Открыть Матчасть →</div></div>';
+    kbCard.onclick=function(){ setView('matchast'); };
     box.appendChild(kbCard);
   }
   function showShelf(){ renderShelf(); var s=document.getElementById('shelf'); s.classList.remove('shelf-dismiss'); s.style.display='flex'; }
@@ -5162,7 +5165,7 @@
     if(KBM.lens==='product-lever'){ return kbmRenderTaskGrid(); }
     KBM.region=null;
     var body=document.getElementById('kbmBody'); if(!body) return;
-    var listTitle=document.getElementById('kbmListTitle'); if(listTitle) listTitle.textContent='Карта';
+    var listTitle=document.getElementById('kbmListTitle'); if(listTitle) listTitle.textContent='Список';
     var regions=kbmRegions(KBM.lens);
     var placed=regions.reduce(function(s,r){return s+r.count;},0);
     var cnt=document.getElementById('kbmCount'); if(cnt) cnt.textContent=KBM.nodes.length+' концептов';
@@ -5226,28 +5229,34 @@
   // lenses, surfaced by kb_graph. Headers are data-driven (match Afina's taxonomy).
   // Empty cells are honest (shown as "готовится"), never silently hidden.
   var KBM_MOMENT_ORDER=['Вход','Решение','Рутина','Разрыв'];
+  // Behavioral-journey order for the task rows (entry-side first, rupture-side last).
+  var KBM_TASK_ORDER=['task-understanding','task-reattention','task-friction','task-objection','task-progress','task-habit','task-reveal','task-closure'];
   function kbmTagLabels(n, axis){ var o=[]; var t=n.tags||[]; for(var i=0;i<t.length;i++){ if(t[i].axis===axis && t[i].label) o.push(t[i].label); } return o; }
+  function kbmTagPairs(n, axis){ var o=[]; var t=n.tags||[]; for(var i=0;i<t.length;i++){ if(t[i].axis===axis && t[i].slug) o.push({slug:t[i].slug,label:t[i].label||t[i].slug}); } return o; }
   function kbmRenderTaskGrid(){
     KBM.region='__taskgrid__'; KBM.goalView=false;
     var body=document.getElementById('kbmBody'); if(!body) return;
     var listTitle=document.getElementById('kbmListTitle'); if(listTitle) listTitle.textContent='По задаче';
     var scens=KBM.scenarios||[];
-    // grid[task][moment] = [scenarios]; preserve task encounter order
-    var grid={}, taskOrder=[], momentsSeen={}, untagged=[];
+    // grid[taskSlug][moment] = [scenarios]; rows keyed by task SLUG, label from the tag
+    var grid={}, taskLabel={}, momentsSeen={}, untagged=[];
     scens.forEach(function(s){
-      var tasks=kbmTagLabels(s,'task'), moments=kbmTagLabels(s,'moment');
+      var tasks=kbmTagPairs(s,'task'), moments=kbmTagLabels(s,'moment');
       if(!tasks.length){ untagged.push(s); return; }
-      tasks.forEach(function(tk){
-        if(!grid[tk]){ grid[tk]={}; taskOrder.push(tk); }
+      tasks.forEach(function(tp){
+        if(!grid[tp.slug]){ grid[tp.slug]={}; taskLabel[tp.slug]=tp.label; }
         var ms=moments.length?moments:['—'];
-        ms.forEach(function(mo){ momentsSeen[mo]=1; if(!grid[tk][mo]) grid[tk][mo]=[]; grid[tk][mo].push(s); });
+        ms.forEach(function(mo){ momentsSeen[mo]=1; if(!grid[tp.slug][mo]) grid[tp.slug][mo]=[]; grid[tp.slug][mo].push(s); });
       });
     });
+    // task rows in behavioral-journey order; any unknown task slugs appended after
+    var tasksOrdered=KBM_TASK_ORDER.filter(function(sl){ return grid[sl]; });
+    Object.keys(grid).forEach(function(sl){ if(tasksOrdered.indexOf(sl)<0) tasksOrdered.push(sl); });
     // moment columns: canonical order first, then any extras seen
     var moments=KBM_MOMENT_ORDER.filter(function(m){return momentsSeen[m];});
     Object.keys(momentsSeen).forEach(function(m){ if(moments.indexOf(m)<0 && m!=='—') moments.push(m); });
-    var cnt=document.getElementById('kbmCount'); if(cnt) cnt.textContent=taskOrder.length+' задач · '+moments.length+' момента';
-    if(!taskOrder.length){
+    var cnt=document.getElementById('kbmCount'); if(cnt) cnt.textContent=tasksOrdered.length+' задач · '+moments.length+' момента';
+    if(!tasksOrdered.length){
       var cnt0=document.getElementById('kbmCount'); if(cnt0) cnt0.textContent='';
       body.innerHTML='<div class="kbm-grid-intro">Сценарии ещё размечаются по поведенческим задачам — сетка появится, когда разметка зальётся. Пока можно полистать концепты по темам.</div>'
         +'<button class="kbm-grid-themes" data-grid-themes="1">Полистать концепты по темам →</button>';
@@ -5260,16 +5269,16 @@
       return;
     }
     var intro='<div class="kbm-grid-intro">Что нужно сделать? Поведенческая задача × момент пути. Выбери ситуацию — откроется её плейбук: силы, ловушки, инструменты.</div>';
-    var cards=taskOrder.map(function(tk){
+    var cards=tasksOrdered.map(function(sl){
       var mrows=moments.map(function(m){
-        var list=grid[tk][m]||[];
+        var list=grid[sl][m]||[];
         if(!list.length) return '';
-        var chips=list.map(function(s){ return '<button class="kbm-grid-scen" data-grid-scen="'+escapeHtml(s.slug)+'">'+escapeHtml(s.title)+'</button>'; }).join('');
+        var chips=list.map(function(s){ return '<button class="kbm-grid-scen" data-grid-scen="'+escapeHtml(s.slug)+'">'+escapeHtml(kbmShortTitle(s.title))+'</button>'; }).join('');
         return '<div class="kbm-grid-mrow"><span class="kbm-grid-mlabel">'+escapeHtml(m)+'</span><div class="kbm-grid-chips">'+chips+'</div></div>';
       }).join('');
-      var empties=moments.filter(function(m){ return !(grid[tk][m]||[]).length; });
+      var empties=moments.filter(function(m){ return !(grid[sl][m]||[]).length; });
       var emptyNote=empties.length?'<div class="kbm-grid-empty">'+empties.map(escapeHtml).join(' · ')+' — готовится</div>':'';
-      return '<div class="kbm-grid-card"><div class="kbm-grid-task">'+escapeHtml(tk)+'</div>'+mrows+emptyNote+'</div>';
+      return '<div class="kbm-grid-card"><div class="kbm-grid-task">'+escapeHtml(taskLabel[sl])+'</div>'+mrows+emptyNote+'</div>';
     }).join('');
     var themeLink='<button class="kbm-grid-themes" data-grid-themes="1">Полистать концепты по темам →</button>';
     body.innerHTML=intro+'<div class="kbm-grid-list">'+cards+'</div>'+themeLink;
@@ -6293,17 +6302,23 @@
   function showTabbar(on){ var tb=document.getElementById('tabbar'); if(tb) tb.style.display=on?'flex':'none'; }
   function tabbarSync(name){
     var tb=document.getElementById('tabbar'); if(!tb) return;
-    var active=(name==='text')?'books':name;
+    var active=(name==='text'||name==='books')?'books'
+      :(name==='constel'||name==='base'||name==='matchast')?'matchast'
+      :name;
     Array.prototype.forEach.call(tb.querySelectorAll('.tab'), function(b){
       b.classList.toggle('tab-on', b.getAttribute('data-view')===active);
     });
   }
+  var matchastSub='graph'; // 'graph' | 'list' — the active view INSIDE «Матчасть» (one surface, in-place toggle)
   function setView(name){
+    if(name==='matchast'){ name=(matchastSub==='list')?'base':'constel'; }
     if(name==='constel'){
+      matchastSub='graph';
       var s1=document.getElementById('shelf'); if(s1) s1.style.display='none';
       openKbMode();
       if(!CN.on){ if(KBM.loaded && (KBM.nodes||[]).length) cnOpen(); else cnLandStart(); }
     } else if(name==='base'){
+      matchastSub='list';
       var s2=document.getElementById('shelf'); if(s2) s2.style.display='none';
       cnClose(); openKbMode(); kbmShowList();
     } else if(name==='books'){
@@ -6322,7 +6337,8 @@
     setView(b.getAttribute('data-view'));
   }); })();
   (function(){
-    var b=document.getElementById('kbmConstelBtn'); if(b) b.onclick=cnOpen;
+    var b=document.getElementById('kbmConstelBtn'); if(b) b.onclick=function(){ setView('constel'); };
+    var lb=document.getElementById('constelListBtn'); if(lb) lb.onclick=function(){ setView('base'); };
     var cm=document.getElementById('constelMenu'); if(cm) cm.onclick=cnNavOpen;
     var ns=document.getElementById('cnNavScrim'); if(ns) ns.onclick=cnNavClose;
     var nMap=document.getElementById('cnNavMap'); if(nMap) nMap.onclick=function(){ cnNavClose(); setView('base'); };
