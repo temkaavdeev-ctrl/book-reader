@@ -79,7 +79,7 @@
   :focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:10px}
 
   /* ---------- layout ---------- */
-  #app{display:flex; height:100vh; height:100dvh}
+  #app{display:none; height:100vh; height:100dvh}
   #sidebar{
     width:312px; flex:0 0 312px; background:var(--panel); border-right:1px solid var(--line);
     display:flex; flex-direction:column; transition:margin-left .24s cubic-bezier(.4,0,.2,1); z-index:40;
@@ -2245,7 +2245,6 @@
 <div id="kbMode" style="display:none">
   <div class="kbm-inner" id="kbmList">
     <div class="kbm-head">
-      <button class="iconbtn" id="kbmClose" title="Закрыть">✕</button>
       <h2 class="kbm-title" id="kbmListTitle">Список</h2>
       <span class="kbm-count" id="kbmCount"></span>
       <button class="kbm-constel-btn" id="kbmConstelBtn" title="Созвездие — весь граф">✦<span>Созвездие</span></button>
@@ -2298,9 +2297,9 @@
 </div>
 <div id="shelf" style="display:none">
   <div class="shelf-inner">
-    <div class="shelf-top"><h2>Полка</h2><button class="iconbtn" id="shelfClose" title="Закрыть" aria-label="Закрыть">✕</button></div>
+    <div class="shelf-top"><h2>Полка</h2></div>
     <div id="shelfList" class="shelf-grid"></div>
-    <div class="shelf-note">Книги и карта знаний — концепты, инструменты и сценарии продуктовой работы.</div>
+    <div class="shelf-note">Концепты, инструменты и сценарии продуктовой работы — во вкладке «Матчасть».</div>
   </div>
 </div>
 <div class="modal" id="bookmarksModal" style="width:460px">
@@ -4931,15 +4930,6 @@
       card.onclick=function(){ openBook(b.id); };
       box.appendChild(card);
     });
-    // Entry to the Карта / knowledge product (instruments + scenarios live here as nodes)
-    var kbCard=document.createElement('div');
-    kbCard.className='book-card book-card-kb';
-    kbCard.innerHTML='<div class="book-cover book-cover-kb">🗺</div>'
-      +'<div class="book-title">Матчасть</div>'
-      +'<div class="book-sub">Концепты, инструменты, сценарии</div>'
-      +'<div class="book-prog"><div class="bp-lbl bp-lbl-kb">Открыть Матчасть →</div></div>';
-    kbCard.onclick=function(){ setView('matchast'); };
-    box.appendChild(kbCard);
   }
   function showShelf(){ renderShelf(); var s=document.getElementById('shelf'); s.classList.remove('shelf-dismiss'); s.style.display='flex'; }
   function hideShelf(){
@@ -6312,20 +6302,25 @@
   var matchastSub='graph'; // 'graph' | 'list' — the active view INSIDE «Матчасть» (one surface, in-place toggle)
   function setView(name){
     if(name==='matchast'){ name=(matchastSub==='list')?'base':'constel'; }
+    var _app=document.getElementById('app');
     if(name==='constel'){
       matchastSub='graph';
+      if(_app) _app.style.display='none';
       var s1=document.getElementById('shelf'); if(s1) s1.style.display='none';
       openKbMode();
       if(!CN.on){ if(KBM.loaded && (KBM.nodes||[]).length) cnOpen(); else cnLandStart(); }
     } else if(name==='base'){
       matchastSub='list';
+      if(_app) _app.style.display='none';
       var s2=document.getElementById('shelf'); if(s2) s2.style.display='none';
       cnClose(); openKbMode(); kbmShowList();
     } else if(name==='books'){
+      if(_app) _app.style.display='none';
       cnClose();
       var k1=document.getElementById('kbMode'); if(k1) k1.style.display='none';
       showShelf();
     } else if(name==='text'){
+      if(_app) _app.style.display='flex';
       cnClose();
       var k2=document.getElementById('kbMode'); if(k2) k2.style.display='none';
       var s3=document.getElementById('shelf'); if(s3) s3.style.display='none';
@@ -7879,6 +7874,7 @@
     var hasToken=false; try{ hasToken=Object.keys(localStorage).some(function(k){ return /^sb-.*-auth-token$/.test(k); }); }catch(_){}
     var wantConstel=(landingMode()==='constel');
     if(wantConstel && hasToken){ cnLandStart(); _view='constel'; tabbarSync('constel'); showTabbar(true); }
+    else if(hasToken){ var _ba=document.getElementById('app'); if(_ba) _ba.style.display='flex'; _view='text'; tabbarSync('text'); showTabbar(true); }
     if(cached || (wantConstel && hasToken)) hideSplash();
     SB.auth.onAuthStateChange(function(ev, session){ onAuth(session); });
     var got=await SB.auth.getSession();
