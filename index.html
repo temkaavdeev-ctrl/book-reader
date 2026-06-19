@@ -1783,6 +1783,94 @@
 @media (prefers-reduced-motion:reduce){
   #kbmDetCard.kbm-card-fwd,#kbmDetCard.kbm-card-back,.kbm-sections.kbm-stream-in{ animation:none }
 }
+
+/* ── Mini constellation map inside a card: the concept's neighbourhood ── */
+.kbm-mini{ position:relative; margin:14px 0 2px }
+.kbm-mini-svg{ width:100%; height:auto; display:block; overflow:visible }
+.kbm-mini-edge{ stroke:var(--line-2); stroke-width:1 }
+.kbm-mini-edge-tense{ stroke:var(--danger); stroke-dasharray:3 3; opacity:.85 }
+.kbm-mini-edge-force{ stroke:var(--accent); stroke-dasharray:1.5 4; opacity:.55 }
+.kbm-mini-dot{ stroke:var(--bg); stroke-width:1.5; transition:stroke .15s,stroke-width .15s }
+.kbm-mini-core{ fill:var(--accent) }
+.kbm-mini-hit{ fill:transparent; cursor:pointer }
+.kbm-mini-node{ cursor:pointer }
+.kbm-mini-center{ cursor:zoom-in }
+.kbm-mini-lbl{ font-size:9px; fill:var(--muted); font-family:var(--font-mono); letter-spacing:.01em; pointer-events:none; transition:fill .15s }
+.kbm-mini-node-tense .kbm-mini-lbl{ fill:var(--danger) }
+.kbm-mini-node.mini-foc .kbm-mini-dot{ stroke:var(--accent); stroke-width:2.5 }
+.kbm-mini-node.mini-foc .kbm-mini-lbl{ fill:var(--ink); font-weight:700 }
+.kbm-mini-force-lbl{ font-size:8.5px; fill:var(--accent); font-family:var(--font-mono); font-weight:700; letter-spacing:.02em; pointer-events:none }
+.kbm-mini-expand{ position:absolute; top:0; right:0; width:30px; height:30px; border:1px solid var(--line); border-radius:8px; background:var(--card); color:var(--muted); font-size:14px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center }
+.kbm-mini-expand:active{ background:var(--line) }
+.kbm-mini-peek{ margin-top:8px; min-height:20px; font-size:12.5px; color:var(--muted); line-height:1.45; padding:9px 12px; border:1px solid var(--line); border-radius:10px; background:var(--card) }
+.kbm-mini-peek b{ color:var(--read); font-weight:600 }
+.kbm-mini-peek .mp-rel{ font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--accent) }
+.kbm-mini-peek .mp-rel-tense{ color:var(--danger) }
+.kbm-mini-peek .mp-ttl{ color:var(--ink); font-weight:700 }
+.kbm-mini-peek .mp-claim{ color:var(--muted) }
+.kbm-mini-peek .mp-open{ color:var(--accent); font-size:11px; white-space:nowrap }
+.kbm-mini-empty{ font-size:12.5px; color:var(--muted); padding:14px 0; text-align:center }
+
+/* Study-order path + second ring in the card mini-map */
+.kbm-path{ display:flex; flex-wrap:wrap; align-items:center; gap:5px 6px; font-size:11px; margin-bottom:8px; line-height:1.5 }
+.kbm-path-lbl{ font-family:var(--font-mono); font-size:9px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); opacity:.8 }
+.kbm-path-arr{ color:var(--muted); opacity:.55 }
+.kbm-path-node{ font-size:11px; padding:2px 8px; border:1px solid var(--line); border-radius:999px; background:var(--card); color:var(--read); cursor:pointer; white-space:nowrap; max-width:130px; overflow:hidden; text-overflow:ellipsis }
+.kbm-path-node:active{ background:var(--line) }
+.kbm-path-next{ border-color:var(--accent); color:var(--accent) }
+.kbm-path-here{ font-size:11px; font-weight:700; color:var(--ink); padding:2px 4px; white-space:nowrap }
+.kbm-mini-d2{ fill:var(--muted); opacity:.3; pointer-events:none }
+
+/* ── «Поток» — живой мониторинг автономии ── */
+.flow-now{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 14px; margin-bottom:16px }
+.flow-now-top{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px }
+.flow-now-ttl{ font-size:13px; font-weight:700; color:var(--ink) }
+.flow-health{ display:flex; gap:6px; flex-wrap:wrap; margin-left:auto }
+.flow-h{ font-family:var(--font-mono); font-size:11px; padding:2px 8px; border-radius:999px; border:1px solid var(--line); color:var(--muted) }
+.flow-h b{ color:var(--ink); font-weight:700 }
+.flow-h-ok{ border-color:color-mix(in srgb,var(--good) 40%,var(--line)) }
+.flow-h-bad{ border-color:var(--danger); color:var(--danger); background:color-mix(in srgb,var(--danger) 12%,transparent) }
+.flow-h-bad b{ color:var(--danger) }
+.flow-run{ display:flex; align-items:center; gap:8px; padding:6px 0; border-top:1px solid var(--line) }
+.flow-run-r{ font-family:var(--font-mono); font-size:12px; font-weight:700; color:var(--accent); flex:0 0 auto }
+.flow-run-j{ font-size:13px; color:var(--read); flex:1 1 auto; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.flow-run-s{ font-family:var(--font-mono); font-size:12px; color:var(--muted); flex:0 0 auto; font-variant-numeric:tabular-nums }
+.flow-idle{ display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted); padding:4px 0 }
+.flow-idle-dot{ width:8px; height:8px; border-radius:50%; background:var(--muted); opacity:.4; flex:0 0 auto }
+.flow-queue{ margin-top:8px; padding-top:8px; border-top:1px solid var(--line); font-size:12px; color:var(--muted) }
+.flow-queue b{ color:var(--ink) }
+.flow-sec{ margin-bottom:18px }
+.flow-sec-h{ font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-bottom:8px }
+.flow-toggles{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px }
+.flow-tg{ font-size:11.5px; padding:4px 10px; border:1px solid var(--line); background:var(--card); color:var(--muted); border-radius:999px; cursor:pointer; font-family:inherit }
+.flow-tg.on{ background:var(--accent); border-color:var(--accent); color:#fff }
+.flow-chart-head{ font-size:13px; color:var(--ink); margin-bottom:6px }
+.flow-chart-head b{ font-size:18px; font-variant-numeric:tabular-nums }
+.flow-delta{ font-size:12px; color:var(--muted); margin-left:6px }
+.flow-delta.flow-good{ color:var(--good) }
+.flow-delta.flow-bad{ color:var(--warn) }
+.flow-svg{ width:100%; height:150px; display:block; background:var(--card); border:1px solid var(--line); border-radius:12px }
+.flow-line{ fill:none; stroke:var(--accent); stroke-width:2; vector-effect:non-scaling-stroke; stroke-linejoin:round; stroke-linecap:round }
+.flow-area{ fill:color-mix(in srgb,var(--accent) 10%,transparent); stroke:none }
+.flow-xax{ display:flex; justify-content:space-between; font-size:11px; color:var(--muted); margin-top:3px; font-family:var(--font-mono) }
+.flow-trend{ display:block; font-size:11px; color:var(--muted); margin-top:3px }
+.flow-good{ color:var(--good) }
+.flow-bad{ color:var(--warn) }
+.flow-rt{ margin-top:6px }
+.flow-rt-h{ font-size:12px; font-weight:700; color:var(--muted); margin-bottom:6px }
+.flow-tbl{ width:100%; border-collapse:collapse; font-size:12px }
+.flow-tbl th{ text-align:right; font-weight:600; color:var(--muted); font-size:11px; padding:3px 5px; border-bottom:1px solid var(--line) }
+.flow-tbl th:first-child,.flow-tbl td:first-child{ text-align:left; font-family:var(--font-mono) }
+.flow-tbl td{ text-align:right; padding:3px 5px; color:var(--read); border-bottom:1px solid var(--line); font-variant-numeric:tabular-nums }
+.flow-feed{ display:flex; flex-direction:column }
+.flow-fi{ display:flex; gap:8px; align-items:baseline; padding:7px 2px; border-bottom:1px solid var(--line); font-size:12.5px }
+.flow-fi-t{ font-family:var(--font-mono); font-size:11px; color:var(--muted); flex:0 0 auto; min-width:40px }
+.flow-fi-who{ font-family:var(--font-mono); font-size:11px; color:var(--accent); flex:0 0 auto }
+.flow-fi-bus .flow-fi-who{ color:#7356a0 }
+.flow-fi-l{ color:var(--read); flex:1 1 auto; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.flow-fi-new{ animation:flowFeedIn .6s ease }
+@keyframes flowFeedIn{ from{ background:color-mix(in srgb,var(--accent) 16%,transparent) } to{ background:transparent } }
+@media (prefers-reduced-motion:reduce){ .flow-fi-new{ animation:none } }
 </style>
 </head>
 <body>
@@ -1942,6 +2030,7 @@
   <div class="fire-bar" id="fireBar" style="display:none"></div>
   <div class="dsp-tabs" id="dspTabs">
     <button data-dt="bus" class="on">Шина<span class="dsp-badge" id="dbgBus"></span></button>
+    <button data-dt="flow">Поток</button>
     <button data-dt="pub">Публикация<span class="dsp-badge" id="dbgPub"></span></button>
     <button data-dt="ctx">Контекст</button>
     <button data-dt="dec">Решения</button>
@@ -4800,7 +4889,7 @@
     var c=document.getElementById('shelfClose'); if(c) c.onclick=hideShelf; })();
 
   // ── KB Mode («База знаний») ───────────────────────────────────────────────
-  var KBM={nodes:[],edges:[],scenarios:[],bySlug:{},findings:{conjectures:[],laws:[]},conjByNode:{},likes:new Set(),loaded:false,liker:null,currentSlug:null,bundles:{},
+  var KBM={nodes:[],edges:[],scenarios:[],bySlug:{},findings:{conjectures:[],laws:[]},conjByNode:{},likes:new Set(),loaded:false,liker:null,currentSlug:null,bundles:{},miniFocus:null,
            lens:'layer', region:null, scenarioSlug:null, findingSlug:null, lawSlug:null, q:''};
   var KBM_HISTORY=[]; // navigation stack: [{slug, title}]
   var KBM_KIND={effect:'Эффект',theory:'Теория',frame:'Рамка',phenomenon:'Феномен',method:'Метод',term:'Термин'};
@@ -5350,14 +5439,15 @@
   var CN_DISC_HUE={
     'disc-behavioral-econ':38, 'disc-org-systems':18, 'disc-ux-hci':330,
     'disc-social':350, 'disc-cognitive':50, 'disc-motivation':12,
-    'disc-neuro':280, 'disc-linguistics':200, 'disc-evolutionary':95
+    'disc-neuro':280, 'disc-linguistics':200, 'disc-evolutionary':95,
+    'disc-product-practice':130
   };
   var CN_DISC_LABEL={
     'disc-behavioral-econ':'Поведенческая экономика', 'disc-ux-hci':'UX / HCI',
     'disc-org-systems':'Организационные системы', 'disc-cognitive':'Когнитивная психология',
     'disc-social':'Социальная психология', 'disc-motivation':'Мотивация / идентичность',
     'disc-neuro':'Нейронаука / тело', 'disc-evolutionary':'Эволюция / этология',
-    'disc-linguistics':'Лингвистика интерфейса'
+    'disc-linguistics':'Лингвистика интерфейса', 'disc-product-practice':'Продуктовые практики'
   };
   function cnHue(disc){ return (disc!=null && CN_DISC_HUE[disc]!=null)?CN_DISC_HUE[disc]:30; }
   // Deterministic pseudo-random from a string (stable layout across devices/sessions).
@@ -5766,7 +5856,7 @@
     var counts={};
     for(var i=0;i<CN.nodes.length;i++){ var d=cnDiscOf(CN.nodes[i].n)||'_'; counts[d]=(counts[d]||0)+1; }
     var items=[]; for(var k in CN_DISC_HUE){ if(CN_DISC_HUE.hasOwnProperty(k)) items.push({slug:k, label:CN_DISC_LABEL[k]||k, hue:CN_DISC_HUE[k], n:counts[k]||0}); }
-    if(counts['_']) items.push({slug:'_', label:'Продуктовые методы', hue:172, n:counts['_']});
+    if(counts['_']) items.push({slug:'_', label:'Без дисциплины', hue:172, n:counts['_']});
     items.sort(function(a,b){ return b.n-a.n; });
     var html='<div class="cn-leg-ttl">Цвет — дисциплина</div>';
     items.forEach(function(it){ if(!it.n) return; html+='<div class="cn-leg-row"><span class="cn-leg-dot" style="background:hsl('+it.hue+',62%,63%)"></span><span class="cn-leg-lbl">'+it.label+'</span><span class="cn-leg-n">'+it.n+'</span></div>'; });
@@ -5891,6 +5981,36 @@
     function done(){ km.style.display='none'; km.classList.remove('kbm-over-constel','kbm-sheet-down'); }
     if(reduce){ done(); } else { km.classList.add('kbm-sheet-down'); setTimeout(done, 290); }
     KBM_HISTORY=[]; KBM.currentSlug=null; KBM.fromConstel=false;
+  }
+  function cnNodeBySlug(slug){ var a=CN.nodes||[]; for(var i=0;i<a.length;i++){ if(a[i].slug===slug) return a[i]; } return null; }
+  function cnFlyToNode(node){
+    if(!node) return;
+    var wp=node.fpos||[node.x,node.y];
+    var fit=cnFitTo(false); var s=fit? Math.min(1.6, Math.max(0.55, fit.s*2.4)) : 0.9;
+    CN.rotTarget={yaw:0,pitch:0}; CN.vel=null; CN.rotVel=null;
+    CN.target={ s:s, x:CN.w/2 - wp[0]*s, y:CN.h/2 - wp[1]*s };
+    cnKick();
+  }
+  // Expand the card's mini-map into the full cosmos, centred on this concept.
+  function cnFocusSlug(slug){
+    if(!KBM.loaded || !(KBM.nodes||[]).length){ toast('Сначала откроется карта…'); return; }
+    var km=document.getElementById('kbMode');
+    var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    if(KBM.fromConstel && (CN.nodes||[]).length){
+      // cosmos is built and paused behind the card — resume it (no re-assemble) and fly to the node
+      var ov=document.getElementById('constel'); if(ov) ov.style.display='block';
+      CN.on=true; CN.assembling=false; CN.dragging=false;
+      var chip=document.getElementById('constelChip'); if(chip) chip.style.display='none';
+      function dropSheet(){ if(km){ km.style.display='none'; km.classList.remove('kbm-over-constel','kbm-sheet-down'); } }
+      if(km){ if(reduce){ dropSheet(); } else { km.classList.add('kbm-sheet-down'); setTimeout(dropSheet,290); } }
+      var node=cnNodeBySlug(slug); cnSelect(node); cnFlyToNode(node);
+    } else {
+      // arrived from the list — open the cosmos fresh, then settle on the node
+      if(km){ km.classList.remove('kbm-over-constel'); }
+      cnOpen();
+      var n2=cnNodeBySlug(slug); if(n2){ cnSelect(n2); cnFlyToNode(n2); }
+    }
+    KBM_HISTORY=[]; KBM.currentSlug=null; KBM.fromConstel=false; KBM.miniFocus=null;
   }
   // Burger nav over the constellation home. Destinations that live below the cosmos
   // (book, admin, dispatch) close it first — an intentional context switch, not a stray ✕.
@@ -6107,6 +6227,148 @@
     if(wasHidden && !reduce){ d.classList.remove('kbm-det-enter'); void d.offsetWidth; d.classList.add('kbm-det-enter'); }
     else d.classList.remove('kbm-det-enter');
   }
+  // ---- Mini constellation map: the node's neighbourhood, laid out by meaning ----
+  // Foundations (what it rests on) to the left, consequences (what it leads to) to the right,
+  // tension (contradicts/competes) flagged, the parent force anchored on top. Built from the
+  // already-loaded graph (KBM.edges), so it appears instantly with the card.
+  var KBM_STR_W={strong:3, medium:2, weak:1};
+  function kbmMiniRel(relation, out){
+    switch(relation){
+      case 'mechanism-of':  return out? {verb:'объясняет', bucket:'cons'} : {verb:'механизм', bucket:'found'};
+      case 'prerequisite':  return out? {verb:'нужна для', bucket:'cons'} : {verb:'опора', bucket:'found'};
+      case 'instance-of':   return out? {verb:'частный случай', bucket:'found'} : {verb:'обобщает', bucket:'cons'};
+      case 'refines':       return out? {verb:'уточняет', bucket:'found'} : {verb:'уточняется', bucket:'cons'};
+      case 'contradicts':   return {verb:'противоречит', bucket:'tense', tense:true};
+      case 'competes-with': return {verb:'конкурирует', bucket:'tense', tense:true};
+      case 'watch-trap':    return {verb:'ловушка', bucket:'tense', tense:true};
+      case 'involves-force':return {verb:'сила', bucket:'force'};
+      case 'same-family':   return {verb:'та же семья', bucket:'kin'};
+      case 'adjacent-to':   return {verb:'рядом', bucket:'kin'};
+      case 'uses-tool':     return {verb:'инструмент', bucket:'cons'};
+      default:              return {verb:'связано', bucket:'kin'};
+    }
+  }
+  function kbmRelPriority(relation, tense){
+    if(tense) return 5;
+    if(relation==='mechanism-of'||relation==='prerequisite'||relation==='instance-of') return 4;
+    if(relation==='involves-force') return 4;
+    if(relation==='refines') return 3;
+    if(relation==='same-family'||relation==='uses-tool'||relation==='adjacent-to') return 2;
+    return 1; // related — noise
+  }
+  function kbmMiniShortT(t){ t=(t||'').replace(/\s*\([^)]*[A-Za-z][^)]*\)\s*$/,''); return t.length>15? t.slice(0,14)+'…':t; }
+  // Neighbours of a node, deduped to the strongest typed edge per other-node.
+  function kbmNeighbors(slug){
+    var E=KBM.edges||[], byOther={};
+    for(var i=0;i<E.length;i++){ var e=E[i], out;
+      if(e.src===slug) out=true; else if(e.dst===slug) out=false; else continue;
+      var other= out? e.dst : e.src;
+      var r=kbmMiniRel(e.relation, out);
+      var score=kbmRelPriority(e.relation, r.tense)*10 + (KBM_STR_W[e.strength]||1);
+      var cur=byOther[other];
+      if(!cur || score>cur.score){ byOther[other]={other:other, verb:r.verb, bucket:r.bucket, tense:!!r.tense, score:score}; }
+    }
+    return Object.keys(byOther).map(function(k){ return byOther[k]; });
+  }
+  // Study order: walk up to 2 strongest foundations back, and 1 strongest consequence forward.
+  function kbmSpine(slug){
+    var seen={}; seen[slug]=1; var up=[], cur=slug;
+    for(var h=0;h<2;h++){
+      var fs=kbmNeighbors(cur).filter(function(x){ return x.bucket==='found' && !seen[x.other]; });
+      fs.sort(function(a,b){ return b.score-a.score; });
+      if(!fs.length) break; up.unshift(fs[0].other); seen[fs[0].other]=1; cur=fs[0].other;
+    }
+    var cs=kbmNeighbors(slug).filter(function(x){ return x.bucket==='cons' && !seen[x.other]; });
+    cs.sort(function(a,b){ return b.score-a.score; });
+    return { up:up, down: cs.length? cs[0].other : null };
+  }
+  function kbmPathHtml(slug){
+    var sp=kbmSpine(slug);
+    if(!sp.up.length && !sp.down) return '';
+    function chip(s,cls){ var nd=KBM.bySlug[s]||{}; return '<button class="kbm-path-node'+(cls?' '+cls:'')+'" data-kbm-nav="'+escapeHtml(s)+'">'+escapeHtml(kbmMiniShortT(nd.title||s))+'</button>'; }
+    var h='<div class="kbm-path"><span class="kbm-path-lbl">путь</span>';
+    sp.up.forEach(function(s){ h+=chip(s,'')+'<span class="kbm-path-arr">→</span>'; });
+    h+='<span class="kbm-path-here">эта идея</span>';
+    if(sp.down){ h+='<span class="kbm-path-arr">→</span>'+chip(sp.down,'kbm-path-next'); }
+    return h+'</div>';
+  }
+  function kbmMiniMap(slug){
+    var all=kbmNeighbors(slug);
+    var forces=all.filter(function(x){ return x.bucket==='force'; });
+    var nodes=all.filter(function(x){ return x.bucket!=='force'; });
+    nodes.sort(function(a,b){ return b.score-a.score; });
+    nodes=nodes.slice(0,7);
+    if(!nodes.length && !forces.length){
+      return '<div class="kbm-mini"><div class="kbm-mini-empty">Одинокая звезда — пока без связей в карте.</div></div>';
+    }
+    var W=300,H=190,cx=W/2,cy=H/2,R=66,RAD=Math.PI/180;
+    function place(list, baseDeg, spreadDeg){
+      var n=list.length, out=[];
+      for(var i=0;i<n;i++){ var t=(n===1)?baseDeg:(baseDeg-spreadDeg+(2*spreadDeg)*(i/(n-1))); var th=t*RAD;
+        out.push({d:list[i], x:cx+R*Math.cos(th), y:cy-R*Math.sin(th), deg:t}); }
+      return out;
+    }
+    var pts=place(nodes.filter(function(x){return x.bucket==='found';}),180,42)
+      .concat(place(nodes.filter(function(x){return x.bucket==='cons';}),0,42))
+      .concat(place(nodes.filter(function(x){return x.bucket==='tense';}),90,34))
+      .concat(place(nodes.filter(function(x){return x.bucket==='kin';}),270,34));
+    // faint second ring — each shown neighbour's own strongest link, hinting the web continues outward
+    var used={}; used[slug]=1; pts.forEach(function(p){ used[p.d.other]=1; });
+    var ring2=[];
+    for(var ri=0; ri<pts.length && ring2.length<6; ri++){ var pp=pts[ri];
+      var nn=kbmNeighbors(pp.d.other).filter(function(x){ return !used[x.other] && x.bucket!=='force'; });
+      nn.sort(function(a,b){ return b.score-a.score; });
+      if(!nn.length) continue; used[nn[0].other]=1;
+      var th2=pp.deg*RAD, rr2=R+22; ring2.push({ x:cx+rr2*Math.cos(th2), y:cy-rr2*Math.sin(th2) });
+    }
+    var ring2Svg=ring2.map(function(q){ return '<circle class="kbm-mini-d2" cx="'+q.x.toFixed(1)+'" cy="'+q.y.toFixed(1)+'" r="2.1"/>'; }).join('');
+    var edgesSvg=pts.map(function(p){ return '<line class="kbm-mini-edge'+(p.d.tense?' kbm-mini-edge-tense':'')+'" x1="'+cx+'" y1="'+cy+'" x2="'+p.x.toFixed(1)+'" y2="'+p.y.toFixed(1)+'"/>'; }).join('');
+    var nodesSvg=pts.map(function(p){
+      var nd=KBM.bySlug[p.d.other]||{}; var rc=KBM_ROB_COL[nd.robustness]||'var(--muted)';
+      var c=Math.cos(p.deg*RAD), s=Math.sin(p.deg*RAD);
+      var anchor= c<-0.2?'end':(c>0.2?'start':'middle');
+      var lx= c<-0.2? p.x-8 : (c>0.2? p.x+8 : p.x);
+      var ly= p.y + (s>0.5? -9 : (s<-0.5? 15 : 3.5));
+      return '<g class="kbm-mini-node'+(p.d.tense?' kbm-mini-node-tense':'')+'" data-kbm-mini="'+escapeHtml(p.d.other)+'">'
+        +'<circle class="kbm-mini-hit" cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="16"/>'
+        +'<circle class="kbm-mini-dot" cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="5.5" style="fill:'+rc+'"/>'
+        +'<text class="kbm-mini-lbl" x="'+lx.toFixed(1)+'" y="'+ly.toFixed(1)+'" text-anchor="'+anchor+'">'+escapeHtml(kbmMiniShortT(nd.title||p.d.other))+'</text>'
+        +'</g>';
+    }).join('');
+    var forceSvg='';
+    if(forces.length){ var fn=KBM.bySlug[forces[0].other]||{};
+      forceSvg='<line class="kbm-mini-edge kbm-mini-edge-force" x1="'+cx+'" y1="'+cy+'" x2="'+cx+'" y2="15"/>'
+        +'<text class="kbm-mini-force-lbl" x="'+cx+'" y="11" text-anchor="middle">◆ '+escapeHtml(kbmMiniShortT(fn.title||forces[0].other))+'</text>';
+    }
+    var centerSvg='<g class="kbm-mini-center" data-kbm-expand="1"><circle class="kbm-mini-hit" cx="'+cx+'" cy="'+cy+'" r="18"/><circle class="kbm-mini-core" cx="'+cx+'" cy="'+cy+'" r="8"/></g>';
+    var svg='<svg class="kbm-mini-svg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" aria-hidden="true">'+edgesSvg+ring2Svg+forceSvg+nodesSvg+centerSvg+'</svg>';
+    return '<div class="kbm-mini">'+kbmPathHtml(slug)+svg
+      +'<button class="kbm-mini-expand" data-kbm-expand="1" title="В созвездие">⤢</button>'
+      +'<div class="kbm-mini-peek" id="kbmMiniPeek">'+kbmMiniPeekHint(slug)+'</div></div>';
+  }
+  function kbmMiniPeekHint(slug){
+    var nd=KBM.bySlug[slug]||{};
+    return 'Окрестность концепта · <b>слева</b> — на чём стоит, <b>справа</b> — к чему ведёт. Коснись звезды, ещё раз — открыть.';
+  }
+  function kbmMiniFocus(otherSlug){
+    var peek=document.getElementById('kbmMiniPeek'); if(!peek) return;
+    var slug=KBM.currentSlug, best=null, E=KBM.edges||[];
+    for(var i=0;i<E.length;i++){ var e=E[i], out;
+      if(e.src===slug && e.dst===otherSlug) out=true;
+      else if(e.dst===slug && e.src===otherSlug) out=false; else continue;
+      var r=kbmMiniRel(e.relation,out); var sc=kbmRelPriority(e.relation,r.tense)*10+(KBM_STR_W[e.strength]||1);
+      if(!best||sc>best.sc) best={verb:r.verb,tense:!!r.tense,sc:sc};
+    }
+    var nd=KBM.bySlug[otherSlug]||{};
+    var claim=(nd.claim||''); claim=claim.length>92? claim.slice(0,90)+'…':claim;
+    peek.innerHTML='<span class="mp-rel'+(best&&best.tense?' mp-rel-tense':'')+'">'+escapeHtml(best?best.verb:'связано')+'</span> · '
+      +'<span class="mp-ttl">'+escapeHtml((nd.title||otherSlug).replace(/\s*\([^)]*[A-Za-z][^)]*\)\s*$/,''))+'</span>'
+      +(claim?' — <span class="mp-claim">'+escapeHtml(claim)+'</span>':'')
+      +' <span class="mp-open">↗ ещё раз — открыть</span>';
+    var svg=peek.parentNode.querySelector('.kbm-mini-svg');
+    if(svg){ var gs=svg.querySelectorAll('[data-kbm-mini]'); for(var k=0;k<gs.length;k++){ gs[k].classList.toggle('mini-foc', gs[k].getAttribute('data-kbm-mini')===otherSlug); } }
+    KBM.miniFocus=otherSlug;
+  }
   // Instant card shell: hero (kind · robustness · core · claim · like) straight from the already-loaded
   // node, so navigation never shows a spinner. The heavy sections stream into #kbmDetSections afterwards.
   function kbmRenderCard(slug, node, dir){
@@ -6124,12 +6386,14 @@
       +'</div>'
       +'<button class="kbm-like-btn'+(liked?' kbm-liked':'')+'" id="kbmDetHeart" data-kbm-like="'+escapeHtml(slug)+'">'+(liked?'♥ В избранном':'♡ В избранное')+'</button>'
       +'<div class="kbm-d-claim" id="kbmDetClaim">'+escapeHtml(claim)+'</div>';
-    body.innerHTML='<div id="kbmDetCard">'+hero+'<div class="kbm-sections" id="kbmDetSections"><div class="kbm-detail-pending"></div></div></div>';
+    body.innerHTML='<div id="kbmDetCard">'+hero+kbmMiniMap(slug)+'<div class="kbm-sections" id="kbmDetSections"><div class="kbm-detail-pending"></div></div></div>';
     body.scrollTop=0;
     var card=document.getElementById('kbmDetCard');
     if(card && !reduce){ card.classList.remove('kbm-card-fwd','kbm-card-back'); void card.offsetWidth; card.classList.add(dir==='back'?'kbm-card-back':'kbm-card-fwd'); }
     if(!body._kbmwired){ body._kbmwired=true;
       body.addEventListener('click',function(e){
+        var mini=e.target.closest('[data-kbm-mini]'); if(mini){ var ms=mini.getAttribute('data-kbm-mini'); if(KBM.miniFocus===ms){ KBM.miniFocus=null; kbmDetail(ms); } else { kbmMiniFocus(ms); } return; }
+        var exp=e.target.closest('[data-kbm-expand]'); if(exp){ cnFocusSlug(KBM.currentSlug); return; }
         var like=e.target.closest('[data-kbm-like]'); if(like){ kbmLikeToggle(like.getAttribute('data-kbm-like')); return; }
         var cj=e.target.closest('[data-kbm-conj]'); if(cj){ kbmFindingDetail(cj.getAttribute('data-kbm-conj')); return; }
         var nav=e.target.closest('[data-kbm-nav]'); if(nav){ kbmDetail(nav.getAttribute('data-kbm-nav')); return; }
@@ -6228,8 +6492,7 @@
       // 8. Критика (только для contested/mixed)
       +(kontr&&(b.robustness==='contested'||b.robustness==='mixed')
         ?'<div class="kbm-sec kbm-sec-kontr"><div class="kbm-sec-lbl">⚠ Критика</div><div class="kbm-sec-body">'+escapeHtml(kontr)+'</div></div>':'')
-      // 9. Связанные концепты (граф-навигация)
-      +relCardsHtml
+      // (связи теперь — в мини-карте космоса в шапке карточки)
       // 9b. Гипотезы Афины об этом концепте — честность видна и со стороны узла
       +(function(){
         var cs=(KBM.conjByNode&&KBM.conjByNode[slug])||[];
@@ -7337,7 +7600,7 @@
 
   var dspChan=null, dspRtTimer=null, dspEditing=false;
   function openDispatch(){ if(!isAdmin) return; document.getElementById('dispatch').classList.add('open'); document.body.style.overflow='hidden'; dspRealtimeOn(); dspBadges(); dspTab(dspCur); }
-  function closeDispatch(){ if(dspCur==='kb'){ lsSet('kb_seen', String(Date.now())); } document.getElementById('dispatch').classList.remove('open'); document.body.style.overflow=''; dspRealtimeOff(); }
+  function closeDispatch(){ if(dspCur==='kb'){ lsSet('kb_seen', String(Date.now())); } flowStop(); document.getElementById('dispatch').classList.remove('open'); document.body.style.overflow=''; dspRealtimeOff(); }
   function dspRealtimeOn(){
     if(dspChan || !SB) return;
     try{
@@ -7351,7 +7614,7 @@
   }
   function dspRtDot(on){ var d=document.getElementById('dspRtDot'); if(d) d.className='rt-dot'+(on?' rt-dot--on':''); }
   function dspRealtimeOff(){ if(dspChan){ try{ SB.removeChannel(dspChan); }catch(e){} dspChan=null; } clearTimeout(dspRtTimer); dspRtDot(false); }
-  function dspOnChange(){ clearTimeout(dspRtTimer); dspRtTimer=setTimeout(function(){ dspBadges(); if(!dspEditing) dspTab(dspCur); }, 450); }
+  function dspOnChange(){ clearTimeout(dspRtTimer); dspRtTimer=setTimeout(function(){ dspBadges(); if(!dspEditing && dspCur!=='flow') dspTab(dspCur); }, 450); }
   var fireBusy=false;
   async function fireRoutine(){
     if(fireBusy || !SB) return;
@@ -7376,9 +7639,10 @@
       fireBusy=false; if(btn){ btn.disabled=false; btn.textContent='Запустить Гермеса'; }
     }
   }
-  var DSP_TAB_LBL={bus:'Шина',pub:'Публикация',ctx:'Контекст',dec:'Решения',src:'Научбаза',kb:'Граф',health:'Здоровье',briefs:'Брифы'};
+  var DSP_TAB_LBL={bus:'Шина',flow:'Поток',pub:'Публикация',ctx:'Контекст',dec:'Решения',src:'Научбаза',kb:'Граф',health:'Здоровье',briefs:'Брифы'};
   function dspTab(name){
     var prev=dspCur;
+    if(prev==='flow' && name!=='flow') flowStop();
     if(name==='kb' && prev!=='kb'){ KB_SEEN_AT=(+lsGet('kb_seen')||0); dspKbFilter=''; }
     if(prev==='kb' && name!=='kb'){ lsSet('kb_seen', String(Date.now())); }
     dspCur=name; dspFilterCb=null;
@@ -7387,7 +7651,7 @@
     // Sync mobile selector label
     var lbl=document.getElementById('dspTabSelLbl'); if(lbl) lbl.textContent=DSP_TAB_LBL[name]||name;
     dspCloseTabSel();
-    var fn={bus:renderBus,pub:renderPub,ctx:renderCtx,dec:renderDec,src:renderSrc,health:renderHealth,briefs:renderBriefs,kb:renderKB}[name];
+    var fn={bus:renderBus,flow:renderFlow,pub:renderPub,ctx:renderCtx,dec:renderDec,src:renderSrc,health:renderHealth,briefs:renderBriefs,kb:renderKB}[name];
     if(fn) fn();
   }
   function dspBuildTabSel(){
@@ -7725,6 +7989,120 @@
         +(s.claim?'<div class="dsp-text">'+dspEsc(s.claim)+'</div>':'')
         +(chs?'<div class="dsp-refs">'+chs+'</div>':'')+'</div>';
     }).join('');
+  }
+
+  // ============ «Поток» — живой мониторинг автономии (data = 3 RPC Гермеса) ============
+  var FLOW={ live:null, liveAt:0, series:null, eff:null, t15:null, t60:null, tick:null, seenFeed:{}, feedInit:false, chartKey:'untyped' };
+  var FLOW_SERIES={ untyped:'related без типа', pending:'очередь', cards_thin:'тонкие карточки', unverified:'непроверенные', cog:'когн. нагрузка', self_obs:'самонаблюдение' };
+  function flowStop(){ [FLOW.t15,FLOW.t60,FLOW.tick].forEach(function(t){ if(t) clearInterval(t); }); FLOW.t15=FLOW.t60=FLOW.tick=null; }
+  function flowNum(v){ v=+v||0; return (Math.round(v)===v)? v : v.toFixed(2); }
+  function flowFmtSecs(s){ s=Math.max(0,Math.floor(s)); if(s<60) return s+'с'; var m=Math.floor(s/60); return m+'м '+(s%60)+'с'; }
+  function flowRunSecs(x){ return (+x.secs||0) + (FLOW.liveAt? (Date.now()-FLOW.liveAt)/1000 : 0); }
+  async function renderFlow(){
+    var body=document.getElementById('dspBody');
+    body.innerHTML=
+      '<div id="flowNow" class="flow-now"><div class="dsp-load">Загрузка…</div></div>'
+      +'<div class="flow-sec"><div class="flow-sec-h">Динамика</div><div id="flowChart" class="flow-chart"></div></div>'
+      +'<div class="flow-sec"><div class="flow-sec-h">Отдача</div><div id="flowCards"></div></div>'
+      +'<div class="flow-sec"><div class="flow-sec-h">Лента</div><div id="flowFeed" class="flow-feed"></div></div>';
+    flowStop(); FLOW.seenFeed={}; FLOW.feedInit=false;
+    if(!body._flowWired){ body._flowWired=true; }   // series toggle handled by the #dspBody data-act delegate
+    await flowLoadLive();
+    await flowLoadSlow();
+    if(dspCur!=='flow') return;                       // switched away while loading
+    FLOW.t15=setInterval(flowLoadLive, 15000);
+    FLOW.t60=setInterval(flowLoadSlow, 60000);
+    FLOW.tick=setInterval(flowTick, 1000);
+  }
+  async function flowLoadLive(){
+    if(dspCur!=='flow' || !SB) return;
+    try{ var r=await SB.rpc('kb_live_activity'); if(r.error) throw r.error; FLOW.live=r.data; FLOW.liveAt=Date.now(); flowRenderNow(); flowRenderFeed(); }
+    catch(e){ var n=document.getElementById('flowNow'); if(n && !FLOW.live) n.innerHTML=dspErr('Поток недоступен: '+(e.message||e)); }
+  }
+  async function flowLoadSlow(){
+    if(dspCur!=='flow' || !SB) return;
+    try{ var s=await SB.rpc('kb_metric_series',{p_hours:168}); if(!s.error) FLOW.series=s.data; }catch(e){}
+    try{ var ef=await SB.rpc('kb_effectiveness'); if(!ef.error) FLOW.eff=ef.data; }catch(e){}
+    if(dspCur!=='flow') return;
+    flowRenderChart(); flowRenderCards();
+  }
+  function flowRenderNow(){
+    var el=document.getElementById('flowNow'); if(!el||!FLOW.live) return;
+    var d=FLOW.live, run=d.running||[], h=d.health||{}, q=d.queue||{};
+    function hb(lbl,val,bad){ return '<span class="flow-h'+(bad?' flow-h-bad':' flow-h-ok')+'">'+lbl+' <b>'+dspEsc(val==null?'—':val)+'</b></span>'; }
+    var health='<div class="flow-health">'+hb('firewall',h.firewall,(+h.firewall||0)>0)+hb('structural',h.structural,(+h.structural||0)>0)
+      +hb('cog',h.cog,false)+hb('self-obs',h.self_obs,false)+'</div>';
+    var runHtml;
+    if(run.length){
+      runHtml=run.map(function(x,i){ return '<div class="flow-run"><span class="rt-dot rt-dot--on"></span>'
+        +'<span class="flow-run-r">'+dspEsc(x.routine||'')+'</span><span class="flow-run-j">'+dspEsc(x.job||'')+'</span>'
+        +'<span class="flow-run-s" data-flow-secs="'+i+'">'+flowFmtSecs(flowRunSecs(x))+'</span></div>'; }).join('');
+    } else { runHtml='<div class="flow-idle"><span class="flow-idle-dot"></span>Сейчас тихо — рутины спят между запусками</div>'; }
+    var queue='<div class="flow-queue">очередь · scout <b>'+(q.pending_scout||0)+'</b> · intake <b>'+(q.pending_intake||0)+'</b> · принято <b>'+(q.admitted_total||0)+'</b> · отклонено <b>'+(q.rejected_total||0)+'</b></div>';
+    el.innerHTML='<div class="flow-now-top"><span class="flow-now-ttl">В моменте</span>'+health+'</div>'+runHtml+queue;
+  }
+  function flowTick(){
+    var el=document.getElementById('flowNow'); if(!el||!FLOW.live) return;
+    var run=FLOW.live.running||[];
+    el.querySelectorAll('[data-flow-secs]').forEach(function(node){ var i=+node.getAttribute('data-flow-secs'); if(run[i]) node.textContent=flowFmtSecs(flowRunSecs(run[i])); });
+  }
+  function flowRenderChart(){
+    var el=document.getElementById('flowChart'); if(!el) return;
+    var ser=FLOW.series||[], key=FLOW.chartKey;
+    var toggles='<div class="flow-toggles">'+Object.keys(FLOW_SERIES).map(function(k){
+      return '<button class="flow-tg'+(k===key?' on':'')+'" data-act="flow-series" data-v="'+k+'">'+FLOW_SERIES[k]+'</button>'; }).join('')+'</div>';
+    if(ser.length<2){ el.innerHTML=toggles+'<div class="dsp-note">Истории пока мало — график наполнится снимками watchdog.</div>'; return; }
+    var vals=ser.map(function(p){ return +p[key]||0; });
+    var min=Math.min.apply(null,vals), max=Math.max.apply(null,vals); if(max===min){ max=min+1; min=min-1; }
+    var W=520,H=150,padL=4,padR=4,padT=10,padB=2, iw=W-padL-padR, ih=H-padT-padB;
+    function X(i){ return padL+iw*(i/(ser.length-1)); }
+    function Y(v){ return padT+ih*(1-(v-min)/(max-min)); }
+    var dpath=vals.map(function(v,i){ return (i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1); }).join(' ');
+    var area=dpath+' L'+X(ser.length-1).toFixed(1)+' '+(padT+ih).toFixed(1)+' L'+X(0).toFixed(1)+' '+(padT+ih).toFixed(1)+' Z';
+    var first=vals[0], last=vals[vals.length-1], delta=last-first;
+    var debt=!(key==='cog'||key==='self_obs');
+    var dcls= !debt? '' : (delta<0?'flow-good':(delta>0?'flow-bad':''));
+    var arrow= delta<0?'↓':(delta>0?'↑':'→');
+    el.innerHTML=toggles
+      +'<div class="flow-chart-head"><b>'+flowNum(last)+'</b> <span class="flow-delta '+dcls+'">'+arrow+' '+(delta>0?'+':'')+flowNum(delta)+' за период</span></div>'
+      +'<svg class="flow-svg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none"><path class="flow-area" d="'+area+'"/><path class="flow-line" d="'+dpath+'"/></svg>'
+      +'<div class="flow-xax"><span>'+dspEsc(ser[0].t)+'</span><span>'+dspEsc(ser[ser.length-1].t)+'</span></div>';
+  }
+  function flowArrow(now,prev,goodDown){
+    if(now==null) return ''; if(prev==null) return '<span class="flow-trend">— нет истории</span>';
+    var d=now-prev; if(d===0) return '<span class="flow-trend">→ без изменений</span>';
+    var good= goodDown? d<0 : d>0;
+    return '<span class="flow-trend '+(good?'flow-good':'flow-bad')+'">'+(d<0?'↓':'↑')+' '+(d>0?'+':'')+d+'</span>';
+  }
+  function flowRenderCards(){
+    var el=document.getElementById('flowCards'); if(!el) return;
+    var e=FLOW.eff; if(!e){ el.innerHTML='<div class="dsp-note">—</div>'; return; }
+    var ar=e.admit_rate||{}, ov=ar.overall||{}, dt=e.debt_trend_24h||{}, r7=e.routine_7d||[];
+    var admit= ov.judged? '<div class="dsp-kpi"><b>'+(ov.pct!=null?ov.pct+'%':'—')+'</b><span>принято ('+ov.admitted+'/'+ov.judged+')</span></div>'
+      : '<div class="dsp-kpi"><b>—</b><span>разборов ещё нет</span></div>';
+    function debtCard(lbl,o){ o=o||{}; return '<div class="dsp-kpi"><b>'+(o.now!=null?o.now:'—')+'</b><span>'+lbl+'</span>'+flowArrow(o.now,o.prev,true)+'</div>'; }
+    var kpis='<div class="dsp-kpis">'+admit+debtCard('related без типа',dt.untyped_related)+debtCard('тонкие карточки',dt.cards_thin)+debtCard('непроверенные',dt.unverified)+'</div>';
+    var rt='';
+    if(r7.length){ rt='<div class="flow-rt"><div class="flow-rt-h">Рутины · 7 дней</div><table class="flow-tbl"><thead><tr><th>рутина</th><th>пуск.</th><th>узлы</th><th>рёбра</th><th>карт.</th><th>гип.</th><th>откат</th></tr></thead><tbody>'
+      +r7.map(function(x){ return '<tr><td>'+dspEsc(x.routine)+'</td><td>'+(x.runs||0)+'</td><td>'+(x.nodes||0)+'</td><td>'+(x.edges||0)+'</td><td>'+(x.cards||0)+'</td><td>'+(x.conj||0)+'</td><td>'+(x.rolled_back||0)+'</td></tr>'; }).join('')
+      +'</tbody></table></div>'; }
+    var extra='';
+    if((ar.by_lane||[]).length){ extra+='<div class="dsp-note">по дорожкам: '+ar.by_lane.map(function(l){ return dspEsc(l.lane)+' '+(l.pct!=null?l.pct+'%':'—'); }).join(' · ')+'</div>'; }
+    el.innerHTML=kpis+rt+extra;
+  }
+  function flowRenderFeed(){
+    var el=document.getElementById('flowFeed'); if(!el||!FLOW.live) return;
+    var d=FLOW.live, items=[];
+    (d.recent||[]).forEach(function(x){ items.push({t:x.t,kind:'routine',who:x.routine,label:(x.job||'')+(x.note?(' · '+x.note):'')}); });
+    (d.bus||[]).forEach(function(x){ items.push({t:x.t,kind:'bus',who:(x.src||'')+'→'+(x.dst||''),label:'['+(x.kind||'')+'] '+(x.subject||'')}); });
+    items.sort(function(a,b){ return (b.t||'').localeCompare(a.t||''); });
+    items=items.slice(0,16);
+    var firstRun=!FLOW.feedInit; FLOW.feedInit=true; var nm={};
+    el.innerHTML=items.map(function(it){
+      var k=it.kind+'|'+it.t+'|'+it.label; nm[k]=1; var fresh=!firstRun && !FLOW.seenFeed[k];
+      return '<div class="flow-fi flow-fi-'+it.kind+(fresh?' flow-fi-new':'')+'"><span class="flow-fi-t">'+dspEsc(it.t||'')+'</span>'
+        +'<span class="flow-fi-who">'+dspEsc(it.who||'')+'</span><span class="flow-fi-l">'+dspEsc(it.label||'')+'</span></div>'; }).join('');
+    FLOW.seenFeed=nm;
   }
 
   async function renderHealth(){
@@ -8218,6 +8596,7 @@
         else if(act==='brief-cancel'){ dspEditing=false; renderBriefs(); }
         else if(act==='kb-open') kbOpenCard(x.getAttribute('data-id'));
         else if(act==='kb-filter'){ dspKbFilter=x.getAttribute('data-v'); renderKB(); }
+        else if(act==='flow-series'){ FLOW.chartKey=x.getAttribute('data-v'); flowRenderChart(); }
         else if(act==='diff'){ var d=document.getElementById('diff-'+id); if(d) d.style.display=(d.style.display==='none'?'':'none'); }
       });
       bd.addEventListener('change', function(e){
