@@ -1687,22 +1687,21 @@
   @media(max-width:400px){ .kbm-head .kbm-count{ display:none } }
 
   #constel{ position:fixed; inset:0; z-index:45; background:#0e0c0a; overscroll-behavior:none; touch-action:none }
-  #constel.constel-enter{ animation:constelEnter .8s ease-out both }
+  #constel.constel-enter{ animation:none }
   @keyframes constelEnter{ from{ opacity:0 } to{ opacity:1 } }
   #constelCanvas{ position:absolute; inset:0; width:100%; height:100%; display:block; cursor:grab; touch-action:none; -webkit-user-select:none; user-select:none; -webkit-touch-callout:none }
   #constelCanvas:active{ cursor:grabbing }
   .constel-top{ position:absolute; top:0; left:0; right:0; display:flex; align-items:center; gap:12px; padding:calc(12px + env(safe-area-inset-top,0px)) 16px 12px; background:linear-gradient(#0e0c0aee, #0e0c0a00); pointer-events:none; z-index:2 }
   .constel-top > *{ pointer-events:auto }
-  .constel-close, .constel-reset{ width:38px; height:38px; border-radius:50%; border:1px solid rgba(220,190,150,.22); background:rgba(30,24,18,.7); color:#e8d9c5; font-size:17px; cursor:pointer; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(8px); transition:border-color .15s }
+  .constel-close, .constel-reset{ width:42px; height:42px; border-radius:50%; border:1px solid rgba(220,190,150,.22); background:rgba(30,24,18,.7); color:#e8d9c5; font-size:19px; cursor:pointer; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(8px); transition:border-color .15s }
   .constel-close:hover, .constel-reset:hover{ border-color:rgba(220,190,150,.5) }
   .constel-reset{ margin-left:auto }
   .constel-ttl{ font-family:var(--font-ui); font-size:16px; font-weight:700; color:#f0e4d2; letter-spacing:-.01em; text-shadow:0 1px 4px rgba(0,0,0,.6) }
   .constel-ttl span{ font-weight:400; color:#b7a892; font-size:13px }
   .constel-legend{ height:38px; padding:0 14px; border-radius:19px; border:1px solid rgba(220,190,150,.22); background:rgba(30,24,18,.7); color:#e8d9c5; font-family:var(--font-ui); font-size:13px; font-weight:600; cursor:pointer; backdrop-filter:blur(8px); display:flex; align-items:center; gap:6px; transition:border-color .15s; white-space:nowrap }
   .constel-legend:hover{ border-color:rgba(220,190,150,.5) }
-  .constel-listbtn{ height:38px; padding:0 12px; border-radius:19px; border:1px solid var(--line-2); background:linear-gradient(135deg, color-mix(in srgb,var(--accent) 22%,transparent), transparent); color:var(--accent); font-family:var(--font-ui); font-size:13px; font-weight:600; cursor:pointer; backdrop-filter:blur(8px); display:flex; align-items:center; gap:6px; transition:border-color .15s,background .15s; white-space:nowrap }
-  .constel-listbtn:hover{ border-color:var(--accent); background:color-mix(in srgb,var(--accent) 12%,transparent) }
-  @media (max-width:500px){ .constel-listbtn span{ display:none } .constel-listbtn{ width:38px; padding:0; justify-content:center; font-size:16px } }
+  .constel-listbtn{ height:42px; padding:0 18px; border-radius:21px; border:1px solid color-mix(in srgb,var(--accent) 45%,var(--line-2)); background:linear-gradient(135deg, color-mix(in srgb,var(--accent) 30%,transparent), color-mix(in srgb,var(--accent) 10%,transparent)); color:var(--accent); font-family:var(--font-ui); font-size:14.5px; font-weight:600; cursor:pointer; backdrop-filter:blur(8px); display:flex; align-items:center; gap:6px; transition:border-color .15s,background .15s; white-space:nowrap }
+  .constel-listbtn:hover{ border-color:var(--accent); background:color-mix(in srgb,var(--accent) 20%,transparent) }
   .constel-legend.on{ border-color:rgba(220,190,150,.6); background:rgba(46,37,26,.82) }
   #constelLegend{ position:absolute; left:16px; right:16px; bottom:calc(24px + env(safe-area-inset-bottom,0px)); max-width:340px; margin:0 auto; background:rgba(22,17,12,.93); border:1px solid rgba(220,190,150,.24); border-radius:16px; padding:14px 16px; backdrop-filter:blur(12px); box-shadow:0 12px 40px rgba(0,0,0,.5); z-index:3; animation:constelChipIn .22s cubic-bezier(.34,1.2,.5,1) }
   .cn-leg-ttl{ font-family:var(--font-mono); font-size:10.5px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:#b7a892; margin-bottom:8px }
@@ -1788,6 +1787,8 @@
 @keyframes cnNavSlide{ from{ transform:translateX(-100%) } to{ transform:none } }
 .cn-nav-h{ font-family:var(--font-mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:#a99a82; padding:4px 22px 12px }
 .cn-nav-item{ text-align:left; background:none; border:none; color:#ece1cf; font-family:var(--font-ui); font-size:16px; padding:13px 22px; cursor:pointer; display:flex; align-items:center; gap:12px; transition:background .12s }
+.cn-nav-item.on{ color:var(--accent) }
+.cn-nav-item.on .cn-nav-ic{ color:var(--accent) }
 .cn-nav-item:hover,.cn-nav-item:active{ background:rgba(220,190,150,.09) }
 .cn-nav-ic{ width:20px; text-align:center; opacity:.85 }
 .cn-nav-sep{ height:1px; background:rgba(220,190,150,.12); margin:8px 22px }
@@ -2267,11 +2268,9 @@
   <canvas id="constelCanvas"></canvas>
   <div class="constel-top">
     <button class="constel-close" id="constelMenu" title="Меню" aria-label="Меню">☰</button>
-    <button class="constel-listbtn" id="constelListBtn" title="Список — тот же граф списком">≣<span>Список</span></button>
+    <button class="constel-listbtn" id="constelListBtn" title="Показать списком">Список</button>
     <div class="constel-ttl">Созвездие<span id="constelCount"></span></div>
     <button class="constel-reset" id="constelReset" title="Показать всё">⊙</button>
-    <button class="constel-legend" id="constelDepthBtn" title="Глубина: из чего объяснены эффекты">глубина</button>
-    <button class="constel-legend" id="constelLegendBtn" title="Цвета дисциплин">цвета</button>
   </div>
   <div class="constel-hint" id="constelHint">одним пальцем — двигать · щипком — приблизить · двумя пальцами — повернуть</div>
   <div class="constel-chip" id="constelChip" style="display:none">
@@ -2283,9 +2282,9 @@
   <div id="cnNav" class="cn-nav" style="display:none">
     <div class="cn-nav-scrim" id="cnNavScrim"></div>
     <nav class="cn-nav-panel">
-      <div class="cn-nav-h">Навигация</div>
-      <button class="cn-nav-item" id="cnNavMap"><span class="cn-nav-ic">≣</span>Список</button>
-      <button class="cn-nav-item" id="cnNavBook"><span class="cn-nav-ic">📖</span>Книга</button>
+      <div class="cn-nav-h">Вид графа</div>
+      <button class="cn-nav-item" id="constelDepthBtn"><span class="cn-nav-ic">◐</span>Глубина</button>
+      <button class="cn-nav-item" id="constelLegendBtn"><span class="cn-nav-ic">◉</span>Цвета дисциплин</button>
       <div class="cn-nav-sep"></div>
       <div class="cn-nav-acct" id="cnNavAcct"></div>
       <button class="cn-nav-item" id="cnNavLogout">Выйти</button>
@@ -6307,7 +6306,9 @@
       matchastSub='graph';
       if(_app) _app.style.display='none';
       var s1=document.getElementById('shelf'); if(s1) s1.style.display='none';
-      openKbMode();
+      var k0=document.getElementById('kbMode'); if(k0) k0.style.display='none';   // космос — сразу, без подложки-списка
+      try{ closeMenus(); }catch(_){}
+      if(!KBM.loaded && SB) kbmLoad();                                            // данные грузим, не показывая список
       if(!CN.on){ if(KBM.loaded && (KBM.nodes||[]).length) cnOpen(); else cnLandStart(); }
     } else if(name==='base'){
       matchastSub='list';
@@ -6336,8 +6337,6 @@
     var lb=document.getElementById('constelListBtn'); if(lb) lb.onclick=function(){ setView('base'); };
     var cm=document.getElementById('constelMenu'); if(cm) cm.onclick=cnNavOpen;
     var ns=document.getElementById('cnNavScrim'); if(ns) ns.onclick=cnNavClose;
-    var nMap=document.getElementById('cnNavMap'); if(nMap) nMap.onclick=function(){ cnNavClose(); setView('base'); };
-    var nBook=document.getElementById('cnNavBook'); if(nBook) nBook.onclick=function(){ cnNavClose(); setView('books'); };
     var nOut=document.getElementById('cnNavLogout'); if(nOut) nOut.onclick=function(){ cnNavClose(); logout(); };
     var nAdm=document.getElementById('cnNavAdmin'); if(nAdm) nAdm.onclick=function(){ cnNavClose(); cnClose(); var b=document.getElementById('btnAdmin'); if(b) b.click(); };
     var nDsp=document.getElementById('cnNavDispatch'); if(nDsp) nDsp.onclick=function(){ cnNavClose(); cnClose(); openDispatch(); };
@@ -6345,10 +6344,10 @@
       var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
       if(reduce){ CN.yaw=0; CN.pitch=0; CN.rotTarget=null; } else { CN.rotTarget={yaw:0,pitch:0}; }
       var f=cnFitCam(); if(f){ CN.target=f; } cnKick(); };
-    var lg=document.getElementById('constelLegendBtn'); if(lg) lg.onclick=cnLegendToggle;
+    var lg=document.getElementById('constelLegendBtn'); if(lg) lg.onclick=function(){ cnLegendToggle(); cnNavClose(); };
     var db=document.getElementById('constelDepthBtn');
     if(db) db.onclick=function(){
-      var nd=!CN.depth; cnLegendHide(); cnMorphTo(nd); db.classList.toggle('on',nd);
+      var nd=!CN.depth; cnLegendHide(); cnMorphTo(nd); db.classList.toggle('on',nd); cnNavClose();
       var cnt=document.getElementById('constelCount');
       if(cnt){ if(nd){ var wc=0; CN.nodes.forEach(function(n){ if(n.weighted) wc++; }); cnt.textContent=' · глубина: '+wc+' из '+CN.nodes.length; } else { cnt.textContent=' · '+CN.nodes.length+' идей'; } }
     };
