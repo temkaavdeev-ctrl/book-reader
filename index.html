@@ -1496,6 +1496,25 @@
   .kbm-scen-banner-go{ font-size:20px; color:#6fa3d8; flex-shrink:0 }
   /* Situation list */
   .kbm-scen-intro{ font-size:13.5px; color:var(--muted); line-height:1.5; margin:4px 2px 14px }
+  .kbm-goal-intro{ font-size:13.5px; color:var(--muted); line-height:1.5; margin:4px 2px 16px }
+  .kbm-goal-sec{ margin:0 0 20px }
+  .kbm-goal-sec-lbl{ display:flex; align-items:center; gap:7px; font-size:11.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--muted); margin:0 2px 10px }
+  .kbm-goal-sec-ic{ font-size:13px; color:var(--accent); opacity:.9 }
+  .kbm-goal-empty{ font-size:13px; color:var(--muted); opacity:.85; padding:11px 13px; border:1px dashed var(--line); border-radius:13px }
+  .kbm-goal-all{ display:block; width:100%; text-align:center; margin:4px 0 6px; padding:13px; font-size:13px; font-weight:600; color:var(--muted); background:transparent; border:1px solid var(--line); border-radius:13px; cursor:pointer; font-family:inherit; transition:border-color .15s,color .15s }
+  .kbm-goal-all:hover{ color:var(--accent); border-color:var(--accent) }
+  .kbm-grid-intro{ font-size:13.5px; color:var(--muted); line-height:1.5; margin:4px 2px 16px }
+  .kbm-grid-list{ display:flex; flex-direction:column; gap:12px }
+  .kbm-grid-card{ background:var(--card); border:1.5px solid var(--line); border-radius:16px; padding:14px 15px }
+  .kbm-grid-task{ font-size:15px; font-weight:700; color:var(--read); margin-bottom:8px }
+  .kbm-grid-mrow{ display:flex; gap:9px; align-items:flex-start; margin:7px 0 }
+  .kbm-grid-mlabel{ flex:0 0 62px; font-size:10.5px; font-weight:700; letter-spacing:.03em; text-transform:uppercase; color:var(--muted); padding-top:8px }
+  .kbm-grid-chips{ display:flex; flex-wrap:wrap; gap:7px; flex:1 1 auto }
+  .kbm-grid-scen{ background:color-mix(in srgb,var(--accent) 9%,var(--card)); border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line)); border-radius:11px; padding:8px 12px; font-size:13px; font-weight:600; color:var(--read); cursor:pointer; font-family:inherit; transition:border-color .15s,background .15s; text-align:left }
+  .kbm-grid-scen:hover{ border-color:var(--accent); background:color-mix(in srgb,var(--accent) 16%,var(--card)) }
+  .kbm-grid-empty{ font-size:11.5px; color:var(--muted); opacity:.55; margin-top:9px; padding-top:9px; border-top:1px dashed var(--line) }
+  .kbm-grid-themes{ display:block; width:100%; text-align:center; margin:16px 0 4px; padding:13px; font-size:13px; font-weight:600; color:var(--muted); background:transparent; border:1px solid var(--line); border-radius:13px; cursor:pointer; font-family:inherit; transition:border-color .15s,color .15s }
+  .kbm-grid-themes:hover{ color:var(--accent); border-color:var(--accent) }
   .kbm-scen-list{ display:flex; flex-direction:column; gap:9px }
   .kbm-scen-tile{ display:block; width:100%; text-align:left; background:var(--card); border:1.5px solid var(--line); border-radius:14px; padding:14px 16px; cursor:pointer; font-family:inherit; transition:border-color .15s,box-shadow .15s,transform .1s }
   .kbm-scen-tile:hover{ border-color:#6fa3d8; box-shadow:0 4px 16px rgba(0,0,0,.07) }
@@ -5140,6 +5159,7 @@
 
   // ── Overview: region tiles (the "territory" view) ──────────────────────
   function kbmRenderOverview(){
+    if(KBM.lens==='product-lever'){ return kbmRenderTaskGrid(); }
     KBM.region=null;
     var body=document.getElementById('kbmBody'); if(!body) return;
     var listTitle=document.getElementById('kbmListTitle'); if(listTitle) listTitle.textContent='Карта';
@@ -5185,7 +5205,7 @@
           +'<span class="kbm-region-count">'+rg.count+'</span>'
         +'</div>'
         +'<div class="kbm-region-landmarks">'+landmarks+'</div>'
-        +'<span class="kbm-region-go">Открыть регион →</span>'
+        +'<span class="kbm-region-go">'+(KBM.lens==='product-lever'?'Открыть цель':'Открыть регион')+' →</span>'
         +'</button>';
     }).join('')+'</div>';
     if(!body._wired){ body._wired=true;
@@ -5193,9 +5213,139 @@
         var sv=e.target.closest('[data-scenarios-view]'); if(sv){ kbmRenderScenarios(); return; }
         var fv=e.target.closest('[data-findings-view]'); if(fv){ kbmRenderFindings(); return; }
         var cv=e.target.closest('[data-core-view]'); if(cv){ kbmRenderCore(); return; }
-        var rt=e.target.closest('[data-region]'); if(rt){ kbmRenderRegion(rt.getAttribute('data-region')); return; }
+        var rt=e.target.closest('[data-region]'); if(rt){ var rn=rt.getAttribute('data-region'); if(KBM.lens==='product-lever') kbmRenderGoal(rn); else kbmRenderRegion(rn); return; }
         var like=e.target.closest('[data-kbm-like]'); if(like){ e.stopPropagation(); kbmLikeToggle(like.getAttribute('data-kbm-like')); return; }
         var cr=e.target.closest('[data-kbm-slug]'); if(cr){ kbmDetail(cr.getAttribute('data-kbm-slug')); return; }
+      });
+    }
+  }
+
+  // ── Task grid (the «По задаче» entry, v3): 8 behavioral TASKS × 4 MOMENTS.
+  // A scenario is the LEAF of a (task × moment) cell; cell → scenario → playbook.
+  // Tasks/moments are tag axes ('task','moment') on scenarios — same machinery as
+  // lenses, surfaced by kb_graph. Headers are data-driven (match Afina's taxonomy).
+  // Empty cells are honest (shown as "готовится"), never silently hidden.
+  var KBM_MOMENT_ORDER=['Вход','Решение','Рутина','Разрыв'];
+  function kbmTagLabels(n, axis){ var o=[]; var t=n.tags||[]; for(var i=0;i<t.length;i++){ if(t[i].axis===axis && t[i].label) o.push(t[i].label); } return o; }
+  function kbmRenderTaskGrid(){
+    KBM.region='__taskgrid__'; KBM.goalView=false;
+    var body=document.getElementById('kbmBody'); if(!body) return;
+    var listTitle=document.getElementById('kbmListTitle'); if(listTitle) listTitle.textContent='По задаче';
+    var scens=KBM.scenarios||[];
+    // grid[task][moment] = [scenarios]; preserve task encounter order
+    var grid={}, taskOrder=[], momentsSeen={}, untagged=[];
+    scens.forEach(function(s){
+      var tasks=kbmTagLabels(s,'task'), moments=kbmTagLabels(s,'moment');
+      if(!tasks.length){ untagged.push(s); return; }
+      tasks.forEach(function(tk){
+        if(!grid[tk]){ grid[tk]={}; taskOrder.push(tk); }
+        var ms=moments.length?moments:['—'];
+        ms.forEach(function(mo){ momentsSeen[mo]=1; if(!grid[tk][mo]) grid[tk][mo]=[]; grid[tk][mo].push(s); });
+      });
+    });
+    // moment columns: canonical order first, then any extras seen
+    var moments=KBM_MOMENT_ORDER.filter(function(m){return momentsSeen[m];});
+    Object.keys(momentsSeen).forEach(function(m){ if(moments.indexOf(m)<0 && m!=='—') moments.push(m); });
+    var cnt=document.getElementById('kbmCount'); if(cnt) cnt.textContent=taskOrder.length+' задач · '+moments.length+' момента';
+    if(!taskOrder.length){
+      var cnt0=document.getElementById('kbmCount'); if(cnt0) cnt0.textContent='';
+      body.innerHTML='<div class="kbm-grid-intro">Сценарии ещё размечаются по поведенческим задачам — сетка появится, когда разметка зальётся. Пока можно полистать концепты по темам.</div>'
+        +'<button class="kbm-grid-themes" data-grid-themes="1">Полистать концепты по темам →</button>';
+      if(!body._wiredGrid){ body._wiredGrid=true;
+        body.addEventListener('click',function(ev){
+          var gs=ev.target.closest('[data-grid-scen]'); if(gs){ kbmScenarioPlaybook(gs.getAttribute('data-grid-scen')); return; }
+          var th=ev.target.closest('[data-grid-themes]'); if(th){ kbmRenderThemes(); return; }
+        });
+      }
+      return;
+    }
+    var intro='<div class="kbm-grid-intro">Что нужно сделать? Поведенческая задача × момент пути. Выбери ситуацию — откроется её плейбук: силы, ловушки, инструменты.</div>';
+    var cards=taskOrder.map(function(tk){
+      var mrows=moments.map(function(m){
+        var list=grid[tk][m]||[];
+        if(!list.length) return '';
+        var chips=list.map(function(s){ return '<button class="kbm-grid-scen" data-grid-scen="'+escapeHtml(s.slug)+'">'+escapeHtml(s.title)+'</button>'; }).join('');
+        return '<div class="kbm-grid-mrow"><span class="kbm-grid-mlabel">'+escapeHtml(m)+'</span><div class="kbm-grid-chips">'+chips+'</div></div>';
+      }).join('');
+      var empties=moments.filter(function(m){ return !(grid[tk][m]||[]).length; });
+      var emptyNote=empties.length?'<div class="kbm-grid-empty">'+empties.map(escapeHtml).join(' · ')+' — готовится</div>':'';
+      return '<div class="kbm-grid-card"><div class="kbm-grid-task">'+escapeHtml(tk)+'</div>'+mrows+emptyNote+'</div>';
+    }).join('');
+    var themeLink='<button class="kbm-grid-themes" data-grid-themes="1">Полистать концепты по темам →</button>';
+    body.innerHTML=intro+'<div class="kbm-grid-list">'+cards+'</div>'+themeLink;
+    if(!body._wiredGrid){ body._wiredGrid=true;
+      body.addEventListener('click',function(ev){
+        var gs=ev.target.closest('[data-grid-scen]'); if(gs){ kbmScenarioPlaybook(gs.getAttribute('data-grid-scen')); return; }
+        var th=ev.target.closest('[data-grid-themes]'); if(th){ kbmRenderThemes(); return; }
+      });
+    }
+  }
+
+  // Secondary thematic browse — regions DEMOTED out of the primary «По задаче» axis
+  // (v3): reachable as an optional theme filter, each theme → the interim goal sheet.
+  function kbmRenderThemes(){
+    KBM.region='__themes__'; KBM.goalView=false;
+    var body=document.getElementById('kbmBody'); if(!body) return;
+    var listTitle=document.getElementById('kbmListTitle'); if(listTitle) listTitle.textContent='Темы';
+    var regions=kbmRegions('product-lever');
+    var cnt=document.getElementById('kbmCount'); if(cnt) cnt.textContent=regions.length+' тем';
+    var maxCount=regions.length?regions[0].count:1;
+    body.innerHTML='<button class="kbm-region-back" data-themes-back="1">← К задачам</button>'
+      +'<div class="kbm-grid-intro">Темы — это бизнес-разрез (Рост, Удержание, Цена…), ортогональный поведенческим задачам. Для «просто полистать тему», не как вход-от-задачи.</div>'
+      +'<div class="kbm-regions">'+regions.map(function(rg){
+        var pct=Math.round(rg.count/maxCount*100);
+        return '<button class="kbm-region-tile" data-region="'+escapeHtml(rg.region)+'" style="--rc:'+rg.color+'">'
+          +'<div class="kbm-region-bar"><div class="kbm-region-bar-fill" style="width:'+pct+'%"></div></div>'
+          +'<div class="kbm-region-head"><span class="kbm-region-name">'+escapeHtml(rg.region)+'</span><span class="kbm-region-count">'+rg.count+'</span></div>'
+          +'<span class="kbm-region-go">Открыть тему →</span>'
+          +'</button>';
+      }).join('')+'</div>';
+    if(!body._wiredThemes){ body._wiredThemes=true;
+      body.addEventListener('click',function(ev){
+        var tb=ev.target.closest('[data-themes-back]'); if(tb){ kbmRenderTaskGrid(); return; }
+        var rt=ev.target.closest('[data-region]'); if(rt){ kbmRenderGoal(rt.getAttribute('data-region')); return; }
+      });
+    }
+  }
+
+  // ── Goal sheet (product-lever lens): a GOAL (region) opens to its curated
+  // SITUATIONS + skeleton (core concepts) — the funnel goal → situation → forces.
+  // The flat wall of every concept becomes a secondary overview behind a link.
+  function kbmRenderGoal(region){
+    KBM.region=region; KBM.goalView=true;
+    var body=document.getElementById('kbmBody'); if(!body) return;
+    var listTitle=document.getElementById('kbmListTitle'); if(listTitle) listTitle.textContent=kbmShortTitle(region);
+    function inGoal(n){ var t=n.tags||[]; for(var i=0;i<t.length;i++){ if(t[i].axis==='product-lever' && t[i].label===region) return true; } return false; }
+    var sits=(KBM.scenarios||[]).filter(inGoal).sort(function(a,b){ return (b.degree||0)-(a.degree||0); });
+    var core=(KBM.nodes||[]).filter(function(n){ return inGoal(n) && kbmIsCore(n); }).sort(kbmRank);
+    var allCount=(KBM.nodes||[]).filter(inGoal).length;
+    var cnt=document.getElementById('kbmCount'); if(cnt) cnt.textContent=sits.length+' ситуаций · '+allCount+' концептов';
+    var edgeMap=kbmScenEdgeMap();
+    var sitHtml = sits.length ? sits.map(function(s){
+        var e=edgeMap[s.slug]||{forces:[],traps:[],tools:[],adjacent:[]};
+        var claim=(s.claim||'').slice(0,100)+((s.claim||'').length>100?'…':'');
+        var chips='';
+        if(e.forces.length) chips+='<span class="kbm-scen-chip">'+e.forces.length+' сил</span>';
+        if(e.traps.length) chips+='<span class="kbm-scen-chip kbm-scen-chip-trap">⚠ '+e.traps.length+'</span>';
+        if(e.tools.length) chips+='<span class="kbm-scen-chip">'+e.tools.length+' инстр.</span>';
+        return '<button class="kbm-scen-tile" data-goal-scen="'+escapeHtml(s.slug)+'">'
+          +'<div class="kbm-scen-tile-title">'+escapeHtml(s.title)+'</div>'
+          +(claim?'<div class="kbm-scen-tile-claim">'+escapeHtml(claim)+'</div>':'')
+          +(chips?'<div class="kbm-scen-tile-chips">'+chips+'</div>':'')
+          +'</button>';
+      }).join('')
+      : '<div class="kbm-goal-empty">Ситуации для этой цели ещё не выделены — начни с костяка ниже.</div>';
+    var coreHtml = core.length ? '<div class="kbm-concept-list">'+core.map(kbmConceptRow).join('')+'</div>'
+      : '<div class="kbm-goal-empty">Несущие концепты для этой цели ещё не отмечены.</div>';
+    body.innerHTML='<button class="kbm-region-back" data-region-back="1">← Все цели</button>'
+      +'<div class="kbm-goal-intro">Цель «'+escapeHtml(region)+'». Начни с ситуации — конкретного момента работы. Костяк ниже — несущие идеи, на которых эта цель держится.</div>'
+      +'<div class="kbm-goal-sec"><div class="kbm-goal-sec-lbl"><span class="kbm-goal-sec-ic">▦</span> Ситуации — с чего начать</div><div class="kbm-scen-list">'+sitHtml+'</div></div>'
+      +'<div class="kbm-goal-sec"><div class="kbm-goal-sec-lbl"><span class="kbm-goal-sec-ic">★</span> Костяк цели</div>'+coreHtml+'</div>'
+      +'<button class="kbm-goal-all" data-goal-all="'+escapeHtml(region)+'">Показать все '+allCount+' концептов цели →</button>';
+    if(!body._wiredGoal){ body._wiredGoal=true;
+      body.addEventListener('click',function(ev){
+        var ga=ev.target.closest('[data-goal-all]'); if(ga){ kbmRenderRegion(ga.getAttribute('data-goal-all')); return; }
+        var sc=ev.target.closest('[data-goal-scen]'); if(sc){ kbmScenarioPlaybook(sc.getAttribute('data-goal-scen')); return; }
       });
     }
   }
@@ -6196,7 +6346,7 @@
 
   // ── Region drill-in: concepts + tension lines out of region ────────────
   function kbmRenderRegion(region){
-    KBM.region=region;
+    KBM.region=region; KBM.goalView=false;
     var body=document.getElementById('kbmBody'); if(!body) return;
     var regions=kbmRegions(KBM.lens);
     var rg=regions.filter(function(r){return r.region===region;})[0];
@@ -6284,6 +6434,9 @@
       else if(KBM.region==='__findings__') kbmRenderFindings();
       else if(KBM.region==='__finding__' && KBM.findingSlug) kbmFindingDetail(KBM.findingSlug);
       else if(KBM.region==='__law__' && KBM.lawSlug) kbmLawDetail(KBM.lawSlug);
+      else if(KBM.region==='__taskgrid__') kbmRenderTaskGrid();
+      else if(KBM.region==='__themes__') kbmRenderThemes();
+      else if(KBM.region && KBM.goalView) kbmRenderGoal(KBM.region);
       else if(KBM.region) kbmRenderRegion(KBM.region);
       else kbmRenderOverview();
     }
