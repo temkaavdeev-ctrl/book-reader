@@ -462,8 +462,6 @@
   /* ---------- shelf ---------- */
   #shelf{position:fixed; inset:0; z-index:44; background:var(--bg); display:none; align-items:flex-start; justify-content:center; overflow:auto}
   /* The shelf recedes as the book opens — a brief fade+lift rather than a hard cut */
-  #shelf.shelf-dismiss{ animation:shelfDismiss .2s ease-in forwards }
-  @keyframes shelfDismiss{ from{opacity:1; transform:scale(1)} to{opacity:0; transform:scale(.985)} }
   .shelf-inner{width:100%; max-width:760px; padding:44px 28px 80px}
   .shelf-top{display:flex; align-items:center; justify-content:space-between; margin-bottom:28px}
   .shelf-top h2{font-size:28px; letter-spacing:-.025em; margin:0; font-weight:700}
@@ -1401,9 +1399,6 @@
   .kbm-back-lbl{ font-size:12px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:120px; font-family:var(--font-mono) }
 
   /* ===== Shelf: Карта знаний entry card ===== */
-  .book-cover-kb{ display:flex; align-items:center; justify-content:center; font-size:42px; background:linear-gradient(140deg, color-mix(in srgb,var(--accent) 22%,var(--card)), color-mix(in srgb,var(--accent) 8%,var(--card))) !important; color:var(--accent) }
-  .book-card-kb .book-title{ margin-top:8px }
-  .bp-lbl-kb{ color:var(--accent); font-weight:700 }
 
   /* ===== Dispatch: mobile tab selector (replaces 8-tab scroll on phones) ===== */
   .dsp-tabsel{ display:none; position:relative; padding:10px 14px; border-bottom:1px solid var(--line); flex:0 0 auto }
@@ -1687,8 +1682,6 @@
   @media(max-width:400px){ .kbm-head .kbm-count{ display:none } }
 
   #constel{ position:fixed; inset:0; z-index:45; background:#0e0c0a; overscroll-behavior:none; touch-action:none }
-  #constel.constel-enter{ animation:none }
-  @keyframes constelEnter{ from{ opacity:0 } to{ opacity:1 } }
   #constelCanvas{ position:absolute; inset:0; width:100%; height:100%; display:block; cursor:grab; touch-action:none; -webkit-user-select:none; user-select:none; -webkit-touch-callout:none }
   #constelCanvas:active{ cursor:grabbing }
   .constel-top{ position:absolute; top:0; left:0; right:0; display:flex; align-items:center; gap:12px; padding:calc(12px + env(safe-area-inset-top,0px)) 16px 12px; background:linear-gradient(#0e0c0aee, #0e0c0a00); pointer-events:none; z-index:2 }
@@ -1698,11 +1691,8 @@
   .constel-reset{ margin-left:auto }
   .constel-ttl{ font-family:var(--font-ui); font-size:16px; font-weight:700; color:#f0e4d2; letter-spacing:-.01em; text-shadow:0 1px 4px rgba(0,0,0,.6) }
   .constel-ttl span{ font-weight:400; color:#b7a892; font-size:13px }
-  .constel-legend{ height:38px; padding:0 14px; border-radius:19px; border:1px solid rgba(220,190,150,.22); background:rgba(30,24,18,.7); color:#e8d9c5; font-family:var(--font-ui); font-size:13px; font-weight:600; cursor:pointer; backdrop-filter:blur(8px); display:flex; align-items:center; gap:6px; transition:border-color .15s; white-space:nowrap }
-  .constel-legend:hover{ border-color:rgba(220,190,150,.5) }
   .constel-listbtn{ height:42px; padding:0 18px; border-radius:21px; border:1px solid color-mix(in srgb,var(--accent) 45%,var(--line-2)); background:linear-gradient(135deg, color-mix(in srgb,var(--accent) 30%,transparent), color-mix(in srgb,var(--accent) 10%,transparent)); color:var(--accent); font-family:var(--font-ui); font-size:14.5px; font-weight:600; cursor:pointer; backdrop-filter:blur(8px); display:flex; align-items:center; gap:6px; transition:border-color .15s,background .15s; white-space:nowrap }
   .constel-listbtn:hover{ border-color:var(--accent); background:color-mix(in srgb,var(--accent) 20%,transparent) }
-  .constel-legend.on{ border-color:rgba(220,190,150,.6); background:rgba(46,37,26,.82) }
   #constelLegend{ position:absolute; left:16px; right:16px; bottom:calc(24px + env(safe-area-inset-bottom,0px)); max-width:340px; margin:0 auto; background:rgba(22,17,12,.93); border:1px solid rgba(220,190,150,.24); border-radius:16px; padding:14px 16px; backdrop-filter:blur(12px); box-shadow:0 12px 40px rgba(0,0,0,.5); z-index:3; animation:constelChipIn .22s cubic-bezier(.34,1.2,.5,1) }
   .cn-leg-ttl{ font-family:var(--font-mono); font-size:10.5px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:#b7a892; margin-bottom:8px }
   .cn-leg-row{ display:flex; align-items:center; gap:9px; padding:3px 0 }
@@ -4930,7 +4920,7 @@
       box.appendChild(card);
     });
   }
-  function showShelf(){ renderShelf(); var s=document.getElementById('shelf'); s.classList.remove('shelf-dismiss'); s.style.display='flex'; }
+  function showShelf(){ renderShelf(); }
   function hideShelf(){
     var s=document.getElementById('shelf');
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
@@ -4940,7 +4930,7 @@
     setTimeout(function(){ s.style.display='none'; s.classList.remove('shelf-dismiss'); }, 200);
   }
   async function openBook(id){
-    hideShelf(); setView('text');
+    setView('text');
     if(state.book!==id){ state.book=id; state.chapter=null; }
     BOOK=[]; BYID={}; showSkeleton(); saveState();
     await loadContent();
@@ -4952,7 +4942,7 @@
     renderTOC(); renderChapter(); refreshPanel(); updateCount(); renderReactBar(); applyRoleUI();
   }
   (function(){ var b=document.getElementById('btnShelf'); if(b) b.onclick=function(){ try{closeMenus();}catch(_){ } setView('books'); };
-    var c=document.getElementById('shelfClose'); if(c) c.onclick=hideShelf; })();
+    var c=document.getElementById('shelfClose'); if(c) c.onclick=function(){ setView('books'); }; })();
 
   // ── KB Mode («База знаний») ───────────────────────────────────────────────
   var KBM={nodes:[],edges:[],scenarios:[],bySlug:{},findings:{conjectures:[],laws:[]},conjByNode:{},likes:new Set(),loaded:false,liker:null,currentSlug:null,bundles:{},memberships:{},miniFocus:null,
@@ -4985,7 +4975,6 @@
   }
 
   function openKbMode(){ closeMenus();
-    document.getElementById('kbMode').style.display='flex';
     if(!KBM.loaded){
       if(!SB){ var b=document.getElementById('kbmBody'); if(b) b.innerHTML='<div class="dsp-load">Войдите в читалку чтобы видеть карту.</div>'; return; }
       kbmLoad();
@@ -6282,8 +6271,9 @@
     if(!SB || !USER) return;
     if(landingMode()!=='constel') return;
     _constelLanded=true;
-    openKbMode();        // backdrop = Карта; this also kicks off kbmLoad()
-    if(!CN.on) cnLandStart();   // cosmos now (only if not already up); stars assemble when the graph arrives
+    showView('cosmos');         // космос сразу, без подложки-списка
+    if(!KBM.loaded) kbmLoad();   // данные подтянутся; звёзды соберутся, когда граф придёт
+    if(!CN.on) cnLandStart();
   }
 
   // ===== Этап 1: единая вселенная как дом; виды-пиры; нижний таб-бар =====
@@ -6298,33 +6288,35 @@
       b.classList.toggle('tab-on', b.getAttribute('data-view')===active);
     });
   }
+  // ── Роутер видов ──────────────────────────────────────────────────────────
+  // Единственный, кто переключает верхние виды: прячет все четыре слоя, показывает
+  // активный. Один источник истины ⇒ «два экрана разом» и «чужой слой снизу»
+  // становятся невозможны структурно (а не по внимательности).
+  function showView(which){
+    var L=[['reader','app','flex'],['list','kbMode','flex'],['shelf','shelf','flex'],['cosmos','constel','block']];
+    for(var i=0;i<L.length;i++){ var el=document.getElementById(L[i][1]); if(el) el.style.display=(L[i][0]===which)?L[i][2]:'none'; }
+  }
   var matchastSub='graph'; // 'graph' | 'list' — the active view INSIDE «Матчасть» (one surface, in-place toggle)
   function setView(name){
     if(name==='matchast'){ name=(matchastSub==='list')?'base':'constel'; }
-    var _app=document.getElementById('app');
     if(name==='constel'){
       matchastSub='graph';
-      if(_app) _app.style.display='none';
-      var s1=document.getElementById('shelf'); if(s1) s1.style.display='none';
-      var k0=document.getElementById('kbMode'); if(k0) k0.style.display='none';   // космос — сразу, без подложки-списка
+      showView('cosmos');                                  // видимость — через единственного хозяина
       try{ closeMenus(); }catch(_){}
-      if(!KBM.loaded && SB) kbmLoad();                                            // данные грузим, не показывая список
+      if(!KBM.loaded && SB) kbmLoad();                      // данные грузим, список не показываем
       if(!CN.on){ if(KBM.loaded && (KBM.nodes||[]).length) cnOpen(); else cnLandStart(); }
     } else if(name==='base'){
       matchastSub='list';
-      if(_app) _app.style.display='none';
-      var s2=document.getElementById('shelf'); if(s2) s2.style.display='none';
-      cnClose(); openKbMode(); kbmShowList();
+      if(CN.on) cnClose();
+      showView('list');
+      openKbMode(); kbmShowList();
     } else if(name==='books'){
-      if(_app) _app.style.display='none';
-      cnClose();
-      var k1=document.getElementById('kbMode'); if(k1) k1.style.display='none';
-      showShelf();
+      if(CN.on) cnClose();
+      showView('shelf');
+      renderShelf();
     } else if(name==='text'){
-      if(_app) _app.style.display='flex';
-      cnClose();
-      var k2=document.getElementById('kbMode'); if(k2) k2.style.display='none';
-      var s3=document.getElementById('shelf'); if(s3) s3.style.display='none';
+      if(CN.on) cnClose();
+      showView('reader');
     }
     _view=name; tabbarSync(name); showTabbar(true);
   }
@@ -6853,7 +6845,6 @@
 
   (function(){
     var btnKb=document.getElementById('btnKbMode'); if(btnKb) btnKb.onclick=function(){ try{closeMenus();}catch(_){ } setView('base'); };
-    var btnClose=document.getElementById('kbmClose'); if(btnClose) btnClose.onclick=closeKbMode;
     var btnBack=document.getElementById('kbmDetBack'); if(btnBack) btnBack.onclick=kbmGoBack;
     var qEl=document.getElementById('kbmQ'); if(qEl){
       var t; qEl.addEventListener('input',function(){
@@ -7872,13 +7863,13 @@
     // том же кадре) — чтобы не было «книга, а потом наскок созвездия». Звёзды соберутся, когда придёт граф.
     var hasToken=false; try{ hasToken=Object.keys(localStorage).some(function(k){ return /^sb-.*-auth-token$/.test(k); }); }catch(_){}
     var wantConstel=(landingMode()==='constel');
-    if(wantConstel && hasToken){ cnLandStart(); _view='constel'; tabbarSync('constel'); showTabbar(true); }
-    else if(hasToken){ var _ba=document.getElementById('app'); if(_ba) _ba.style.display='flex'; _view='text'; tabbarSync('text'); showTabbar(true); }
+    if(wantConstel && hasToken){ showView('cosmos'); cnLandStart(); _view='constel'; tabbarSync('constel'); showTabbar(true); }
+    else if(hasToken){ showView('reader'); _view='text'; tabbarSync('text'); showTabbar(true); }
     if(cached || (wantConstel && hasToken)) hideSplash();
     SB.auth.onAuthStateChange(function(ev, session){ onAuth(session); });
     var got=await SB.auth.getSession();
     var sess = got.data && got.data.session;
-    if(!sess){ cnClose(); showGate('login'); }   // на деле не залогинен → убрать космос, показать вход
+    if(!sess){ cnClose(); showView('none'); showGate('login'); }   // на деле не залогинен → убрать все виды, показать вход
     hideSplash();
     await onAuth(sess);
   })();
