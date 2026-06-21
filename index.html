@@ -1999,6 +1999,105 @@
 .boot-glyph svg{ width:54px; height:54px; display:block; }
 .auth-glyph{ margin-bottom:14px; line-height:0; }
 .auth-glyph svg{ width:46px; height:46px; display:block; }
+
+/* ── Атом «Ликбез»: страница-разбор ── */
+.atom-view{ position:fixed; inset:0; z-index:240; background:var(--bg); display:none; overflow-y:auto; -webkit-overflow-scrolling:touch }
+.atom-view.open{ display:block }
+.atom-wrap{ max-width:680px; margin:0 auto; padding:54px 22px 80px; position:relative }
+.atom-close{ position:fixed; top:14px; right:14px; z-index:2; width:38px; height:38px; border-radius:50%; border:1px solid var(--line); background:var(--card); color:var(--muted); font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center }
+.atom-close:hover{ color:var(--ink) }
+.atom-load,.atom-empty{ color:var(--muted); padding:40px 4px; font-size:15px }
+.atom-icon{ width:46px; height:46px; color:var(--accent); margin:0 0 18px }
+.atom-icon svg{ width:100%; height:100% }
+.atom-body{ font-family:var(--font-read); font-size:17px; line-height:1.66; color:var(--read) }
+.atom-body h1{ font-size:27px; line-height:1.2; color:var(--ink); margin:0 0 18px; letter-spacing:-.02em }
+.atom-body h2{ font-size:20px; color:var(--ink); margin:34px 0 12px; letter-spacing:-.01em }
+.atom-body p{ margin:0 0 16px }
+.atom-body strong{ color:var(--ink); font-weight:650 }
+.atom-body ul{ margin:0 0 16px; padding-left:22px }
+.atom-body li{ margin-bottom:7px }
+.atom-body code{ font-family:var(--font-mono); font-size:.92em; background:var(--card); padding:1px 5px; border-radius:5px }
+.nodelink{ color:var(--accent); text-decoration:none; border-bottom:1px solid color-mix(in srgb,var(--accent) 38%,transparent); cursor:pointer; font-weight:550 }
+.nodelink:hover{ border-bottom-color:var(--accent) }
+.atom-entry-btn{ display:flex; align-items:center; gap:10px; width:100%; box-sizing:border-box; padding:13px 15px; margin:0 0 14px; border:1px solid color-mix(in srgb,var(--accent) 32%,var(--line)); background:color-mix(in srgb,var(--accent) 8%,var(--card)); color:var(--ink); border-radius:13px; font-family:inherit; font-size:15px; font-weight:650; cursor:pointer; text-align:left }
+.atom-entry-ic{ width:24px; height:24px; color:var(--accent); flex:none; display:flex }
+.atom-entry-ic svg{ width:100%; height:100% }
+.atom-entry-tx{ flex:1 }
+.atom-entry-arr{ color:var(--accent); font-size:17px }
+.atom-sci{ margin:30px 0 0; border:1px solid var(--line); border-radius:12px; background:var(--card); overflow:hidden }
+.atom-sci-sum{ list-style:none; cursor:pointer; padding:13px 16px; font-family:var(--font-mono); font-size:12px; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); display:flex; align-items:center; gap:8px }
+.atom-sci-sum::-webkit-details-marker{ display:none }
+.atom-sci-sum::before{ content:'\25B8'; font-size:10px }
+.atom-sci[open] .atom-sci-sum::before{ content:'\25BE' }
+.atom-sci-body{ padding:4px 16px 16px }
+.atom-sci-row{ display:flex; justify-content:space-between; gap:12px; padding:7px 0; border-top:1px solid var(--line); font-size:14px }
+.atom-sci-k{ color:var(--muted) }
+.atom-sci-v{ color:var(--read); font-weight:600 }
+.atom-sci-note{ font-size:13.5px; color:var(--read); padding:10px 0 2px; line-height:1.5; font-style:italic }
+.atom-sci-warn{ font-size:13px; color:#c2410c; padding:8px 0 0; font-weight:600 }
+.atom-sci-ver{ font-size:12px; color:var(--muted); font-family:var(--font-mono); padding:8px 0 0 }
+.atom-sci-foot{ font-size:12px; color:var(--muted); padding:12px 0 0; line-height:1.45 }
+/* ── диаграммы атома ── */
+.diag{ margin:22px 0; padding:18px; border:1px solid var(--line); border-radius:13px; background:var(--card) }
+.diag-title{ font-size:14px; font-weight:650; color:var(--ink); text-align:center; margin:0 0 14px }
+.diag-scale{ display:block; width:150px; max-width:60%; height:auto; margin:0 auto 14px; color:var(--accent) }
+.diag-bal-cols{ display:flex; align-items:stretch; gap:12px }
+.diag-bal-col{ flex:1; min-width:0 }
+.diag-bal-lbl{ font-size:12.5px; font-weight:650; color:var(--ink); margin:0 0 7px; text-align:center }
+.diag-bal-vs{ display:flex; align-items:center; color:var(--muted); font-size:18px; flex:none }
+.diag-li{ margin:0; padding:0; list-style:none }
+.diag-li li{ font-size:13.5px; color:var(--read); padding:5px 9px; margin-bottom:5px; background:var(--bg); border:1px solid var(--line); border-radius:8px; line-height:1.4; text-align:center }
+.diag-forksvg{ display:block; width:96px; height:auto; margin:0 auto 12px; color:var(--accent) }
+.diag-fork-cols{ display:flex; gap:12px }
+.diag-fork-col{ flex:1; min-width:0; padding:12px; border:1px solid var(--line); border-radius:10px; background:var(--bg) }
+.diag-fork-lbl{ font-size:14px; font-weight:650; color:var(--ink); margin-bottom:5px }
+.diag-fork-note{ font-size:13px; color:var(--read); line-height:1.45 }
+.diag-curvesvg{ display:block; width:220px; max-width:90%; height:auto; margin:0 auto 8px; color:var(--accent) }
+.diag-curve-meta{ display:flex; justify-content:space-between; font-size:11.5px; color:var(--muted); font-family:var(--font-mono); margin-bottom:8px }
+.diag-curve-shape{ font-size:13.5px; color:var(--read); text-align:center; line-height:1.5 }
+.diag-raw{ font-family:var(--font-mono); font-size:12px; color:var(--muted); white-space:pre-wrap }
+@media(max-width:560px){
+  .diag-bal-cols{ flex-direction:column } .diag-bal-vs{ justify-content:center; transform:rotate(90deg) }
+  .diag-fork-cols{ flex-direction:column }
+}
+
+/* ── Серия «Ликбез» на полке ── */
+.series-card{ position:relative }
+.series-badge{ position:absolute; top:10px; right:10px; font-family:var(--font-mono); font-size:9.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); background:color-mix(in srgb,var(--accent) 12%,var(--card)); border:1px solid color-mix(in srgb,var(--accent) 28%,transparent); padding:2px 7px; border-radius:20px }
+.series-cover{ background:color-mix(in srgb,var(--accent) 16%,var(--card)) !important; color:var(--accent) !important; border:1px solid color-mix(in srgb,var(--accent) 30%,transparent) }
+/* оверлей-оглавление серии */
+.series-view{ position:fixed; inset:0; z-index:235; background:var(--bg); display:none; overflow-y:auto; -webkit-overflow-scrolling:touch }
+.series-view.open{ display:block }
+.series-wrap{ max-width:640px; margin:0 auto; padding:56px 22px 70px; position:relative }
+.series-head{ margin:6px 0 24px }
+.series-kicker{ font-family:var(--font-mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin-bottom:8px }
+.series-title{ font-size:30px; line-height:1.1; color:var(--ink); margin:0 0 10px; letter-spacing:-.02em }
+.series-tagline{ font-size:16px; line-height:1.5; color:var(--read); margin:0 }
+.series-list{ display:flex; flex-direction:column; gap:10px }
+.series-ch{ display:flex; align-items:flex-start; gap:13px; width:100%; box-sizing:border-box; text-align:left; padding:15px 16px; border:1px solid var(--line); background:var(--card); border-radius:14px; cursor:pointer; font-family:inherit; color:var(--ink); transition:border-color .15s, background .15s }
+.series-ch:hover{ border-color:color-mix(in srgb,var(--accent) 40%,var(--line)); background:color-mix(in srgb,var(--accent) 5%,var(--card)) }
+.series-ch-n{ font-family:var(--font-mono); font-size:12px; color:var(--muted); padding-top:3px; min-width:14px }
+.series-ch-ic{ width:26px; height:26px; color:var(--accent); flex:none; display:flex; padding-top:1px }
+.series-ch-ic svg{ width:100%; height:100% }
+.series-ch-tx{ flex:1; min-width:0 }
+.series-ch-t{ display:block; font-size:16px; font-weight:650; color:var(--ink); margin-bottom:4px }
+.series-ch-d{ display:block; font-size:13.5px; line-height:1.5; color:var(--muted) }
+.series-ch-arr{ color:var(--accent); font-size:17px; padding-top:2px; flex:none }
+.series-foot{ margin:24px 0 0; font-size:13px; color:var(--muted); text-align:center; line-height:1.5 }
+
+/* ── Вид «Меню» (top-level вкладка) ── */
+#menuView{ position:fixed; inset:0; z-index:30; overflow-y:auto; -webkit-overflow-scrolling:touch; background:var(--bg); padding-bottom:84px }
+.menu-view{ max-width:640px; margin:0 auto; padding:48px 20px 40px }
+.menu-v-head{ margin:0 0 20px }
+.menu-v-title{ font-size:26px; color:var(--ink); margin:0; letter-spacing:-.02em }
+.menu-v-list{ display:flex; flex-direction:column; gap:8px }
+.menu-v-row{ display:flex; align-items:center; gap:12px; width:100%; box-sizing:border-box; text-align:left; padding:15px 16px; border:1px solid var(--line); background:var(--card); border-radius:13px; cursor:pointer; font-family:inherit; color:var(--ink); transition:border-color .15s, background .15s }
+.menu-v-row:hover{ border-color:color-mix(in srgb,var(--accent) 35%,var(--line)); background:color-mix(in srgb,var(--accent) 4%,var(--card)) }
+.menu-v-tx{ flex:1; min-width:0 }
+.menu-v-t{ display:block; font-size:15.5px; font-weight:600; color:var(--ink) }
+.menu-v-s{ display:block; font-size:12.5px; color:var(--muted); margin-top:2px }
+.menu-v-arr{ color:var(--muted); font-size:20px; flex:none; line-height:1 }
+.menu-v-sec{ font-family:var(--font-mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin:18px 0 4px 4px }
 </style>
 </head>
 <body>
@@ -2176,6 +2275,9 @@
   <div class="dsp-body" id="dspBody"></div>
 </div>
 <div id="kbCard" class="kb-card-ov"></div>
+<div id="atomView" class="atom-view" aria-hidden="true"></div>
+<div id="seriesView" class="series-view" aria-hidden="true"></div>
+<div id="menuView" style="display:none"><div id="menuViewBody" class="menu-view"></div></div>
 
 <!-- margin map (mark position indicators) -->
 <div id="marginMap" aria-hidden="true"></div>
@@ -2446,8 +2548,11 @@
   </div>
 </div>
 <nav id="tabbar" aria-label="Навигация">
-  <button class="tab" data-view="matchast" aria-label="Матчасть"><svg class="i" viewBox="0 0 24 24"><circle cx="6" cy="7" r="1.8"/><circle cx="17.5" cy="6" r="1.8"/><circle cx="12" cy="17.5" r="1.8"/><path d="M7.4 8.4l3.4 7.5M15.9 7.4l-2.9 8.2M8 6.8l8-.6"/></svg><span>Матчасть</span></button>
-  <button class="tab" data-view="books" aria-label="Книги"><svg class="i" viewBox="0 0 24 24"><path d="M5 4.5h8.5a1.8 1.8 0 0 1 1.8 1.8v13a1.8 1.8 0 0 0-1.8-1.8H5V4.5z"/><path d="M19 6.5v13"/></svg><span>Книги</span></button>
+  <button class="tab" data-view="matchast" aria-label="Матчасть"><svg class="i" viewBox="0 0 24 24"><rect x="4" y="4" width="6.5" height="6.5" rx="1.2"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.2"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.2"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.2"/></svg><span>Матчасть</span></button>
+  <button class="tab" data-view="constel" aria-label="Созвездие"><svg class="i" viewBox="0 0 24 24"><circle cx="6" cy="7" r="1.8"/><circle cx="17.5" cy="6" r="1.8"/><circle cx="12" cy="17.5" r="1.8"/><path d="M7.4 8.4l3.4 7.5M15.9 7.4l-2.9 8.2M8 6.8l8-.6"/></svg><span>Созвездие</span></button>
+  <button class="tab" data-view="books" aria-label="Полка"><svg class="i" viewBox="0 0 24 24"><path d="M5 4.5h8.5a1.8 1.8 0 0 1 1.8 1.8v13a1.8 1.8 0 0 0-1.8-1.8H5V4.5z"/><path d="M19 6.5v13"/></svg><span>Полка</span></button>
+  <button class="tab" data-view="favorites" aria-label="Избранное"><svg class="i" viewBox="0 0 24 24"><path d="M12 4.2l2.3 4.9 5.3.5-4 3.5 1.2 5.1L12 20.1l-4.9 3.6 1.2-5.1-4-3.5 5.3-.5z"/></svg><span>Избранное</span></button>
+  <button class="tab" data-view="menu" aria-label="Меню"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span>Меню</span></button>
 </nav>
 <div class="toast" id="toast"></div>
 
@@ -3952,7 +4057,56 @@
         html = window.marked.parse ? window.marked.parse(src, {breaks:false, gfm:true, mangle:false, headerIds:false}) : window.marked(src);
       }catch(e){ html = fallbackMd(src); }
     } else { html = fallbackMd(src); }
-    return renderTerms(html);
+    return renderAtomMarks(renderTerms(html));
+  }
+  // Атомные расширения: node:-ссылки на концепты + ```diagram блоки → SVG
+  function unescBasic(s){ return (s||'').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#0?39;/g,"'"); }
+  function renderAtomMarks(html){
+    html = html.replace(/<a href="node:([a-z0-9_-]+)"[^>]*>([\s\S]*?)<\/a>/gi, function(mm, slug, txt){
+      return '<a class="nodelink" data-node="'+escapeHtml(slug)+'" role="link" tabindex="0">'+txt+'</a>';
+    });
+    html = html.replace(/<pre><code class="language-diagram">([\s\S]*?)<\/code><\/pre>/gi, function(mm, spec){
+      try{ return renderDiagram(unescBasic(spec)); }catch(e){ return '<pre class="diag-raw">'+spec+'</pre>'; }
+    });
+    return html;
+  }
+  function dgParse(txt){ var o={}; (txt||'').split('\n').forEach(function(l){ var m=l.match(/^\s*([a-z_]+)\s*:\s*(.*)$/i); if(m) o[m[1].toLowerCase()]=m[2].trim(); }); return o; }
+  function dgItems(s){ return (s||'').split(';').map(function(x){return x.trim();}).filter(Boolean); }
+  function dgList(arr){ return '<ul class="diag-li">'+arr.map(function(x){return '<li>'+escapeHtml(x)+'</li>';}).join('')+'</ul>'; }
+  function dgFig(title, inner, kind){ return '<figure class="diag diag-'+kind+'">'+(title?'<figcaption class="diag-title">'+escapeHtml(title)+'</figcaption>':'')+inner+'</figure>'; }
+  function renderDiagram(spec){
+    var d=dgParse(spec), k=(d.kind||'').toLowerCase();
+    if(k==='balance') return dgBalance(d);
+    if(k==='fork') return dgFork(d);
+    if(k==='curve') return dgCurve(d);
+    return '<pre class="diag-raw">'+escapeHtml(spec)+'</pre>';
+  }
+  function dgBalance(d){
+    var svg='<svg class="diag-scale" viewBox="0 0 240 72" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+      +'<line x1="120" y1="12" x2="120" y2="46"/><path d="M104 60 L136 60 L120 46 Z" fill="currentColor" stroke="none" opacity=".5"/>'
+      +'<line x1="40" y1="20" x2="200" y2="20"/>'
+      +'<line x1="40" y1="20" x2="40" y2="30"/><path d="M27 30 a13 8 0 0 0 26 0"/>'
+      +'<line x1="200" y1="20" x2="200" y2="30"/><path d="M187 30 a13 8 0 0 0 26 0"/></svg>';
+    var cols='<div class="diag-bal-cols">'
+      +'<div class="diag-bal-col"><div class="diag-bal-lbl">'+escapeHtml(d.left_label||'')+'</div>'+dgList(dgItems(d.left))+'</div>'
+      +'<div class="diag-bal-vs" aria-hidden="true">⇄</div>'
+      +'<div class="diag-bal-col"><div class="diag-bal-lbl">'+escapeHtml(d.right_label||'')+'</div>'+dgList(dgItems(d.right))+'</div></div>';
+    return dgFig(d.title, svg+cols, 'balance');
+  }
+  function dgFork(d){
+    var svg='<svg class="diag-forksvg" viewBox="0 0 120 38" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M60 5 L60 16 M60 16 L26 32 M60 16 L94 32"/></svg>';
+    var cols='<div class="diag-fork-cols">'
+      +'<div class="diag-fork-col"><div class="diag-fork-lbl">'+escapeHtml(d.branch_a||'')+'</div>'+(d.note_a?'<div class="diag-fork-note">'+escapeHtml(d.note_a)+'</div>':'')+'</div>'
+      +'<div class="diag-fork-col"><div class="diag-fork-lbl">'+escapeHtml(d.branch_b||'')+'</div>'+(d.note_b?'<div class="diag-fork-note">'+escapeHtml(d.note_b)+'</div>':'')+'</div></div>';
+    return dgFig(d.title, svg+cols, 'fork');
+  }
+  function dgCurve(d){
+    var svg='<svg class="diag-curvesvg" viewBox="0 0 240 112" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+      +'<line x1="26" y1="8" x2="26" y2="94" stroke-width="1.2"/><line x1="26" y1="94" x2="222" y2="94" stroke-width="1.2"/>'
+      +'<line x1="26" y1="66" x2="222" y2="66" stroke-width="1" opacity=".45" stroke-dasharray="3 3"/>'
+      +'<path d="M26 66 C42 66 46 20 72 20 C98 20 102 86 132 86 C172 86 194 70 218 66" stroke-width="1.7"/></svg>';
+    var meta='<div class="diag-curve-meta">'+(d.y?'<span class="diag-axis">↑ '+escapeHtml(d.y)+'</span>':'')+(d.x?'<span class="diag-axis">'+escapeHtml(d.x)+' →</span>':'')+'</div>';
+    return dgFig(d.title, svg+meta+(d.shape?'<div class="diag-curve-shape">'+escapeHtml(d.shape)+'</div>':''), 'curve');
   }
   function renderTerms(html){
     html = html.replace(/<strong>([^<]*?)<\/strong>\s*<!--\s*TERM:\s*([^>]*?)\s*-->/g, function(mm, t, key){
@@ -6301,6 +6455,7 @@
       // the grown reader, not the front door. Depth stays visible below as its own hook.
       (application?'<div class="kbm-sec kbm-sec-app kbm-sec-lead"><div class="kbm-sec-lbl kbm-sec-lbl-app">📱 Применение в продукте</div><div class="kbm-sec-body">'+escapeHtml(application)+'</div></div>':'')
       // concrete case — grounds the move
+      +'<div id="atomEntry" class="atom-entry"></div>'
       +wedgeX
       +sec('Пример','→',ex,'kbm-sec-ex')
       +practiceX+unknownX
@@ -6346,7 +6501,126 @@
       sectionsEl.classList.remove('kbm-stream-in'); void sectionsEl.offsetWidth; sectionsEl.classList.add('kbm-stream-in');
       if(dep){ var rc=document.getElementById('kbdRing'); if(rc) kbDrawRing(rc, dep); }
     }
+    kbmCheckAtom(slug);
   }
+  // ── Атом «Ликбез»: страница-разбор узла (kb_nodes.body) ──────────────────
+  var ATOM_ICONS = {
+    // JTBD — весы/баланс сил (минимализм-линия, единый регистр серии)
+    jtbd: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="16" y1="5" x2="16" y2="25"/><path d="M11 27.5 h10"/><line x1="16" y1="25" x2="16" y2="27.5"/><line x1="6.5" y1="10.5" x2="25.5" y2="10.5"/><line x1="16" y1="6.5" x2="16" y2="10.5"/><path d="M6.5 10.5 L3 18 M6.5 10.5 L10 18 M2.4 18 a4.1 2.3 0 0 0 8.2 0"/><path d="M25.5 10.5 L22 18 M25.5 10.5 L29 18 M21.4 18 a4.1 2.3 0 0 0 8.2 0"/></svg>',
+    // North Star — звезда над развилкой путей (направление, на которое равняются)
+    'north-star-metric': '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3 L17.8 9.2 L24 11 L17.8 12.8 L16 19 L14.2 12.8 L8 11 L14.2 9.2 Z"/><path d="M16 19 L16 22"/><path d="M16 22 L11 28.5 M16 22 L21 28.5"/></svg>',
+    // MVP — росток/пробный шурф (минимальный каркас под проверку, не урезанный дом)
+    'mvp': '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 28 h10"/><path d="M16 28 V13"/><path d="M16 18 C12.5 18 9.5 15.2 9.5 11.5 C13 11.5 16 14.3 16 18 Z"/><path d="M16 15 C19.5 15 22.5 12.2 22.5 8.5 C19 8.5 16 11.3 16 15 Z"/></svg>',
+    // Вовлечённость — магнит, тянет к экрану (польза или захват — неясно)
+    'engagement': '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 7 v7 a6 6 0 0 0 12 0 v-7"/><path d="M10 7 h3.5 v7 a2.5 2.5 0 0 0 5 0 v-7 h3.5"/><path d="M25.5 10 h2.5 M25.5 16 h2.5 M4 10 h2.5 M4 16 h2.5"/></svg>'
+  };
+  function atomIcon(slug){ return ATOM_ICONS[slug]||''; }
+  // Реестр серии «Ликбез» (курируется в приложении, как иконки). Только эти узлы —
+  // атомы-разборы; «есть body» НЕ маркер (≈150 узлов несут обычную прозу-описание).
+  var ATOM_SERIES = {
+    title:'Ликбез',
+    tagline:'Концепты, которые применяют неверно — и как на самом деле',
+    atoms:[
+      { slug:'jtbd', title:'JTBD', teaser:'JTBD сводят к трём вещам: персоне, ситуации или списку функций. Все три — подмена: работа означает не носителя, не контекст и не решение, а прогресс в обстоятельствах. Разбор трёх подмен, последствий для продукта и границ метода.' },
+      { slug:'mvp', title:'MVP', teaser:'MVP сводят к урезанному продукту: вычеркнули фичи, выпустили обрубок. Это подмена: MVP — не маленький продукт, а эксперимент для проверки самого рискового допущения дешевле всего, и лучший из них нередко вообще не продукт. Разбор трёх подмен, роли «жизнеспособности» и границ метода.' },
+      { slug:'north-star-metric', title:'North Star Metric', teaser:'North Star Metric сводят к выручке, к метрике роста вроде регистраций или к произвольному показателю с дашборда. Все три — подмена: North Star это измеримый прокси пользовательской ценности, сцепленный с удержанием, а не деньги, объём или удобное число. Разбор трёх подмен, закона Гудхарта и границ метода.' },
+      { slug:'engagement', title:'Вовлечённость', teaser:'Вовлечённость — DAU, время в приложении, частоту заходов — принимают за меру ценности. Это подмена: вовлечённость лишь прокси, и она растёт по двум неразличимым причинам — от пользы и от искусственного удержания тёмными паттернами. Разбор трёх подмен, связи с захватом внимания и границ метрики.' }
+    ]
+  };
+  function isAtomSeries(slug){ return ATOM_SERIES.atoms.some(function(a){return a.slug===slug;}); }
+  function atomMeta(slug){ return ATOM_SERIES.atoms.filter(function(a){return a.slug===slug;})[0]||null; }
+  var EPI_RU={'empirical-effect':'эмпирический эффект','empirical-law':'эмпирический закон','framework':'рамка / модель','heuristic':'эвристика','hypothesis':'гипотеза','contested-construct':'спорный конструкт','phenomenon':'явление'};
+  var ROB_RU2={solid:'сильная',mixed:'смешанная',contested:'спорная',weak:'слабая'};
+  function atomScienceBlock(n){
+    if(!n) return '';
+    var rows='';
+    var epi=EPI_RU[n.epistemic_status]||n.epistemic_status||'';
+    var rob=ROB_RU2[n.robustness]||n.robustness||'';
+    if(epi) rows+='<div class="atom-sci-row"><span class="atom-sci-k">статус</span><span class="atom-sci-v">'+escapeHtml(epi)+'</span></div>';
+    if(rob) rows+='<div class="atom-sci-row"><span class="atom-sci-k">подтверждённость</span><span class="atom-sci-v">'+escapeHtml(rob)+'</span></div>';
+    if(n.robustness_note) rows+='<div class="atom-sci-note">'+escapeHtml(n.robustness_note)+'</div>';
+    if(n.verify_flag) rows+='<div class="atom-sci-warn">⚠ Пересмотрено наукой — см. оговорки в тексте</div>';
+    if(n.last_verified_at) rows+='<div class="atom-sci-ver">проверено: '+escapeHtml(String(n.last_verified_at).slice(0,10))+'</div>';
+    if(!rows) return '';
+    return '<details class="atom-sci"><summary class="atom-sci-sum">Научная база</summary><div class="atom-sci-body">'+rows
+      +'<div class="atom-sci-foot">Разбор — про корректность применения. Здесь — формальный научный статус концепта.</div></div></details>';
+  }
+  async function kbmCheckAtom(slug){
+    var el0=document.getElementById('atomEntry');
+    if(!isAtomSeries(slug)){ if(el0) el0.innerHTML=''; return; }   // только атомы серии «Ликбез», не любой узел с body
+    var md=KBM.atom&&KBM.atom[slug];
+    if(md===undefined){
+      try{ var r=await SB.from('kb_nodes').select('body').eq('slug',slug).single(); md=(r&&r.data&&r.data.body)||''; }
+      catch(e){ md=''; }
+      KBM.atom=KBM.atom||{}; KBM.atom[slug]=md;
+    }
+    if(KBM.currentSlug!==slug) return;
+    var el=document.getElementById('atomEntry'); if(!el) return;
+    if(md){
+      el.innerHTML='<button class="atom-entry-btn" data-open-atom="'+escapeHtml(slug)+'"><span class="atom-entry-ic">'+(atomIcon(slug)||'📖')+'</span><span class="atom-entry-tx">Читать разбор</span><span class="atom-entry-arr">→</span></button>';
+      var btn=el.querySelector('[data-open-atom]'); if(btn) btn.onclick=function(){ kbmOpenAtom(slug); };
+    } else el.innerHTML='';
+  }
+  async function kbmOpenAtom(slug){
+    var n=KBM.bySlug[slug];
+    var view=document.getElementById('atomView'); if(!view) return;
+    view.classList.add('open'); view.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden';
+    view.innerHTML='<div class="atom-wrap"><button class="atom-close" data-atom-close="1" aria-label="Закрыть">✕</button><div class="atom-load">Загрузка разбора…</div></div>';
+    var md=KBM.atom&&KBM.atom[slug];
+    if(md===undefined){
+      try{ var r=await SB.from('kb_nodes').select('body').eq('slug',slug).single(); md=(r&&r.data&&r.data.body)||''; }catch(e){ md=''; }
+      KBM.atom=KBM.atom||{}; KBM.atom[slug]=md;
+    }
+    var wrap=view.querySelector('.atom-wrap');
+    if(!md){ if(wrap) wrap.innerHTML='<button class="atom-close" data-atom-close="1" aria-label="Закрыть">✕</button><div class="atom-empty">Разбор для этого концепта ещё не готов.</div>'; wireAtomClose(view); return; }
+    var icon=atomIcon(slug), bodyHtml;
+    try{ bodyHtml=renderMd(md); }catch(e){ bodyHtml='<pre>'+escapeHtml(md)+'</pre>'; }
+    view.innerHTML='<div class="atom-wrap">'
+      +'<button class="atom-close" data-atom-close="1" aria-label="Закрыть">✕</button>'
+      +(icon?'<div class="atom-icon">'+icon+'</div>':'')
+      +'<article class="atom-body">'+bodyHtml+'</article>'
+      +atomScienceBlock(n)
+      +'</div>';
+    view.scrollTop=0;
+    view.querySelectorAll('.nodelink').forEach(function(a){
+      a.onclick=function(){ var s=a.getAttribute('data-node'); if(!s) return; kbmCloseAtom(); if(KBM.bySlug[s]) kbmDetail(s); };
+    });
+    wireAtomClose(view);
+  }
+  function wireAtomClose(view){
+    view.querySelectorAll('[data-atom-close]').forEach(function(b){ b.onclick=kbmCloseAtom; });
+    view.onclick=function(e){ if(e.target===view) kbmCloseAtom(); };
+  }
+  function kbmCloseAtom(){ var v=document.getElementById('atomView'); if(!v) return; v.classList.remove('open'); v.setAttribute('aria-hidden','true');
+    var sv=document.getElementById('seriesView'); if(!(sv&&sv.classList.contains('open'))) document.body.style.overflow=''; }
+  // ── Серия «Ликбез» на полке: коллекция-«книга», атомы = главы ──────────────
+  function openAtomSeries(){
+    var view=document.getElementById('seriesView'); if(!view) return;
+    if(!KBM.loaded && typeof kbmLoad==='function' && SB){ try{ kbmLoad(); }catch(e){} }   // граф нужен разборам (эпистемика+связи)
+    view.classList.add('open'); view.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden';
+    var chapters=ATOM_SERIES.atoms.map(function(a,i){
+      return '<button class="series-ch" data-open-atom="'+escapeHtml(a.slug)+'">'
+        +'<span class="series-ch-n">'+(i+1)+'</span>'
+        +'<span class="series-ch-ic">'+(atomIcon(a.slug)||'')+'</span>'
+        +'<span class="series-ch-tx"><span class="series-ch-t">'+escapeHtml(a.title)+'</span>'
+        +(a.teaser?'<span class="series-ch-d">'+escapeHtml(a.teaser)+'</span>':'')+'</span>'
+        +'<span class="series-ch-arr">→</span></button>';
+    }).join('');
+    view.innerHTML='<div class="series-wrap">'
+      +'<button class="atom-close" data-series-close="1" aria-label="Закрыть">✕</button>'
+      +'<div class="series-head"><div class="series-kicker">Серия</div>'
+      +'<h1 class="series-title">'+escapeHtml(ATOM_SERIES.title)+'</h1>'
+      +'<p class="series-tagline">'+escapeHtml(ATOM_SERIES.tagline)+'</p></div>'
+      +'<div class="series-list">'+chapters+'</div>'
+      +'<div class="series-foot">Серия пополняется — новые разборы появляются по мере выхода.</div>'
+      +'</div>';
+    view.scrollTop=0;
+    view.querySelectorAll('[data-open-atom]').forEach(function(b){ b.onclick=function(){ kbmOpenAtom(b.getAttribute('data-open-atom')); }; });
+    view.querySelectorAll('[data-series-close]').forEach(function(b){ b.onclick=closeAtomSeries; });
+    view.onclick=function(e){ if(e.target===view) closeAtomSeries(); };
+  }
+  function closeAtomSeries(){ var v=document.getElementById('seriesView'); if(!v) return; v.classList.remove('open'); v.setAttribute('aria-hidden','true');
+    var av=document.getElementById('atomView'); if(!(av&&av.classList.contains('open'))) document.body.style.overflow=''; }
   async function kbmLikeToggle(slug){
     var liked=KBM.likes.has(slug);
     var off=(typeof navigator!=='undefined' && navigator.onLine===false);
@@ -6546,7 +6820,6 @@
   function kbCloseCard(){var ov=document.getElementById('kbCard');if(ov){ov.style.display='none';ov.innerHTML='';}}
   function renderShelf(){
     var box=document.getElementById('shelfList'); box.innerHTML='';
-    if(!BOOKS.length){ box.innerHTML='<div class="d-empty">Книги скоро появятся.</div>'; return; }
     BOOKS.forEach(function(b){
       var card=document.createElement('div'); card.className='book-card'+(b.id===currentBook()?' current':'');
       var cov=document.createElement('div'); cov.className='book-cover'; cov.textContent=(b.title||'?').slice(0,1).toUpperCase();
@@ -6564,6 +6837,18 @@
       card.onclick=function(){ openBook(b.id); };
       box.appendChild(card);
     });
+    // Серия «Ликбез» — коллекция разборов (атомы = главы). Делает атомы находимыми с полки-дома.
+    if(typeof ATOM_SERIES!=='undefined' && ATOM_SERIES.atoms && ATOM_SERIES.atoms.length){
+      var sc=document.createElement('div'); sc.className='book-card series-card';
+      var sbadge=document.createElement('div'); sbadge.className='series-badge'; sbadge.textContent='серия';
+      var scov=document.createElement('div'); scov.className='book-cover series-cover'; scov.textContent='Л';
+      var sti2=document.createElement('div'); sti2.className='book-title'; sti2.textContent=ATOM_SERIES.title;
+      var ssu=document.createElement('div'); ssu.className='book-sub'; ssu.textContent='Разборы концептов · применяй верно';
+      sc.appendChild(sbadge); sc.appendChild(scov); sc.appendChild(sti2); sc.appendChild(ssu);
+      sc.onclick=function(){ openAtomSeries(); };
+      box.appendChild(sc);
+    }
+    if(!box.children.length){ box.innerHTML='<div class="d-empty">Книги скоро появятся.</div>'; }
   }
   function showShelf(){ renderShelf(); }
   function hideShelf(){
@@ -6594,28 +6879,34 @@
   }
   function closeKbMode(){ if(CN.on) cnClose(); document.getElementById('kbMode').style.display='none'; kbmShowList(); }
   function showTabbar(on){ var tb=document.getElementById('tabbar'); if(tb) tb.style.display=on?'flex':'none'; }
-  function landingMode(){ return (state && state.landing) || 'constel'; }  // default landing = constellation
+  function landingMode(){ return (state && state.landing) || 'matchast'; }  // дефолт-посадка = Матчасть (ориентированная дверь)
   // ── Роутер видов ──────────────────────────────────────────────────────────
   // Единственный, кто переключает верхние виды: прячет все четыре слоя, показывает
   // активный. Один источник истины ⇒ «два экрана разом» и «чужой слой снизу»
   // становятся невозможны структурно (а не по внимательности).
   function showView(which){
-    var L=[['reader','app','flex'],['list','kbMode','flex'],['shelf','shelf','flex'],['cosmos','constel','block']];
+    var L=[['reader','app','flex'],['list','kbMode','flex'],['shelf','shelf','flex'],['cosmos','constel','block'],['menu','menuView','block']];
     for(var i=0;i<L.length;i++){ var el=document.getElementById(L[i][1]); if(el) el.style.display=(L[i][0]===which)?L[i][2]:'none'; }
   }
   function setView(name){
-    if(name==='matchast'){ name=(matchastSub==='list')?'base':'constel'; }
+    if(name==='matchast') name='base';   // Матчасть = список/сетка/поиск; космос — отдельная вкладка «Созвездие»
     if(name==='constel'){
-      matchastSub='graph';
       showView('cosmos');                                  // видимость — через единственного хозяина
       try{ closeMenus(); }catch(_){}
       if(!KBM.loaded && SB) kbmLoad();                      // данные грузим, список не показываем
       if(!CN.on){ if(KBM.loaded && (KBM.nodes||[]).length) cnOpen(); else cnLandStart(); }
     } else if(name==='base'){
-      matchastSub='list';
       if(CN.on) cnClose();
       showView('list');
       openKbMode(); kbmShowList();
+    } else if(name==='favorites'){
+      if(CN.on) cnClose();
+      showView('list');
+      if(KBM.loaded){ kbmRenderFavorites(); } else { openKbMode(); }   // KBM ещё грузится → обзор; избранное при след. заходе
+    } else if(name==='menu'){
+      if(CN.on) cnClose();
+      try{ closeMenus(); }catch(_){}
+      showView('menu'); renderMenuView();
     } else if(name==='books'){
       if(CN.on) cnClose();
       showView('shelf');
@@ -6625,6 +6916,44 @@
       showView('reader');
     }
     _view=name; tabbarSync(name); showTabbar(true);
+  }
+  // ── Вид «Меню» (top-level): аккаунт / прогресс / что нового / уведомления / служебное ──
+  // Переиспользует уже подключённые действия меню-шторки через клик их кнопок.
+  function menuRow(title, sub, act){
+    return '<button class="menu-v-row" data-menu-act="'+act+'">'
+      +'<span class="menu-v-tx"><span class="menu-v-t">'+escapeHtml(title)+'</span>'
+      +(sub?'<span class="menu-v-s">'+escapeHtml(sub)+'</span>':'')+'</span>'
+      +'<span class="menu-v-arr">\u203a</span></button>';
+  }
+  function renderMenuView(){
+    var body=document.getElementById('menuViewBody'); if(!body) return;
+    var signedIn=(typeof USER!=='undefined' && USER);
+    var rows = signedIn ? menuRow('Аккаунт', (USER.email||'Вы вошли'), 'signout')
+                        : menuRow('Аккаунт', 'Вы не вошли — войти или создать пароль', 'login');
+    rows += menuRow('Мой прогресс', 'Время за чтением, путь, калибровка', 'progress');
+    rows += menuRow('Что нового', 'Обновления читальни', 'changelog');
+    rows += menuRow('Уведомления', '', 'notifs');
+    if(typeof isAdmin!=='undefined' && isAdmin){
+      rows += '<div class="menu-v-sec">Служебное</div>';
+      rows += menuRow('Диспетчерская', '', 'dispatch');
+      rows += menuRow('Дашборд глав', '', 'dash');
+      rows += menuRow('Админка', '', 'admin');
+    }
+    body.innerHTML = '<div class="menu-v-head"><h2 class="menu-v-title">Меню</h2></div><div class="menu-v-list">'+rows+'</div>';
+    Array.prototype.forEach.call(body.querySelectorAll('[data-menu-act]'), function(b){
+      b.onclick = function(){ menuAct(b.getAttribute('data-menu-act')); };
+    });
+  }
+  function menuAct(act){
+    function clickId(id){ var e=document.getElementById(id); if(e) e.click(); }
+    if(act==='progress') clickId('btnJourney');
+    else if(act==='changelog') clickId('btnBookLog');
+    else if(act==='notifs') clickId('btnBell');
+    else if(act==='dispatch') clickId('btnDispatch');
+    else if(act==='dash') clickId('miDash');
+    else if(act==='admin') clickId('btnAdmin');
+    else if(act==='login'){ try{ showGate('login'); }catch(e){} }
+    else if(act==='signout'){ try{ if(SB&&SB.auth) SB.auth.signOut(); }catch(e){} }
   }
   function cnHue(disc){ return (disc!=null && CN_DISC_HUE[disc]!=null)?CN_DISC_HUE[disc]:30; }
   // Deterministic pseudo-random from a string (stable layout across devices/sessions).
@@ -7231,8 +7560,8 @@
   function tabbarSync(name){
     var tb=document.getElementById('tabbar'); if(!tb) return;
     var active=(name==='text'||name==='books')?'books'
-      :(name==='constel'||name==='base'||name==='matchast')?'matchast'
-      :name;
+      :(name==='base'||name==='matchast')?'matchast'
+      :name;   // constel / favorites / menu — на свою вкладку
     Array.prototype.forEach.call(tb.querySelectorAll('.tab'), function(b){
       b.classList.toggle('tab-on', b.getAttribute('data-view')===active);
     });
@@ -8682,7 +9011,7 @@
 
   // ── KB Mode («База знаний») ───────────────────────────────────────────────
   var KBM={nodes:[],edges:[],scenarios:[],bySlug:{},findings:{conjectures:[],laws:[]},conjByNode:{},likes:new Set(),loaded:false,liker:null,currentSlug:null,bundles:{},memberships:{},miniFocus:null,
-           lens:'layer', region:null, scenarioSlug:null, findingSlug:null, lawSlug:null, q:''};
+           lens:'product-lever', region:null, scenarioSlug:null, findingSlug:null, lawSlug:null, q:''};
   var KBM_HISTORY=[]; // navigation stack: [{slug, title}]
   var KBM_KIND={effect:'Эффект',theory:'Теория',frame:'Рамка',phenomenon:'Феномен',method:'Метод',term:'Термин'};
   var KBM_ROB={solid:'Подтверждена',mixed:'Смешанная',contested:'Спорная',weak:'Предварительная'};
@@ -9055,13 +9384,16 @@
       renderTOC(); renderChapter();
       document.getElementById('scroller').scrollTop = state.scroll[state.chapter]||0;
     }
-    // Если посадка — Созвездие и сессия, скорее всего, есть, поднимаем космос СРАЗУ (поверх книги, в
-    // том же кадре) — чтобы не было «книга, а потом наскок созвездия». Звёзды соберутся, когда придёт граф.
+    // Дефолт-посадка = Матчасть (ориентированная дверь): список/сетка «По задаче» при запуске.
+    // Космос поднимаем СРАЗУ только если посадка явно сохранена как Созвездие.
     var hasToken=false; try{ hasToken=Object.keys(localStorage).some(function(k){ return /^sb-.*-auth-token$/.test(k); }); }catch(_){}
-    var wantConstel=(landingMode()==='constel');
-    if(wantConstel && hasToken){ showView('cosmos'); cnLandStart(); _view='constel'; tabbarSync('constel'); showTabbar(true); }
-    else if(hasToken){ showView('reader'); _view='text'; tabbarSync('text'); showTabbar(true); }
-    if(cached || (wantConstel && hasToken)) hideSplash();
+    var landing=landingMode();   // дефолт 'matchast'
+    if(hasToken){
+      if(landing==='constel'){ showView('cosmos'); cnLandStart(); _view='constel'; tabbarSync('constel'); }
+      else { showView('list'); openKbMode(); kbmShowList(); _view='base'; tabbarSync('matchast'); }
+      showTabbar(true);
+    }
+    if(cached || hasToken) hideSplash();
     SB.auth.onAuthStateChange(function(ev, session){ onAuth(session); });
     var got=await SB.auth.getSession();
     var sess = got.data && got.data.session;
