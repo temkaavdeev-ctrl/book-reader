@@ -28,35 +28,35 @@
      Display: Inter · Reading: Spectral · Data: JetBrains Mono
      ========================================================= */
   :root{
-    --font-ui:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --font-ui:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,Roboto,Helvetica,Arial,sans-serif;
     --font-read:'Spectral',Georgia,"PT Serif","Times New Roman",serif;
     --font-mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
 
-    --bg:#f3f1ea; --panel:#faf8f2; --card:#ffffff;
-    --ink:#201d17; --read:#3a352c; --muted:#8c8475;
-    --line:#e5e0d4; --line-2:#d8d2c4;
-    --accent:#8f5a23; --accent-2:#a8682b; --accent-soft:#f0e7d8; --accent-tint:#fbf6ee; --text-on-accent:#ffffff;
+    --bg:#F5F3EF; --panel:#ffffff; --card:#ffffff;
+    --ink:#1B1A17; --read:#726E67; --muted:#A8A39B;
+    --line:#E7E3DC; --line-2:#DCD7CE;
+    --accent:#B0792B; --accent-2:#9A6B1F; --accent-soft:#F3E9D7; --accent-tint:#FAF4EA; --text-on-accent:#ffffff;
     --hl:#fbe7a0; --hl-edge:#d8a838;
-    --good:#2f7d4f; --warn:#b98322; --danger:#bc453c;
+    --good:#4E7C5A; --warn:#C28A3A; --danger:#B5503C;
     --code:#f1ece0; --tip:#201d17; --tip-fg:#fbf8f1;
     --mk-bg:#f4ebd9; --mk-line:#e6d6b4; --mk-fg:#9b7338;
-    --shadow:0 6px 24px rgba(60,45,20,.10); --shadow-lg:0 18px 48px rgba(50,38,18,.20);
+    --shadow:0 2px 8px rgba(50,40,20,.06); --shadow-lg:0 10px 34px rgba(45,35,18,.13);
     --ring:rgba(143,90,35,.40);
-    --fnd:#6b54b0; --fnd-soft:#efebf8; --fnd-tint:#f7f4fd; --fnd-line:#cdc1ec;
+    --fnd:#6B5B95; --fnd-soft:#efebf8; --fnd-tint:#f7f4fd; --fnd-line:#cdc1ec;
     --r-s:8px; --r-m:12px; --r-l:16px; --r-xl:22px;
   }
   html[data-theme="dark"]{
-    --bg:#16140f; --panel:#1d1a14; --card:#232017;
-    --ink:#ece6d7; --read:#d6cfbf; --muted:#968e7c;
-    --line:#322d24; --line-2:#3e382c;
-    --accent:#d7a664; --accent-2:#e2b473; --accent-soft:#2b2418; --accent-tint:#221d14; --text-on-accent:#241a0c;
+    --bg:#1A1814; --panel:#2A251D; --card:#242019;
+    --ink:#ECE7DD; --read:#A8A399; --muted:#6E6A60;
+    --line:#332E25; --line-2:#3E382C;
+    --accent:#d7a664; --accent-2:#e2b473; --accent-soft:#2E2719; --accent-tint:#221d14; --text-on-accent:#1B1A17;
     --hl:#574518; --hl-edge:#c39a3c;
-    --good:#5fb07e; --warn:#d6a84e; --danger:#d9695e;
+    --good:#6FA07C; --warn:#d6a84e; --danger:#D98A6E;
     --code:#2a2619; --tip:#34302a; --tip-fg:#f1ece1;
     --mk-bg:#332c1e; --mk-line:#4a4030; --mk-fg:#cda665;
-    --shadow:0 8px 28px rgba(0,0,0,.5); --shadow-lg:0 20px 54px rgba(0,0,0,.6);
+    --shadow:0 2px 10px rgba(0,0,0,.38); --shadow-lg:0 14px 44px rgba(0,0,0,.5);
     --ring:rgba(215,166,100,.45);
-    --fnd:#a896e6; --fnd-soft:#272042; --fnd-tint:#1f1a33; --fnd-line:#473c70;
+    --fnd:#9385C0; --fnd-soft:#272042; --fnd-tint:#1f1a33; --fnd-line:#473c70;
   }
   html[data-theme="dark"] #content .twist-box{ background:rgba(215,166,100,.09) }
   html[data-theme="dark"] #content .twist-done{ background:rgba(95,176,126,.12) }
@@ -146,13 +146,13 @@
   #content{max-width:680px; margin:0 auto; padding:56px 32px 44px;
     font-family:var(--font-read); color:var(--read); font-size:20px; line-height:1.74; font-weight:400;
     text-rendering:optimizeLegibility; font-feature-settings:"kern" 1,"liga" 1,"onum" 1,"calt" 1}
-  #content h1{font-family:var(--font-read); font-size:34px; line-height:1.12; letter-spacing:-.025em;
+  #content h1{font-size:34px; line-height:1.12; letter-spacing:-.025em;
     margin:0 0 10px; font-weight:700; color:var(--ink)}
   #content h1+p{font-size:21px; line-height:1.6; color:var(--ink); margin-top:18px}
   #content h1+p::first-letter{}
-  #content h2{font-family:var(--font-read); font-size:23px; letter-spacing:-.02em; margin:48px 0 14px;
+  #content h2{font-size:23px; letter-spacing:-.02em; margin:48px 0 14px;
     color:var(--ink); font-weight:700; line-height:1.22}
-  #content h4{font-family:var(--font-ui); font-size:14px; margin:36px 0 12px; color:var(--accent);
+  #content h4{font-size:14px; margin:36px 0 12px; color:var(--accent);
     font-weight:600; letter-spacing:.04em; text-transform:uppercase}
   #content p{margin:0 0 20px}
   #content em{font-style:italic; color:var(--read)}
@@ -1285,7 +1285,7 @@
   .kbm-inner{ display:flex; flex-direction:column; flex:1; overflow:hidden }
   /* Header */
   .kbm-head{ display:flex; align-items:center; gap:10px; padding:14px 16px 10px; border-bottom:1px solid var(--line); flex-shrink:0 }
-  .kbm-title{ font-family:var(--font-read); font-size:20px; font-weight:700; margin:0; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+  .kbm-title{ font-family:var(--font-ui); font-size:24px; font-weight:700; margin:0; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
   .kbm-count{ font-family:var(--font-ui); font-size:11px; color:var(--muted); white-space:nowrap; letter-spacing:.03em }
   /* Search */
   .kbm-search-row{ padding:10px 14px 0; flex-shrink:0; position:relative }
@@ -1297,23 +1297,23 @@
   .kbm-lens::-webkit-scrollbar{ display:none }
   .kbm-lens-btn{ display:flex; flex-direction:column; align-items:flex-start; gap:1px; padding:7px 13px; border:1.5px solid var(--line-2); border-radius:10px; background:var(--card); cursor:pointer; font-family:inherit; white-space:nowrap; flex-shrink:0; transition:all .15s; text-align:left }
   .kbm-lens-btn:hover{ border-color:var(--accent) }
-  .kbm-lens-sel{ border-color:var(--accent); background:var(--accent); }
+  .kbm-lens-sel{ border-color:var(--accent-2); background:var(--accent-2); }
   .kbm-lens-lbl{ font-size:13px; font-weight:700; color:var(--ink) }
   .kbm-lens-sel .kbm-lens-lbl{ color:var(--text-on-accent) }
-  .kbm-lens-hint{ font-size:10px; color:var(--muted); font-family:var(--font-ui) }
+  .kbm-lens-hint{ font-size:11.5px; color:var(--muted); font-family:var(--font-ui) }
   .kbm-lens-sel .kbm-lens-hint{ color:color-mix(in srgb, var(--text-on-accent) 78%, transparent) }
   /* Body scroller */
   .kbm-body{ flex:1; overflow-y:auto; padding:12px 14px 80px }
   .kbm-empty{ text-align:center; color:var(--muted); padding:40px 20px; font-size:14px }
   /* ── Overview: region tiles ── */
   .kbm-regions{ display:flex; flex-direction:column; gap:11px }
-  .kbm-region-tile{ position:relative; display:block; width:100%; text-align:left; background:var(--card); border:1.5px solid var(--line); border-radius:16px; padding:15px 16px 14px; cursor:pointer; font-family:inherit; overflow:hidden; transition:border-color .15s,box-shadow .15s,transform .1s }
+  .kbm-region-tile{ position:relative; display:block; width:100%; text-align:left; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:15px 16px 14px; cursor:pointer; font-family:inherit; overflow:hidden; transition:border-color .15s,box-shadow .15s,transform .1s }
   .kbm-region-tile:hover{ border-color:var(--rc); box-shadow:0 4px 18px rgba(0,0,0,.09) }
   .kbm-region-tile:active{ transform:scale(.99) }
   .kbm-region-bar{ position:absolute; top:0; left:0; right:0; height:4px; background:color-mix(in srgb,var(--rc) 14%,transparent) }
   .kbm-region-bar-fill{ height:100%; background:var(--rc); border-radius:0 3px 3px 0 }
   .kbm-region-head{ display:flex; align-items:baseline; gap:10px; margin:4px 0 9px }
-  .kbm-region-name{ font-family:var(--font-read); font-size:17px; font-weight:700; color:var(--ink); line-height:1.25; flex:1 }
+  .kbm-region-name{ font-family:var(--font-ui); font-size:19px; font-weight:700; color:var(--ink); line-height:1.25; flex:1 }
   .kbm-region-count{ font-family:var(--font-ui); font-size:13px; font-weight:700; color:var(--rc); flex-shrink:0 }
   .kbm-region-landmarks{ display:flex; flex-wrap:wrap; gap:5px; margin-bottom:11px }
   .kbm-landmark{ font-size:11.5px; color:var(--read); background:color-mix(in srgb,var(--rc) 9%,var(--bg)); border:1px solid color-mix(in srgb,var(--rc) 20%,var(--line)); border-radius:10px; padding:3px 8px; white-space:nowrap; max-width:100%; overflow:hidden; text-overflow:ellipsis }
@@ -1460,7 +1460,7 @@
     .kbm-crow-title{ font-size:15.5px }
     .kbm-crow-core-row .kbm-crow-title{ font-size:16.5px }
     .kbm-crow-claim{ font-size:12.5px }
-    .kbm-region-name{ font-size:18px }
+    .kbm-region-name{ font-size:20px }
     .kbm-landmark{ font-size:12.5px; padding:4px 9px }
     .kbm-heart{ font-size:19px; padding:4px 6px }
     .kbm-lens-btn{ padding:8px 14px }
@@ -1508,10 +1508,10 @@
   .kbm-goal-empty{ font-size:13px; color:var(--muted); opacity:.85; padding:11px 13px; border:1px dashed var(--line); border-radius:13px }
   .kbm-goal-all{ display:block; width:100%; text-align:center; margin:4px 0 6px; padding:13px; font-size:13px; font-weight:600; color:var(--muted); background:transparent; border:1px solid var(--line); border-radius:13px; cursor:pointer; font-family:inherit; transition:border-color .15s,color .15s }
   .kbm-goal-all:hover{ color:var(--accent); border-color:var(--accent) }
-  .kbm-grid-intro{ font-size:13.5px; color:var(--muted); line-height:1.5; margin:4px 2px 16px }
+  .kbm-grid-intro{ font-size:15px; color:var(--muted); line-height:1.5; margin:4px 2px 16px }
   .kbm-grid-list{ display:flex; flex-direction:column; gap:12px }
-  .kbm-grid-card{ background:var(--card); border:1.5px solid var(--line); border-radius:16px; padding:14px 15px }
-  .kbm-grid-task{ font-family:var(--font-read); font-size:15px; font-weight:700; color:var(--read); margin-bottom:8px }
+  .kbm-grid-card{ background:var(--card); border:1px solid var(--line); border-radius:16px; padding:14px 15px }
+  .kbm-grid-task{ font-family:var(--font-ui); font-size:17px; font-weight:700; color:var(--read); margin-bottom:8px }
   .kbm-grid-mrow{ display:flex; gap:9px; align-items:flex-start; margin:7px 0 }
   .kbm-grid-mlabel{ flex:0 0 62px; font-size:10.5px; font-weight:700; letter-spacing:.03em; text-transform:uppercase; color:var(--muted); padding-top:8px }
   .kbm-grid-chips{ display:flex; flex-wrap:wrap; gap:7px; flex:1 1 auto }
@@ -1727,7 +1727,7 @@
 /* ════════ Перенос из KB-эксплорера ════════ */
 /* ── Карточка концепта: поток для чтения вместо «островов» ── */
 #kbmDetBody{ max-width:700px; margin:0 auto }
-.kbm-d-claim{ font-size:17px; line-height:1.58; margin:6px 0 20px }
+.kbm-d-claim{ font-size:18.5px; line-height:1.55; margin:6px 0 20px }
 .kbm-sec{ margin:0; padding:18px 0 0; background:none; border:none; border-top:1px solid var(--line); border-radius:0 }
 .kbm-sec-body{ font-size:15px; line-height:1.62 }
 .kbm-sec-lbl{ margin-bottom:8px }
@@ -1789,8 +1789,14 @@
 #kbmDetBody.kbm-in{ animation:kbmDetIn .42s cubic-bezier(.2,.7,.2,1) both }
 @keyframes kbmDetIn{ from{opacity:0; transform:translateY(12px)} to{opacity:1; transform:none} }
 /* Хром отступает, пока исследуешь */
+  .constel-rec{ position:absolute; top:calc(56px + env(safe-area-inset-top,0px)); left:50%; transform:translateX(-50%); z-index:4; display:flex; align-items:center; gap:9px; max-width:min(420px,86%); padding:9px 15px; background:rgba(26,21,16,.88); -webkit-backdrop-filter:blur(12px) saturate(1.2); backdrop-filter:blur(12px) saturate(1.2); border:1px solid rgba(220,190,150,.3); border-radius:14px; cursor:pointer; box-shadow:0 8px 26px rgba(0,0,0,.4); transition:transform .15s, border-color .15s; animation:constelChipIn .25s cubic-bezier(.34,1.2,.5,1) }
+  .constel-rec:active{ transform:translateX(-50%) scale(.97) }
+  .cn-rec-lbl{ font-family:var(--font-ui); font-size:10px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:rgba(228,182,118,.95); flex:none }
+  .cn-rec-name{ font-size:14px; font-weight:600; color:#efe8db; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+  .cn-rec-arr{ color:rgba(228,182,118,.78); font-size:17px; flex:none; line-height:1 }
 .constel-top{ transition:opacity .4s ease }
 #constel.constel-exploring .constel-top{ opacity:0 }
+#constel.constel-exploring .constel-rec{ opacity:0; pointer-events:none; transition:opacity .35s ease }
 .constel-hint{ opacity:.6; font-size:11.5px }
 /* Лайк: кольцо света + неспешные сердца (тише конфетти) */
 .kb-ring{ position:absolute; left:-8px; top:-8px; width:16px; height:16px; border-radius:50%; border:1.5px solid #f0a886; animation:kbRing .72s cubic-bezier(.2,.7,.2,1) forwards }
@@ -1803,7 +1809,7 @@
 }
 
 /* ── Карточка как лист поверх космоса (без моргания, без перезагрузки) ── */
-#kbMode.kbm-over-constel{ z-index:95; animation:kbmSheetUp .34s cubic-bezier(.2,.7,.2,1) }
+#kbMode.kbm-over-constel{ z-index:65; animation:kbmSheetUp .34s cubic-bezier(.2,.7,.2,1) }
 @keyframes kbmSheetUp{ from{ transform:translateY(100%) } to{ transform:none } }
 #kbMode.kbm-sheet-down{ animation:kbmSheetDown .29s cubic-bezier(.4,0,.7,1) forwards }
 @keyframes kbmSheetDown{ from{ transform:none } to{ transform:translateY(100%) } }
@@ -1916,14 +1922,14 @@
 #tabbar{ position:fixed; left:0; right:0; bottom:0; z-index:70; display:none; align-items:stretch;
   height:calc(var(--tabbar-h) + env(safe-area-inset-bottom,0px));
   padding-bottom:env(safe-area-inset-bottom,0px);
-  background:color-mix(in srgb, var(--card) 88%, transparent);
+  background:color-mix(in srgb, var(--card) 76%, transparent);
   -webkit-backdrop-filter:blur(20px) saturate(1.6); backdrop-filter:blur(20px) saturate(1.6);
   border-top:1px solid var(--line); }
 #tabbar .tab{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
   background:none; border:0; cursor:pointer; color:var(--muted); font:inherit; padding:7px 4px 4px;
   -webkit-tap-highlight-color:transparent; transition:color .15s; }
 #tabbar .tab .i{ width:23px; height:23px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; transition:transform .18s; }
-#tabbar .tab span{ font-size:10.5px; letter-spacing:.01em; font-weight:500; }
+#tabbar .tab span{ font-size:11.5px; letter-spacing:.01em; font-weight:500; }
 #tabbar .tab.tab-on{ color:var(--accent); }
 #tabbar .tab.tab-on .i{ transform:translateY(-1px) scale(1.06); }
 #tabbar .tab:active .i{ transform:scale(.9); }
@@ -2058,15 +2064,17 @@
 #menuView{ position:fixed; inset:0; z-index:30; overflow-y:auto; -webkit-overflow-scrolling:touch; background:var(--bg); padding-bottom:84px }
 .menu-view{ max-width:640px; margin:0 auto; padding:48px 20px 40px }
 .menu-v-head{ margin:0 0 20px }
-.menu-v-title{ font-family:var(--font-read); font-size:26px; color:var(--ink); margin:0; letter-spacing:-.02em }
-.menu-v-list{ display:flex; flex-direction:column; gap:8px }
-.menu-v-row{ display:flex; align-items:center; gap:12px; width:100%; box-sizing:border-box; text-align:left; padding:15px 16px; border:1px solid var(--line); background:var(--card); border-radius:13px; cursor:pointer; font-family:inherit; color:var(--ink); transition:border-color .15s, background .15s }
-.menu-v-row:hover{ border-color:color-mix(in srgb,var(--accent) 35%,var(--line)); background:color-mix(in srgb,var(--accent) 4%,var(--card)) }
+.menu-v-title{ font-family:var(--font-ui); font-size:31px; color:var(--ink); margin:0; letter-spacing:-.02em }
+.menu-v-list{ display:flex; flex-direction:column }
+.menu-v-row{ display:flex; align-items:center; gap:12px; width:100%; box-sizing:border-box; text-align:left; padding:15px 16px; border:none; border-bottom:1px solid var(--line); background:none; cursor:pointer; font-family:inherit; color:var(--ink); transition:background .15s }
+.menu-v-row:hover{ background:var(--accent-tint) }
+  .menu-group{ background:var(--card); border:1px solid var(--line); border-radius:16px; overflow:hidden; margin-bottom:18px }
+  .menu-group .menu-v-row:last-child{ border-bottom:none }
 .menu-v-tx{ flex:1; min-width:0 }
 .menu-v-t{ display:block; font-size:15.5px; font-weight:600; color:var(--ink) }
 .menu-v-s{ display:block; font-size:12.5px; color:var(--muted); margin-top:2px }
 .menu-v-arr{ color:var(--muted); font-size:20px; flex:none; line-height:1 }
-.menu-v-sec{ font-family:var(--font-ui); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin:18px 0 4px 4px }
+.menu-v-sec{ font-family:var(--font-ui); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin:0 0 7px 16px }
 
 /* Избранное как чистая вкладка — без поиска/осей */
 .kbm-bare .kbm-search-row, .kbm-bare .kbm-lens{ display:none; }
@@ -2077,7 +2085,7 @@
 .book-draft-badge{ position:absolute; top:10px; right:10px; z-index:1; font-family:var(--font-ui); font-size:9.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); background:color-mix(in srgb,var(--muted) 12%,var(--card)); border:1px solid color-mix(in srgb,var(--muted) 26%,transparent); padding:2px 7px; border-radius:20px }
 
 /* Меню → Настройки: строка с переключателем темы */
-.menu-set-row{ padding:11px 4px 14px }
+.menu-set-row{ padding:13px 16px 15px }
 .menu-set-lbl{ display:block; font-size:13.5px; color:var(--muted); margin-bottom:9px }
 .menu-theme-seg{ width:100% }
 </style>
@@ -2421,6 +2429,7 @@
     <button class="constel-chip-go" id="constelChipGo">Открыть карточку →</button>
   </div>
   <div id="constelLegend" style="display:none"></div>
+  <div class="constel-rec" id="constelRec" style="display:none"></div>
 </div>
 <div id="shelf" style="display:none">
   <div class="shelf-inner">
@@ -2515,8 +2524,8 @@
   </div>
 </div>
 <nav id="tabbar" aria-label="Навигация">
-  <button class="tab" data-view="matchast" aria-label="Матчасть"><svg class="i" viewBox="0 0 24 24"><rect x="4" y="4" width="6.5" height="6.5" rx="1.2"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.2"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.2"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.2"/></svg><span>Матчасть</span></button>
   <button class="tab" data-view="constel" aria-label="Созвездие"><svg class="i" viewBox="0 0 24 24"><circle cx="6" cy="7" r="1.8"/><circle cx="17.5" cy="6" r="1.8"/><circle cx="12" cy="17.5" r="1.8"/><path d="M7.4 8.4l3.4 7.5M15.9 7.4l-2.9 8.2M8 6.8l8-.6"/></svg><span>Созвездие</span></button>
+  <button class="tab" data-view="matchast" aria-label="Матчасть"><svg class="i" viewBox="0 0 24 24"><rect x="4" y="4" width="6.5" height="6.5" rx="1.2"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.2"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.2"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.2"/></svg><span>Матчасть</span></button>
   <button class="tab" data-view="books" aria-label="Полка"><svg class="i" viewBox="0 0 24 24"><path d="M5 4.5h8.5a1.8 1.8 0 0 1 1.8 1.8v13a1.8 1.8 0 0 0-1.8-1.8H5V4.5z"/><path d="M19 6.5v13"/></svg><span>Полка</span></button>
   <button class="tab" data-view="favorites" aria-label="Избранное"><svg class="i" viewBox="0 0 24 24"><path d="M12 4.2l2.3 4.9 5.3.5-4 3.5 1.2 5.1L12 20.1l-4.9 3.6 1.2-5.1-4-3.5 5.3-.5z"/></svg><span>Избранное</span></button>
   <button class="tab" data-view="menu" aria-label="Меню"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span>Меню</span></button>
@@ -5242,14 +5251,25 @@
     if(closeBtn) closeBtn.onclick=function(e){ e.stopPropagation(); nb.remove(); };
     nb.scrollIntoView({behavior:'smooth',block:'nearest'});
   }
-  function kbmGetLiker(){
-    if(KBM.liker) return KBM.liker;
+  // Идентичность читателя. Привязка к аккаунту: вошёл → USER.id (стабильный, кросс-девайс);
+  // не вошёл → локальный kb_liker_id (до-логин/аноним). ЗАПИСИ идут под аккаунт; ЧТЕНИЯ — union обоих
+  // ключей, чтобы до-логиновые данные на устройстве не потерялись (UPDATE на таблицах запрещён политиками).
+  function kbmAccountId(){ return (typeof USER!=='undefined' && USER && USER.id) ? USER.id : null; }
+  function kbmDeviceId(){
+    if(KBM.deviceId) return KBM.deviceId;
     try{
       var v=localStorage.getItem('kb_liker_id');
       if(!v){ v='l'+Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2); localStorage.setItem('kb_liker_id',v); }
-      KBM.liker=v;
-    }catch(e){ KBM.liker='anon'; }
-    return KBM.liker;
+      KBM.deviceId=v;
+    }catch(e){ KBM.deviceId='anon'; }
+    return KBM.deviceId;
+  }
+  function kbmGetLiker(){ return kbmAccountId() || kbmDeviceId(); }          // ЗАПИСИ: аккаунт если вошёл
+  function kbmGetLikers(){                                                    // ЧТЕНИЯ: оба ключа (union)
+    var a=kbmAccountId(), d=kbmDeviceId(), r=[];
+    if(a) r.push(a);
+    if(d && d!==a) r.push(d);
+    return r.length?r:['anon'];
   }
   function kbRootStats(slug){ var v=KBM.roots&&KBM.roots[slug]; if(!v) return null; var s=0,w=0; for(var k in v){ s+=v[k]*KB_ROOT_D[k]; w+=v[k]; } return {vec:v,exp:w,unx:Math.max(0,1-w),cog:w?s/w:2.5,prim:Object.keys(v).sort(function(a,b){return v[b]-v[a];})[0]}; }
   function kbDrawRing(cv, dep){ var x=cv.getContext('2d'),cx=60,cy=60,ri=32,ro=50; x.clearRect(0,0,120,120);
@@ -5276,11 +5296,11 @@
     try{
       var [gr, lr, fr, rr, mr, sr]= await withTimeout(Promise.all([
         SB.rpc('kb_graph'),
-        SB.from('kb_likes').select('node_slug').eq('liker',kbmGetLiker()),
+        SB.from('kb_likes').select('node_slug').in('liker',kbmGetLikers()),
         SB.rpc('kb_findings'),
         SB.rpc('kb_roots'),
         SB.rpc('kb_chapter_memberships'),
-        SB.from('reader_signals').select('ref,kind').eq('who',kbmGetLiker()).order('created_at',{ascending:true})
+        SB.from('reader_signals').select('ref,kind').in('who',kbmGetLikers()).order('created_at',{ascending:true})
       ]), 12000, 'Карта');
       if(gr.error){ fail('Не удалось загрузить ('+gr.error.message+').'); return; }
       var G=gr.data||{};
@@ -5297,7 +5317,8 @@
       live.forEach(function(n){ KBM.bySlug[n.slug]=n; });
       KBM.likes=new Set(((lr&&lr.data)||[]).map(function(r){return r.node_slug;}));
       KBM.signals={}; var _L2S=['applicable','interesting','notfound'];   // L2 сигнал полезности: последний на концепт
-      ((sr&&sr.data)||[]).forEach(function(r){ if(_L2S.indexOf(r.kind)>=0) KBM.signals[r.ref]=r.kind; });
+      ((sr&&sr.data)||[]).forEach(function(r){ if(_L2S.indexOf(r.kind)>=0) KBM.signals[r.ref]=r.kind; else if(r.kind==='visit' && r.ref){ if(!state.visited) state.visited={}; state.visited[r.ref]=1; } });
+      if(typeof saveState==='function') saveState();   // влить серверные посещённые в локальный кэш
       KBM.roots={}; ((rr&&rr.data)||[]).forEach(function(r){ var k=KB_ROOTMAP[r.root]; if(k){ (KBM.roots[r.slug]=KBM.roots[r.slug]||{})[k]=Number(r.weight); } });
       // Chapter memberships: where each concept is treated in the book(s) — home chapter + cross-refs.
       // Powers the card's "В книге" portal: tap a chapter → open the reader there. One book today;
@@ -6340,6 +6361,7 @@
       KBM_HISTORY.push({slug:KBM.currentSlug, title:curNode?curNode.title:KBM.currentSlug});
     }
     KBM.currentSlug=slug;
+    if(slug){ if(!state.visited) state.visited={}; state.lastVisited=slug; var _newv=!state.visited[slug]; if(_newv){ state.visited[slug]=1; try{ if(typeof SB!=='undefined' && typeof kbmGetLiker==='function'){ var _off=(typeof navigator!=='undefined' && navigator.onLine===false); SB.from('reader_signals').insert({who:kbmGetLiker(), kind:'visit', ref:slug}).then(function(r){ if(r&&r.error&&!_off) console.warn('visit:',r.error.message); }); } }catch(e){} } saveState(); if(typeof cnUpdateCount==='function') cnUpdateCount(); if(typeof cnRenderRec==='function') cnRenderRec(); }
     kbmShowDetail();
     kbmUpdateBackBtn();
     var title=document.getElementById('kbmDetTitle');
@@ -6591,7 +6613,7 @@
     var off=(typeof navigator!=='undefined' && navigator.onLine===false);
     if(liked){
       KBM.likes.delete(slug);
-      try{ SB.from('kb_likes').delete().eq('node_slug',slug).eq('liker',kbmGetLiker()).then(function(r){ if(r&&r.error&&!off) console.warn('like:',r.error.message); }); }catch(e){}
+      try{ SB.from('kb_likes').delete().eq('node_slug',slug).in('liker',kbmGetLikers()).then(function(r){ if(r&&r.error&&!off) console.warn('like:',r.error.message); }); }catch(e){}
     } else {
       KBM.likes.add(slug);
       try{ SB.from('kb_likes').insert({node_slug:slug, liker:kbmGetLiker()}).then(function(r){ if(r&&r.error&&!off) console.warn('like:',r.error.message); }); }catch(e){}
@@ -6846,7 +6868,7 @@
   }
   function closeKbMode(){ if(CN.on) cnClose(); document.getElementById('kbMode').style.display='none'; kbmShowList(); }
   function showTabbar(on){ var tb=document.getElementById('tabbar'); if(tb) tb.style.display=on?'flex':'none'; }
-  function landingMode(){ return (state && state.landing) || 'matchast'; }  // дефолт-посадка = Матчасть (ориентированная дверь)
+  function landingMode(){ return (state && state.landing) || 'constel'; }  // дефолт-посадка = Созвездие (ориентирующий дом, редизайн §3)
   // ── Роутер видов ──────────────────────────────────────────────────────────
   // Единственный, кто переключает верхние виды: прячет все четыре слоя, показывает
   // активный. Один источник истины ⇒ «два экрана разом» и «чужой слой снизу»
@@ -6854,6 +6876,10 @@
   function showView(which){
     var L=[['reader','app','flex'],['list','kbMode','flex'],['shelf','shelf','flex'],['cosmos','constel','block'],['menu','menuView','block']];
     for(var i=0;i<L.length;i++){ var el=document.getElementById(L[i][1]); if(el) el.style.display=(L[i][0]===which)?L[i][2]:'none'; }
+    // полная Матчасть через showView — это НЕ шторка-над-космосом; снять залипший класс,
+    // иначе z-index(65) и слайд-анимация шторки наследуются полным списком. Шторка показывается
+    // мимо showView (прямой display), поэтому её это не затрагивает.
+    if(which==='list'){ var km=document.getElementById('kbMode'); if(km) km.classList.remove('kbm-over-constel','kbm-sheet-down'); }
   }
   function setView(name){
     if(name==='matchast') name='base';   // Матчасть = список/сетка/поиск; космос — отдельная вкладка «Созвездие»
@@ -6896,24 +6922,28 @@
   function renderMenuView(){
     var body=document.getElementById('menuViewBody'); if(!body) return;
     var signedIn=(typeof USER!=='undefined' && USER);
-    var rows = signedIn ? menuRow('Аккаунт', (USER.email||'Вы вошли'), 'signout')
-                        : menuRow('Аккаунт', 'Вы не вошли — войти или создать пароль', 'login');
-    rows += menuRow('Мой прогресс', 'Время за чтением, путь, калибровка', 'progress');
-    rows += menuRow('Что нового', 'Обновления читальни', 'changelog');
-    rows += menuRow('Уведомления', '', 'notifs');
+    // Сгруппированные инсет-списки (паттерн Настроек iOS): строки в скруглённом контейнере с хайрлайнами.
+    var rows = '<div class="menu-group">'
+      + (signedIn ? menuRow('Аккаунт', (USER.email||'Вы вошли'), 'signout')
+                  : menuRow('Аккаунт', 'Вы не вошли — войти или создать пароль', 'login'))
+      + menuRow('Мой прогресс', 'Время за чтением, путь, калибровка', 'progress')
+      + menuRow('Что нового', 'Обновления читальни', 'changelog')
+      + menuRow('Уведомления', '', 'notifs')
+      + '</div>';
     // Настройки — тема на всё приложение (light/dark/auto), завязана на общий механизм applyTheme/state.theme
-    rows += '<div class="menu-v-sec">\u041d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438</div>';
-    rows += '<div class="menu-set-row"><span class="menu-set-lbl">\u0422\u0435\u043c\u0430</span>'
+    rows += '<div class="menu-v-sec">\u041d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438</div><div class="menu-group">'
+          + '<div class="menu-set-row"><span class="menu-set-lbl">\u0422\u0435\u043c\u0430</span>'
           + '<div class="seg menu-theme-seg" id="menuThemeSeg">'
           + '<button class="seg-btn" data-th="light">\u0421\u0432\u0435\u0442\u043b\u0430\u044f</button>'
           + '<button class="seg-btn" data-th="dark">\u0422\u0451\u043c\u043d\u0430\u044f</button>'
           + '<button class="seg-btn" data-th="auto">\u0410\u0432\u0442\u043e</button>'
-          + '</div></div>';
+          + '</div></div></div>';
     if(typeof isAdmin!=='undefined' && isAdmin){
-      rows += '<div class="menu-v-sec">Служебное</div>';
-      rows += menuRow('Диспетчерская', '', 'dispatch');
-      rows += menuRow('Дашборд глав', '', 'dash');
-      rows += menuRow('Админка', '', 'admin');
+      rows += '<div class="menu-v-sec">Служебное</div><div class="menu-group">'
+            + menuRow('Диспетчерская', '', 'dispatch')
+            + menuRow('Дашборд глав', '', 'dash')
+            + menuRow('Админка', '', 'admin')
+            + '</div>';
     }
     body.innerHTML = '<div class="menu-v-head"><h2 class="menu-v-title">Меню</h2></div><div class="menu-v-list">'+rows+'</div>';
     Array.prototype.forEach.call(body.querySelectorAll('[data-menu-act]'), function(b){
@@ -7053,16 +7083,16 @@
     });
     CN._depthReady=false; CN.depth=false; CN.yaw=0; CN.pitch=0; CN.rotTarget=null;
   }
-  function cnFit(){
+  function cnFit(zoom){
     // frame the whole constellation in view (instant)
-    var f=cnFitCam(); if(f){ CN.cam.s=f.s; CN.cam.x=f.x; CN.cam.y=f.y; }
+    var f=cnFitCam(zoom); if(f){ CN.cam.s=f.s; CN.cam.x=f.x; CN.cam.y=f.y; }
   }
-  function cnFitCam(){
+  function cnFitCam(zoom){
     if(!CN.nodes.length) return null;
     var minx=1e9,miny=1e9,maxx=-1e9,maxy=-1e9;
     CN.nodes.forEach(function(n){ if(n.x<minx)minx=n.x; if(n.y<miny)miny=n.y; if(n.x>maxx)maxx=n.x; if(n.y>maxy)maxy=n.y; });
     var gw=maxx-minx+120, gh=maxy-miny+120;
-    var s=Math.min(CN.w/gw, CN.h/gh)*0.92;
+    var s=Math.min(CN.w/gw, CN.h/gh)*0.92*(zoom||1);   // zoom>1 = ближе (читаемая глубина); без аргумента = всё
     return {s:s, x:CN.w/2 - (minx+maxx)/2*s, y:CN.h/2 - (miny+maxy)/2*s};
   }
   function cnResize(){
@@ -7075,6 +7105,65 @@
   // world↔screen
   function cnToScreen(x,y){ return [x*CN.cam.s+CN.cam.x, y*CN.cam.s+CN.cam.y]; }
   function cnToWorld(sx,sy){ return [(sx-CN.cam.x)/CN.cam.s, (sy-CN.cam.y)/CN.cam.s]; }
+  // Прогресс исследования: посещённые узлы / всего. Пока ничего не посещено — показываем число идей.
+  function cnUpdateCount(){
+    var el=document.getElementById('constelCount'); if(!el) return;
+    var tot=(KBM.nodes||[]).length, vis=0, vd=(state.visited||{});
+    for(var k in vd){ if(vd[k]) vis++; }
+    if(vis>tot) vis=tot;
+    var pct=tot?Math.round(vis/tot*100):0;
+    el.textContent = vis>0 ? (' · \u0418\u0441\u0441\u043b\u0435\u0434\u043e\u0432\u0430\u043d\u043e '+vis+' \u0438\u0437 '+tot+' \u00b7 '+pct+'%') : (' · '+tot+' \u0438\u0434\u0435\u0439');
+  }
+  // Рекомендация-первая-точка (как Прометей): ТОЛЬКО полные узлы (не stub/draft — уважать линзу).
+  // Новичок → несущий полный узел (центральный). Возврат → kb_find_similar (семантика) от последнего посещённого; фолбэк — графовый сосед.
+  function cnRecIsFull(n){ var st=(typeof kbmReadyState==='function'?(kbmReadyState(n)||{}).state:'ready'); return st!=='frontier' && st!=='hidden'; }
+  async function cnRecommend(){
+    var vd=state.visited||{}, nodes=(KBM.nodes||[]);
+    if(!nodes.length || typeof kbmIsCore!=='function' || typeof kbmRank!=='function') return null;
+    var visCount=0, kk; for(kk in vd){ if(vd[kk]) visCount++; }
+    function vis(s){ return !!vd[s]; }
+    if(visCount===0){
+      var cores=nodes.filter(function(n){ return kbmIsCore(n) && cnRecIsFull(n); });
+      var pool=(cores.length?cores:nodes.filter(cnRecIsFull)).sort(kbmRank);
+      return pool[0] ? {node:pool[0], kind:'start'} : null;
+    }
+    var anchor=state.lastVisited;
+    if(!anchor || !vd[anchor]){ for(kk in vd){ if(vd[kk]){ anchor=kk; break; } } }
+    var anchorNode=KBM.bySlug && KBM.bySlug[anchor];
+    // 1) семантика: kb_find_similar от последнего узла → первый непосещённый полный концепт (НЕ kb_search — он битый)
+    if(anchorNode && typeof SB!=='undefined'){
+      try{
+        var res=await SB.rpc('kb_find_similar',{p_text:(anchorNode.title||anchor), p_limit:8});
+        if(res && res.data && res.data.length){
+          for(var i=0;i<res.data.length;i++){
+            var sm=res.data[i].slug, nd=KBM.bySlug[sm];
+            if(sm && sm!==anchor && !vis(sm) && nd && nd.node_layer!=='scenario' && cnRecIsFull(nd)) return {node:nd, kind:'continue'};
+          }
+        }
+      }catch(e){}
+    }
+    // 2) фолбэк (оффлайн/нет SB/пусто): графовый сосед — полный, непосещённый концепт
+    function concept(s){ var x=KBM.bySlug[s]; return (x && x.node_layer!=='scenario' && cnRecIsFull(x)) ? x : null; }
+    var nb={}, o;
+    (KBM.edges||[]).forEach(function(e){
+      if(e.src===anchor && !vis(e.dst) && (o=concept(e.dst))) nb[e.dst]=o;
+      else if(e.dst===anchor && !vis(e.src) && (o=concept(e.src))) nb[e.src]=o;
+    });
+    var list=[], s2; for(s2 in nb) list.push(nb[s2]);
+    if(list.length){ list.sort(kbmRank); return {node:list[0], kind:'continue'}; }
+    var unv=nodes.filter(function(n){ return kbmIsCore(n) && cnRecIsFull(n) && !vis(n.slug); }).sort(kbmRank);
+    if(unv.length) return {node:unv[0], kind:'continue'};
+    return null;
+  }
+  async function cnRenderRec(){
+    var el=document.getElementById('constelRec'); if(!el) return;
+    var rec=null; try{ rec=await cnRecommend(); }catch(e){}
+    if(!rec || !rec.node){ el.style.display='none'; el.onclick=null; return; }
+    var lbl=rec.kind==='start'?'\u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u043e\u0442\u0441\u044e\u0434\u0430':'\u041f\u0440\u043e\u0434\u043e\u043b\u0436\u0438\u0442\u044c';
+    el.innerHTML='<span class="cn-rec-lbl">'+lbl+'</span><span class="cn-rec-name">'+escapeHtml(rec.node.title||rec.node.slug)+'</span><span class="cn-rec-arr">\u203a</span>';
+    el.style.display='';
+    el.onclick=function(){ cnToCard(rec.node); };
+  }
   function cnDraw(){
     var cv=document.getElementById('constelCanvas'); if(!cv) return;
     var g=cv.getContext('2d'); var dpr=CN.dpr;
@@ -7136,23 +7225,24 @@
     var order=CN.depth?CN.nodes:CN.nodes.slice().sort(function(za,zb){ return (zb._z||0)-(za._z||0); });
     for(var i=0;i<order.length;i++){
       var n=order[i];
+      var _unvis = (!sel && state.visited && !state.visited[n.slug]);
       var vis = n===sel ? 1 : Math.max(0, Math.min(1,(s-n.app)/0.22)); // fade-in band
       if(sel && n!==sel && selN && selN[n.slug] && vis<0.9) vis=0.9;    // selected node reveals its neighbours
       if(CN.depth){ if(n.weighted) vis=1; else vis*=0.12; }
       if(vis<=0.012 && n!==sel) continue;
       var p=[n._sx,n._sy];
       if(p[0]<-40||p[0]>CN.w+40||p[1]<-40||p[1]>CN.h+40) continue;     // cull offscreen
-      var rr=Math.max(1.0, n.r*s*(n._ps||1));
+      var rr=Math.max(1.0, n.r*s*(n._ps||1)*(n.lensDim?0.62:1));   // неполнота=размер (не яркость): stub/фронтир мельче
       var dim = sel && n!==sel && !(selN&&selN[n.slug]);
       // glow via cached sprite (drawImage, no per-frame gradient)
       var Rg=rr*(n.hub?4.3:2.9);
       g.globalCompositeOperation='lighter';
-      g.globalAlpha=(dim?0.14:1)*vis*(n.lensDim?0.42:1);
+      g.globalAlpha=(dim?0.14:1)*vis*(_unvis?0.42:1);
       g.drawImage(cnGlowSprite(n.hue,n.sat,n.light,n.hub), p[0]-Rg, p[1]-Rg, Rg*2, Rg*2);
       if(KBM.likes && KBM.likes.has(n.slug)){ g.globalAlpha=(dim?0.12:0.55)*vis; g.drawImage(cnGlowSprite(38,92,66,true), p[0]-Rg*0.85, p[1]-Rg*0.85, Rg*1.7, Rg*1.7); }
       g.globalAlpha=1; g.globalCompositeOperation='source-over';
       // core
-      g.globalAlpha=(dim?0.3:1)*Math.max(0.28,vis)*(n.lensDim?0.5:1);
+      g.globalAlpha=(dim?0.3:1)*Math.max(0.28,vis)*(_unvis?0.58:1);
       g.fillStyle='hsla('+n.hue+','+n.sat+'%,'+(n.light+14)+'%,1)';
       g.beginPath(); g.arc(p[0],p[1],rr,0,6.2832); g.fill();
       g.globalAlpha=1;
@@ -7182,7 +7272,7 @@
       if(clash) continue;
       placed.push(box);
       // читаемость пустого состояния: показанная метка держит «пол» альфы (не тает в нечитаемость), ярче заливка + крепче обводка на ночном небе
-      var la = n2===sel?1:Math.max(0.6,Math.min(1,(L.vis-0.42)/0.4));
+      var la = n2===sel?1:Math.max(0.68,Math.min(1,(L.vis-0.42)/0.4));
       g.lineWidth=3.5; g.lineJoin='round'; g.strokeStyle='rgba(6,4,2,'+(0.82*la)+')'; g.strokeText(label, tx, ty);
       g.fillStyle = n2===sel?'rgba(255,246,232,'+la+')':'rgba(245,236,220,'+la+')';
       g.fillText(label, tx, ty);
@@ -7427,10 +7517,10 @@
     CN.on=true; CN.sel=null; CN.hint=true; CN.target=null; CN.dragging=false;
     document.getElementById('constelChip').style.display='none';
     var h=document.getElementById('constelHint'); if(h) h.classList.remove('constel-hint-gone');
-    document.getElementById('constelCount').textContent=' · '+(KBM.nodes||[]).length+' идей';
+    cnUpdateCount(); cnRenderRec();
     cnResize();
     cnBuild();
-    cnFit();
+    cnFit(1.25);
     cnWire();
     var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
     if(!reduce) cnAssemble(); else cnInvalidate(); // reduced-motion ⇒ one static frame, no fly-in
@@ -7509,7 +7599,7 @@
       if(KBM.loaded && (KBM.nodes||[]).length){
         if(cnt) cnt.textContent=' · '+(KBM.nodes||[]).length+' идей';
         if(h) h.classList.remove('constel-hint-gone');
-        cnBuild(); cnFit(); cnWire();
+        cnBuild(); cnFit(1.25); cnWire();
         var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
         if(!reduce) cnAssemble(); else cnInvalidate();
         haptic(8);
@@ -8212,7 +8302,7 @@
 
   // ---------- state ----------
   var comments = [];            // {id, ch, start, end, quote, note, ts}
-  var state = { chapter: null, book:'main', markers:false, scroll:{}, theme:'auto', fontSize:1, readFont:'book', read:{} };
+  var state = { chapter: null, book:'main', markers:false, scroll:{}, theme:'auto', fontSize:1, readFont:'book', read:{}, visited:{} };
   var BOOKS=[];
   // Cached refs for static, never-recreated elements hit on every scroll frame.
   // Lazily resolved (DOM may not be parsed when this module first runs).
@@ -9328,7 +9418,7 @@
   (async function init(){
     initSB();
     var sRaw=lsGet('bp_state');
-    if(sRaw){ try{ var s=JSON.parse(sRaw); if(s){ state.markers=!!s.markers; state.scroll=s.scroll||{}; if(s.theme) state.theme=s.theme; if(s.book) state.book=s.book; if(s.readFont) state.readFont=s.readFont; if(s.chapter) state.chapter=s.chapter; if(typeof s.fontSize==='number') state.fontSize=s.fontSize; state.read=s.read||{}; } }catch(e){} }
+    if(sRaw){ try{ var s=JSON.parse(sRaw); if(s){ state.markers=!!s.markers; state.scroll=s.scroll||{}; if(s.theme) state.theme=s.theme; if(s.book) state.book=s.book; if(s.readFont) state.readFont=s.readFont; if(s.chapter) state.chapter=s.chapter; if(typeof s.fontSize==='number') state.fontSize=s.fontSize; state.read=s.read||{}; state.visited=s.visited||{}; state.lastVisited=s.lastVisited||null; } }catch(e){} }
     applyTheme(); applyReading();
     if(window.innerWidth<=820) document.getElementById('sidebar').classList.add('collapsed');
     var _mm=document.getElementById('miMarkers'); if(_mm) _mm.classList.toggle('on',state.markers);
