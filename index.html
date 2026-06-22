@@ -1749,11 +1749,13 @@
   .cn-leg-lbl{ flex:1; font-size:13px; color:#e8dcc8 }
   .cn-leg-n{ font-family:var(--font-ui); font-size:11px; color:#9a8c77 }
   .cn-leg-note{ margin-top:9px; padding-top:8px; border-top:1px solid rgba(220,190,150,.14); font-size:11.5px; color:#9a8c77; line-height:1.4 }
-  .cn-leg-layer{ display:flex; align-items:baseline; gap:9px; width:100%; padding:6px 8px; margin:0 -8px; background:transparent; border:none; border-radius:9px; cursor:pointer; text-align:left; font-family:inherit; transition:background .15s }
-  .cn-leg-layer:hover{ background:rgba(220,190,150,.08) }
-  .cn-leg-layer.on{ background:rgba(220,190,150,.16) }
-  .cn-leg-layer .cn-leg-lbl{ flex:0 0 auto; font-weight:600 }
-  .cn-leg-lhint{ flex:1; font-size:11px; color:#9a8c77 }
+  .cn-leg-seg{ display:flex; gap:3px; background:rgba(18,16,14,.55); padding:3px; border-radius:11px; margin-bottom:5px }
+  .cn-leg-seg-btn{ flex:1; min-width:0; border:none; background:transparent; color:#c2b39c; padding:7px 4px; border-radius:8px; cursor:pointer; font-family:var(--font-ui); font-weight:600; font-size:12.5px; line-height:1.15; text-align:center; display:flex; flex-direction:column; align-items:center; gap:1px; transition:background .15s,color .15s }
+  .cn-leg-seg-btn .cn-leg-seg-n{ font-size:10px; font-weight:500; opacity:.6 }
+  .cn-leg-seg-btn:hover{ color:#e8dcc8 }
+  .cn-leg-seg-btn.on{ background:var(--accent); color:#fff }
+  .cn-leg-seg-btn.on .cn-leg-seg-n{ opacity:.8 }
+  .cn-leg-seg-hint{ font-size:11px; color:#9a8c77; text-align:center; margin-bottom:5px; min-height:14px }
   .cn-leg-ttl2{ margin-top:13px }
   .constel-hint{ position:absolute; left:0; right:0; bottom:calc(28px + env(safe-area-inset-bottom,0px)); text-align:center; color:#c2b39c; font-size:12.5px; letter-spacing:.01em; pointer-events:none; z-index:2; text-shadow:0 1px 4px rgba(0,0,0,.7); transition:opacity .5s; opacity:.92 }
   .constel-hint-gone{ opacity:0 }
@@ -2178,6 +2180,56 @@
 .cp-ev-meta{ font-size:11.5px; color:var(--muted); margin-bottom:3px }
 .cp-ev-k{ color:var(--accent); font-weight:650 }
 .cp-foot{ text-align:center; color:var(--muted); font-size:11.5px; padding:8px 0 0 }
+
+/* ── Квесты: маршруты-путешествия (v1) ─────────────────────────────────────── */
+#quests{ position:fixed; inset:0; z-index:200; display:none; flex-direction:column; background:var(--bg); }
+#quests.open{ display:flex; }
+.q-head{ display:flex; align-items:center; justify-content:space-between; padding:calc(12px + env(safe-area-inset-top,0px)) 16px 12px; border-bottom:1px solid var(--line); flex-shrink:0; }
+.q-head h2{ margin:0; font-family:var(--font-ui); font-size:19px; font-weight:700; color:var(--ink); letter-spacing:-.01em; }
+.q-body{ flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:16px 16px calc(28px + env(safe-area-inset-bottom,0px)); max-width:680px; margin:0 auto; width:100%; box-sizing:border-box; }
+.q-intro{ color:var(--read); font-size:13.5px; line-height:1.55; margin-bottom:6px; }
+.q-sec{ font-family:var(--font-ui); font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin:20px 0 9px; }
+.q-sec-sub{ opacity:.85; }
+.q-empty{ color:var(--muted); text-align:center; padding:44px 0; }
+.q-card{ display:block; width:100%; text-align:left; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:15px 16px; margin-bottom:10px; cursor:pointer; transition:border-color .15s, transform .1s; font-family:inherit; box-shadow:var(--shadow); }
+.q-card:hover{ border-color:var(--line-2); }
+.q-card:active{ transform:scale(.99); }
+.q-card-big{ background:linear-gradient(140deg, var(--accent-tint), var(--card) 70%); border-color:color-mix(in srgb,var(--accent) 32%,var(--line)); padding:18px; }
+.q-card-h{ display:flex; align-items:flex-start; gap:8px; margin-bottom:6px; }
+.q-card-ttl{ flex:1; font-family:var(--font-ui); font-size:16.5px; font-weight:650; color:var(--ink); letter-spacing:-.01em; line-height:1.25; }
+.q-card-big .q-card-ttl{ font-size:19px; }
+.q-badge{ font-family:var(--font-ui); font-size:10.5px; font-weight:600; padding:3px 9px; border-radius:20px; flex-shrink:0; white-space:nowrap; }
+.q-badge-done{ background:color-mix(in srgb,var(--good) 16%,transparent); color:var(--good); }
+.q-badge-active{ background:var(--accent-soft); color:var(--accent); }
+.q-card-prom{ color:var(--read); font-size:14px; line-height:1.45; margin-bottom:9px; }
+.q-stub{ color:var(--muted); font-style:italic; opacity:.7; }
+.q-card-meta{ font-family:var(--font-ui); font-size:12px; color:var(--muted); margin-bottom:5px; }
+.q-card-prev{ font-size:12.5px; color:var(--muted); line-height:1.4; opacity:.85; }
+.q-prog{ display:flex; align-items:center; gap:9px; margin-top:11px; }
+.q-prog-bar{ flex:1; height:5px; border-radius:3px; background:var(--line); overflow:hidden; }
+.q-prog-bar i{ display:block; height:100%; background:var(--accent); border-radius:3px; }
+.q-prog-n{ font-family:var(--font-ui); font-size:11.5px; color:var(--muted); flex-shrink:0; }
+.q-back{ background:none; border:none; color:var(--accent); font-family:var(--font-ui); font-size:14px; font-weight:600; cursor:pointer; padding:4px 0; margin-bottom:10px; }
+.q-d-ttl{ font-family:var(--font-ui); font-size:23px; font-weight:700; color:var(--ink); letter-spacing:-.02em; margin-bottom:8px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; line-height:1.15; }
+.q-d-prom{ font-size:16px; line-height:1.5; color:var(--ink); margin-bottom:10px; }
+.q-d-desc{ font-size:14.5px; line-height:1.6; color:var(--read); margin-bottom:14px; }
+.q-d-meta{ font-family:var(--font-ui); font-size:12.5px; color:var(--muted); margin-bottom:6px; }
+.q-d-prog{ font-family:var(--font-ui); font-size:12.5px; color:var(--accent); margin-bottom:14px; }
+.q-stops{ border-left:2px solid var(--line); margin:6px 0 22px 8px; }
+.q-stop{ display:flex; align-items:center; gap:11px; padding:9px 0 9px 18px; cursor:pointer; position:relative; }
+.q-stop-dot{ position:absolute; left:-7px; width:11px; height:11px; border-radius:50%; background:var(--line-2); border:2px solid var(--bg); flex-shrink:0; }
+.q-stop-done .q-stop-dot{ background:var(--good); }
+.q-stop-next .q-stop-dot{ background:var(--accent); box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent); }
+.q-stop-t{ flex:1; font-size:14.5px; color:var(--ink); }
+.q-stop-done .q-stop-t{ color:var(--muted); }
+.q-stop-tag{ font-family:var(--font-ui); font-size:10.5px; color:var(--muted); flex-shrink:0; }
+.q-stop-tag-next{ color:var(--accent); font-weight:600; }
+.q-d-cta{ position:sticky; bottom:0; padding-top:10px; background:linear-gradient(to top, var(--bg) 72%, transparent); }
+.q-cta{ display:block; width:100%; padding:15px; border-radius:14px; border:none; background:var(--accent); color:var(--text-on-accent); font-family:var(--font-ui); font-size:16px; font-weight:650; cursor:pointer; transition:transform .1s; }
+.q-cta:active{ transform:scale(.99); }
+.q-cta-ghost{ background:transparent; border:1px solid var(--line-2); color:var(--ink); }
+.constel-routes{ height:42px; padding:0 15px; border-radius:21px; border:1px solid rgba(220,179,107,.5); background:rgba(120,90,40,.32); color:#e8c079; font-family:var(--font-ui); font-size:14px; font-weight:650; cursor:pointer; backdrop-filter:blur(8px); white-space:nowrap; flex-shrink:0; transition:background .15s; }
+.constel-routes:hover{ background:rgba(120,90,40,.5); }
 </style>
 </head>
 <body>
@@ -2366,6 +2418,13 @@
   </div>
   <div class="cp-body" id="cpBody"></div>
 </div>
+<div id="quests">
+  <div class="q-head">
+    <h2>Маршруты</h2>
+    <button class="iconbtn" id="qClose" aria-label="Закрыть">✕</button>
+  </div>
+  <div class="q-body" id="questsBody"></div>
+</div>
 <div id="kbCard" class="kb-card-ov"></div>
 <div id="atomView" class="atom-view" aria-hidden="true"></div>
 <div id="seriesView" class="series-view" aria-hidden="true"></div>
@@ -2520,6 +2579,7 @@
   <canvas id="constelCanvas"></canvas>
   <div class="constel-top">
     <div class="constel-ttl">Созвездие<span id="constelCount"></span></div>
+    <button class="constel-routes" id="constelRoutesBtn">Маршруты</button>
     <button class="constel-ctl" id="constelDepthBtn" title="Глубина — взвешенные узлы">◐</button>
     <button class="constel-ctl" id="constelLegendBtn" title="Цвета дисциплин">◉</button>
     <button class="constel-ctl" id="constelReset" title="Показать всё">⊙</button>
@@ -7158,7 +7218,7 @@
             + menuRow('Админка', '', 'admin')
             + '</div>';
     }
-    rows += '<div class="menu-version">Версия 2026-06-22 14:00 · 42d18fa</div>';
+    rows += '<div class="menu-version">Версия 2026-06-22 14:49 · c7353b8</div>';
     body.innerHTML = '<div class="menu-v-head"><h2 class="menu-v-title">Меню</h2></div><div class="menu-v-list">'+rows+'</div>';
     Array.prototype.forEach.call(body.querySelectorAll('[data-menu-act]'), function(b){
       b.onclick = function(){ menuAct(b.getAttribute('data-menu-act')); };
@@ -7647,10 +7707,13 @@
     var items=[]; for(var k in CN_DISC_HUE){ if(CN_DISC_HUE.hasOwnProperty(k)) items.push({slug:k, label:CN_DISC_LABEL[k]||k, hue:CN_DISC_HUE[k], n:counts[k]||0}); }
     if(counts['_']) items.push({slug:'_', label:'Без дисциплины', hue:172, n:counts['_']});
     items.sort(function(a,b){ return b.n-a.n; });
-    var html='<div class="cn-leg-ttl">Слой</div>';
-    [['all','Всё','все идеи'],['mechanism','Механизмы','как работает поведение'],['tool','Инструменты','что делает практик']].forEach(function(L){
-      html+='<button class="cn-leg-layer'+(CN.layer===L[0]?' on':'')+'" data-cn-layer="'+L[0]+'"><span class="cn-leg-lbl">'+L[1]+'</span><span class="cn-leg-lhint">'+L[2]+'</span><span class="cn-leg-n">'+Lc[L[0]]+'</span></button>';
+    var L3=[['all','Всё','все идеи'],['mechanism','Механизмы','как работает поведение'],['tool','Инструменты','что делает практик']];
+    var curHint=L3[0][2]; for(var hh=0;hh<L3.length;hh++){ if(L3[hh][0]===CN.layer) curHint=L3[hh][2]; }
+    var html='<div class="cn-leg-ttl">Слой</div><div class="cn-leg-seg">';
+    L3.forEach(function(L){
+      html+='<button class="cn-leg-seg-btn'+(CN.layer===L[0]?' on':'')+'" data-cn-layer="'+L[0]+'"><span>'+L[1]+'</span><span class="cn-leg-seg-n">'+Lc[L[0]]+'</span></button>';
     });
+    html+='</div><div class="cn-leg-seg-hint">'+curHint+'</div>';
     html+='<div class="cn-leg-ttl cn-leg-ttl2">Цвет — дисциплина</div>';
     items.forEach(function(it){ if(!it.n) return; html+='<div class="cn-leg-row"><span class="cn-leg-dot" style="background:hsl('+it.hue+',62%,63%)"></span><span class="cn-leg-lbl">'+it.label+'</span><span class="cn-leg-n">'+it.n+'</span></div>'; });
     html+='<div class="cn-leg-note">Инструменты — с кольцом. Ярче звезда — крепче подтверждено, бледнее — спорное. Размер — число связей. Рядом — связанные идеи.</div>';
@@ -7863,6 +7926,122 @@
       b.classList.toggle('tab-on', b.getAttribute('data-view')===active);
     });
   }
+  // ── Квесты: маршруты-путешествия по созвездию (v1) ───────────────────────────
+  // Данные в таблице quests. Прогресс ЧЕСТНЫЙ: считается из state.visited ∩ slugs —
+  // остановки, прочитанные и в свободной прогулке, засчитываются (endowed-progress).
+  // Гардрейлы: без стриков/очков/лидербордов/пушей — только внутренние крючки
+  // (любопытство, близость цели, обладание картой). Веди, не загоняй.
+  var QUEST={ list:null, _loading:false, detailKey:null };
+
+  function questState(){ if(!state.quests) state.quests={active:{},done:{}}; var q=state.quests; if(!q.active) q.active={}; if(!q.done) q.done={}; return q; }
+  function questBy(key){ var l=QUEST.list||[]; for(var i=0;i<l.length;i++){ if(l[i].key===key) return l[i]; } return null; }
+  function questProgress(q){ var v=state.visited||{}, s=(q&&q.slugs)||[], n=0; for(var i=0;i<s.length;i++){ if(v[s[i]]) n++; } return n; }
+  function questNextStop(q){ var v=state.visited||{}, s=(q&&q.slugs)||[]; for(var i=0;i<s.length;i++){ if(!v[s[i]]) return s[i]; } return null; }
+  function questIsDone(q){ return questProgress(q) >= (((q&&q.slugs)||[]).length||1); }
+  function questIsActive(key){ return !!questState().active[key]; }
+  function questActiveList(){ var qs=questState(), out=[]; (QUEST.list||[]).forEach(function(q){ if(qs.active[q.key] && !questIsDone(q)) out.push(q); }); return out; }
+  function questStopTitle(slug){ var n=KBM.bySlug && KBM.bySlug[slug]; return (n && (n.title||n.slug)) || slug; }
+  function questMins(q){ var n=((q&&q.slugs)||[]).length; return Math.max(4, Math.round(n*2.5)); }
+
+  async function questLoad(force){
+    if(QUEST.list && !force) return QUEST.list;
+    if(QUEST._loading) return QUEST.list;
+    QUEST._loading=true;
+    try{
+      var r=await SB.from('quests').select('key,ord,title,icon,promise,description,slugs,recommended,status').order('ord');
+      if(!r.error && r.data){ QUEST.list=r.data.filter(function(q){ return (q.slugs||[]).length>0; }); }
+    }catch(e){}
+    QUEST._loading=false;
+    return QUEST.list;
+  }
+
+  async function openQuests(){
+    var el=document.getElementById('quests'); if(!el) return;
+    QUEST.detailKey=null;
+    el.classList.add('open'); document.body.style.overflow='hidden';
+    var body=document.getElementById('questsBody'); if(body) body.innerHTML='<div class="q-empty">Маршруты загружаются…</div>';
+    await questLoad();
+    questsRender();
+  }
+  function closeQuests(){ var el=document.getElementById('quests'); if(el) el.classList.remove('open'); document.body.style.overflow=''; QUEST.detailKey=null; }
+
+  function questCardHtml(q, big){
+    var prog=questProgress(q), tot=(q.slugs||[]).length, done=questIsDone(q), started=prog>0;
+    var preview=(q.slugs||[]).slice(0,3).map(function(s){ return escapeHtml(questStopTitle(s)); }).join(' · ');
+    var badge = done ? '<span class="q-badge q-badge-done">пройден</span>'
+              : (questIsActive(q.key) ? '<span class="q-badge q-badge-active">в пути</span>' : '');
+    var prom = q.promise ? escapeHtml(q.promise) : '<span class="q-stub">маршрут готовится…</span>';
+    var pct = tot ? Math.round(prog/tot*100) : 0;
+    var progHtml = started ? ('<div class="q-prog"><span class="q-prog-bar"><i style="width:'+pct+'%"></i></span><span class="q-prog-n">'+prog+' из '+tot+'</span></div>') : '';
+    return '<button class="q-card'+(big?' q-card-big':'')+'" data-quest="'+escapeHtml(q.key)+'">'
+      + '<div class="q-card-h"><span class="q-card-ttl">'+escapeHtml(q.title||q.key)+'</span>'+badge+'</div>'
+      + '<div class="q-card-prom">'+prom+'</div>'
+      + '<div class="q-card-meta">'+tot+' остановок · ~'+questMins(q)+' мин</div>'
+      + '<div class="q-card-prev">'+preview+' …</div>'
+      + progHtml
+      + '</button>';
+  }
+
+  function questsRender(){
+    var body=document.getElementById('questsBody'); if(!body) return;
+    if(QUEST.detailKey){ questDetailRender(); return; }
+    var list=QUEST.list||[];
+    if(!list.length){ body.innerHTML='<div class="q-empty">Маршруты пока недоступны.</div>'; return; }
+    var rec=null, rest=[];
+    list.forEach(function(q){ if(q.recommended && !rec) rec=q; else rest.push(q); });
+    if(!rec){ rec=list[0]; rest=list.slice(1); }
+    var active=questActiveList();
+    var html='<div class="q-intro">Маршрут — собранный путь по созвездию: одна тема, остановка за остановкой. Веди, не торопись — любую звезду можно открыть и отдельно.</div>';
+    if(active.length){
+      html+='<div class="q-sec">В пути</div>';
+      active.forEach(function(q){ html+=questCardHtml(q,false); });
+    }
+    html+='<div class="q-sec">'+(active.length?'Начать новый':'Начни отсюда')+'</div>';
+    if(!questIsActive(rec.key) || questIsDone(rec)) html+=questCardHtml(rec,true);
+    var more='';
+    rest.forEach(function(q){ if(!questIsActive(q.key) || questIsDone(q)) more+=questCardHtml(q,false); });
+    if(more) html+='<div class="q-sec q-sec-sub">Ещё маршруты</div>'+more;
+    body.innerHTML=html;
+    body.querySelectorAll('[data-quest]').forEach(function(b){ b.onclick=function(){ QUEST.detailKey=b.getAttribute('data-quest'); questDetailRender(); }; });
+  }
+
+  function questDetailRender(){
+    var body=document.getElementById('questsBody'); if(!body) return;
+    var q=questBy(QUEST.detailKey); if(!q){ QUEST.detailKey=null; questsRender(); return; }
+    var prog=questProgress(q), tot=(q.slugs||[]).length, done=questIsDone(q), active=questIsActive(q.key);
+    var next=questNextStop(q);
+    var stops=(q.slugs||[]).map(function(s){
+      var vis=state.visited && state.visited[s];
+      var isNext=(s===next);
+      return '<div class="q-stop'+(vis?' q-stop-done':'')+(isNext?' q-stop-next':'')+'" data-stop="'+escapeHtml(s)+'">'
+        + '<span class="q-stop-dot"></span>'
+        + '<span class="q-stop-t">'+escapeHtml(questStopTitle(s))+'</span>'
+        + (vis?'<span class="q-stop-tag">пройдено</span>':(isNext?'<span class="q-stop-tag q-stop-tag-next">дальше</span>':''))
+        + '</div>';
+    }).join('');
+    var cta;
+    if(done){ cta='<button class="q-cta q-cta-ghost" data-q-restart="'+escapeHtml(q.key)+'">Пройти заново</button>'; }
+    else if(active){ cta='<button class="q-cta" data-q-continue="'+escapeHtml(q.key)+'">'+(next?('Продолжить — '+escapeHtml(questStopTitle(next))):'Открыть маршрут')+'</button>'; }
+    else { cta='<button class="q-cta" data-q-accept="'+escapeHtml(q.key)+'">Принять маршрут</button>'; }
+    var progLine = prog>0 ? ('<div class="q-d-prog">Пройдено '+prog+' из '+tot+((!active&&!done)?' · уже знакомо из прогулок':'')+'</div>') : '';
+    body.innerHTML='<button class="q-back" data-q-back="1">‹ Все маршруты</button>'
+      + '<div class="q-d-ttl">'+escapeHtml(q.title||q.key)+(done?' <span class="q-badge q-badge-done">пройден</span>':'')+'</div>'
+      + (q.promise?'<div class="q-d-prom">'+escapeHtml(q.promise)+'</div>':'')
+      + (q.description?'<div class="q-d-desc">'+escapeHtml(q.description)+'</div>':'')
+      + '<div class="q-d-meta">'+tot+' остановок · ~'+questMins(q)+' мин</div>'
+      + progLine
+      + '<div class="q-stops">'+stops+'</div>'
+      + '<div class="q-d-cta">'+cta+'</div>';
+    var bk=body.querySelector('[data-q-back]'); if(bk) bk.onclick=function(){ QUEST.detailKey=null; questsRender(); };
+    var acc=body.querySelector('[data-q-accept]'); if(acc) acc.onclick=function(){ questAccept(q.key); };
+    var con=body.querySelector('[data-q-continue]'); if(con) con.onclick=function(){ questGoNext(q.key); };
+    var rst=body.querySelector('[data-q-restart]'); if(rst) rst.onclick=function(){ questGoNext(q.key); };
+    body.querySelectorAll('[data-stop]').forEach(function(d){ d.onclick=function(){ questGoStop(d.getAttribute('data-stop')); }; });
+  }
+
+  function questAccept(key){ var qs=questState(); qs.active[key]=Date.now(); saveState(); questGoNext(key); }
+  function questGoNext(key){ var q=questBy(key); if(!q) return; var next=questNextStop(q); if(!next) next=(q.slugs||[])[0]; questGoStop(next); }
+  function questGoStop(slug){ closeQuests(); var node=KBM.bySlug && KBM.bySlug[slug]; if(node && typeof cnToCard==='function') cnToCard(node); }
   async function loadLikes(){
     LIKEALL=[]; if(!SB||!USER) return;
     try{ var r=await SB.from('comment_likes').select('*'); if(!r.error) LIKEALL=r.data||[]; }catch(e){}
@@ -9518,6 +9697,8 @@
       if(reduce){ CN.yaw=0; CN.pitch=0; CN.rotTarget=null; } else { CN.rotTarget={yaw:0,pitch:0}; }
       var f=cnFitCam(); if(f){ CN.target=f; } cnKick(); };
     var lg=document.getElementById('constelLegendBtn'); if(lg) lg.onclick=function(){ cnLegendToggle(); };
+    var rt=document.getElementById('constelRoutesBtn'); if(rt) rt.onclick=function(){ openQuests(); };
+    var qc=document.getElementById('qClose'); if(qc) qc.onclick=function(){ closeQuests(); };
     var db=document.getElementById('constelDepthBtn');
     if(db) db.onclick=function(){
       var nd=!CN.depth; cnLegendHide(); cnMorphTo(nd); db.classList.toggle('on',nd);
