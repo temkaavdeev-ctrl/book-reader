@@ -620,6 +620,8 @@
   .app-ver{font-family:var(--font-mono); font-size:12px; color:var(--accent); font-weight:500; letter-spacing:0}
   .applog-v{font-family:var(--font-mono); font-size:11px; text-transform:uppercase; letter-spacing:.4px; color:var(--accent); margin:16px 0 8px; font-weight:600}
   .applog-v:first-child{margin-top:0}
+  .applog-date{font-size:12px; color:var(--muted); margin:0 0 12px}
+  .applog-date + .applog-v{margin-top:0}
   .applog-list{margin:0; padding-left:18px}
   .applog-list li{font-size:14px; color:var(--read); line-height:1.5; margin-bottom:7px}
 
@@ -1866,11 +1868,42 @@
 @keyframes kbmCardBack{ from{ opacity:0; transform:translateX(-40px) } to{ opacity:1; transform:none } }
 #kbmDetCard.kbm-card-fwd{ animation:kbmCardFwd .28s cubic-bezier(.22,.61,.36,1) both }
 #kbmDetCard.kbm-card-back{ animation:kbmCardBack .28s cubic-bezier(.22,.61,.36,1) both }
+/* Первое открытие карточки: блоки нежно проявляются сверху вниз (один раз за сессию) */
+@keyframes kbmRevealUp{ from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:none} }
+#kbmDetCard.kbm-card-reveal>*{ animation:kbmRevealUp .5s cubic-bezier(.22,.61,.36,1) both }
+#kbmDetCard.kbm-card-reveal>*:nth-child(1){animation-delay:.02s}
+#kbmDetCard.kbm-card-reveal>*:nth-child(2){animation-delay:.06s}
+#kbmDetCard.kbm-card-reveal>*:nth-child(3){animation-delay:.10s}
+#kbmDetCard.kbm-card-reveal>*:nth-child(4){animation-delay:.15s}
+#kbmDetCard.kbm-card-reveal>*:nth-child(5){animation-delay:.20s}
+#kbmDetCard.kbm-card-reveal>*:nth-child(6){animation-delay:.25s}
+#kbmDetCard.kbm-card-reveal>*:nth-child(7){animation-delay:.30s}
+#kbmDetCard.kbm-card-reveal>*:nth-child(8){animation-delay:.35s}
+#kbmDetCard.kbm-card-reveal>*:nth-child(9){animation-delay:.40s}
+#kbmDetCard.kbm-card-reveal>*:nth-child(n+10){animation-delay:.45s}
+/* Вводный сплеш старта маршрута: сменяющиеся реплики на тёмном небе */
+.qsp{ position:fixed; inset:0; z-index:300; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:32px;
+  background:radial-gradient(120% 120% at 50% 40%, #1b1a17 0%, #0d0d0f 72%); color:#F5ECDC;
+  opacity:0; transition:opacity .4s ease; -webkit-tap-highlight-color:transparent; cursor:pointer }
+.qsp.show{ opacity:1 }
+.qsp.out{ opacity:0 }
+.qsp-stage{ min-height:130px; display:flex; align-items:center; justify-content:center; max-width:min(560px,90vw) }
+.qsp-beat{ opacity:0; transform:translateY(8px); transition:opacity .4s ease, transform .4s cubic-bezier(.22,.61,.36,1); display:flex; flex-direction:column; align-items:center; gap:13px }
+.qsp-beat.in{ opacity:1; transform:none }
+.qsp-beat.off{ opacity:0; transform:translateY(-8px) }
+.qsp-ic{ font-size:46px; line-height:1 }
+.qsp-ttl{ font-size:26px; font-weight:760; letter-spacing:-.02em; color:#FBF3E4 }
+.qsp-line{ font-size:19px; line-height:1.45; color:#E6D9C2 }
+.qsp-go{ color:#d7a664; font-weight:650 }
+.qsp-skip{ position:absolute; bottom:34px; left:0; right:0; text-align:center; font-size:12.5px; color:rgba(245,236,220,.5) }
 @keyframes kbmSecStream{ from{ opacity:0; transform:translateY(8px) } to{ opacity:1; transform:none } }
 .kbm-sections.kbm-stream-in{ animation:kbmSecStream .32s ease .02s both }
 .kbm-detail-pending{ min-height:140px }
 @media (prefers-reduced-motion:reduce){
   #kbmDetCard.kbm-card-fwd,#kbmDetCard.kbm-card-back,.kbm-sections.kbm-stream-in{ animation:none }
+  #kbmDetCard.kbm-card-reveal>*{ animation:none }
+  .atom-view.open{ animation:none }
+  .qsp,.qsp-beat{ transition:none }
 }
 
 /* ── Mini constellation map inside a card: the concept's neighbourhood ── */
@@ -2027,7 +2060,8 @@
 
 /* ── Атом «Ликбез»: страница-разбор ── */
 .atom-view{ position:fixed; inset:0; z-index:240; background:var(--bg); display:none; overflow-y:auto; -webkit-overflow-scrolling:touch }
-.atom-view.open{ display:block }
+.atom-view.open{ display:block; animation:atomIn .32s cubic-bezier(.22,.61,.36,1) both }
+@keyframes atomIn{ from{ opacity:0; transform:translateY(10px) } to{ opacity:1; transform:none } }
 .atom-wrap{ max-width:680px; margin:0 auto; padding:54px 22px 80px; position:relative }
 .atom-close{ position:fixed; top:14px; right:14px; z-index:2; width:38px; height:38px; border-radius:50%; border:1px solid var(--line); background:var(--card); color:var(--muted); font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center }
 .atom-close:hover{ color:var(--ink) }
@@ -2175,6 +2209,18 @@
 .cp-stat-v{ font-size:18px; font-weight:750; color:var(--ink); font-variant-numeric:tabular-nums }
 .cp-stat-v.bad{ color:var(--warn) }
 .cp-stat-k{ font-size:12px; color:var(--muted); margin-top:2px }
+.cp-stat-v.cp-muted{ color:var(--muted); font-weight:650 }
+.cp-switch{ flex:none; width:52px; height:30px; border-radius:16px; border:1px solid var(--line); background:var(--card); position:relative; cursor:pointer; padding:0; transition:background .18s,border-color .18s }
+.cp-switch .cp-switch-knob{ position:absolute; top:3px; left:3px; width:22px; height:22px; border-radius:50%; background:var(--muted); transition:transform .18s,background .18s }
+.cp-switch.on{ background:var(--accent); border-color:var(--accent) }
+.cp-switch.on .cp-switch-knob{ transform:translateX(22px); background:var(--text-on-accent) }
+.cp-switch.busy{ opacity:.55; pointer-events:none }
+.cp-spend{ margin-top:12px; display:flex; flex-direction:column; gap:7px }
+.cp-spend-row{ display:flex; align-items:center; gap:10px; font-size:13px }
+.cp-spend-name{ flex:none; width:140px; color:var(--read); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.cp-spend-bar{ flex:1; height:8px; border-radius:5px; background:var(--accent-tint); overflow:hidden }
+.cp-spend-bar i{ display:block; height:100%; background:var(--accent); border-radius:5px }
+.cp-spend-n{ flex:none; min-width:24px; text-align:right; color:var(--ink); font-weight:650; font-variant-numeric:tabular-nums }
 .cp-ev-row{ padding:10px 0; border-top:1px solid var(--line); font-size:13.5px; color:var(--read); line-height:1.45 }
 .cp-ev-row:first-child{ border-top:none; padding-top:0 }
 .cp-ev-meta{ font-size:11.5px; color:var(--muted); margin-bottom:3px }
@@ -5258,6 +5304,21 @@
   }
   function bookChangelog(){ var b=(BOOKS||[]).filter(function(x){return x.id===currentBook();})[0]; return (b && Array.isArray(b.changelog)) ? b.changelog : []; }
   function fmtLogDate(s){ try{ var d=new Date(s); if(isNaN(d)) return s; return d.toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'}); }catch(_){ return s; } }
+  // Записи чейнджлога. Если ВСЕ записи в один день — одна дата на весь лог (Каллиопа, вариант б), не повторять у каждой версии.
+  function clogEntries(box, log){
+    var ds={}; (log||[]).forEach(function(r){ if(r.date) ds[r.date]=1; });
+    var dk=Object.keys(ds), oneDate=(dk.length===1)?dk[0]:null;
+    if(oneDate){ var dh=document.createElement('div'); dh.className='applog-date'; dh.textContent=fmtLogDate(oneDate); box.appendChild(dh); }
+    (log||[]).forEach(function(rel){
+      var head = rel.v ? ('Версия '+rel.v) : '';
+      if(rel.date && !oneDate){ var dd=fmtLogDate(rel.date); head = head ? (head+' · '+dd) : dd; }
+      if(!head) head='Обновление';
+      var h=document.createElement('div'); h.className='applog-v'; h.textContent=head; box.appendChild(h);
+      var ul=document.createElement('ul'); ul.className='applog-list';
+      (rel.items||[]).forEach(function(it){ var li=document.createElement('li'); li.textContent=it; ul.appendChild(li); });
+      box.appendChild(ul);
+    });
+  }
   function bookLogSig(){ var l=bookChangelog(); if(!l.length) return ''; var e=l[0]||{}; return (e.v||'')+'|'+(e.date||'')+'|'+((e.items||[]).length); }
   function hasNewBookLog(){
     var sig=bookLogSig(); if(!sig) return false;
@@ -5286,15 +5347,7 @@
     var bb=document.getElementById('bookLogBanner'); if(bb) bb.classList.remove('show');
     var log=bookChangelog();
     if(!log.length){ box.innerHTML='<div class="empty">Пока без записей. Здесь будут появляться изменения — что переписано, что добавлено.</div>'; showModal('bookLogModal'); return; }
-    log.forEach(function(rel){
-      var head = rel.v ? ('Версия '+rel.v) : '';
-      if(rel.date){ var dd=fmtLogDate(rel.date); head = head ? (head+' · '+dd) : dd; }
-      if(!head) head='Обновление';
-      var h=document.createElement('div'); h.className='applog-v'; h.textContent=head; box.appendChild(h);
-      var ul=document.createElement('ul'); ul.className='applog-list';
-      (rel.items||[]).forEach(function(it){ var li=document.createElement('li'); li.textContent=it; ul.appendChild(li); });
-      box.appendChild(ul);
-    });
+    clogEntries(box, log);
     lsSet('bp_booklog_seen', bookLogSig()); refreshBookLogDot();
     showModal('bookLogModal');
   }
@@ -5304,15 +5357,7 @@
     var ttl=document.getElementById('chapLogTitle'); if(ttl) ttl.textContent='Что изменилось — '+ch.title;
     var log=Array.isArray(ch.changelog)?ch.changelog:[];
     if(!log.length){ box.innerHTML='<div class="empty">Для этой главы пока нет записей об изменениях.</div>'; }
-    else log.forEach(function(rel){
-      var head = rel.v ? ('Версия '+rel.v) : '';
-      if(rel.date){ var dd=fmtLogDate(rel.date); head = head ? (head+' · '+dd) : dd; }
-      if(!head) head='Обновление';
-      var h=document.createElement('div'); h.className='applog-v'; h.textContent=head; box.appendChild(h);
-      var ul=document.createElement('ul'); ul.className='applog-list';
-      (rel.items||[]).forEach(function(it){ var li=document.createElement('li'); li.textContent=it; ul.appendChild(li); });
-      box.appendChild(ul);
-    });
+    else clogEntries(box, log);
     if(canModerate()){
       var ad=document.createElement('div'); ad.className='chaplog-admin';
       var ah=document.createElement('div'); ah.className='chaplog-admin-h'; ah.textContent='Техническое · видит только редактор'; ad.appendChild(ah);
@@ -5634,7 +5679,8 @@
     return pr[n]; }
   // fuzzy: совпадение токенов запроса со словами title+claim (подстрока = точно, иначе близость по Левенштейну для опечаток/склонений)
   function kbmFuzzyScore(ql, n){
-    var txt=((n.title||'')+' '+(n.claim||'')).toLowerCase();
+    var _lbls=(n.tags||[]).map(function(x){return x.label||'';}).join(' ');   // метки осей как синонимы-прокси
+    var txt=((n.title||'')+' '+(n.claim||'')+' '+_lbls).toLowerCase();
     var words=txt.split(/[^a-zа-яё0-9]+/), qtoks=ql.split(/\s+/), score=0;
     for(var t=0;t<qtoks.length;t++){ var qt=qtoks[t]; if(!qt) continue; var best=99;
       for(var i=0;i<words.length;i++){ var w=words[i]; if(!w) continue;
@@ -5648,7 +5694,10 @@
     if(!q.trim()){ KBM.region?kbmRenderRegion(KBM.region):kbmRenderOverview(); return; }
     var ql=q.toLowerCase().trim();
     var hits=KBM.nodes.filter(function(n){
-      return (n.title||'').toLowerCase().includes(ql)||(n.claim||'').toLowerCase().includes(ql);
+      if((n.title||'').toLowerCase().includes(ql)||(n.claim||'').toLowerCase().includes(ql)) return true;
+      var t=n.tags||[];                                                       // синонимы-прокси: PM ищет «онбординг», «память», «внимание»
+      for(var i=0;i<t.length;i++){ if(t[i].label && t[i].label.toLowerCase().includes(ql)) return true; }
+      return false;
     }).sort(function(a,b){ return (b.degree||0)-(a.degree||0); });
     var body=document.getElementById('kbmBody'); if(!body) return;
     var cnt=document.getElementById('kbmCount');
@@ -5699,6 +5748,7 @@
   }
   // ── Overview: region tiles (the "territory" view) ──────────────────────
   function kbmRenderOverview(){
+    KBM.fromAtom=null;                       // показан список → прежнее атом-происхождение неактуально
     if(KBM.lens==='product-lever'){ return kbmRenderTaskGrid(); }
     KBM.region=null;
     var body=document.getElementById('kbmBody'); if(!body) return;
@@ -6283,7 +6333,7 @@
   function kbmShowList(){
     document.getElementById('kbmList').style.display='flex';
     document.getElementById('kbmDet').style.display='none';
-    KBM_HISTORY=[]; KBM.currentSlug=null;
+    KBM_HISTORY=[]; KBM.currentSlug=null; KBM.fromAtom=null;
     // Restore whichever map view was active (core / scenarios / playbook / findings / region / overview)
     if(KBM.loaded){
       if(KBM.region==='__core__') kbmRenderCore();
@@ -6302,6 +6352,7 @@
   }
   function kbmBackTarget(){
     if(KBM_HISTORY.length>0){ var p=KBM_HISTORY[KBM_HISTORY.length-1]; var t=p.title||p.slug||''; return {kind:'card', slug:p.slug, label:(t.length>22?t.slice(0,20)+'\u2026':t)}; }
+    if(KBM.fromAtom){ var an=KBM.bySlug[KBM.fromAtom]; return {kind:'atom', slug:KBM.fromAtom, label:an?kbmShortTitle(an.title||'\u0420\u0430\u0437\u0431\u043e\u0440'):'\u0420\u0430\u0437\u0431\u043e\u0440'}; }
     if(KBM.fromQuest){ var q=(typeof questBy==='function')?questBy(KBM.fromQuest):null; return {kind:'quest', label:q?kbmShortTitle(q.title||'\u041c\u0430\u0440\u0448\u0440\u0443\u0442'):'\u041c\u0430\u0440\u0448\u0440\u0443\u0442'}; }
     if(KBM.fromConstel) return {kind:'constel', label:'\u0421\u043e\u0437\u0432\u0435\u0437\u0434\u0438\u0435'};
     if(KBM.region==='__playbook__'){ var sc=KBM.bySlug[KBM.scenarioSlug]; return {kind:'playbook', label:sc?kbmShortTitle(sc.title):'\u0421\u0438\u0442\u0443\u0430\u0446\u0438\u044f'}; }
@@ -6322,6 +6373,7 @@
     var t=kbmBackTarget();
     switch(t.kind){
       case 'card': KBM_HISTORY.pop(); KBM.currentSlug=null; kbmDetail(t.slug, true); break;
+      case 'atom': var _as=KBM.fromAtom; KBM.fromAtom=null; KBM.fromConstel=false; KBM.fromQuest=null; if(typeof kbmOpenAtom==='function') kbmOpenAtom(_as); break;
       case 'quest': kbmBackToQuest(KBM.fromQuest); break;
       case 'constel': cnReturnFromCard(); break;
       case 'playbook': if(typeof kbmScenarioPlaybook==='function') kbmScenarioPlaybook(KBM.scenarioSlug); else kbmShowList(); break;
@@ -6674,7 +6726,10 @@
     body.innerHTML='<div id="kbmDetCard">'+hero+kbmStateBanner(node)+'<div id="kbmQuestTracker">'+questTrackerHtml(slug)+'</div>'+'<div class="kbm-sections" id="kbmDetSections"><div class="kbm-detail-pending"></div></div>'+kbmMiniMap(slug)+kbmChapterRefs(slug)+kbmSituationRefs(slug)+'<div id="kbmSigWrap">'+kbmSignalBar(slug)+'</div>'+'<div id="kbmQuestAdvance">'+(typeof questAdvanceHtml==='function'?questAdvanceHtml(slug):'')+'</div>'+'<button class="kbm-back-btn kbm-back-btm" id="kbmDetBackBtm" data-kbm-back-btm="1"><span class="kbm-back-arr">\u2190</span><span class="kbm-back-lbl">\u041d\u0430\u0437\u0430\u0434</span></button>'+'</div>';
     body.scrollTop=0;
     var card=document.getElementById('kbmDetCard');
-    if(card && !reduce){ card.classList.remove('kbm-card-fwd','kbm-card-back'); void card.offsetWidth; card.classList.add(dir==='back'?'kbm-card-back':'kbm-card-fwd'); }
+    if(card && !reduce){
+      if(!KBM._cardRevealed && dir!=='back'){ KBM._cardRevealed=true; card.classList.add('kbm-card-reveal'); }   // ПЕРВОЕ открытие: нежное раскрытие блоков сверху вниз; дальше — обычный слайд
+      else { card.classList.remove('kbm-card-fwd','kbm-card-back'); void card.offsetWidth; card.classList.add(dir==='back'?'kbm-card-back':'kbm-card-fwd'); }
+    }
     if(!body._kbmwired){ body._kbmwired=true;
       body.addEventListener('click',function(e){
         var bb=e.target.closest('[data-kbm-back-btm]'); if(bb){ if(typeof kbmGoBack==='function') kbmGoBack(); return; }
@@ -6922,7 +6977,7 @@
     } else el.innerHTML='';
   }
   async function kbmOpenAtom(slug){
-    var n=KBM.bySlug[slug];
+    var n=KBM.bySlug[slug]; KBM._atomSlug=slug;   // запомнить происхождение для «назад из карточки → в атом»
     var view=document.getElementById('atomView'); if(!view) return;
     view.classList.add('open'); view.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden';
     view.innerHTML='<div class="atom-wrap"><button class="atom-close" data-atom-close="1" aria-label="Закрыть">✕</button><div class="atom-load">Загрузка разбора…</div></div>';
@@ -6944,6 +6999,7 @@
     view.scrollTop=0;
     view.querySelectorAll('.nodelink').forEach(function(a){
       a.onclick=function(e){ if(e&&e.preventDefault) e.preventDefault(); var s=a.getAttribute('data-node'); if(!s) return;
+        KBM.fromAtom=KBM._atomSlug||null; KBM.fromConstel=false; KBM.fromQuest=null;   // карточка открыта ИЗ атома → «назад» вернёт в атом
         kbmCloseAtom(); if(typeof closeAtomSeries==='function') closeAtomSeries();   // снять оверлеи атома и серии
         if(typeof showView==='function') showView('list');                          // вывести kb-mode вперёд — иначе карточка прячется под Полкой/серией
         kbmDetail(s);
@@ -7323,7 +7379,7 @@
             + menuRow('Админка', '', 'admin')
             + '</div>';
     }
-    rows += '<div class="menu-version">Версия 2026-06-22 18:54 · 05cd822</div>';
+    rows += '<div class="menu-version">Версия 2026-06-22 20:15 · 059fcf7</div>';
     body.innerHTML = '<div class="menu-v-head"><h2 class="menu-v-title">Меню</h2></div><div class="menu-v-list">'+rows+'</div>';
     Array.prototype.forEach.call(body.querySelectorAll('[data-menu-act]'), function(b){
       b.onclick = function(){ menuAct(b.getAttribute('data-menu-act')); };
@@ -7546,6 +7602,16 @@
     el.onclick=function(){ cnToCard(rec.node); };
     var rx=el.querySelector('.cn-rec-x'); if(rx) rx.onclick=function(e){ e.stopPropagation(); CN.recClosed=true; el.style.display='none'; };
   }
+  // Активный маршрут для подсветки на небе: фокусный квест, иначе первый активный. {set, order} по слугам или null.
+  function cnActiveRoute(){
+    if(typeof QUEST==='undefined' || !QUEST || typeof questBy!=='function') return null;
+    var q=questBy(QUEST.focus);
+    if(!q && typeof questActiveList==='function'){ var al=questActiveList(); if(al&&al.length) q=al[0]; }
+    if(!q || !q.slugs || !q.slugs.length) return null;
+    if(typeof questIsActive==='function' && !questIsActive(q.key)) return null;   // подсвечиваем только реально активный
+    var set={}; for(var i=0;i<q.slugs.length;i++) set[q.slugs[i]]=1;
+    return {set:set, order:q.slugs};
+  }
   function cnDraw(){
     var cv=document.getElementById('constelCanvas'); if(!cv) return;
     var g=cv.getContext('2d'); var dpr=CN.dpr;
@@ -7580,6 +7646,8 @@
       }
     }
 
+    // ── маршрут: подсветка активного маршрута на небе (путь + кольца стопов) ──
+    var route=cnActiveRoute();
     // ── edges: alpha ramps continuously with zoom (far→none, mid→faint, near→clear) ──
     var eBase=Math.max(0, Math.min(1,(s-0.22)*0.9));
     if(eBase>0.012 || sel){
@@ -7602,6 +7670,21 @@
       g.globalCompositeOperation='source-over';
     }
 
+    // ── маршрут: линия пути под звёздами — пройденные сегменты сплошные, предстоящие пунктир ──
+    if(route && route.order.length>1){
+      g.save();
+      for(var rri=0; rri<route.order.length-1; rri++){
+        var rna=cnNodeBySlug(route.order[rri]), rnb=cnNodeBySlug(route.order[rri+1]);
+        if(!rna||!rnb) continue;
+        var segDone=(state.visited&&state.visited[rna.slug]&&state.visited[rnb.slug]);
+        g.strokeStyle=segDone?'rgba(214,166,100,0.55)':'rgba(214,166,100,0.26)';
+        g.lineWidth=Math.max(1,(segDone?1.7:1.1)*s);
+        g.setLineDash(segDone?[]:[4,5]);
+        g.beginPath(); g.moveTo(rna._sx,rna._sy); g.lineTo(rnb._sx,rnb._sy); g.stroke();
+      }
+      g.setLineDash([]); g.restore();
+    }
+
     // ── nodes: progressive reveal (alpha = smooth fn of zoom & degree) + sprite glow ──
     var cand=[];
     var order=CN.depth?CN.nodes:CN.nodes.slice().sort(function(za,zb){ return (zb._z||0)-(za._z||0); });
@@ -7612,6 +7695,7 @@
       if(sel && n!==sel && selN && selN[n.slug] && vis<0.9) vis=0.9;    // selected node reveals its neighbours
       if(CN.depth){ if(n.weighted) vis=1; else vis*=0.12; }
       if(CN.layer!=='all' && n.cls!==CN.layer) vis*=0.14;   // фильтр слоёв: неподходящий класс гаснет
+      if(route && route.set[n.slug] && vis<0.82) vis=0.82;   // стопы активного маршрута держим видимыми
       if(vis<=0.012 && n!==sel) continue;
       var p=[n._sx,n._sy];
       if(p[0]<-40||p[0]>CN.w+40||p[1]<-40||p[1]>CN.h+40) continue;     // cull offscreen
@@ -7632,6 +7716,9 @@
       // инструменты — отдельный слой: тонкое нейтральное кольцо метит инструмент (механизмы — просто звёзды)
       if(n.cls==='tool'){ g.globalAlpha=(dim?0.2:0.6)*Math.max(0.3,vis)*(_unvis?0.55:1); g.strokeStyle='rgba(214,198,170,1)'; g.lineWidth=1.1; g.beginPath(); g.arc(p[0],p[1],rr+2.3,0,6.2832); g.stroke(); g.globalAlpha=1; }
       if(n===sel){ g.strokeStyle='rgba(255,240,220,0.92)'; g.lineWidth=2; g.beginPath(); g.arc(p[0],p[1],rr+3,0,6.2832); g.stroke(); }
+      if(route && route.set[n.slug] && n!==sel){ var rDone=(state.visited&&state.visited[n.slug]);
+        g.globalAlpha=Math.max(0.5,vis); g.strokeStyle=rDone?'rgba(214,166,100,0.85)':'rgba(224,176,108,0.95)'; g.lineWidth=rDone?1.6:2.2;
+        g.beginPath(); g.arc(p[0],p[1],rr+(rDone?3:4.2),0,6.2832); g.stroke(); g.globalAlpha=1; }
       if(CN.depth && n.weighted){ var arr=rr+5;
         g.strokeStyle='rgba(120,110,95,0.5)'; g.lineWidth=2; g.beginPath(); g.arc(p[0],p[1],arr,0,6.2832); g.stroke();
         g.strokeStyle='rgba(240,220,150,0.92)'; g.lineWidth=2; g.beginPath(); g.arc(p[0],p[1],arr,-1.5708,-1.5708+(n.exp||0)*6.2832); g.stroke(); }
@@ -7930,7 +8017,7 @@
   // (paused, not torn down), so there is no flash and returning needs no rebuild.
   function cnToCard(node, fromQuest){
     if(!node) return;
-    KBM.fromConstel=true; KBM.fromQuest=fromQuest||null; KBM.region=null;
+    KBM.fromConstel=true; KBM.fromQuest=fromQuest||null; KBM.fromAtom=null; KBM.region=null;
     CN.on=false; if(CN.raf){ cancelAnimationFrame(CN.raf); CN.raf=null; }   // pause cosmos, keep it mounted
     var ch=document.getElementById('constelChip'); if(ch) ch.style.display='none';
     var km=document.getElementById('kbMode'); if(km){ km.classList.add('kbm-over-constel'); km.style.display='flex'; }
@@ -8155,7 +8242,39 @@
     body.querySelectorAll('[data-stop]').forEach(function(d){ d.onclick=function(){ QUEST.focus=q.key; questGoStop(d.getAttribute('data-stop')); }; });
   }
 
-  function questAccept(key){ var qs=questState(); qs.active[key]=Date.now(); QUEST.focus=key; saveState(); var q=questBy(key); var n=q?(q.slugs||[]).length:0; if(typeof toast==='function') toast('Маршрут начат'+(n?' · '+n+' остановок':'')); questGoNext(key); }
+  function questAccept(key){ var qs=questState(); qs.active[key]=Date.now(); QUEST.focus=key; saveState();
+    questSplash(key, function(){ questGoNext(key); }); }
+  // Вводный сплеш старта маршрута: сменяющиеся короткие реплики (свои на каждый маршрут — из полей квеста), затем первая остановка. Тап = пропустить.
+  function questSplash(key, done){
+    var q=questBy(key);
+    var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    if(!q || reduce){ if(done) done(); return; }
+    var stops=(q.slugs||[]).length, mins=questMins(q);
+    var stopWord=(typeof kbmPlural==='function')?kbmPlural(stops,'\u043e\u0441\u0442\u0430\u043d\u043e\u0432\u043a\u0430','\u043e\u0441\u0442\u0430\u043d\u043e\u0432\u043a\u0438','\u043e\u0441\u0442\u0430\u043d\u043e\u0432\u043e\u043a'):(stops+' \u043e\u0441\u0442\u0430\u043d\u043e\u0432\u043e\u043a');
+    var beats=[];
+    beats.push('<span class="qsp-ic">'+escapeHtml(q.icon||'\u2726')+'</span><span class="qsp-ttl">'+escapeHtml(q.title||'\u041c\u0430\u0440\u0448\u0440\u0443\u0442')+'</span>');
+    if(q.promise) beats.push('<span class="qsp-line">'+escapeHtml(q.promise)+'</span>');
+    beats.push('<span class="qsp-line">'+stopWord+' \u00b7 \u043e\u043a\u043e\u043b\u043e '+mins+' \u043c\u0438\u043d</span>');
+    var first=(q.slugs||[])[0], ft=first?questStopTitle(first):'';
+    if(ft) beats.push('<span class="qsp-line qsp-go">\u041d\u0430\u0447\u043d\u0451\u043c \u0441: '+escapeHtml(ft)+'</span>');
+    var ov=document.createElement('div'); ov.className='qsp'; ov.id='questSplash';
+    ov.innerHTML='<div class="qsp-stage"></div><div class="qsp-skip">\u043d\u0430\u0436\u043c\u0438, \u0447\u0442\u043e\u0431\u044b \u043f\u0440\u043e\u043f\u0443\u0441\u0442\u0438\u0442\u044c</div>';
+    document.body.appendChild(ov); document.body.style.overflow='hidden';
+    void ov.offsetWidth; ov.classList.add('show');
+    var stage=ov.querySelector('.qsp-stage'), i=0, timer=null, finished=false;
+    function finish(){ if(finished) return; finished=true; clearTimeout(timer); ov.classList.remove('show'); ov.classList.add('out');
+      setTimeout(function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); document.body.style.overflow=''; if(done) done(); }, 360); }
+    function nextBeat(){
+      if(i>=beats.length){ finish(); return; }
+      stage.innerHTML='<div class="qsp-beat">'+beats[i]+'</div>';
+      var b=stage.querySelector('.qsp-beat'); void b.offsetWidth; b.classList.add('in');
+      var hold=(i===0)?1500:1250;
+      timer=setTimeout(function(){ b.classList.remove('in'); b.classList.add('off');
+        timer=setTimeout(function(){ i++; nextBeat(); }, 300); }, hold);
+    }
+    ov.onclick=finish;
+    nextBeat();
+  }
   function questGoNext(key){ QUEST.focus=key; var q=questBy(key); if(!q) return; var next=questNextStop(q); if(!next) next=(q.slugs||[])[0]; questGoStop(next); }
   function questGoStop(slug){ closeQuests(); KBM_HISTORY=[]; KBM.currentSlug=null; var node=KBM.bySlug && KBM.bySlug[slug]; if(node && typeof cnToCard==='function') cnToCard(node, QUEST.focus); }
   function questAbandon(key){ var qs=questState(); delete qs.active[key]; if(QUEST.focus===key) QUEST.focus=null; saveState(); if(typeof toast==='function') toast('Маршрут оставлен — прогресс сохранён'); QUEST.detailKey=null; questsRender(); }
@@ -8893,15 +9012,29 @@
     var d=r.data||{};
     var gov=d.governance||{}, paused=!!gov.autonomy_paused;
     var html='';
-    html+='<div class="cp-gov"><div class="cp-gov-st"><div class="cp-gov-lbl">Автономия команды</div>'
-      +'<div class="cp-gov-val'+(paused?' paused':'')+'">'+(paused?'НА ПАУЗЕ':'Активна')+'</div>'
-      +(paused&&gov.reason?'<div class="cp-gov-reason">'+escapeHtml(String(gov.reason))+'</div>':'')
-      +'</div><button class="cp-stop '+(paused?'resume':'go')+'" id="cpStopBtn">'+(paused?'▶ ПУСК':'■ СТОП')+'</button></div>';
+    html+='<div class="cp-gov"><div class="cp-gov-st"><div class="cp-gov-lbl">Режим замедления</div>'
+      +'<div class="cp-gov-val'+(paused?' paused':'')+'">'+(paused?'ВКЛ':'выкл')+'</div>'
+      +'<div class="cp-gov-reason">'+(paused
+          ?'Рутины приостановлены, расход токенов рутинами = 0; живые сессии доигрывают.'+(gov.reason?' ('+escapeHtml(String(gov.reason))+')':'')
+          :'Рутины работают штатно.')+'</div>'
+      +'</div><button class="cp-switch'+(paused?' on':'')+'" id="cpSlowBtn" role="switch" aria-checked="'+(paused?'true':'false')+'" aria-label="Режим замедления"><span class="cp-switch-knob"></span></button></div>';
     var fires=d.fires_today||0, budget=gov.daily_fire_budget||0, cq=d.content_queue||{};
-    html+='<div class="cp-sec"><div class="cp-grid">'
-      +'<div class="cp-stat"><div class="cp-stat-v'+(budget&&fires>budget?' bad':'')+'">'+fires+' / '+budget+'</div><div class="cp-stat-k">запусков сегодня</div></div>'
-      +'<div class="cp-stat"><div class="cp-stat-v">'+(cq.pending||0)+' · '+(cq.in_flight||0)+'</div><div class="cp-stat-k">контент: ждёт · в работе</div></div>'
-      +'</div></div>';
+    var spawns=d.claude_spawns_today||0, spend=d.routine_spend||[];
+    html+='<div class="cp-sec"><div class="cp-sec-h">Расход токенов сегодня</div><div class="cp-grid">'
+      +'<div class="cp-stat"><div class="cp-stat-v">'+spawns+'</div><div class="cp-stat-k">токен-сессии Claude</div></div>'
+      +'<div class="cp-stat"><div class="cp-stat-v cp-muted">'+fires+'</div><div class="cp-stat-k">всего прогонов · в осн. бесплатные SQL</div></div>'
+      +'</div>';
+    if(spend.length){
+      var spMax=spend.reduce(function(m,rs){ return Math.max(m,rs.spawns||0); },0)||1;
+      html+='<div class="cp-spend">';
+      spend.forEach(function(rs){
+        var w=Math.round((rs.spawns||0)/spMax*100);
+        html+='<div class="cp-spend-row"><span class="cp-spend-name">'+escapeHtml(rs.routine||'?')+'</span>'
+          +'<span class="cp-spend-bar"><i style="width:'+w+'%"></i></span><span class="cp-spend-n">'+(rs.spawns||0)+'</span></div>';
+      });
+      html+='</div>';
+    }
+    html+='<div class="cp-stat-k" style="margin-top:9px">Бюджет прогонов '+budget+'/день · контент: ждёт '+(cq.pending||0)+' · в работе '+(cq.in_flight||0)+'</div></div>';
     var perm={book:0,reader:0,research:0,product:0};
     (d.bus_open||[]).forEach(function(b){ if(Object.prototype.hasOwnProperty.call(perm,b.dst)) perm[b.dst]=b.n; });
     var stale={}; (d.stale_contexts||[]).forEach(function(s){ stale[s.role]=s.age_h; });
@@ -8941,16 +9074,15 @@
     html+='<div class="cp-foot">обновлено '+cpAgo(d.generated_at)+' · автообновление 30с</div>';
     body.innerHTML=html;
     if(dot) setTimeout(function(){ dot.classList.remove('on'); }, 400);
-    var sb=document.getElementById('cpStopBtn'); if(sb) sb.onclick=function(){ cpToggleAutonomy(paused); };
+    var sw=document.getElementById('cpSlowBtn'); if(sw) sw.onclick=function(){ cpToggleSlowdown(paused); };
   }
-  async function cpToggleAutonomy(currentlyPaused){
-    var want=!currentlyPaused, reason='';
-    if(want){ reason=prompt('Причина паузы (в журнал):','ручная пауза'); if(reason===null) return; }
-    var sb=document.getElementById('cpStopBtn'); if(sb){ sb.disabled=true; sb.textContent='…'; }
-    try{ var by=(typeof USER!=='undefined'&&USER&&USER.email)?USER.email:'admin';
-      var r=await SB.rpc('set_autonomy',{p_paused:want,p_reason:reason||'',p_by:by}); if(r.error) throw r.error;
-      if(typeof toast==='function') toast(want?'Команда на паузе':'Команда возобновлена'); cpRender();
-    }catch(e){ if(typeof toast==='function') toast('Не удалось: '+(e.message||e)); cpRender(); }
+  async function cpToggleSlowdown(currentlyOn){
+    var want=!currentlyOn;
+    var sw=document.getElementById('cpSlowBtn'); if(sw) sw.classList.add('busy');
+    try{
+      var r=await SB.rpc('pult_slowdown',{p_on:want}); if(r.error) throw r.error;
+      if(typeof toast==='function') toast(want?'Замедление включено · рутины на паузе':'Замедление выключено · рутины работают'); cpRender();
+    }catch(e){ if(typeof toast==='function') toast('Не удалось: '+((e&&e.message)||e)); cpRender(); }
   }
 
   // ---------- data ----------
