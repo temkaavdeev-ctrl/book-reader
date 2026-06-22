@@ -1169,7 +1169,7 @@
   .kbp-rob-badge{ font-family:var(--font-ui); font-size:10px; font-weight:700; padding:2px 8px; border-radius:999px; color:#fff; flex-shrink:0 }
   .kbp-rob-note{ font-size:12px; color:var(--muted); line-height:1.45 }
   .kbp-claim{ font-size:15px; color:var(--read); line-height:1.6; margin-bottom:12px }
-  .kbp-kontr{ font-size:12.5px; color:var(--muted); line-height:1.5; padding:8px 10px; background:color-mix(in srgb,var(--danger) 8%,transparent); background:rgba(188,69,60,.07); border-radius:10px; margin-bottom:8px }
+  .kbp-kontr{ font-size:12.5px; color:var(--muted); line-height:1.5; padding:8px 10px; background:color-mix(in srgb,var(--danger) 8%,transparent); background:rgba(188,69,60,.07); border-radius:var(--r-m); margin-bottom:8px }
   .kbp-kontr-lbl{ font-weight:700; color:var(--danger); margin-right:5px }
   .kbp-src{ font-size:11.5px; color:var(--muted); font-family:var(--font-ui); line-height:1.5; margin-bottom:8px }
   .kbp-rels{ display:flex; flex-direction:column; gap:4px }
@@ -1177,7 +1177,7 @@
   .kbp-rel:hover .kbp-rel-title{ color:var(--accent) }
   .kbp-rel-type{ font-family:var(--font-ui); font-size:10px; color:var(--muted); flex-shrink:0; background:var(--line); border-radius:4px; padding:2px 6px; margin-right:6px }
   .kbp-rel-title{ font-size:13px; color:var(--ink); font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:220px }
-  .kbp-neighbor{ margin-top:10px; padding:10px 12px; background:var(--card); border:1px solid var(--line); border-radius:10px }
+  .kbp-neighbor{ margin-top:10px; padding:10px 12px; background:var(--card); border:1px solid var(--line); border-radius:var(--r-m) }
   .kbp-nb-head{ display:flex; align-items:center; gap:8px; margin-bottom:6px }
   .kbp-nb-head b{ flex:1; font-size:13.5px; color:var(--ink) }
   .kbp-nb-close{ background:none; border:none; color:var(--muted); cursor:pointer; font-size:13px; padding:0 }
@@ -1335,12 +1335,12 @@
   /* Search */
   .kbm-search-row{ padding:10px 14px 0; flex-shrink:0; position:relative }
   .kbm-search-row::before{ content:'🔍'; position:absolute; left:26px; top:50%; transform:translateY(-20%); font-size:13px; pointer-events:none; opacity:.7 }
-  .kbm-q{ width:100%; height:40px; padding:0 12px 0 34px; border:1.5px solid var(--line-2); border-radius:14px; background:var(--card); color:var(--ink); font-size:14px; font-family:inherit; outline:none; box-sizing:border-box; transition:border-color .15s }
+  .kbm-q{ width:100%; height:40px; padding:0 12px 0 34px; border:1.5px solid var(--line-2); border-radius:var(--r-l); background:var(--card); color:var(--ink); font-size:14px; font-family:inherit; outline:none; box-sizing:border-box; transition:border-color .15s }
   .kbm-q:focus{ border-color:var(--accent) }
   /* Lens switcher — how to slice the territory */
   .kbm-lens{ display:flex; gap:7px; overflow-x:auto; padding:12px 14px 4px; flex-shrink:0; -webkit-overflow-scrolling:touch }
   .kbm-lens::-webkit-scrollbar{ display:none }
-  .kbm-lens-btn{ display:flex; flex-direction:column; align-items:flex-start; gap:1px; padding:7px 13px; border:1.5px solid var(--line-2); border-radius:10px; background:var(--card); cursor:pointer; font-family:inherit; white-space:nowrap; flex-shrink:0; transition:all .15s; text-align:left }
+  .kbm-lens-btn{ display:flex; flex-direction:column; align-items:flex-start; gap:1px; padding:7px 13px; border:1.5px solid var(--line-2); border-radius:var(--r-m); background:var(--card); cursor:pointer; font-family:inherit; white-space:nowrap; flex-shrink:0; transition:all .15s; text-align:left }
   .kbm-lens-btn:hover{ border-color:var(--accent) }
   .kbm-lens-sel{ border-color:var(--accent-2); background:var(--accent-2); }
   .kbm-lens-lbl{ font-size:13px; font-weight:700; color:var(--ink) }
@@ -1354,21 +1354,21 @@
   .kbm-bodyhits{ margin-top:18px; padding-top:14px; border-top:1px solid var(--line) }
   .kbm-bodyhit-snip{ font-size:12px; color:var(--muted); line-height:1.45; margin:-2px 2px 8px 12px }
   .kbm-filterbar{ display:flex; align-items:center; gap:10px; margin:0 2px 12px }
-  .kbm-filter-toggle{ background:none; border:1px solid var(--line); border-radius:9px; padding:6px 12px; font-size:13px; font-weight:600; color:var(--muted); cursor:pointer; font-family:inherit; transition:border-color .15s,color .15s }
+  .kbm-filter-toggle{ background:none; border:1px solid var(--line); border-radius:var(--r-s); padding:6px 12px; font-size:13px; font-weight:600; color:var(--muted); cursor:pointer; font-family:inherit; transition:border-color .15s,color .15s }
   .kbm-filter-toggle.has{ color:var(--accent); border-color:color-mix(in srgb,var(--accent) 40%,var(--line)) }
   .kbm-filter-arr{ font-size:11px }
   .kbm-filter-clear{ background:none; border:none; color:var(--muted); font-size:12.5px; cursor:pointer; font-family:inherit; text-decoration:underline }
-  .kbm-filter-panel{ margin:0 2px 14px; padding:12px 14px; background:var(--card); border:1px solid var(--line); border-radius:14px; display:flex; flex-direction:column; gap:11px }
+  .kbm-filter-panel{ margin:0 2px 14px; padding:12px 14px; background:var(--card); border:1px solid var(--line); border-radius:var(--r-l); display:flex; flex-direction:column; gap:11px }
   .kbm-filter-dim{ display:flex; flex-direction:column; gap:6px }
   .kbm-filter-dim-lbl{ font-size:10.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--muted) }
   .kbm-filter-chips{ display:flex; flex-wrap:wrap; gap:6px }
-  .kbm-filter-chip{ display:inline-flex; align-items:center; gap:6px; background:transparent; border:1px solid var(--line); border-radius:8px; padding:5px 9px; font-size:12.5px; color:var(--read); cursor:pointer; font-family:inherit; transition:border-color .15s,background .15s,color .15s }
+  .kbm-filter-chip{ display:inline-flex; align-items:center; gap:6px; background:transparent; border:1px solid var(--line); border-radius:var(--r-s); padding:5px 9px; font-size:12.5px; color:var(--read); cursor:pointer; font-family:inherit; transition:border-color .15s,background .15s,color .15s }
   .kbm-filter-chip.on{ background:color-mix(in srgb,var(--accent) 12%,var(--card)); border-color:var(--accent); color:var(--accent) }
   .kbm-filter-chip-n{ font-size:11px; color:var(--muted) }
   .kbm-filter-chip.on .kbm-filter-chip-n{ color:var(--accent) }
   /* ── Overview: region tiles ── */
   .kbm-regions{ display:flex; flex-direction:column; gap:11px }
-  .kbm-region-tile{ position:relative; display:block; width:100%; text-align:left; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:15px 16px 14px; cursor:pointer; font-family:inherit; overflow:hidden; transition:border-color .15s,box-shadow .15s,transform .1s }
+  .kbm-region-tile{ position:relative; display:block; width:100%; text-align:left; background:var(--card); border:1px solid var(--line); border-radius:var(--r-l); padding:15px 16px 14px; cursor:pointer; font-family:inherit; overflow:hidden; transition:border-color .15s,box-shadow .15s,transform .1s }
   .kbm-region-tile:hover{ border-color:var(--rc); box-shadow:0 4px 18px rgba(0,0,0,.09) }
   .kbm-region-tile:active{ transform:scale(.99) }
   .kbm-region-bar{ position:absolute; top:0; left:0; right:0; height:4px; background:color-mix(in srgb,var(--rc) 14%,transparent) }
@@ -1377,18 +1377,18 @@
   .kbm-region-name{ font-family:var(--font-ui); font-size:19px; font-weight:700; color:var(--ink); line-height:1.25; flex:1 }
   .kbm-region-count{ font-family:var(--font-ui); font-size:13px; font-weight:700; color:var(--rc); flex-shrink:0 }
   .kbm-region-landmarks{ display:flex; flex-wrap:wrap; gap:5px; margin-bottom:11px }
-  .kbm-landmark{ font-size:11.5px; color:var(--read); background:color-mix(in srgb,var(--rc) 9%,var(--bg)); border:1px solid color-mix(in srgb,var(--rc) 20%,var(--line)); border-radius:10px; padding:3px 8px; white-space:nowrap; max-width:100%; overflow:hidden; text-overflow:ellipsis }
+  .kbm-landmark{ font-size:11.5px; color:var(--read); background:color-mix(in srgb,var(--rc) 9%,var(--bg)); border:1px solid color-mix(in srgb,var(--rc) 20%,var(--line)); border-radius:var(--r-m); padding:3px 8px; white-space:nowrap; max-width:100%; overflow:hidden; text-overflow:ellipsis }
   .kbm-region-go{ font-family:var(--font-ui); font-size:11px; font-weight:700; color:var(--rc); letter-spacing:.02em }
   /* ── Region drill-in ── */
-  .kbm-region-back{ display:inline-flex; align-items:center; gap:5px; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:7px 13px; font-size:13px; color:var(--read); cursor:pointer; font-family:inherit; margin-bottom:14px; font-weight:600 }
+  .kbm-region-back{ display:inline-flex; align-items:center; gap:5px; background:var(--card); border:1px solid var(--line); border-radius:var(--r-m); padding:7px 13px; font-size:13px; color:var(--read); cursor:pointer; font-family:inherit; margin-bottom:14px; font-weight:600 }
   .kbm-region-back:hover{ border-color:var(--accent); color:var(--accent) }
   /* Tension lines (contradicts / competes crossing the region boundary) */
-  .kbm-tensions{ background:color-mix(in srgb,var(--danger) 5%,var(--bg)); border:1px solid color-mix(in srgb,var(--danger) 18%,var(--line)); border-radius:14px; padding:12px 13px; margin-bottom:16px }
+  .kbm-tensions{ background:color-mix(in srgb,var(--danger) 5%,var(--bg)); border:1px solid color-mix(in srgb,var(--danger) 18%,var(--line)); border-radius:var(--r-l); padding:12px 13px; margin-bottom:16px }
   .kbm-tensions-lbl{ font-family:var(--font-ui); font-size:11.5px; font-weight:600; letter-spacing:0; color:var(--danger); margin-bottom:9px }
   .kbm-tension{ display:flex; align-items:center; gap:7px; width:100%; text-align:left; background:none; border:none; border-top:1px solid color-mix(in srgb,var(--danger) 10%,var(--line)); padding:8px 0; cursor:pointer; font-family:inherit; flex-wrap:wrap }
   .kbm-tension:first-of-type{ border-top:none }
   .kbm-tension-in{ font-size:12.5px; font-weight:600; color:var(--ink) }
-  .kbm-tension-rel{ font-family:var(--font-ui); font-size:10px; color:var(--danger); background:color-mix(in srgb,var(--danger) 11%,transparent); border-radius:10px; padding:2px 7px; flex-shrink:0 }
+  .kbm-tension-rel{ font-family:var(--font-ui); font-size:10px; color:var(--danger); background:color-mix(in srgb,var(--danger) 11%,transparent); border-radius:var(--r-m); padding:2px 7px; flex-shrink:0 }
   .kbm-tension-out{ font-size:12.5px; color:var(--accent); font-weight:600 }
   .kbm-tension:hover .kbm-tension-out{ text-decoration:underline }
   /* ── Concept rows (region + search) ── */
@@ -1441,7 +1441,7 @@
   .kbm-like-btn.kbm-liked{ border-color:var(--danger); color:var(--danger) }
   .kbm-d-claim{ font-size:15.5px; color:var(--read); line-height:1.65; margin-bottom:16px; font-family:var(--font-read) }
   /* Section system for all 8 body fields */
-  .kbm-sec{ margin-bottom:12px; padding:10px 13px; border-radius:10px; background:var(--card); border:1px solid var(--line) }
+  .kbm-sec{ margin-bottom:12px; padding:10px 13px; border-radius:var(--r-m); background:var(--card); border:1px solid var(--line) }
   .kbm-sec-lbl{ font-family:var(--font-ui); font-size:11.5px; font-weight:600; letter-spacing:0; color:var(--muted); margin-bottom:7px }
   .kbm-sec-lbl-app{ color:var(--accent) }
   .kbm-sec-body{ font-size:13.5px; color:var(--read); line-height:1.6 }
@@ -1453,7 +1453,7 @@
   .kbm-sec-ana{ border-style:dashed }
   .kbm-d-src{ font-size:11px; color:var(--muted); font-family:var(--font-ui); line-height:1.5; margin-top:14px; padding-top:12px; border-top:1px solid var(--line) }
   /* Back button */
-  .kbm-back-btn{ display:flex; align-items:center; justify-content:center; gap:6px; min-height:44px; padding:9px 14px; border-radius:11px; background:var(--card); border:1px solid var(--line); min-width:0; max-width:170px }
+  .kbm-back-btn{ display:flex; align-items:center; justify-content:center; gap:6px; min-height:44px; padding:9px 14px; border-radius:var(--r-m); background:var(--card); border:1px solid var(--line); min-width:0; max-width:170px }
   .kbm-back-arr{ font-size:16px; flex-shrink:0 }
   .kbm-back-lbl{ font-size:12px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:120px; font-family:var(--font-ui) }
 
@@ -1463,7 +1463,7 @@
   .kbm-rel-strip:active{ cursor:grabbing }
   .kbm-rel-strip::-webkit-scrollbar{ height:3px }
   .kbm-rel-strip::-webkit-scrollbar-thumb{ background:var(--line-2); border-radius:3px }
-  .kbm-rel-card{ flex:0 0 170px; background:var(--card); border:1.5px solid var(--line); border-radius:14px; padding:11px 13px 12px; cursor:pointer; font-family:inherit; text-align:left; scroll-snap-align:start; transition:border-color .15s,box-shadow .15s; min-height:94px }
+  .kbm-rel-card{ flex:0 0 170px; background:var(--card); border:1.5px solid var(--line); border-radius:var(--r-l); padding:11px 13px 12px; cursor:pointer; font-family:inherit; text-align:left; scroll-snap-align:start; transition:border-color .15s,box-shadow .15s; min-height:94px }
   .kbm-rel-card:hover{ border-color:var(--accent); box-shadow:0 2px 12px rgba(0,0,0,.08) }
   .kbm-rel-card-top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:6px }
   .kbm-rel-dot{ width:8px; height:8px; border-radius:50%; flex-shrink:0 }
@@ -1471,7 +1471,7 @@
   .kbm-rel-card-title{ font-size:13px; font-weight:700; color:var(--ink); line-height:1.35; margin-bottom:5px }
   .kbm-rel-card-claim{ font-size:11.5px; color:var(--muted); line-height:1.45 }
   /* Back button with prev-node label */
-  .kbm-back-btn{ display:flex; align-items:center; justify-content:center; gap:6px; min-height:44px; padding:9px 13px; border-radius:11px; background:var(--card); border:1px solid var(--line); min-width:0; max-width:170px }
+  .kbm-back-btn{ display:flex; align-items:center; justify-content:center; gap:6px; min-height:44px; padding:9px 13px; border-radius:var(--r-m); background:var(--card); border:1px solid var(--line); min-width:0; max-width:170px }
   .kbm-back-arr{ font-size:16px; flex-shrink:0 }
   .kbm-back-lbl{ font-size:12px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:120px; font-family:var(--font-ui) }
 
@@ -1505,7 +1505,7 @@
 
   /* ===== KB Map: core weight + mobile readability ===== */
   /* Core banner — quick path to the load-bearing backbone */
-  .kbm-core-banner{ display:flex; align-items:center; gap:12px; width:100%; text-align:left; background:linear-gradient(135deg, color-mix(in srgb,var(--accent) 14%,var(--card)), var(--card)); border:1.5px solid color-mix(in srgb,var(--accent) 32%,var(--line)); border-radius:14px; padding:14px 16px; margin-bottom:14px; cursor:pointer; font-family:inherit; transition:border-color .15s,box-shadow .15s }
+  .kbm-core-banner{ display:flex; align-items:center; gap:12px; width:100%; text-align:left; background:linear-gradient(135deg, color-mix(in srgb,var(--accent) 14%,var(--card)), var(--card)); border:1.5px solid color-mix(in srgb,var(--accent) 32%,var(--line)); border-radius:var(--r-l); padding:14px 16px; margin-bottom:14px; cursor:pointer; font-family:inherit; transition:border-color .15s,box-shadow .15s }
   .kbm-core-banner:hover{ border-color:var(--accent); box-shadow:0 4px 16px color-mix(in srgb,var(--accent) 14%,transparent) }
   .kbm-core-banner-star{ font-size:26px; color:var(--accent); flex-shrink:0 }
   .kbm-core-banner-txt{ display:flex; flex-direction:column; gap:2px; flex:1 }
@@ -1520,7 +1520,7 @@
   .kbm-crow-core-row .kbm-crow-title{ font-weight:700; font-size:15.5px }
   .kbm-crow-core-row .kbm-crow-tick{ width:4px; background:var(--accent) !important }
   /* Core badge in detail */
-  .kbm-d-core{ font-family:var(--font-ui); font-size:10.5px; font-weight:700; letter-spacing:.04em; color:var(--accent); background:color-mix(in srgb,var(--accent) 12%,var(--bg)); border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line)); border-radius:10px; padding:3px 8px }
+  .kbm-d-core{ font-family:var(--font-ui); font-size:10.5px; font-weight:700; letter-spacing:.04em; color:var(--accent); background:color-mix(in srgb,var(--accent) 12%,var(--bg)); border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line)); border-radius:var(--r-m); padding:3px 8px }
   /* Mobile readability: bigger rows + tap targets on phones */
   @media(max-width:720px){
     .kbm-crow{ padding:13px 4px 13px 0 }
@@ -1559,7 +1559,7 @@
 
   /* ===== Situations: banner, tiles, and the playbook view ===== */
   /* Situations banner — peer to the core banner, a task-driven entry point */
-  .kbm-scen-banner{ display:flex; align-items:center; gap:12px; width:100%; text-align:left; background:linear-gradient(135deg, color-mix(in srgb,var(--accent) 13%,var(--card)), var(--card)); border:1.5px solid color-mix(in srgb,var(--accent) 30%,var(--line)); border-radius:14px; padding:14px 16px; margin-bottom:12px; cursor:pointer; font-family:inherit; transition:border-color .15s,box-shadow .15s }
+  .kbm-scen-banner{ display:flex; align-items:center; gap:12px; width:100%; text-align:left; background:linear-gradient(135deg, color-mix(in srgb,var(--accent) 13%,var(--card)), var(--card)); border:1.5px solid color-mix(in srgb,var(--accent) 30%,var(--line)); border-radius:var(--r-l); padding:14px 16px; margin-bottom:12px; cursor:pointer; font-family:inherit; transition:border-color .15s,box-shadow .15s }
   .kbm-scen-banner:hover{ border-color:var(--accent); box-shadow:0 4px 16px color-mix(in srgb,var(--accent) 14%,transparent) }
   .kbm-scen-banner-ic{ font-size:24px; color:var(--accent); flex-shrink:0; line-height:1 }
   .kbm-scen-banner-txt{ display:flex; flex-direction:column; gap:2px; flex:1 }
@@ -1572,27 +1572,27 @@
   .kbm-goal-sec{ margin:0 0 20px }
   .kbm-goal-sec-lbl{ display:flex; align-items:center; gap:7px; font-size:11.5px; font-weight:600; letter-spacing:0; color:var(--muted); margin:0 2px 10px }
   .kbm-goal-sec-ic{ font-size:13px; color:var(--accent); opacity:.9 }
-  .kbm-goal-empty{ font-size:13px; color:var(--muted); opacity:.85; padding:11px 13px; border:1px dashed var(--line); border-radius:13px }
-  .kbm-goal-all{ display:block; width:100%; text-align:center; margin:4px 0 6px; padding:13px; font-size:13px; font-weight:600; color:var(--muted); background:transparent; border:1px solid var(--line); border-radius:13px; cursor:pointer; font-family:inherit; transition:border-color .15s,color .15s }
+  .kbm-goal-empty{ font-size:13px; color:var(--muted); opacity:.85; padding:11px 13px; border:1px dashed var(--line); border-radius:var(--r-m) }
+  .kbm-goal-all{ display:block; width:100%; text-align:center; margin:4px 0 6px; padding:13px; font-size:13px; font-weight:600; color:var(--muted); background:transparent; border:1px solid var(--line); border-radius:var(--r-m); cursor:pointer; font-family:inherit; transition:border-color .15s,color .15s }
   .kbm-goal-all:hover{ color:var(--accent); border-color:var(--accent) }
   .kbm-grid-intro{ font-size:15px; color:var(--muted); line-height:1.5; margin:4px 2px 16px }
   .kbm-grid-list{ display:flex; flex-direction:column; gap:12px }
-  .kbm-grid-card{ background:var(--card); border:1px solid var(--line); border-radius:16px; padding:14px 15px }
+  .kbm-grid-card{ background:var(--card); border:1px solid var(--line); border-radius:var(--r-l); padding:14px 15px }
   .kbm-grid-task{ font-family:var(--font-ui); font-size:17px; font-weight:700; color:var(--read); margin-bottom:8px }
   .kbm-grid-mrow{ display:flex; gap:9px; align-items:flex-start; margin:7px 0 }
   .kbm-grid-mlabel{ flex:0 0 62px; font-size:10.5px; font-weight:700; letter-spacing:.03em; text-transform:uppercase; color:var(--muted); padding-top:8px }
   .kbm-grid-chips{ display:flex; flex-wrap:wrap; gap:7px; flex:1 1 auto }
-  .kbm-grid-scen{ background:color-mix(in srgb,var(--accent) 9%,var(--card)); border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line)); border-radius:11px; padding:8px 12px; font-size:13px; font-weight:600; color:var(--read); cursor:pointer; font-family:inherit; transition:border-color .15s,background .15s; text-align:left }
+  .kbm-grid-scen{ background:color-mix(in srgb,var(--accent) 9%,var(--card)); border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line)); border-radius:var(--r-m); padding:8px 12px; font-size:13px; font-weight:600; color:var(--read); cursor:pointer; font-family:inherit; transition:border-color .15s,background .15s; text-align:left }
   .kbm-grid-scen:hover{ border-color:var(--accent); background:color-mix(in srgb,var(--accent) 16%,var(--card)) }
   .kbm-grid-empty{ font-size:11.5px; color:var(--muted); opacity:.55; margin-top:9px; padding-top:9px; border-top:1px dashed var(--line) }
   .kbm-grid-legend{ display:flex; flex-wrap:wrap; gap:5px 14px; margin:-8px 2px 14px; font-size:12px; color:var(--muted); line-height:1.4 }
   .kbm-gl-item b{ color:var(--read); font-weight:600 }
   .kbm-grid-soon{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:11.5px; color:var(--muted); margin-top:9px; padding-top:9px; border-top:1px dashed var(--line) }
   .kbm-grid-soon-badge{ font-size:9px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); border:1px solid var(--line); border-radius:5px; padding:1.5px 6px; flex:0 0 auto }
-  .kbm-grid-themes{ display:block; width:100%; text-align:center; margin:16px 0 4px; padding:13px; font-size:13px; font-weight:600; color:var(--muted); background:transparent; border:1px solid var(--line); border-radius:13px; cursor:pointer; font-family:inherit; transition:border-color .15s,color .15s }
+  .kbm-grid-themes{ display:block; width:100%; text-align:center; margin:16px 0 4px; padding:13px; font-size:13px; font-weight:600; color:var(--muted); background:transparent; border:1px solid var(--line); border-radius:var(--r-m); cursor:pointer; font-family:inherit; transition:border-color .15s,color .15s }
   .kbm-grid-themes:hover{ color:var(--accent); border-color:var(--accent) }
   .kbm-scen-list{ display:flex; flex-direction:column; gap:9px }
-  .kbm-scen-tile{ display:block; width:100%; text-align:left; background:var(--card); border:1.5px solid var(--line); border-radius:14px; padding:14px 16px; cursor:pointer; font-family:inherit; transition:border-color .15s,box-shadow .15s,transform .1s }
+  .kbm-scen-tile{ display:block; width:100%; text-align:left; background:var(--card); border:1.5px solid var(--line); border-radius:var(--r-l); padding:14px 16px; cursor:pointer; font-family:inherit; transition:border-color .15s,box-shadow .15s,transform .1s }
   .kbm-scen-tile:hover{ border-color:var(--accent); box-shadow:0 4px 16px rgba(0,0,0,.07) }
   .kbm-scen-tile:active{ transform:scale(.99) }
   .kbm-scen-tile-title{ font-size:16px; font-weight:700; color:var(--ink); line-height:1.3 }
@@ -1605,7 +1605,7 @@
   .kbm-pb-title{ font-family:var(--font-ui); font-size:21px; font-weight:700; letter-spacing:-.02em; color:var(--ink); line-height:1.2; margin:0 }
   .kbm-pb-essence{ font-size:14px; color:var(--read); line-height:1.55; margin-top:8px }
   /* The gap — what you think vs how it really works */
-  .kbm-pb-gap{ background:var(--accent-tint); border-radius:14px; padding:4px 16px; margin-bottom:20px }
+  .kbm-pb-gap{ background:var(--accent-tint); border-radius:var(--r-l); padding:4px 16px; margin-bottom:20px }
   .kbm-pb-gap-row{ display:flex; gap:12px; padding:12px 0; align-items:flex-start }
   .kbm-pb-gap-row+.kbm-pb-gap-row{ border-top:1px solid color-mix(in srgb,var(--accent) 16%,transparent) }
   .kbm-pb-gap-tag{ font-family:var(--font-ui); font-size:10px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); flex:0 0 58px; padding-top:2px }
@@ -1618,7 +1618,7 @@
   .kbm-pb-sec-trap .kbm-pb-sec-lbl{ color:var(--danger) }
   .kbm-pb-sec-adj .kbm-pb-sec-lbl{ color:var(--accent) }
   .kbm-pb-links{ display:flex; flex-direction:column; gap:7px }
-  .kbm-pb-link{ display:flex; align-items:center; gap:10px; width:100%; text-align:left; background:var(--card); border:1.5px solid var(--line-2); border-radius:10px; padding:11px 14px; cursor:pointer; font-family:inherit; font-size:14px; color:var(--read); transition:border-color .15s,background .15s }
+  .kbm-pb-link{ display:flex; align-items:center; gap:10px; width:100%; text-align:left; background:var(--card); border:1.5px solid var(--line-2); border-radius:var(--r-m); padding:11px 14px; cursor:pointer; font-family:inherit; font-size:14px; color:var(--read); transition:border-color .15s,background .15s }
   .kbm-pb-link:hover{ border-color:var(--accent); background:var(--accent-tint) }
   .kbm-pb-link-t{ flex:1; line-height:1.35 }
   .kbm-pb-link-arr{ color:var(--muted); flex-shrink:0 }
@@ -1638,7 +1638,7 @@
   /* ===== Honest load-failure states with retry (slow/no network) ===== */
   .kbm-load-fail{ display:flex; flex-direction:column; align-items:center; gap:14px; padding:48px 24px; text-align:center }
   .kbm-load-fail-msg{ font-size:14.5px; color:var(--read); line-height:1.55; max-width:320px }
-  .kbm-retry-btn{ padding:11px 26px; border:1.5px solid var(--accent); border-radius:10px; background:var(--card); color:var(--accent); font-size:14px; font-weight:600; font-family:inherit; cursor:pointer; transition:background .15s }
+  .kbm-retry-btn{ padding:11px 26px; border:1.5px solid var(--accent); border-radius:var(--r-m); background:var(--card); color:var(--accent); font-size:14px; font-weight:600; font-family:inherit; cursor:pointer; transition:background .15s }
   .kbm-retry-btn:hover{ background:var(--accent-tint) }
   .kbm-retry-btn:active{ transform:scale(.98) }
 
@@ -1669,7 +1669,7 @@
   /* ===== Findings layer: conjectures + laws (honest, unverified) ===== */
   /* Indigo = the colour of a guess. Dashed = unverified. The grammar is consistent:
      a conjecture never looks like an established edge. Honesty is structural. */
-  .kbm-fnd-banner{ display:flex; align-items:center; gap:12px; width:100%; text-align:left; background:linear-gradient(135deg, var(--fnd-tint), var(--card)); border:1.5px dashed var(--fnd-line); border-radius:14px; padding:14px 16px; margin-bottom:12px; cursor:pointer; font-family:inherit; transition:border-color .15s,box-shadow .15s }
+  .kbm-fnd-banner{ display:flex; align-items:center; gap:12px; width:100%; text-align:left; background:linear-gradient(135deg, var(--fnd-tint), var(--card)); border:1.5px dashed var(--fnd-line); border-radius:var(--r-l); padding:14px 16px; margin-bottom:12px; cursor:pointer; font-family:inherit; transition:border-color .15s,box-shadow .15s }
   .kbm-fnd-banner:hover{ border-color:var(--fnd); box-shadow:0 4px 16px color-mix(in srgb,var(--fnd) 14%,transparent) }
   .kbm-fnd-banner-ic{ font-size:23px; color:var(--fnd); flex-shrink:0; line-height:1 }
   .kbm-fav-empty{ color:var(--muted); font-size:14.5px; line-height:1.65; padding:48px 24px; max-width:34ch; margin:0 auto; text-align:center }
@@ -1684,12 +1684,12 @@
   .kbm-fnd-intro b{ color:var(--fnd); font-weight:600 }
   .kbm-fnd-banner-ttl{ display:flex; align-items:center; gap:8px }
   .kbm-fnd-deep{ font-size:9.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--fnd); border:1px solid var(--fnd-line); border-radius:5px; padding:1.5px 6px; flex-shrink:0 }
-  .kbm-fnd-deep-hdr{ display:flex; gap:9px; align-items:baseline; font-size:12.5px; color:var(--fnd); padding:10px 13px; margin:0 2px 12px; border:1px dashed var(--fnd-line); border-radius:11px; background:color-mix(in srgb,var(--fnd) 6%,transparent); line-height:1.45 }
+  .kbm-fnd-deep-hdr{ display:flex; gap:9px; align-items:baseline; font-size:12.5px; color:var(--fnd); padding:10px 13px; margin:0 2px 12px; border:1px dashed var(--fnd-line); border-radius:var(--r-m); background:color-mix(in srgb,var(--fnd) 6%,transparent); line-height:1.45 }
   .kbm-fnd-deep-mark{ color:var(--fnd); font-size:11px; flex-shrink:0 }
   .kbm-fnd-grouplbl{ font-family:var(--font-ui); font-size:11px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--fnd); margin:18px 2px 4px }
   .kbm-fnd-sub{ font-size:12.5px; color:var(--muted); margin:0 2px 10px }
   .kbm-fnd-list{ display:flex; flex-direction:column; gap:9px }
-  .kbm-fnd-tile{ display:block; width:100%; text-align:left; background:var(--card); border:1.5px dashed var(--fnd-line); border-radius:14px; padding:13px 15px; cursor:pointer; font-family:inherit; transition:border-color .15s,box-shadow .15s,transform .1s }
+  .kbm-fnd-tile{ display:block; width:100%; text-align:left; background:var(--card); border:1.5px dashed var(--fnd-line); border-radius:var(--r-l); padding:13px 15px; cursor:pointer; font-family:inherit; transition:border-color .15s,box-shadow .15s,transform .1s }
   .kbm-fnd-tile:hover{ border-color:var(--fnd); box-shadow:0 4px 16px color-mix(in srgb,var(--fnd) 12%,transparent) }
   .kbm-fnd-tile:active{ transform:scale(.99) }
   .kbm-fnd-tile-law{ border-style:solid; border-color:var(--fnd-line); background:linear-gradient(135deg,var(--fnd-tint),var(--card)) }
@@ -1710,14 +1710,14 @@
   .kbm-fnd-d-stmt{ font-size:15.5px; font-weight:450; color:var(--ink); line-height:1.62; margin-bottom:18px }
   .kbm-fnd-lawttl{ font-family:var(--font-ui); font-size:21px; font-weight:700; letter-spacing:-.02em; color:var(--ink); line-height:1.2; margin:0 0 10px }
   /* Mini-diagram — the structural honesty made visible */
-  .kbm-fnd-diagram{ display:flex; align-items:stretch; gap:0; margin:0 0 20px; background:var(--fnd-tint); border-radius:14px; padding:16px 14px }
-  .kbm-fnd-node{ font-family:inherit; font-size:13px; font-weight:600; color:var(--ink); background:var(--card); border:1.5px solid var(--fnd-line); border-radius:10px; padding:9px 12px; cursor:pointer; line-height:1.25; flex:0 1 auto; max-width:42%; transition:border-color .15s,background .15s }
+  .kbm-fnd-diagram{ display:flex; align-items:stretch; gap:0; margin:0 0 20px; background:var(--fnd-tint); border-radius:var(--r-l); padding:16px 14px }
+  .kbm-fnd-node{ font-family:inherit; font-size:13px; font-weight:600; color:var(--ink); background:var(--card); border:1.5px solid var(--fnd-line); border-radius:var(--r-m); padding:9px 12px; cursor:pointer; line-height:1.25; flex:0 1 auto; max-width:42%; transition:border-color .15s,background .15s }
   .kbm-fnd-node:hover{ border-color:var(--fnd); background:var(--fnd-soft) }
   .kbm-fnd-link{ flex:1; position:relative; min-width:42px; display:flex; align-items:center; justify-content:center }
   .kbm-fnd-link::before{ content:""; position:absolute; left:6px; right:6px; top:50%; border-top:2px dashed var(--fnd); opacity:.7 }
   .kbm-fnd-link-lbl{ position:relative; z-index:1; font-family:var(--font-ui); font-size:9.5px; letter-spacing:.03em; color:var(--fnd); background:var(--fnd-tint); padding:0 6px; text-align:center; line-height:1.2 }
   /* Cloud (cross-cutting) */
-  .kbm-fnd-cloud{ margin:0 0 20px; background:var(--fnd-tint); border:1.5px dashed var(--fnd); border-radius:14px; padding:14px }
+  .kbm-fnd-cloud{ margin:0 0 20px; background:var(--fnd-tint); border:1.5px dashed var(--fnd); border-radius:var(--r-l); padding:14px }
   .kbm-fnd-cloud-lbl{ font-family:var(--font-ui); font-size:10px; letter-spacing:.04em; color:var(--fnd); margin-bottom:10px; text-align:center }
   .kbm-fnd-cloud-nodes{ display:flex; flex-wrap:wrap; gap:7px; justify-content:center }
   .kbm-fnd-cloud .kbm-fnd-node{ max-width:none }
@@ -1731,7 +1731,7 @@
   .kbm-fnd-sec-gen .kbm-fnd-sec-lbl{ color:var(--fnd) }
   /* Evidence registry */
   .kbm-fnd-evlist{ display:flex; flex-direction:column; gap:8px }
-  .kbm-fnd-ev{ border:1px solid var(--line); border-radius:10px; padding:10px 12px; background:var(--card) }
+  .kbm-fnd-ev{ border:1px solid var(--line); border-radius:var(--r-m); padding:10px 12px; background:var(--card) }
   .kbm-fnd-ev-sup{ border-left:3px solid var(--good) }
   .kbm-fnd-ev-ref{ border-left:3px solid var(--danger) }
   .kbm-fnd-ev-head{ display:flex; align-items:center; gap:8px; margin-bottom:5px }
@@ -1741,16 +1741,16 @@
   .kbm-fnd-ev-basis{ font-size:12.5px; color:var(--read); line-height:1.5 }
   .kbm-fnd-ev-by{ font-family:var(--font-ui); font-size:10px; color:var(--muted); margin-top:5px }
   /* Honest weight note — the soul of the layer */
-  .kbm-fnd-wnote{ font-size:12px; color:var(--muted); line-height:1.55; margin-top:10px; padding:10px 12px; background:var(--fnd-tint); border-radius:10px }
+  .kbm-fnd-wnote{ font-size:12px; color:var(--muted); line-height:1.55; margin-top:10px; padding:10px 12px; background:var(--fnd-tint); border-radius:var(--r-m) }
   .kbm-fnd-wnote b{ color:var(--fnd); font-weight:600 }
   /* Promoted marker */
   .kbm-fnd-promoted{ font-size:12.5px; color:var(--read); line-height:1.5; margin:0 0 18px; padding:11px 14px; background:color-mix(in srgb,var(--good) 9%,var(--bg)); border-left:3px solid var(--good); border-radius:0 10px 10px 0 }
   /* Links to law / born conjectures */
   .kbm-fnd-lawlink, .kbm-fnd-bornlink, .kbm-fnd-lawttl{ }
-  .kbm-fnd-lawlink{ display:block; width:100%; text-align:left; font-family:inherit; font-size:14px; font-weight:600; color:var(--fnd); background:var(--fnd-tint); border:1.5px solid var(--fnd-line); border-radius:10px; padding:11px 14px; cursor:pointer; transition:border-color .15s }
+  .kbm-fnd-lawlink{ display:block; width:100%; text-align:left; font-family:inherit; font-size:14px; font-weight:600; color:var(--fnd); background:var(--fnd-tint); border:1.5px solid var(--fnd-line); border-radius:var(--r-m); padding:11px 14px; cursor:pointer; transition:border-color .15s }
   .kbm-fnd-lawlink:hover{ border-color:var(--fnd) }
   .kbm-fnd-bornlist{ display:flex; flex-direction:column; gap:7px }
-  .kbm-fnd-bornlink{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; width:100%; text-align:left; font-family:inherit; font-size:13px; color:var(--read); background:var(--card); border:1.5px dashed var(--fnd-line); border-radius:10px; padding:10px 13px; cursor:pointer; line-height:1.4; transition:border-color .15s }
+  .kbm-fnd-bornlink{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; width:100%; text-align:left; font-family:inherit; font-size:13px; color:var(--read); background:var(--card); border:1.5px dashed var(--fnd-line); border-radius:var(--r-m); padding:10px 13px; cursor:pointer; line-height:1.4; transition:border-color .15s }
   .kbm-fnd-bornlink:hover{ border-color:var(--fnd) }
   @media(max-width:720px){
     .kbm-fnd-d-stmt{ font-size:16px }
@@ -1759,9 +1759,9 @@
   }
 
   /* Conjecture marker inside a concept card — dashed, indigo, clearly "a guess about this" */
-  .kbm-d-conj{ margin:18px 0 4px; padding:13px 14px; background:var(--fnd-tint); border:1.5px dashed var(--fnd-line); border-radius:14px }
+  .kbm-d-conj{ margin:18px 0 4px; padding:13px 14px; background:var(--fnd-tint); border:1.5px dashed var(--fnd-line); border-radius:var(--r-l) }
   .kbm-d-conj-lbl{ font-family:var(--font-ui); font-size:10.5px; font-weight:700; letter-spacing:.05em; color:var(--fnd); margin-bottom:9px }
-  .kbm-d-conj-link{ display:flex; align-items:center; gap:9px; width:100%; text-align:left; background:var(--card); border:1px solid var(--fnd-line); border-radius:10px; padding:9px 12px; cursor:pointer; font-family:inherit; margin-bottom:6px; transition:border-color .15s }
+  .kbm-d-conj-link{ display:flex; align-items:center; gap:9px; width:100%; text-align:left; background:var(--card); border:1px solid var(--fnd-line); border-radius:var(--r-m); padding:9px 12px; cursor:pointer; font-family:inherit; margin-bottom:6px; transition:border-color .15s }
   .kbm-d-conj-link:last-child{ margin-bottom:0 }
   .kbm-d-conj-link:hover{ border-color:var(--fnd) }
   .kbm-d-conj-txt{ flex:1; font-size:13px; color:var(--read); line-height:1.35 }
@@ -1861,13 +1861,13 @@
 .kbm-sig{ margin-top:24px; padding-top:18px; border-top:1px solid var(--line) }
 .kbm-sig-q{ font-family:var(--font-ui); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-bottom:10px }
 .kbm-sig-row{ display:flex; gap:8px }
-.kbm-sig-btn{ flex:1; padding:11px 6px; border-radius:9px; border:1px solid color-mix(in srgb,var(--accent) 32%,var(--line-2)); background:var(--accent-tint); color:var(--ink); font-family:inherit; font-size:13px; font-weight:600; cursor:pointer; transition:border-color .15s, background .15s, color .15s }
+.kbm-sig-btn{ flex:1; padding:11px 6px; border-radius:var(--r-s); border:1px solid color-mix(in srgb,var(--accent) 32%,var(--line-2)); background:var(--accent-tint); color:var(--ink); font-family:inherit; font-size:13px; font-weight:600; cursor:pointer; transition:border-color .15s, background .15s, color .15s }
 .kbm-sig-btn:active{ transform:scale(.97) }
 .kbm-sig-on{ border-color:color-mix(in srgb,var(--accent) 55%,var(--line)); background:var(--accent-tint); color:var(--accent); font-weight:600 }
 .kbm-sec-app .kbm-sec-body{ color:var(--read) }
 .kbm-sec-note,.kbm-sec-kontr{ background:none; border:none; border-top:1px solid var(--line); padding:24px 0 0 }
 /* ── D2: «ход» (применение) ведёт; теория и устойчивость — в сворачиваемом блоке ── */
-.kbm-sec-lead{ margin:4px 0 6px; padding:17px 18px; border:1px solid color-mix(in srgb,var(--accent) 34%,var(--line)); border-left:3px solid var(--accent); border-radius:13px; background:var(--accent-tint) }
+.kbm-sec-lead{ margin:4px 0 6px; padding:17px 18px; border:1px solid color-mix(in srgb,var(--accent) 34%,var(--line)); border-left:3px solid var(--accent); border-radius:var(--r-l); background:var(--accent-tint) }
 .kbm-sec-lead .kbm-sec-body{ font-size:16px; color:var(--read) }
 .kbm-sec-lead .kbm-sec-lbl-app{ color:var(--accent) }
 .kbm-theory{ margin:0; border-top:1px solid var(--line) }
@@ -2004,9 +2004,9 @@
 .kbm-mini-node.mini-foc .kbm-mini-dot{ stroke:var(--accent); stroke-width:2.5 }
 .kbm-mini-node.mini-foc .kbm-mini-lbl{ fill:var(--ink); font-weight:700 }
 .kbm-mini-force-lbl{ font-size:8.5px; fill:var(--accent); font-family:var(--font-ui); font-weight:700; letter-spacing:.02em; pointer-events:none }
-.kbm-mini-expand{ position:absolute; top:0; right:0; width:30px; height:30px; border:1px solid var(--line); border-radius:8px; background:var(--card); color:var(--muted); font-size:14px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center }
+.kbm-mini-expand{ position:absolute; top:0; right:0; width:30px; height:30px; border:1px solid var(--line); border-radius:var(--r-s); background:var(--card); color:var(--muted); font-size:14px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center }
 .kbm-mini-expand:active{ background:var(--line) }
-.kbm-mini-peek{ margin-top:8px; min-height:20px; font-size:12.5px; color:var(--muted); line-height:1.45; padding:9px 12px; border:1px solid var(--line); border-radius:10px; background:var(--card) }
+.kbm-mini-peek{ margin-top:8px; min-height:20px; font-size:12.5px; color:var(--muted); line-height:1.45; padding:9px 12px; border:1px solid var(--line); border-radius:var(--r-m); background:var(--card) }
 .kbm-mini-peek b{ color:var(--read); font-weight:600 }
 .kbm-mini-peek .mp-rel{ font-family:var(--font-ui); font-size:10px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--accent) }
 .kbm-mini-peek .mp-rel-tense{ color:var(--danger) }
@@ -2122,7 +2122,7 @@
 .kbm-sitrefs{ margin-top:10px; }
 .kbm-sitref{ border-color:color-mix(in srgb, var(--accent) 24%, var(--line)); }
 .kbm-sitref .kbm-chref-t{ color:var(--read); }
-.kbm-state{ margin:12px 0 4px; padding:11px 13px; border-radius:11px; border:1px solid var(--line); }
+.kbm-state{ margin:12px 0 4px; padding:11px 13px; border-radius:var(--r-m); border:1px solid var(--line); }
 .kbm-state-h{ font-weight:600; font-size:13px; margin-bottom:4px; color:var(--read); letter-spacing:.01em; }
 .kbm-state-b{ font-size:12.5px; line-height:1.45; color:var(--muted); }
 .kbm-state-debunk{ border-color:color-mix(in srgb, var(--danger) 52%, var(--line)); background:color-mix(in srgb, var(--danger) 12%, transparent); }
@@ -2429,7 +2429,7 @@
 .kbm-fwd-btm{ margin:0 0 0 auto }   /* «Вперёд» прижата к правому краю ряда */
 /* #0 размер чтения — компактный A−/A+ сверху карточки */
 .kbm-readbar{ display:flex; justify-content:flex-end; gap:6px; margin:-2px 0 8px }
-.kbm-fbtn{ min-width:44px; height:38px; padding:0 12px; border:1px solid var(--line); background:var(--card); color:var(--muted); border-radius:9px; font-family:var(--font-ui); font-size:13px; font-weight:650; cursor:pointer; line-height:1 }
+.kbm-fbtn{ min-width:44px; height:38px; padding:0 12px; border:1px solid var(--line); background:var(--card); color:var(--muted); border-radius:var(--r-s); font-family:var(--font-ui); font-size:13px; font-weight:650; cursor:pointer; line-height:1 }
 .kbm-fbtn:active{ transform:scale(.94) }
 /* #3a сердечко в нижнем ряду навигации */
 .kbm-fav-btm{ font-size:16px; line-height:1; color:var(--muted); padding:4px 11px; min-width:0 }
@@ -2437,7 +2437,7 @@
 /* #5 рекомендация «Дальше» в конце карточки */
 .kbm-next{ margin:26px 0 2px }
 .kbm-next-h{ font-family:var(--font-ui); font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin:0 2px 8px }
-.kbm-next-card{ display:flex; align-items:center; gap:10px; width:100%; text-align:left; padding:13px 15px; border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line)); background:var(--accent-tint); border-radius:13px; cursor:pointer; transition:transform .12s }
+.kbm-next-card{ display:flex; align-items:center; gap:10px; width:100%; text-align:left; padding:13px 15px; border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line)); background:var(--accent-tint); border-radius:var(--r-l); cursor:pointer; transition:transform .12s }
 .kbm-next-card:active{ transform:scale(.99) }
 .kbm-next-tx{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px }
 .kbm-next-name{ font-size:15px; font-weight:600; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
@@ -7647,7 +7647,7 @@
             + menuRow('Админка', '', 'admin')
             + '</div>';
     }
-    rows += '<div class="menu-version">Версия 2026-06-22 23:27 · 5aeb7d5</div>';
+    rows += '<div class="menu-version">Версия 2026-06-22 23:36 · 74a3e50</div>';
     body.innerHTML = '<div class="menu-v-head"><h2 class="menu-v-title">Меню</h2></div><div class="menu-v-list">'+rows+'</div>';
     Array.prototype.forEach.call(body.querySelectorAll('[data-menu-act]'), function(b){
       b.onclick = function(){ menuAct(b.getAttribute('data-menu-act')); };
