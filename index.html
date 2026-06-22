@@ -6722,7 +6722,11 @@
       +'</div>';
     view.scrollTop=0;
     view.querySelectorAll('.nodelink').forEach(function(a){
-      a.onclick=function(){ var s=a.getAttribute('data-node'); if(!s) return; kbmCloseAtom(); if(KBM.bySlug[s]) kbmDetail(s); };
+      a.onclick=function(e){ if(e&&e.preventDefault) e.preventDefault(); var s=a.getAttribute('data-node'); if(!s) return;
+        kbmCloseAtom(); if(typeof closeAtomSeries==='function') closeAtomSeries();   // снять оверлеи атома и серии
+        if(typeof showView==='function') showView('list');                          // вывести kb-mode вперёд — иначе карточка прячется под Полкой/серией
+        kbmDetail(s);
+      };
     });
     wireAtomClose(view);
   }
@@ -7048,7 +7052,7 @@
     } else if(name==='favorites'){
       if(CN.on) cnClose();
       showView('list');
-      if(KBM.loaded){ kbmRenderFavorites(); } else { openKbMode(); }   // KBM ещё грузится → обзор; избранное при след. заходе
+      if(KBM.loaded){ KBM.region='__favorites__'; kbmShowList(); } else { openKbMode(); }   // kbmShowList: показать список, СКРЫТЬ карточку и отрендерить избранное (иначе поверх остаётся ранее открытая карточка)
     } else if(name==='menu'){
       if(CN.on) cnClose();
       try{ closeMenus(); }catch(_){}
@@ -7097,7 +7101,7 @@
             + menuRow('Админка', '', 'admin')
             + '</div>';
     }
-    rows += '<div class="menu-version">Версия 2026-06-22 11:07 · 6da8601</div>';
+    rows += '<div class="menu-version">Версия 2026-06-22 11:35 · b3a5f65</div>';
     body.innerHTML = '<div class="menu-v-head"><h2 class="menu-v-title">Меню</h2></div><div class="menu-v-list">'+rows+'</div>';
     Array.prototype.forEach.call(body.querySelectorAll('[data-menu-act]'), function(b){
       b.onclick = function(){ menuAct(b.getAttribute('data-menu-act')); };
