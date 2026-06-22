@@ -6401,7 +6401,9 @@
   // "В книге" — chapters where this concept is taught, each a portal into the reader.
   // home/anchor = primary treatment (dot); cross-ref = touched in passing. Grouped by book.
   function kbmChapShort(t){ t=String(t||''); return t.length>52? t.slice(0,51)+'\u2026' : t; }
+  var BOOK_LIVE=false;   // книга пока НЕ опубликована — мост «В книге» скрыт (c2df5fea); опубликуют → true. Атом-мост (kbmCheckAtom) не затронут.
   function kbmChapterRefs(slug){
+    if(!BOOK_LIVE) return '';
     var rows=(KBM.memberships&&KBM.memberships[slug])||[];
     if(!rows.length) return '';
     var home=[], more=[];
@@ -7156,7 +7158,7 @@
             + menuRow('Админка', '', 'admin')
             + '</div>';
     }
-    rows += '<div class="menu-version">Версия 2026-06-22 12:21 · c29ef58</div>';
+    rows += '<div class="menu-version">Версия 2026-06-22 14:00 · 42d18fa</div>';
     body.innerHTML = '<div class="menu-v-head"><h2 class="menu-v-title">Меню</h2></div><div class="menu-v-list">'+rows+'</div>';
     Array.prototype.forEach.call(body.querySelectorAll('[data-menu-act]'), function(b){
       b.onclick = function(){ menuAct(b.getAttribute('data-menu-act')); };
@@ -7651,7 +7653,7 @@
     });
     html+='<div class="cn-leg-ttl cn-leg-ttl2">Цвет — дисциплина</div>';
     items.forEach(function(it){ if(!it.n) return; html+='<div class="cn-leg-row"><span class="cn-leg-dot" style="background:hsl('+it.hue+',62%,63%)"></span><span class="cn-leg-lbl">'+it.label+'</span><span class="cn-leg-n">'+it.n+'</span></div>'; });
-    html+='<div class="cn-leg-note">Инструменты — с кольцом. Ярче звезда — крепче подтверждено, бледнее — спорное. Размер — число связей.</div>';
+    html+='<div class="cn-leg-note">Инструменты — с кольцом. Ярче звезда — крепче подтверждено, бледнее — спорное. Размер — число связей. Рядом — связанные идеи.</div>';
     p.innerHTML=html;
     if(!p._wiredL){ p._wiredL=true;
       p.addEventListener('click', function(e){ var t=e.target.closest('[data-cn-layer]'); if(!t) return; CN.layer=t.getAttribute('data-cn-layer'); cnLegendRender(); cnKick(); });
