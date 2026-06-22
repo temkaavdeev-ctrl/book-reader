@@ -32,9 +32,9 @@
     --font-read:'Spectral',Georgia,"PT Serif","Times New Roman",serif;
     --font-mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
 
-    --bg:#F5F3EF; --panel:#ffffff; --card:#ffffff;
-    --ink:#1B1A17; --read:#726E67; --muted:#A8A39B;
-    --line:#E7E3DC; --line-2:#DCD7CE;
+    --bg:#F4F4F3; --panel:#ffffff; --card:#ffffff;
+    --ink:#15161A; --read:#595A60; --muted:#8B8C92;
+    --line:#E5E5E4; --line-2:#D7D7D6;
     --accent:#B0792B; --accent-2:#9A6B1F; --accent-soft:#F3E9D7; --accent-tint:#FAF4EA; --text-on-accent:#ffffff;
     --hl:#fbe7a0; --hl-edge:#d8a838;
     --good:#4E7C5A; --warn:#C28A3A; --danger:#B5503C;
@@ -44,11 +44,16 @@
     --ring:rgba(143,90,35,.40);
     --fnd:#6B5B95; --fnd-soft:#efebf8; --fnd-tint:#f7f4fd; --fnd-line:#cdc1ec;
     --r-s:8px; --r-m:12px; --r-l:16px; --r-xl:22px;
+    /* шкала отступов 4·8·12·16·24·32·48 */
+    --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px; --sp-7:48px;
+    /* движение: длительности + кривые (один словарь на все переходы) */
+    --dur-fast:120ms; --dur-base:200ms; --dur-slow:320ms;
+    --ease-std:cubic-bezier(.4,0,.2,1); --ease-out:cubic-bezier(.16,1,.3,1); --ease-in:cubic-bezier(.4,0,1,1);
   }
   html[data-theme="dark"]{
-    --bg:#1A1814; --panel:#2A251D; --card:#242019;
-    --ink:#ECE7DD; --read:#A8A399; --muted:#6E6A60;
-    --line:#332E25; --line-2:#3E382C;
+    --bg:#161619; --panel:#26262A; --card:#1F1F23;
+    --ink:#ECECEF; --read:#9C9DA3; --muted:#76777D;
+    --line:#2D2D33; --line-2:#393940;
     --accent:#d7a664; --accent-2:#e2b473; --accent-soft:#2E2719; --accent-tint:#221d14; --text-on-accent:#1B1A17;
     --hl:#574518; --hl-edge:#c39a3c;
     --good:#6FA07C; --warn:#d6a84e; --danger:#D98A6E;
@@ -65,6 +70,10 @@
   html[data-theme="dark"] #content .twist-ambig-col{ background:var(--panel) }
   html[data-theme="dark"] #content .twist-feedback{ color:var(--read) }
   *{box-sizing:border-box}
+  @media (prefers-reduced-motion: reduce){
+    :root{ --dur-fast:1ms; --dur-base:1ms; --dur-slow:1ms; }
+    *{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important; }
+  }
   html{background:var(--bg)}
   html,body{margin:0;height:100%}
   body{
@@ -556,7 +565,7 @@
   .sheet-sec{margin-bottom:16px}
   .sheet-sec:last-child{margin-bottom:0}
   .sheet-lbl{font-size:12px; font-weight:600; color:var(--muted); margin-bottom:9px; letter-spacing:.01em}
-  .seg{display:flex; gap:3px; background:var(--accent-tint); padding:3px; border-radius:10px}
+  .seg{display:flex; gap:3px; background:var(--bg); padding:3px; border-radius:10px}
   .seg-btn{flex:1; border:none; background:transparent; color:var(--muted); padding:9px 6px; border-radius:10px;
     font-size:13.5px; font-weight:600; transition:.14s}
   .seg-btn.on{background:var(--card); color:var(--ink); box-shadow:var(--shadow)}
@@ -1284,8 +1293,8 @@
      светлая в светлой, тёмная в тёмной. Тёмный космос остаётся только в Созвездии (канвас). */
   .kbm-inner{ display:flex; flex-direction:column; flex:1; overflow:hidden }
   /* Header */
-  .kbm-head{ display:flex; align-items:center; gap:10px; padding:14px 16px 10px; border-bottom:1px solid var(--line); flex-shrink:0 }
-  .kbm-title{ font-family:var(--font-ui); font-size:24px; font-weight:700; margin:0; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+  .kbm-head{ display:flex; align-items:flex-start; gap:10px; padding:14px 16px 10px; border-bottom:1px solid var(--line); flex-shrink:0 }
+  .kbm-title{ font-family:var(--font-ui); font-size:24px; font-weight:700; margin:0; flex:1; min-width:0; line-height:1.18; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden }
   .kbm-count{ font-family:var(--font-ui); font-size:11px; color:var(--muted); white-space:nowrap; letter-spacing:.03em }
   /* Search */
   .kbm-search-row{ padding:10px 14px 0; flex-shrink:0; position:relative }
@@ -1305,6 +1314,20 @@
   /* Body scroller */
   .kbm-body{ flex:1; overflow-y:auto; padding:12px 14px 80px }
   .kbm-empty{ text-align:center; color:var(--muted); padding:40px 20px; font-size:14px }
+  .kbm-search-near{ font-size:13px; color:var(--muted); margin:2px 2px 12px; line-height:1.4 }
+  .kbm-filterbar{ display:flex; align-items:center; gap:10px; margin:0 2px 12px }
+  .kbm-filter-toggle{ background:none; border:1px solid var(--line); border-radius:9px; padding:6px 12px; font-size:13px; font-weight:600; color:var(--muted); cursor:pointer; font-family:inherit; transition:border-color .15s,color .15s }
+  .kbm-filter-toggle.has{ color:var(--accent); border-color:color-mix(in srgb,var(--accent) 40%,var(--line)) }
+  .kbm-filter-arr{ font-size:11px }
+  .kbm-filter-clear{ background:none; border:none; color:var(--muted); font-size:12.5px; cursor:pointer; font-family:inherit; text-decoration:underline }
+  .kbm-filter-panel{ margin:0 2px 14px; padding:12px 14px; background:var(--card); border:1px solid var(--line); border-radius:14px; display:flex; flex-direction:column; gap:11px }
+  .kbm-filter-dim{ display:flex; flex-direction:column; gap:6px }
+  .kbm-filter-dim-lbl{ font-size:10.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--muted) }
+  .kbm-filter-chips{ display:flex; flex-wrap:wrap; gap:6px }
+  .kbm-filter-chip{ display:inline-flex; align-items:center; gap:6px; background:transparent; border:1px solid var(--line); border-radius:8px; padding:5px 9px; font-size:12.5px; color:var(--read); cursor:pointer; font-family:inherit; transition:border-color .15s,background .15s,color .15s }
+  .kbm-filter-chip.on{ background:color-mix(in srgb,var(--accent) 12%,var(--card)); border-color:var(--accent); color:var(--accent) }
+  .kbm-filter-chip-n{ font-size:11px; color:var(--muted) }
+  .kbm-filter-chip.on .kbm-filter-chip-n{ color:var(--accent) }
   /* ── Overview: region tiles ── */
   .kbm-regions{ display:flex; flex-direction:column; gap:11px }
   .kbm-region-tile{ position:relative; display:block; width:100%; text-align:left; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:15px 16px 14px; cursor:pointer; font-family:inherit; overflow:hidden; transition:border-color .15s,box-shadow .15s,transform .1s }
@@ -1334,19 +1357,22 @@
   .kbm-concept-list{ display:flex; flex-direction:column; gap:2px }
   .kbm-crow{ display:flex; align-items:flex-start; gap:11px; padding:11px 4px 11px 0; cursor:pointer; position:relative; border-bottom:1px solid var(--line) }
   .kbm-crow:last-child{ border-bottom:none }
-  .kbm-crow:hover .kbm-crow-title{ color:var(--kc) }
+  .kbm-crow:hover .kbm-crow-title{ color:var(--accent) }
   .kbm-crow-tick{ width:3px; align-self:stretch; border-radius:3px; flex-shrink:0; margin:2px 0 }
   .kbm-crow-main{ flex:1; min-width:0 }
-  .kbm-crow-titlerow{ display:flex; align-items:center; gap:7px; flex-wrap:wrap }
-  .kbm-crow-hubdot{ color:var(--kc); font-size:9px; flex-shrink:0 }
+  .kbm-crow-titlerow{ display:flex; align-items:baseline; gap:7px }
+  .kbm-crow-hubdot{ color:var(--muted); font-size:9px; flex-shrink:0 }
   .kbm-crow-hub .kbm-crow-title{ font-weight:700 }
-  .kbm-crow-title{ font-size:14.5px; font-weight:600; color:var(--ink); line-height:1.3 }
+  .kbm-crow-title{ font-size:14.5px; font-weight:600; color:var(--ink); line-height:1.3; flex:1; min-width:0 }
   .kbm-crow-dim{ opacity:.6 }
   .kbm-crow-dim:hover{ opacity:.85 }
   .kbm-crow-flag{ font-family:var(--font-ui); font-size:9px; letter-spacing:.04em; text-transform:uppercase; padding:1px 6px; border-radius:6px; border:1px solid color-mix(in srgb,var(--muted) 38%,var(--line)); color:var(--muted); white-space:nowrap; flex:none }
   .kbm-crow-flag-debunk{ color:var(--danger); border-color:color-mix(in srgb,var(--danger) 46%,var(--line)) }
   .kbm-crow-flag-soft{ opacity:.65 }
-  .kbm-crow-claim{ font-size:12px; color:var(--muted); line-height:1.45; margin-top:3px }
+  .kbm-crow-claim{ font-size:12px; color:var(--read); line-height:1.45; margin-top:3px }
+  .kbm-crow-status{ display:flex; align-items:center; gap:6px; margin-top:4px }
+  .kbm-crow-stword{ font-size:11px; color:var(--muted); letter-spacing:.01em }
+  .kbm-crow-stword-debunk{ color:var(--danger) }
   .kbm-rdot{ width:8px; height:8px; border-radius:50%; flex-shrink:0 }
   .kbm-heart{ background:none; border:none; font-size:17px; color:var(--line-2); cursor:pointer; padding:2px 4px; flex-shrink:0; line-height:1; align-self:center }
   .kbm-heart:hover{ color:var(--danger) }
@@ -1613,6 +1639,10 @@
   /* List */
   .kbm-fnd-intro{ font-size:13.5px; color:var(--muted); line-height:1.55; margin:4px 2px 16px }
   .kbm-fnd-intro b{ color:var(--fnd); font-weight:600 }
+  .kbm-fnd-banner-ttl{ display:flex; align-items:center; gap:8px }
+  .kbm-fnd-deep{ font-size:9.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--fnd); border:1px solid var(--fnd-line); border-radius:5px; padding:1.5px 6px; flex-shrink:0 }
+  .kbm-fnd-deep-hdr{ display:flex; gap:9px; align-items:baseline; font-size:12.5px; color:var(--fnd); padding:10px 13px; margin:0 2px 12px; border:1px dashed var(--fnd-line); border-radius:11px; background:color-mix(in srgb,var(--fnd) 6%,transparent); line-height:1.45 }
+  .kbm-fnd-deep-mark{ color:var(--fnd); font-size:11px; flex-shrink:0 }
   .kbm-fnd-grouplbl{ font-family:var(--font-ui); font-size:11px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--fnd); margin:18px 2px 4px }
   .kbm-fnd-sub{ font-size:12.5px; color:var(--muted); margin:0 2px 10px }
   .kbm-fnd-list{ display:flex; flex-direction:column; gap:9px }
@@ -2559,7 +2589,7 @@
   function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
   function saveState(){ lsSet('bp_state', JSON.stringify(state)); }
   // ---------- markdown ----------
-  function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function escapeHtml(s){ return (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   function escapeRe(s){ return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
   function kindEmoji(k){ if(k==='note') return '\u270E'; var x=REACTKINDS.filter(function(r){return r.id===k;})[0]; return x?x.emoji:'\u2022'; }
   function kindLabel(k){ if(k==='note') return 'заметка'; var x=REACTKINDS.filter(function(r){return r.id===k;})[0]; return x?x.label:k; }
@@ -5128,7 +5158,7 @@
     var thoughts=DISCALL.filter(function(x){return x.user_id===uid;}).length;
     var mins=0; BOOK.forEach(function(c){ if((state.read[c.id+':'+c.ver]||0)>=0.97){ var w=(c.md||'').split(/\s+/).filter(Boolean).length; mins+=Math.max(1,Math.round(w/200)); } });
     var done=st.total>0 && st.read>=st.total;
-    var tt=document.getElementById('jrTitle'); if(tt) tt.textContent = done ? 'Путь пройден' : 'Ваш путь';
+    var tt=document.getElementById('jrTitle'); if(tt) tt.textContent = done ? 'Путь пройден' : 'Мой путь';
 
     var hl=document.createElement('div'); hl.className='jr-hl';
     hl.innerHTML='<span class="jr-num">'+st.read+'</span><span class="jr-of"> из '+st.total+'</span><span class="jr-pct">'+st.pct+'%</span>';
@@ -5425,6 +5455,21 @@
     }
   }
   // ── Search across all concepts (overrides region view) ─────────────────
+  function kbmLev(a,b){ var m=a.length,n=b.length; if(!m)return n; if(!n)return m; var pr=[],cu=[],i,j;
+    for(j=0;j<=n;j++)pr[j]=j;
+    for(i=1;i<=m;i++){ cu[0]=i; for(j=1;j<=n;j++){ var c=a.charCodeAt(i-1)===b.charCodeAt(j-1)?0:1; cu[j]=Math.min(pr[j]+1,cu[j-1]+1,pr[j-1]+c); } for(j=0;j<=n;j++)pr[j]=cu[j]; }
+    return pr[n]; }
+  // fuzzy: совпадение токенов запроса со словами title+claim (подстрока = точно, иначе близость по Левенштейну для опечаток/склонений)
+  function kbmFuzzyScore(ql, n){
+    var txt=((n.title||'')+' '+(n.claim||'')).toLowerCase();
+    var words=txt.split(/[^a-zа-яё0-9]+/), qtoks=ql.split(/\s+/), score=0;
+    for(var t=0;t<qtoks.length;t++){ var qt=qtoks[t]; if(!qt) continue; var best=99;
+      for(var i=0;i<words.length;i++){ var w=words[i]; if(!w) continue;
+        if(w.indexOf(qt)>=0){ best=0; break; }
+        if(qt.length>=4 && Math.abs(w.length-qt.length)<=3){ var d=kbmLev(qt,w); if(d<best)best=d; } }
+      if(best===0) score+=3; else if(best<=1) score+=2; else if(best<=2 && qt.length>=5) score+=1; }
+    return score;
+  }
   function kbmSearch(q){
     KBM.q=q;
     if(!q.trim()){ KBM.region?kbmRenderRegion(KBM.region):kbmRenderOverview(); return; }
@@ -5433,19 +5478,51 @@
       return (n.title||'').toLowerCase().includes(ql)||(n.claim||'').toLowerCase().includes(ql);
     }).sort(function(a,b){ return (b.degree||0)-(a.degree||0); });
     var body=document.getElementById('kbmBody'); if(!body) return;
-    var cnt=document.getElementById('kbmCount'); if(cnt) cnt.textContent=hits.length+' найдено';
-    if(!hits.length){
-      body.innerHTML='<div class="kbm-empty">Ничего не найдено по «'+escapeHtml(q)+'»</div>';
-      // Пробел поиска → notfound с запросом в meta (для kb_notfound_priority Афины). Дебаунс 1.2с, дедуп/сессию, len≥3.
-      clearTimeout(KBM._nfT);
-      KBM._nfT=setTimeout(function(){
-        if(ql.length<3) return; KBM._nfSeen=KBM._nfSeen||{}; if(KBM._nfSeen[ql]) return;
-        KBM._nfSeen[ql]=1; kbmLogEvent('notfound', null, {q:q});
-      }, 1200);
-      return;
+    var cnt=document.getElementById('kbmCount');
+    if(hits.length){ clearTimeout(KBM._nfT);
+      if(cnt) cnt.textContent=hits.length+' найдено';
+      body.innerHTML='<div class="kbm-concept-list">'+hits.map(kbmConceptRow).join('')+'</div>'; return;
     }
-    clearTimeout(KBM._nfT);   // появились совпадения — отменяем отложенный лог пробела
-    body.innerHTML='<div class="kbm-concept-list">'+hits.map(kbmConceptRow).join('')+'</div>';
+    // нет точного → ближайшее по смыслу (work-surface: «искал-ничего» не должно быть тупиком)
+    var near=KBM.nodes.map(function(n){ return {n:n,s:kbmFuzzyScore(ql,n)}; })
+      .filter(function(x){ return x.s>0; })
+      .sort(function(a,b){ return b.s-a.s || (b.n.degree||0)-(a.n.degree||0); }).slice(0,12);
+    // лог пробела поиска (Афина kb_notfound_priority) — точного не было, даже если показываем близкое. Дебаунс 1.2с, дедуп/сессию, len≥3.
+    clearTimeout(KBM._nfT);
+    KBM._nfT=setTimeout(function(){ if(ql.length<3) return; KBM._nfSeen=KBM._nfSeen||{}; if(KBM._nfSeen[ql]) return; KBM._nfSeen[ql]=1; kbmLogEvent('notfound', null, {q:q}); }, 1200);
+    if(near.length){
+      if(cnt) cnt.textContent='близкое: '+near.length;
+      body.innerHTML='<div class="kbm-search-near">Точного совпадения нет — близкое по смыслу:</div><div class="kbm-concept-list">'+near.map(function(x){ return kbmConceptRow(x.n); }).join('')+'</div>';
+    } else {
+      if(cnt) cnt.textContent='0 найдено';
+      body.innerHTML='<div class="kbm-empty">Ничего не найдено по «'+escapeHtml(q)+'». Попробуй другое слово или загляни во «Всё».</div>';
+    }
+  }
+  // ── Фильтры для плоского списка «Всё» (статус / наука / слой / роль) ──
+  function kbmStatusValues(){ var c={}, order=['solid','mixed','contested','weak'], lbl={solid:'надёжная',mixed:'смешанная',contested:'спорная',weak:'слабая'};
+    (KBM.nodes||[]).forEach(function(n){ if(n.robustness) c[n.robustness]=(c[n.robustness]||0)+1; });
+    return order.filter(function(k){ return c[k]; }).map(function(k){ return {val:k,label:lbl[k],n:c[k]}; }); }
+  function kbmAxisValues(axis){ var c={}; (KBM.nodes||[]).forEach(function(n){ kbmTagLabels(n,axis).forEach(function(l){ c[l]=(c[l]||0)+1; }); });
+    return Object.keys(c).sort(function(a,b){ return c[b]-c[a]; }).map(function(l){ return {val:l,label:l,n:c[l]}; }); }
+  function kbmPassFilters(n,F){
+    if(F.status && n.robustness!==F.status) return false;
+    if(F.discipline && kbmTagLabels(n,'discipline').indexOf(F.discipline)<0) return false;
+    if(F.layer && kbmTagLabels(n,'layer').indexOf(F.layer)<0) return false;
+    if(F.role && kbmTagLabels(n,'role').indexOf(F.role)<0) return false;
+    return true;
+  }
+  function kbmFilterBar(){
+    var F=KBM.filters||{}, dims=[['status','Статус',kbmStatusValues()],['discipline','Наука',kbmAxisValues('discipline')],['layer','Слой',kbmAxisValues('layer')],['role','Роль',kbmAxisValues('role')]];
+    var active=['status','discipline','layer','role'].filter(function(k){ return F[k]; }).length;
+    var h='<div class="kbm-filterbar"><button class="kbm-filter-toggle'+(active?' has':'')+'" data-kbm-filter-toggle="1">Фильтр'+(active?' · '+active:'')+'<span class="kbm-filter-arr">'+(KBM.filterOpen?' ▾':' ▸')+'</span></button>'+(active?'<button class="kbm-filter-clear" data-kbm-filter-clear="1">Сбросить</button>':'')+'</div>';
+    if(!KBM.filterOpen) return h;
+    h+='<div class="kbm-filter-panel">';
+    dims.forEach(function(d){ var key=d[0], vals=d[2]; if(!vals.length) return;
+      h+='<div class="kbm-filter-dim"><span class="kbm-filter-dim-lbl">'+d[1]+'</span><div class="kbm-filter-chips">';
+      vals.forEach(function(v){ h+='<button class="kbm-filter-chip'+(F[key]===v.val?' on':'')+'" data-kbm-filter="'+key+'" data-kbm-filter-val="'+escapeHtml(v.val)+'">'+escapeHtml(v.label)+'<span class="kbm-filter-chip-n">'+v.n+'</span></button>'; });
+      h+='</div></div>';
+    });
+    return h+'</div>';
   }
   // ── Overview: region tiles (the "territory" view) ──────────────────────
   function kbmRenderOverview(){
@@ -5454,6 +5531,9 @@
     var body=document.getElementById('kbmBody'); if(!body) return;
     if(!body._wired){ body._wired=true;
       body.addEventListener('click',function(e){
+        var ft=e.target.closest('[data-kbm-filter-toggle]'); if(ft){ KBM.filterOpen=!KBM.filterOpen; kbmRenderOverview(); return; }
+        var fcl=e.target.closest('[data-kbm-filter-clear]'); if(fcl){ KBM.filters={}; kbmRenderOverview(); return; }
+        var ff=e.target.closest('[data-kbm-filter]'); if(ff){ var fk=ff.getAttribute('data-kbm-filter'), fvv=ff.getAttribute('data-kbm-filter-val'); KBM.filters=KBM.filters||{}; KBM.filters[fk]=(KBM.filters[fk]===fvv)?null:fvv; kbmRenderOverview(); return; }
         var sv=e.target.closest('[data-scenarios-view]'); if(sv){ kbmRenderScenarios(); return; }
         var fv=e.target.closest('[data-findings-view]'); if(fv){ kbmRenderFindings(); return; }
         var favv=e.target.closest('[data-favorites-view]'); if(favv){ kbmRenderFavorites(); return; }
@@ -5467,16 +5547,17 @@
     // «Всё» — плоский список всех концептов по алфавиту, вход по умолчанию; оси (линзы) выше работают фильтрами
     if(KBM.lens==='all'){
       if(listTitle) listTitle.textContent='Все концепты';
-      var allN=(KBM.nodes||[]).slice().sort(function(a,b){ return (a.title||'').localeCompare(b.title||'','ru'); });
+      var F=KBM.filters||{};
+      var allN=(KBM.nodes||[]).filter(function(n){ return kbmPassFilters(n,F); }).sort(function(a,b){ return (a.title||'').localeCompare(b.title||'','ru'); });
       var cntA=document.getElementById('kbmCount'); if(cntA) cntA.textContent=allN.length+' '+kbmConceptWord(allN.length);
-      body.innerHTML=allN.length?('<div class="kbm-concept-list">'+allN.map(kbmConceptRow).join('')+'</div>')
-        :'<div class="kbm-empty">Пока нет концептов.</div>';
+      body.innerHTML=kbmFilterBar()+(allN.length?('<div class="kbm-concept-list">'+allN.map(kbmConceptRow).join('')+'</div>')
+        :'<div class="kbm-empty">Под выбранные фильтры ничего не подходит.</div>');
       return;
     }
     if(listTitle) listTitle.textContent='Список';
     var regions=kbmRegions(KBM.lens);
     var placed=regions.reduce(function(s,r){return s+r.count;},0);
-    var cnt=document.getElementById('kbmCount'); if(cnt) cnt.textContent=KBM.nodes.length+' концептов';
+    var cnt=document.getElementById('kbmCount'); if(cnt) cnt.textContent=KBM.nodes.length+' '+kbmConceptWord(KBM.nodes.length);
     if(!regions.length){ body.innerHTML='<div class="kbm-empty">Для этого среза нет разметки.</div>'; return; }
     var coreTotal=KBM.nodes.filter(kbmIsCore).length;
     // Quick path to the backbone — for "I want the load-bearing core, not all 244"
@@ -5500,7 +5581,7 @@
     var fndTotal=(fnd.conjectures||[]).length+(fnd.laws||[]).length;
     var fndBanner=fndTotal?'<button class="kbm-fnd-banner" data-findings-view="1">'
       +'<span class="kbm-fnd-banner-ic">⌗</span>'
-      +'<span class="kbm-fnd-banner-txt"><b>Находки</b><span>'+(fnd.conjectures||[]).length+' гипотез и '+(fnd.laws||[]).length+' закона — догадки системы, ещё не проверены</span></span>'
+      +'<span class="kbm-fnd-banner-txt"><span class="kbm-fnd-banner-ttl"><b>Находки</b><span class="kbm-fnd-deep">глубокий слой</span></span><span>'+(fnd.conjectures||[]).length+' гипотез и '+(fnd.laws||[]).length+' закона — догадки системы, ещё не проверены</span></span>'
       +'<span class="kbm-fnd-banner-go">→</span>'
       +'</button>':'';
     var maxCount=regions[0].count;
@@ -5521,6 +5602,7 @@
     }).join('')+'</div>';
   }
   // D5: дом избранного — лайкать концепты можно было, а увидеть свой набор негде. Этот вид закрывает.
+  function kbmPlural(n,one,few,many){ var a=n%10,b=n%100; return n+' '+((a===1&&b!==11)?one:((a>=2&&a<=4&&(b<10||b>=20))?few:many)); }
   function kbmConceptWord(n){ var a=n%10,b=n%100; return (a===1&&b!==11)?'\u043a\u043e\u043d\u0446\u0435\u043f\u0442':((a>=2&&a<=4&&(b<10||b>=20))?'\u043a\u043e\u043d\u0446\u0435\u043f\u0442\u0430':'\u043a\u043e\u043d\u0446\u0435\u043f\u0442\u043e\u0432'); }
   function kbmRenderFavorites(){
     KBM.region='__favorites__'; KBM.goalView=false;
@@ -5565,7 +5647,7 @@
     // moment columns: canonical order first, then any extras seen
     var moments=KBM_MOMENT_ORDER.filter(function(m){return momentsSeen[m];});
     Object.keys(momentsSeen).forEach(function(m){ if(moments.indexOf(m)<0 && m!=='—') moments.push(m); });
-    var cnt=document.getElementById('kbmCount'); if(cnt) cnt.textContent=tasksOrdered.length+' задач · '+moments.length+' момента';
+    var cnt=document.getElementById('kbmCount'); if(cnt) cnt.textContent=kbmPlural(tasksOrdered.length,'задача','задачи','задач')+' · '+kbmPlural(moments.length,'момент','момента','моментов');
     if(!tasksOrdered.length){
       var cnt0=document.getElementById('kbmCount'); if(cnt0) cnt0.textContent='';
       body.innerHTML='<div class="kbm-grid-intro">Сценарии ещё размечаются по поведенческим задачам — сетка появится, когда разметка зальётся. Пока можно полистать концепты по темам.</div>'
@@ -5607,7 +5689,7 @@
     var body=document.getElementById('kbmBody'); if(!body) return;
     var listTitle=document.getElementById('kbmListTitle'); if(listTitle) listTitle.textContent='Темы';
     var regions=kbmRegions('product-lever');
-    var cnt=document.getElementById('kbmCount'); if(cnt) cnt.textContent=regions.length+' тем';
+    var cnt=document.getElementById('kbmCount'); if(cnt) cnt.textContent=kbmPlural(regions.length,'тема','темы','тем');
     var maxCount=regions.length?regions[0].count:1;
     body.innerHTML='<button class="kbm-region-back" data-themes-back="1">← К задачам</button>'
       +'<div class="kbm-grid-intro">Темы — это бизнес-разрез (Рост, Удержание, Цена…), ортогональный поведенческим задачам. Для «просто полистать тему», не как вход-от-задачи.</div>'
@@ -5644,7 +5726,7 @@
     var sits=(KBM.scenarios||[]).filter(inGoal).sort(function(a,b){ return (b.degree||0)-(a.degree||0); });
     var core=(KBM.nodes||[]).filter(function(n){ return inGoal(n) && kbmIsCore(n); }).sort(kbmRank);
     var allCount=(KBM.nodes||[]).filter(inGoal).length;
-    var cnt=document.getElementById('kbmCount'); if(cnt) cnt.textContent=sits.length+' ситуаций · '+allCount+' концептов';
+    var cnt=document.getElementById('kbmCount'); if(cnt) cnt.textContent=kbmPlural(sits.length,'ситуация','ситуации','ситуаций')+' · '+allCount+' '+kbmConceptWord(allCount);
     var edgeMap=kbmScenEdgeMap();
     var sitHtml = sits.length ? sits.map(function(s){
         var e=edgeMap[s.slug]||{forces:[],traps:[],tools:[],adjacent:[]};
@@ -5680,7 +5762,7 @@
     var body=document.getElementById('kbmBody'); if(!body) return;
     var listTitle=document.getElementById('kbmListTitle'); if(listTitle) listTitle.textContent='Несущие';
     var coreNodes=KBM.nodes.filter(kbmIsCore).sort(kbmRank);
-    var cnt=document.getElementById('kbmCount'); if(cnt) cnt.textContent=coreNodes.length+' несущих';
+    var cnt=document.getElementById('kbmCount'); if(cnt) cnt.textContent=kbmPlural(coreNodes.length,'несущий','несущих','несущих');
     body.innerHTML='<button class="kbm-region-back" data-region-back="1">← Вся карта</button>'
       +'<div class="kbm-core-intro">Идеи, на которых держится остальное. Если осваивать костяк — начни отсюда.</div>'
       +'<div class="kbm-concept-list">'+coreNodes.map(kbmConceptRow).join('')+'</div>';
@@ -5706,7 +5788,7 @@
     var body=document.getElementById('kbmBody'); if(!body) return;
     var lt=document.getElementById('kbmListTitle'); if(lt) lt.textContent='Ситуации';
     var scen=(KBM.scenarios||[]).slice().sort(function(a,b){ return (b.degree||0)-(a.degree||0); });
-    var cnt=document.getElementById('kbmCount'); if(cnt) cnt.textContent=scen.length+' ситуаций';
+    var cnt=document.getElementById('kbmCount'); if(cnt) cnt.textContent=kbmPlural(scen.length,'ситуация','ситуации','ситуаций');
     var edgeMap=kbmScenEdgeMap();
     body.innerHTML='<button class="kbm-region-back" data-region-back="1">← Вся карта</button>'
       +'<div class="kbm-scen-intro">Экраны и моменты продуктовой работы. Открой ситуацию — увидишь, какие силы в игре, каких ловушек избегать и чем работать.</div>'
@@ -5807,7 +5889,7 @@
     var body=document.getElementById('kbmBody'); if(!body) return;
     var lt=document.getElementById('kbmListTitle'); if(lt) lt.textContent='Находки';
     var conj=(KBM.findings.conjectures||[]), laws=(KBM.findings.laws||[]);
-    var cnt=document.getElementById('kbmCount'); if(cnt) cnt.textContent=(conj.length+laws.length)+' находок';
+    var cnt=document.getElementById('kbmCount'); if(cnt) cnt.textContent=kbmPlural(conj.length+laws.length,'находка','находки','находок');
     // order conjectures: bridge, gap, cross-cutting, law-instance
     var ord={bridge:0,gap:1,'cross-cutting':2,'law-instance':3};
     var cs=conj.slice().sort(function(a,b){ return (ord[a.kind]||9)-(ord[b.kind]||9); });
@@ -5832,6 +5914,7 @@
         +'</button>';
     }
     var html='<button class="kbm-region-back" data-region-back-f="1">← Вся карта</button>'
+      +'<div class="kbm-fnd-deep-hdr"><span class="kbm-fnd-deep-mark">◆</span><span>Глубокий слой карты — исследовательский конец. Не основной поток: для тех, кому интересны её края.</span></div>'
       +'<div class="kbm-fnd-intro">Догадки системы о связях, которых ещё нет в карте. Каждая помечена как <b>непроверенная</b> и показывает, чем её можно опровергнуть. Пунктир — значит гипотеза, не установленный факт.</div>';
     if(cs.length){
       html+='<div class="kbm-fnd-grouplbl">Гипотезы</div><div class="kbm-fnd-list">'+cs.map(conjTile).join('')+'</div>';
@@ -5950,7 +6033,7 @@
     var rg=regions.filter(function(r){return r.region===region;})[0];
     if(!rg){ kbmRenderOverview(); return; }
     var listTitle=document.getElementById('kbmListTitle'); if(listTitle) listTitle.textContent=kbmShortTitle(region);
-    var cnt=document.getElementById('kbmCount'); if(cnt) cnt.textContent=rg.count+' концептов';
+    var cnt=document.getElementById('kbmCount'); if(cnt) cnt.textContent=rg.count+' '+kbmConceptWord(rg.count);
     // Tension edges crossing region boundary (contradicts / competes-with)
     var slugSet={}; rg.nodes.forEach(function(n){ slugSet[n.slug]=true; });
     var tensions=KBM.edges.filter(function(e){
@@ -5995,22 +6078,22 @@
     var isHub=(n.degree||0)>=10;
     var st=kbmReadyState(n);
     var dim=(st.state==='frontier'||st.state==='hidden');
-    var flag=(st.state==='frontier'||st.state==='hidden')
-      ? '<span class="kbm-crow-flag'+(st.debunk?' kbm-crow-flag-debunk':'')+'">'+escapeHtml(st.reason)+'</span>'
-      : (st.state==='boundary'?'<span class="kbm-crow-flag kbm-crow-flag-soft">\u0433\u0440\u0430\u043d\u0438\u0446\u0430</span>':'');
-    var claim=(n.claim||'').slice(0,90)+(n.claim&&n.claim.length>90?'…':'');
+    var stWord=(st.state==='frontier'||st.state==='hidden') ? st.reason
+      : (st.state==='boundary') ? '\u0433\u0440\u0430\u043d\u0438\u0446\u0430'
+      : (KBM_ROB[n.robustness]||'');
+    var statusHtml=stWord ? '<div class="kbm-crow-status"><span class="kbm-rdot" style="background:'+rCol+'"></span><span class="kbm-crow-stword'+(st.debunk?' kbm-crow-stword-debunk':'')+'">'+escapeHtml(stWord)+'</span></div>' : '';
+    var claimRaw=(n.claim||''), claim=claimRaw;
+    if(claimRaw.length>90){ var _cut=claimRaw.slice(0,90), _sp=_cut.lastIndexOf(' '); claim=(_sp>60?_cut.slice(0,_sp):_cut)+'…'; }
     // Core marker wins over hub dot — it's the stronger editorial signal
     var marker=core?'<span class="kbm-crow-core" title="несущий концепт">★</span>'
       :(isHub?'<span class="kbm-crow-hubdot" title="ключевой концепт">◆</span>':'');
     return '<div class="kbm-crow'+(core?' kbm-crow-core-row':isHub?' kbm-crow-hub':'')+(dim?' kbm-crow-dim':'')+'" data-kbm-slug="'+escapeHtml(n.slug)+'" style="--kc:'+kCol+'">'
-      +'<span class="kbm-crow-tick" style="background:'+kCol+'"></span>'
       +'<div class="kbm-crow-main">'
         +'<div class="kbm-crow-titlerow">'
           +marker
           +'<span class="kbm-crow-title">'+escapeHtml(n.title)+'</span>'
-          +'<span class="kbm-rdot" style="background:'+rCol+'" title="'+escapeHtml(KBM_ROB[n.robustness]||'')+'"></span>'
-          +flag
         +'</div>'
+        +statusHtml
         +(claim?'<div class="kbm-crow-claim">'+escapeHtml(claim)+'</div>':'')
       +'</div>'
       +'<button class="kbm-heart'+(liked?' kbm-liked':'')+'" data-kbm-like="'+escapeHtml(n.slug)+'">'+(liked?'♥':'♡')+'</button>'
@@ -6995,7 +7078,7 @@
       + (signedIn ? menuRow('Аккаунт', (USER.email||'Вы вошли'), 'signout')
                   : menuRow('Аккаунт', 'Вы не вошли — войти или создать пароль', 'login'))
       + menuRow('Мой прогресс', 'Время за чтением, путь, калибровка', 'progress')
-      + menuRow('Что нового', 'Обновления читальни', 'changelog')
+      + menuRow('Что нового', 'История обновлений', 'changelog')
       + menuRow('Уведомления', '', 'notifs')
       + '</div>';
     // Настройки — тема на всё приложение (light/dark/auto), завязана на общий механизм applyTheme/state.theme
@@ -7685,7 +7768,7 @@
     (function wait(){
       if(!CN.on) return;                                        // user closed it while loading
       if(KBM.loaded && (KBM.nodes||[]).length){
-        if(cnt) cnt.textContent=' · '+(KBM.nodes||[]).length+' идей';
+        cnUpdateCount();
         if(h) h.classList.remove('constel-hint-gone');
         cnBuild(); cnFit(1.25); cnWire();
         var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
@@ -9163,7 +9246,7 @@
   var KBM={nodes:[],edges:[],scenarios:[],bySlug:{},findings:{conjectures:[],laws:[]},conjByNode:{},likes:new Set(),loaded:false,liker:null,currentSlug:null,bundles:{},memberships:{},miniFocus:null,
            lens:'all', region:null, scenarioSlug:null, findingSlug:null, lawSlug:null, q:''};
   var KBM_HISTORY=[]; // navigation stack: [{slug, title}]
-  var KBM_KIND={effect:'Эффект',theory:'Теория',frame:'Рамка',phenomenon:'Феномен',method:'Метод',term:'Термин'};
+  var KBM_KIND={effect:'Эффект',theory:'Теория',frame:'Рамка',phenomenon:'Феномен',method:'Метод',term:'Термин',scenario:'Сценарий'};
   var KBM_ROB={solid:'Подтверждена',mixed:'Смешанная',contested:'Спорная',weak:'Предварительная'};
   var KBM_ROB_COL={solid:'var(--good)',mixed:'var(--warn)',contested:'var(--danger)',weak:'var(--muted)'};
   var KBM_ES={'empirical-effect':'эмпирический эффект','empirical-law':'закон','framework':'концепция',
@@ -9171,11 +9254,10 @@
   var KBM_REL={refines:'уточняет',contradicts:'противоречит',prerequisite:'нужна для','mechanism-of':'механизм чего','same-family':'одна семья','competes-with':'конкурирует с','instance-of':'частный случай'};
   // Lenses — each is a tag axis from kb_graph; defines how the territory is sliced
   var KBM_LENSES=[
-    {id:'all',        label:'Всё',             hint:'полный список'},
-    {id:'layer',      label:'По слоям',        hint:'слои модели'},
+    {id:'all',           label:'Всё',          hint:'полный список'},
     {id:'product-lever', label:'По задаче',    hint:'что хочешь изменить'},
-    {id:'discipline', label:'По дисциплине',   hint:'откуда идея'},
-    {id:'role',       label:'По роли',         hint:'кому ближе'}
+    {id:'layer',         label:'По слоям',     hint:'слои модели'},
+    {id:'discipline',    label:'По наукам',    hint:'откуда идея'}
   ];
   // Region accent palette (assigned by order within a lens)
   var KBM_REGION_COLS=['#8f5a23','#3b6fa0','#7356a0','#2b7d7a','#2f7d4f','#b5852a','#a0524f','#5a6f8c','#8c7a3a'];
