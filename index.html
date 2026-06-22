@@ -1391,7 +1391,7 @@
   /* The concept arrives when you dive in — a brief rise, matching the reading surface */
   .kbm-det.kbm-det-enter{ animation:kbmDetEnter .34s var(--spring) }
   @keyframes kbmDetEnter{ from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none} }
-  #kbmDetBody{ flex:1; overflow-y:auto; padding:16px 18px 80px }
+  #kbmDetBody{ flex:1; overflow-y:auto; padding:16px 18px calc(var(--tabbar-h) + env(safe-area-inset-bottom,0px) + 28px) }
   .kbm-d-meta{ display:flex; flex-wrap:wrap; align-items:center; gap:7px; margin-bottom:12px }
   .kbm-kind{ font-family:var(--font-ui); font-size:11px; font-weight:600; letter-spacing:0; color:var(--muted) }
   .kbm-rob{ font-family:var(--font-ui); font-size:9.5px; font-weight:700; padding:2px 7px; border-radius:999px; color:#fff; letter-spacing:.03em }
@@ -2215,11 +2215,16 @@
 .q-d-desc{ font-size:14.5px; line-height:1.6; color:var(--read); margin-bottom:14px; }
 .q-d-meta{ font-family:var(--font-ui); font-size:12.5px; color:var(--muted); margin-bottom:6px; }
 .q-d-prog{ font-family:var(--font-ui); font-size:12.5px; color:var(--accent); margin-bottom:14px; }
-.q-stops{ border-left:2px solid var(--line); margin:6px 0 22px 8px; }
-.q-stop{ display:flex; align-items:center; gap:11px; padding:9px 0 9px 18px; cursor:pointer; position:relative; }
-.q-stop-dot{ position:absolute; left:-7px; width:11px; height:11px; border-radius:50%; background:var(--line-2); border:2px solid var(--bg); flex-shrink:0; }
+.q-stops{ margin:6px 0 22px 0; }
+.q-stop{ display:flex; align-items:center; gap:11px; width:100%; padding:13px 12px; cursor:pointer; background:var(--card); border:1px solid var(--line); border-radius:11px; margin-bottom:7px; text-align:left; font-family:inherit; transition:background .12s,border-color .12s; }
+  .q-stop:active{ background:var(--accent-tint); }
+  .q-stop-chev{ color:var(--muted); font-size:18px; flex-shrink:0; margin-left:2px; }
+  .q-stop-tag-done{ color:var(--good); }
+  .q-stop-tag-part{ color:var(--accent); font-weight:600; }
+.q-stop-dot{ width:10px; height:10px; border-radius:50%; background:var(--line-2); flex-shrink:0; }
 .q-stop-done .q-stop-dot{ background:var(--good); }
-.q-stop-next .q-stop-dot{ background:var(--accent); box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent); }
+.q-stop-next{ border-color:color-mix(in srgb,var(--accent) 42%,var(--line)); background:var(--accent-tint); }
+  .q-stop-next .q-stop-dot{ background:var(--accent); box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent); }
 .q-stop-t{ flex:1; font-size:14.5px; color:var(--ink); }
 .q-stop-done .q-stop-t{ color:var(--muted); }
 .q-stop-tag{ font-family:var(--font-ui); font-size:10.5px; color:var(--muted); flex-shrink:0; }
@@ -2232,22 +2237,35 @@
 .constel-routes:hover{ background:rgba(120,90,40,.5); }
 
 /* мини-трекер маршрута на карточке остановки */
-.qt{ background:var(--accent-tint); border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line)); border-radius:13px; padding:11px 13px; margin-bottom:14px; }
-.qt-head{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; width:100%; background:none; border:none; padding:0; cursor:pointer; text-align:left; font-family:inherit; }
+.qt{ display:block; width:100%; text-align:left; background:var(--accent-tint); border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line)); border-radius:13px; padding:11px 13px; margin-bottom:14px; cursor:pointer; font-family:inherit; transition:border-color .12s; }
+.qt:active{ border-color:color-mix(in srgb,var(--accent) 50%,var(--line)); }
+.qt-top{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; }
 .qt-route{ font-family:var(--font-ui); font-size:13.5px; font-weight:650; color:var(--accent-2); letter-spacing:-.01em; }
 .qt-pos{ font-family:var(--font-ui); font-size:12px; font-weight:600; color:var(--accent); flex-shrink:0; }
-.qt-dots{ display:flex; gap:5px; align-items:center; margin:9px 0 8px; flex-wrap:wrap; }
+.qt-dots{ display:flex; gap:5px; align-items:center; margin:9px 0 0; flex-wrap:wrap; }
 .qt-dot{ width:8px; height:8px; border-radius:50%; background:color-mix(in srgb,var(--accent) 22%,transparent); flex-shrink:0; transition:transform .15s; }
 .qt-dot-done{ background:var(--accent); }
 .qt-dot-cur{ background:var(--accent); box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 28%,transparent); transform:scale(1.15); }
-.qt-foot{ display:flex; align-items:center; justify-content:space-between; gap:10px; min-height:20px; }
-.qt-next-lbl{ font-family:var(--font-ui); font-size:12px; color:var(--muted); flex-shrink:0; }
-.qt-next-lbl.qt-done{ color:var(--good); font-weight:600; }
-.qt-next{ background:none; border:none; color:var(--accent); font-family:var(--font-ui); font-size:13.5px; font-weight:600; cursor:pointer; padding:2px 0; text-align:right; max-width:64%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.qt-hint{ display:block; margin-top:8px; font-family:var(--font-ui); font-size:11.5px; color:var(--accent-2); opacity:.8; }
 
 /* кнопка закрытия легенды */
 .cn-leg-x{ position:absolute; top:8px; right:8px; width:28px; height:28px; border-radius:50%; border:none; background:rgba(255,255,255,.07); color:#c2b39c; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; line-height:1; padding:0; }
 .cn-leg-x:hover{ background:rgba(255,255,255,.14); color:#e8dcc8; }
+
+/* нижняя кнопка-продвижение по маршруту (на дне карточки) */
+.q-adv{ margin:24px 0 6px; padding-top:16px; border-top:1px solid var(--line); }
+.q-adv-hint{ font-family:var(--font-ui); font-size:12.5px; color:var(--muted); margin-bottom:11px; }
+.q-adv-done{ font-family:var(--font-ui); font-size:13px; font-weight:650; color:var(--good); margin-bottom:11px; }
+.q-adv-btn{ display:flex; align-items:center; gap:10px; width:100%; padding:14px 16px; border:none; border-radius:13px; background:var(--accent); color:var(--text-on-accent); cursor:pointer; font-family:inherit; text-align:left; transition:transform .1s; }
+.q-adv-btn:active{ transform:scale(.99); }
+.q-adv-txt{ flex:1; display:flex; flex-direction:column; gap:2px; min-width:0; }
+.q-adv-lbl{ font-family:var(--font-ui); font-size:11px; font-weight:600; opacity:.82; }
+.q-adv-t{ font-size:15px; font-weight:650; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.q-adv-arr{ font-size:20px; flex-shrink:0; }
+.q-adv-map{ display:block; width:100%; margin-top:9px; padding:11px; border:1px solid var(--line-2); border-radius:12px; background:transparent; color:var(--ink); font-family:var(--font-ui); font-size:13.5px; font-weight:600; cursor:pointer; }
+/* оставить маршрут */
+.q-abandon{ display:block; width:100%; margin-top:9px; padding:11px; border:none; border-radius:12px; background:transparent; color:var(--muted); font-family:var(--font-ui); font-size:13px; cursor:pointer; }
+.q-abandon:active{ color:var(--danger); }
 </style>
 </head>
 <body>
@@ -6624,7 +6642,7 @@
       +'</div>'
       +'<button class="kbm-like-btn'+(liked?' kbm-liked':'')+'" id="kbmDetHeart" data-kbm-like="'+escapeHtml(slug)+'">'+(liked?'♥ В избранном':'♡ В избранное')+'</button>'
       +'<div class="kbm-d-claim" id="kbmDetClaim">'+escapeHtml(claim)+'</div>';
-    body.innerHTML='<div id="kbmDetCard">'+hero+kbmStateBanner(node)+questTrackerHtml(slug)+'<div class="kbm-sections" id="kbmDetSections"><div class="kbm-detail-pending"></div></div>'+kbmMiniMap(slug)+kbmChapterRefs(slug)+kbmSituationRefs(slug)+'</div>';
+    body.innerHTML='<div id="kbmDetCard">'+hero+kbmStateBanner(node)+'<div id="kbmQuestTracker">'+questTrackerHtml(slug)+'</div>'+'<div class="kbm-sections" id="kbmDetSections"><div class="kbm-detail-pending"></div></div>'+kbmMiniMap(slug)+kbmChapterRefs(slug)+kbmSituationRefs(slug)+'</div>';
     body.scrollTop=0;
     var card=document.getElementById('kbmDetCard');
     if(card && !reduce){ card.classList.remove('kbm-card-fwd','kbm-card-back'); void card.offsetWidth; card.classList.add(dir==='back'?'kbm-card-back':'kbm-card-fwd'); }
@@ -6645,6 +6663,38 @@
       });
     }
   }
+  // «Прочитано» зарабатывается доскроллом до низа карточки, не заходом. Короткие — по выдержке.
+  function kbmMarkRead(slug){
+    if(!slug) return;
+    if(!state.visited) state.visited={};
+    if(state.visited[slug]) return;
+    state.visited[slug]=1;
+    try{ if(typeof SB!=='undefined' && typeof kbmGetLiker==='function'){ var _off=(typeof navigator!=='undefined' && navigator.onLine===false); SB.from('reader_signals').insert({who:kbmGetLiker(), kind:'visit', ref:slug}).then(function(r){ if(r&&r.error&&!_off) console.warn('visit:',r.error.message); }); } }catch(e){}
+    saveState();
+    if(typeof cnUpdateCount==='function') cnUpdateCount();
+    if(typeof cnRenderRec==='function') cnRenderRec();
+    if(typeof kbmRefreshTracker==='function') kbmRefreshTracker(slug);
+    if(typeof toast==='function') toast('Карточка пройдена \u2713');
+  }
+  function kbmScrollProgress(){
+    var b=document.getElementById('kbmDetBody'); var slug=KBM.currentSlug; if(!b||!slug) return;
+    var sh=b.scrollHeight, ch=b.clientHeight, st=b.scrollTop;
+    var pct=(sh<=ch+8)?100:Math.min(100, Math.round((st+ch)/sh*100));
+    if(!state.scroll) state.scroll={};
+    if(pct>(state.scroll[slug]||0)){ state.scroll[slug]=pct; saveState(); }
+    if(pct>=90) kbmMarkRead(slug);
+  }
+  function kbmRefreshTracker(slug){ var t=document.getElementById('kbmQuestTracker'); if(t && typeof questTrackerHtml==='function') t.innerHTML=questTrackerHtml(slug); var a=document.getElementById('kbmQuestAdvance'); if(a && typeof questAdvanceHtml==='function') a.innerHTML=questAdvanceHtml(slug); }
+  function kbmReadWatch(slug){
+    if(KBM._readTimer){ clearTimeout(KBM._readTimer); KBM._readTimer=null; }
+    var b=document.getElementById('kbmDetBody'); if(!b) return;
+    if(!b._kbmScrollWired){ b._kbmScrollWired=true; b.addEventListener('scroll', kbmScrollProgress, {passive:true}); }
+    setTimeout(function(){
+      if(KBM.currentSlug!==slug) return;
+      if(b.scrollHeight <= b.clientHeight+8){ KBM._readTimer=setTimeout(function(){ if(KBM.currentSlug===slug) kbmMarkRead(slug); }, 3500); }
+      else kbmScrollProgress();
+    }, 90);
+  }
   async function kbmDetail(slug, isBack){
     // History tracking: push current to stack on forward navigation
     if(!isBack && KBM.currentSlug && KBM.currentSlug!==slug){
@@ -6652,7 +6702,7 @@
       KBM_HISTORY.push({slug:KBM.currentSlug, title:curNode?curNode.title:KBM.currentSlug});
     }
     KBM.currentSlug=slug;
-    if(slug){ if(!state.visited) state.visited={}; state.lastVisited=slug; var _newv=!state.visited[slug]; if(_newv){ state.visited[slug]=1; try{ if(typeof SB!=='undefined' && typeof kbmGetLiker==='function'){ var _off=(typeof navigator!=='undefined' && navigator.onLine===false); SB.from('reader_signals').insert({who:kbmGetLiker(), kind:'visit', ref:slug}).then(function(r){ if(r&&r.error&&!_off) console.warn('visit:',r.error.message); }); } }catch(e){} } saveState(); if(typeof cnUpdateCount==='function') cnUpdateCount(); if(typeof cnRenderRec==='function') cnRenderRec(); }
+    if(slug){ if(!state.visited) state.visited={}; state.lastVisited=slug; saveState(); }
     kbmShowDetail();
     kbmUpdateBackBtn();
     var title=document.getElementById('kbmDetTitle');
@@ -6771,7 +6821,8 @@
       })()
       // 10. Источник
       +(src?'<div class="kbm-d-src">'+escapeHtml(src)+'</div>':'')
-      +kbmSignalBar(slug);
+      +kbmSignalBar(slug)
+      +'<div id="kbmQuestAdvance">'+(typeof questAdvanceHtml==='function'?questAdvanceHtml(slug):'')+'</div>';
     var claimEl=document.getElementById('kbmDetClaim'); if(claimEl && claim && claimEl.textContent!==claim){ claimEl.textContent=claim; }
     var sectionsEl=document.getElementById('kbmDetSections');
     if(sectionsEl){
@@ -6780,6 +6831,7 @@
       if(dep){ var rc=document.getElementById('kbdRing'); if(rc) kbDrawRing(rc, dep); }
     }
     kbmCheckAtom(slug);
+    if(typeof kbmReadWatch==='function') kbmReadWatch(slug);
   }
   // ── Атом «Ликбез»: страница-разбор узла (kb_nodes.body) ──────────────────
   var ATOM_ICONS = {
@@ -7241,7 +7293,7 @@
             + menuRow('Админка', '', 'admin')
             + '</div>';
     }
-    rows += '<div class="menu-version">Версия 2026-06-22 15:18 · 61129a3</div>';
+    rows += '<div class="menu-version">Версия 2026-06-22 16:01 · e4f9e1c</div>';
     body.innerHTML = '<div class="menu-v-head"><h2 class="menu-v-title">Меню</h2></div><div class="menu-v-list">'+rows+'</div>';
     Array.prototype.forEach.call(body.querySelectorAll('[data-menu-act]'), function(b){
       b.onclick = function(){ menuAct(b.getAttribute('data-menu-act')); };
@@ -7989,13 +8041,13 @@
   function closeQuests(){ var el=document.getElementById('quests'); if(el) el.classList.remove('open'); document.body.style.overflow=''; QUEST.detailKey=null; }
 
   function questCardHtml(q, big){
-    var prog=questProgress(q), tot=(q.slugs||[]).length, done=questIsDone(q), started=prog>0;
+    var prog=questProgress(q), tot=(q.slugs||[]).length, done=questIsDone(q), started=prog>0, showProg=started||questIsActive(q.key);
     var preview=(q.slugs||[]).slice(0,3).map(function(s){ return escapeHtml(questStopTitle(s)); }).join(' · ');
     var badge = done ? '<span class="q-badge q-badge-done">пройден</span>'
               : (questIsActive(q.key) ? '<span class="q-badge q-badge-active">в пути</span>' : '');
     var prom = q.promise ? escapeHtml(q.promise) : '<span class="q-stub">маршрут готовится…</span>';
     var pct = tot ? Math.round(prog/tot*100) : 0;
-    var progHtml = started ? ('<div class="q-prog"><span class="q-prog-bar"><i style="width:'+pct+'%"></i></span><span class="q-prog-n">'+prog+' из '+tot+'</span></div>') : '';
+    var progHtml = showProg ? ('<div class="q-prog"><span class="q-prog-bar"><i style="width:'+pct+'%"></i></span><span class="q-prog-n">'+prog+' из '+tot+'</span></div>') : '';
     return '<button class="q-card'+(big?' q-card-big':'')+'" data-quest="'+escapeHtml(q.key)+'">'
       + '<div class="q-card-h"><span class="q-card-ttl">'+escapeHtml(q.title||q.key)+'</span>'+badge+'</div>'
       + '<div class="q-card-prom">'+prom+'</div>'
@@ -8036,17 +8088,23 @@
     var stops=(q.slugs||[]).map(function(s){
       var vis=state.visited && state.visited[s];
       var isNext=(s===next);
-      return '<div class="q-stop'+(vis?' q-stop-done':'')+(isNext?' q-stop-next':'')+'" data-stop="'+escapeHtml(s)+'">'
+      var sc=(state.scroll && state.scroll[s])||0, partial=(!vis && sc>=5);
+      var tag = vis ? '<span class="q-stop-tag q-stop-tag-done">пройдено</span>'
+              : (partial ? '<span class="q-stop-tag q-stop-tag-part">'+sc+'%</span>'
+              : (isNext ? '<span class="q-stop-tag q-stop-tag-next">дальше</span>' : ''));
+      return '<button class="q-stop'+(vis?' q-stop-done':'')+(isNext?' q-stop-next':'')+'" data-stop="'+escapeHtml(s)+'">'
         + '<span class="q-stop-dot"></span>'
         + '<span class="q-stop-t">'+escapeHtml(questStopTitle(s))+'</span>'
-        + (vis?'<span class="q-stop-tag">пройдено</span>':(isNext?'<span class="q-stop-tag q-stop-tag-next">дальше</span>':''))
-        + '</div>';
+        + tag
+        + '<span class="q-stop-chev">›</span>'
+        + '</button>';
     }).join('');
     var cta;
     if(done){ cta='<button class="q-cta q-cta-ghost" data-q-restart="'+escapeHtml(q.key)+'">Пройти заново</button>'; }
     else if(active){ cta='<button class="q-cta" data-q-continue="'+escapeHtml(q.key)+'">'+(next?('Продолжить — '+escapeHtml(questStopTitle(next))):'Открыть маршрут')+'</button>'; }
     else { cta='<button class="q-cta" data-q-accept="'+escapeHtml(q.key)+'">Принять маршрут</button>'; }
     var progLine = prog>0 ? ('<div class="q-d-prog">Пройдено '+prog+' из '+tot+((!active&&!done)?' · уже знакомо из прогулок':'')+'</div>') : '';
+    var abandon = (active && !done) ? '<button class="q-abandon" data-q-abandon="'+escapeHtml(q.key)+'">Оставить маршрут</button>' : '';
     body.innerHTML='<button class="q-back" data-q-back="1">‹ Все маршруты</button>'
       + '<div class="q-d-ttl">'+escapeHtml(q.title||q.key)+(done?' <span class="q-badge q-badge-done">пройден</span>':'')+'</div>'
       + (q.promise?'<div class="q-d-prom">'+escapeHtml(q.promise)+'</div>':'')
@@ -8054,17 +8112,19 @@
       + '<div class="q-d-meta">'+tot+' остановок · ~'+questMins(q)+' мин</div>'
       + progLine
       + '<div class="q-stops">'+stops+'</div>'
-      + '<div class="q-d-cta">'+cta+'</div>';
+      + '<div class="q-d-cta">'+cta+abandon+'</div>';
     var bk=body.querySelector('[data-q-back]'); if(bk) bk.onclick=function(){ QUEST.detailKey=null; questsRender(); };
     var acc=body.querySelector('[data-q-accept]'); if(acc) acc.onclick=function(){ questAccept(q.key); };
     var con=body.querySelector('[data-q-continue]'); if(con) con.onclick=function(){ questGoNext(q.key); };
     var rst=body.querySelector('[data-q-restart]'); if(rst) rst.onclick=function(){ questGoNext(q.key); };
+    var abn=body.querySelector('[data-q-abandon]'); if(abn) abn.onclick=function(){ questAbandon(q.key); };
     body.querySelectorAll('[data-stop]').forEach(function(d){ d.onclick=function(){ QUEST.focus=q.key; questGoStop(d.getAttribute('data-stop')); }; });
   }
 
   function questAccept(key){ var qs=questState(); qs.active[key]=Date.now(); QUEST.focus=key; saveState(); questGoNext(key); }
   function questGoNext(key){ QUEST.focus=key; var q=questBy(key); if(!q) return; var next=questNextStop(q); if(!next) next=(q.slugs||[])[0]; questGoStop(next); }
   function questGoStop(slug){ closeQuests(); KBM_HISTORY=[]; KBM.currentSlug=null; var node=KBM.bySlug && KBM.bySlug[slug]; if(node && typeof cnToCard==='function') cnToCard(node, QUEST.focus); }
+  function questAbandon(key){ var qs=questState(); delete qs.active[key]; if(QUEST.focus===key) QUEST.focus=null; saveState(); if(typeof toast==='function') toast('Маршрут оставлен — прогресс сохранён'); QUEST.detailKey=null; questsRender(); }
 
   // ── Мини-трекер маршрута на карточке остановки (где я / дальше) ──
   function questForStop(slug){
@@ -8077,16 +8137,29 @@
   function questTrackerHtml(slug){
     if(typeof QUEST==='undefined' || !QUEST.list) return '';
     var q=questForStop(slug); if(!q) return '';
-    var s=q.slugs||[], tot=s.length, idx=s.indexOf(slug), next=questNextStop(q);
+    var s=q.slugs||[], tot=s.length, idx=s.indexOf(slug);
     var dots=s.map(function(ss){ var vis=state.visited && state.visited[ss], cur=(ss===slug); return '<span class="qt-dot'+(vis?' qt-dot-done':'')+(cur?' qt-dot-cur':'')+'"></span>'; }).join('');
-    var foot;
-    if(next && next!==slug){ foot='<span class="qt-next-lbl">дальше</span><button class="qt-next" data-qt-next="'+escapeHtml(next)+'">'+escapeHtml(questStopTitle(next))+' →</button>'; }
-    else if(!next){ foot='<span class="qt-next-lbl qt-done">маршрут пройден ✓</span>'; }
-    else { foot='<span class="qt-next-lbl">последняя остановка</span>'; }
-    return '<div class="qt">'
-      + '<button class="qt-head" data-qt-map="'+escapeHtml(q.key)+'"><span class="qt-route">'+escapeHtml(q.title||q.key)+'</span><span class="qt-pos">'+(idx>=0?idx+1:'?')+' / '+tot+'</span></button>'
-      + '<div class="qt-dots">'+dots+'</div>'
-      + '<div class="qt-foot">'+foot+'</div>'
+    return '<button class="qt" data-qt-map="'+escapeHtml(q.key)+'">'
+      + '<span class="qt-top"><span class="qt-route">'+escapeHtml(q.title||q.key)+'</span><span class="qt-pos">остановка '+(idx>=0?idx+1:'?')+' из '+tot+'</span></span>'
+      + '<span class="qt-dots">'+dots+'</span>'
+      + '<span class="qt-hint">весь маршрут ›</span>'
+      + '</button>';
+  }
+  function questAdvanceHtml(slug){
+    if(typeof QUEST==='undefined' || !QUEST.list) return '';
+    var q=questForStop(slug); if(!q) return '';
+    var s=q.slugs||[], idx=s.indexOf(slug); if(idx<0) return '';
+    var read=state.visited && state.visited[slug];
+    var head = read ? '<div class="q-adv-done">✓ Остановка пройдена</div>' : '<div class="q-adv-hint">Дочитайте до конца — остановка отметится пройденной.</div>';
+    if(idx < s.length-1){
+      var nxt=s[idx+1];
+      return '<div class="q-adv">'+head
+        + '<button class="q-adv-btn" data-qt-next="'+escapeHtml(nxt)+'"><span class="q-adv-txt"><span class="q-adv-lbl">Следующая остановка</span><span class="q-adv-t">'+escapeHtml(questStopTitle(nxt))+'</span></span><span class="q-adv-arr">→</span></button>'
+        + '<button class="q-adv-map" data-qt-map="'+escapeHtml(q.key)+'">Весь маршрут</button>'
+        + '</div>';
+    }
+    return '<div class="q-adv">'+head
+      + '<button class="q-adv-btn" data-qt-map="'+escapeHtml(q.key)+'"><span class="q-adv-txt"><span class="q-adv-lbl">Последняя остановка</span><span class="q-adv-t">Вернуться к маршруту</span></span><span class="q-adv-arr">→</span></button>'
       + '</div>';
   }
   async function questShowDetail(key){
