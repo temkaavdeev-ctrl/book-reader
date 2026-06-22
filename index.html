@@ -2244,6 +2244,10 @@
 .qt-next-lbl{ font-family:var(--font-ui); font-size:12px; color:var(--muted); flex-shrink:0; }
 .qt-next-lbl.qt-done{ color:var(--good); font-weight:600; }
 .qt-next{ background:none; border:none; color:var(--accent); font-family:var(--font-ui); font-size:13.5px; font-weight:600; cursor:pointer; padding:2px 0; text-align:right; max-width:64%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+/* кнопка закрытия легенды */
+.cn-leg-x{ position:absolute; top:8px; right:8px; width:28px; height:28px; border-radius:50%; border:none; background:rgba(255,255,255,.07); color:#c2b39c; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; line-height:1; padding:0; }
+.cn-leg-x:hover{ background:rgba(255,255,255,.14); color:#e8dcc8; }
 </style>
 </head>
 <body>
@@ -6266,7 +6270,8 @@
     else if(KBM.region==='__finding__'){ var fc=kbmFindBySlug(KBM.findingSlug); fallback=fc?'Гипотеза':'Находки'; }
     else if(KBM.region==='__law__') fallback='Закон';
     else fallback=KBM.region?kbmShortTitle(KBM.region):'Карта';
-    if(KBM.fromConstel && KBM_HISTORY.length===0) fallback='Созвездие';
+    if(KBM.fromQuest && KBM_HISTORY.length===0){ var _fq=(typeof questBy==='function')?questBy(KBM.fromQuest):null; fallback=_fq?kbmShortTitle(_fq.title||'Маршрут'):'Маршрут'; }
+    else if(KBM.fromConstel && KBM_HISTORY.length===0) fallback='Созвездие';
     if(KBM_HISTORY.length>0){
       var prev=KBM_HISTORY[KBM_HISTORY.length-1];
       var lbl=prev.title.length>22?prev.title.slice(0,20)+'…':prev.title;
@@ -6281,6 +6286,8 @@
       var goSlug=prev.slug;
       KBM.currentSlug=null; // prevent re-push
       kbmDetail(goSlug, true);
+    } else if(KBM.fromQuest){
+      kbmBackToQuest(KBM.fromQuest);
     } else if(KBM.fromConstel){
       cnReturnFromCard();
     } else {
@@ -7234,7 +7241,7 @@
             + menuRow('Админка', '', 'admin')
             + '</div>';
     }
-    rows += '<div class="menu-version">Версия 2026-06-22 15:05 · 8739afc</div>';
+    rows += '<div class="menu-version">Версия 2026-06-22 15:18 · 61129a3</div>';
     body.innerHTML = '<div class="menu-v-head"><h2 class="menu-v-title">Меню</h2></div><div class="menu-v-list">'+rows+'</div>';
     Array.prototype.forEach.call(body.querySelectorAll('[data-menu-act]'), function(b){
       b.onclick = function(){ menuAct(b.getAttribute('data-menu-act')); };
@@ -7725,7 +7732,7 @@
     items.sort(function(a,b){ return b.n-a.n; });
     var L3=[['all','Всё','все идеи'],['mechanism','Механизмы','как работает поведение'],['tool','Инструменты','что делает практик']];
     var curHint=L3[0][2]; for(var hh=0;hh<L3.length;hh++){ if(L3[hh][0]===CN.layer) curHint=L3[hh][2]; }
-    var html='<div class="cn-leg-ttl">Слой</div><div class="cn-leg-seg">';
+    var html='<button class="cn-leg-x" data-cn-leg-close="1" aria-label="Закрыть">✕</button><div class="cn-leg-ttl">Слой</div><div class="cn-leg-seg">';
     L3.forEach(function(L){
       html+='<button class="cn-leg-seg-btn'+(CN.layer===L[0]?' on':'')+'" data-cn-layer="'+L[0]+'"><span>'+L[1]+'</span><span class="cn-leg-seg-n">'+Lc[L[0]]+'</span></button>';
     });
@@ -7735,14 +7742,14 @@
     html+='<div class="cn-leg-note">Инструменты — с кольцом. Ярче звезда — крепче подтверждено, бледнее — спорное. Размер — число связей. Рядом — связанные идеи.</div>';
     p.innerHTML=html;
     if(!p._wiredL){ p._wiredL=true;
-      p.addEventListener('click', function(e){ var t=e.target.closest('[data-cn-layer]'); if(!t) return; CN.layer=t.getAttribute('data-cn-layer'); cnLegendRender(); cnKick(); });
+      if(!p._cnLegWired){ p._cnLegWired=true; p.addEventListener('click', function(e){ var x=e.target.closest('[data-cn-leg-close]'); if(x){ cnLegendToggle(); return; } var t=e.target.closest('[data-cn-layer]'); if(!t) return; CN.layer=t.getAttribute('data-cn-layer'); cnLegendRender(); cnKick(); }); }
     }
   }
   function cnLegendToggle(){
     var p=document.getElementById('constelLegend'), b=document.getElementById('constelLegendBtn'); if(!p) return;
     var show=(p.style.display==='none' || !p.style.display);
-    if(show){ var chip=document.getElementById('constelChip'); if(chip) chip.style.display='none'; cnLegendRender(); p.style.display='block'; }
-    else { p.style.display='none'; }
+    if(show){ var chip=document.getElementById('constelChip'); if(chip) chip.style.display='none'; var rec=document.getElementById('constelRec'); if(rec) rec.style.display='none'; cnLegendRender(); p.style.display='block'; }
+    else { p.style.display='none'; if(typeof cnRenderRec==='function') cnRenderRec(); }
     if(b) b.classList.toggle('on', show);
   }
   function cnLegendHide(){ var p=document.getElementById('constelLegend'); if(p) p.style.display='none'; var b=document.getElementById('constelLegendBtn'); if(b) b.classList.remove('on'); }
@@ -7839,9 +7846,9 @@
   }
   // Card is a sheet that rises OVER the constellation — the cosmos stays mounted underneath
   // (paused, not torn down), so there is no flash and returning needs no rebuild.
-  function cnToCard(node){
+  function cnToCard(node, fromQuest){
     if(!node) return;
-    KBM.fromConstel=true;
+    KBM.fromConstel=true; KBM.fromQuest=fromQuest||null;
     CN.on=false; if(CN.raf){ cancelAnimationFrame(CN.raf); CN.raf=null; }   // pause cosmos, keep it mounted
     var ch=document.getElementById('constelChip'); if(ch) ch.style.display='none';
     var km=document.getElementById('kbMode'); if(km){ km.classList.add('kbm-over-constel'); km.style.display='flex'; }
@@ -7854,7 +7861,7 @@
     var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
     function done(){ km.style.display='none'; km.classList.remove('kbm-over-constel','kbm-sheet-down'); }
     if(reduce){ done(); } else { km.classList.add('kbm-sheet-down'); setTimeout(done, 290); }
-    KBM_HISTORY=[]; KBM.currentSlug=null; KBM.fromConstel=false;
+    KBM_HISTORY=[]; KBM.currentSlug=null; KBM.fromConstel=false; KBM.fromQuest=null;
     var rn=backSlug?cnNodeBySlug(backSlug):CN.sel;                          // re-select node + recentre camera (item 4)
     if(rn){ cnSelect(rn); cnFlyToNode(rn); }
   }
@@ -7886,7 +7893,7 @@
       cnOpen();
       var n2=cnNodeBySlug(slug); if(n2){ cnSelect(n2); cnFlyToNode(n2); }
     }
-    KBM_HISTORY=[]; KBM.currentSlug=null; KBM.fromConstel=false; KBM.miniFocus=null;
+    KBM_HISTORY=[]; KBM.currentSlug=null; KBM.fromConstel=false; KBM.fromQuest=null; KBM.miniFocus=null;
   }
   function cnClose(){
     CN.on=false; if(CN.raf){ cancelAnimationFrame(CN.raf); CN.raf=null; }
@@ -8057,7 +8064,7 @@
 
   function questAccept(key){ var qs=questState(); qs.active[key]=Date.now(); QUEST.focus=key; saveState(); questGoNext(key); }
   function questGoNext(key){ QUEST.focus=key; var q=questBy(key); if(!q) return; var next=questNextStop(q); if(!next) next=(q.slugs||[])[0]; questGoStop(next); }
-  function questGoStop(slug){ closeQuests(); var node=KBM.bySlug && KBM.bySlug[slug]; if(node && typeof cnToCard==='function') cnToCard(node); }
+  function questGoStop(slug){ closeQuests(); KBM_HISTORY=[]; KBM.currentSlug=null; var node=KBM.bySlug && KBM.bySlug[slug]; if(node && typeof cnToCard==='function') cnToCard(node, QUEST.focus); }
 
   // ── Мини-трекер маршрута на карточке остановки (где я / дальше) ──
   function questForStop(slug){
@@ -8088,6 +8095,13 @@
     var body=document.getElementById('questsBody'); if(body) body.innerHTML='<div class="q-empty">Загрузка…</div>';
     await questLoad();
     QUEST.detailKey=key; questDetailRender();
+  }
+
+  function kbmBackToQuest(qk){
+    var km=document.getElementById('kbMode'); if(km){ km.style.display='none'; km.classList.remove('kbm-over-constel','kbm-sheet-down'); }
+    KBM_HISTORY=[]; KBM.currentSlug=null; KBM.fromQuest=null;
+    if(typeof CN!=='undefined'){ CN.on=true; if(typeof cnKick==='function') cnKick(); }
+    if(typeof questShowDetail==='function') questShowDetail(qk);
   }
   async function loadLikes(){
     LIKEALL=[]; if(!SB||!USER) return;
