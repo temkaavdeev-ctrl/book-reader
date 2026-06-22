@@ -1664,7 +1664,7 @@
   .kbm-fnd-kind-lg{ font-size:11px; padding:3px 11px }
   .kbm-fnd-d-status{ font-family:var(--font-ui); font-size:11px; color:var(--muted) }
   .kbm-fnd-d-weight{ margin-left:auto; font-family:var(--font-ui); font-size:11px; color:var(--fnd) }
-  .kbm-fnd-d-stmt{ font-size:16px; font-weight:600; color:var(--ink); line-height:1.5; margin-bottom:18px; letter-spacing:-.01em }
+  .kbm-fnd-d-stmt{ font-size:15.5px; font-weight:450; color:var(--ink); line-height:1.62; margin-bottom:18px }
   .kbm-fnd-lawttl{ font-family:var(--font-ui); font-size:21px; font-weight:700; letter-spacing:-.02em; color:var(--ink); line-height:1.2; margin:0 0 10px }
   /* Mini-diagram — the structural honesty made visible */
   .kbm-fnd-diagram{ display:flex; align-items:stretch; gap:0; margin:0 0 20px; background:var(--fnd-tint); border-radius:14px; padding:16px 14px }
@@ -1710,7 +1710,7 @@
   .kbm-fnd-bornlink{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; width:100%; text-align:left; font-family:inherit; font-size:13px; color:var(--read); background:var(--card); border:1.5px dashed var(--fnd-line); border-radius:10px; padding:10px 13px; cursor:pointer; line-height:1.4; transition:border-color .15s }
   .kbm-fnd-bornlink:hover{ border-color:var(--fnd) }
   @media(max-width:720px){
-    .kbm-fnd-d-stmt{ font-size:16.5px }
+    .kbm-fnd-d-stmt{ font-size:16px }
     .kbm-fnd-node{ font-size:13.5px }
     .kbm-fnd-lawttl{ font-size:22px }
   }
@@ -1786,7 +1786,7 @@
 .kbm-sig{ margin-top:24px; padding-top:18px; border-top:1px solid var(--line) }
 .kbm-sig-q{ font-family:var(--font-ui); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-bottom:10px }
 .kbm-sig-row{ display:flex; gap:8px }
-.kbm-sig-btn{ flex:1; padding:10px 6px; border-radius:9px; border:1px solid var(--line-2); background:var(--card); color:var(--read); font-family:inherit; font-size:13px; cursor:pointer; transition:border-color .15s, background .15s, color .15s }
+.kbm-sig-btn{ flex:1; padding:11px 6px; border-radius:9px; border:1px solid color-mix(in srgb,var(--accent) 32%,var(--line-2)); background:var(--accent-tint); color:var(--ink); font-family:inherit; font-size:13px; font-weight:600; cursor:pointer; transition:border-color .15s, background .15s, color .15s }
 .kbm-sig-btn:active{ transform:scale(.97) }
 .kbm-sig-on{ border-color:color-mix(in srgb,var(--accent) 55%,var(--line)); background:var(--accent-tint); color:var(--accent); font-weight:600 }
 .kbm-sec-app .kbm-sec-body{ color:var(--read) }
@@ -1885,7 +1885,7 @@
 .kbm-mini-hit{ fill:transparent; cursor:pointer }
 .kbm-mini-node{ cursor:pointer }
 .kbm-mini-center{ cursor:zoom-in }
-.kbm-mini-lbl{ font-size:10px; fill:var(--muted); font-family:var(--font-ui); letter-spacing:.01em; pointer-events:none; transition:fill .15s }
+.kbm-mini-lbl{ font-size:10px; fill:var(--muted); font-family:var(--font-ui); letter-spacing:.01em; pointer-events:auto; cursor:pointer; transition:fill .15s }
 .kbm-mini-node-tense .kbm-mini-lbl{ fill:var(--danger) }
 .kbm-mini-node.mini-foc .kbm-mini-dot{ stroke:var(--accent); stroke-width:2.5 }
 .kbm-mini-node.mini-foc .kbm-mini-lbl{ fill:var(--ink); font-weight:700 }
@@ -2266,6 +2266,24 @@
 /* оставить маршрут */
 .q-abandon{ display:block; width:100%; margin-top:9px; padding:11px; border:none; border-radius:12px; background:transparent; color:var(--muted); font-family:var(--font-ui); font-size:13px; cursor:pointer; }
 .q-abandon:active{ color:var(--danger); }
+
+/* карта связей: прочитанные ярче, непрочитанные тусклее (как в космосе) */
+.kbm-mini-node:not(.kbm-mini-node-vis) .kbm-mini-dot{ opacity:.4 }
+.kbm-mini-node:not(.kbm-mini-node-vis) .kbm-mini-lbl{ opacity:.55 }
+/* кнопка «открыть» в пике карты связей */
+.mp-open-btn{ display:inline-block; margin-left:4px; padding:5px 12px; border:none; border-radius:9px; background:var(--accent); color:var(--text-on-accent); font-family:var(--font-ui); font-size:12.5px; font-weight:650; cursor:pointer; vertical-align:middle; }
+.mp-open-btn:active{ transform:scale(.97); }
+/* оставить маршрут в списке */
+.q-list-abandon{ display:block; width:100%; margin:-2px 0 14px; padding:8px; border:none; background:transparent; color:var(--muted); font-family:var(--font-ui); font-size:12.5px; cursor:pointer; text-align:center; }
+.q-list-abandon:active{ color:var(--danger); }
+
+/* оценка карточки звёздами 1-5 */
+.kbm-stars{ display:flex; align-items:center; gap:3px; margin-bottom:13px; }
+.kbm-star{ background:none; border:none; padding:2px; font-size:25px; line-height:1; color:var(--line-2); cursor:pointer; transition:color .12s, transform .1s; }
+.kbm-star:active{ transform:scale(1.2); }
+.kbm-star-on{ color:var(--accent); }
+.kbm-stars-n{ margin-left:7px; font-family:var(--font-ui); font-size:13px; font-weight:650; color:var(--accent); }
+.kbm-region-back-btm{ margin-top:22px; margin-bottom:6px }
 </style>
 </head>
 <body>
@@ -6147,7 +6165,8 @@
       +(c.falsifier?'<div class="kbm-fnd-sec kbm-fnd-sec-falsi"><div class="kbm-fnd-sec-lbl">Чем опровергается</div><div class="kbm-fnd-sec-txt">'+escapeHtml(c.falsifier)+'</div></div>':'')
       +(ev?'<div class="kbm-fnd-sec"><div class="kbm-fnd-sec-lbl">Свидетельства</div><div class="kbm-fnd-evlist">'+ev+'</div>'
           +'<div class="kbm-fnd-wnote">Вес — сила подсказки, не подтверждение в мире. Структурное наблюдение графа показывает лишь, чего <b>мы</b> ещё не связали, не что связь существует.</div></div>':'')
-      +lawLink;
+      +lawLink
+      +'<button class="kbm-region-back kbm-region-back-btm" data-fnd-back="1">← Все находки</button>';
     kbmWireFindings(body);
   }
   function kbmLawDetail(slug){
@@ -6455,8 +6474,8 @@
       for(var j=0;j<grp.length;j++){ grp[j].ly=Math.max(11,Math.min(H-6,grp[j].ly)); }
     });
     var nodesSvg=labels.map(function(L){ var p=L.p;
-      return '<g class="kbm-mini-node'+(p.d.tense?' kbm-mini-node-tense':'')+'" data-kbm-mini="'+escapeHtml(p.d.other)+'">'
-        +'<circle class="kbm-mini-hit" cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="16"/>'
+      return '<g class="kbm-mini-node'+(p.d.tense?' kbm-mini-node-tense':'')+((state.visited&&state.visited[p.d.other])?' kbm-mini-node-vis':'')+'" data-kbm-mini="'+escapeHtml(p.d.other)+'">'
+        +'<circle class="kbm-mini-hit" cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="22"/>'
         +'<circle class="kbm-mini-dot" cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="5.5" style="fill:'+L.rc+'"/>'
         +'<text class="kbm-mini-lbl" x="'+L.lx.toFixed(1)+'" y="'+L.ly.toFixed(1)+'" text-anchor="'+L.anchor+'">'+escapeHtml(L.txt)+'</text>'
         +'</g>';
@@ -6474,7 +6493,7 @@
   }
   function kbmMiniPeekHint(slug){
     var nd=KBM.bySlug[slug]||{};
-    return 'Окрестность концепта · <b>слева</b> — на чём стоит, <b>справа</b> — к чему ведёт. Коснись звезды, ещё раз — открыть.';
+    return 'Окрестность концепта · <b>слева</b> — на чём стоит, <b>справа</b> — к чему ведёт. Коснись звезды — покажу связь и кнопку открыть.';
   }
   function kbmMiniFocus(otherSlug){
     var peek=document.getElementById('kbmMiniPeek'); if(!peek) return;
@@ -6490,7 +6509,7 @@
     peek.innerHTML='<span class="mp-rel'+(best&&best.tense?' mp-rel-tense':'')+'">'+escapeHtml(best?best.verb:'связано')+'</span> · '
       +'<span class="mp-ttl">'+escapeHtml((nd.title||otherSlug).replace(/\s*\([^)]*[A-Za-z][^)]*\)\s*$/,''))+'</span>'
       +(claim?' — <span class="mp-claim">'+escapeHtml(claim)+'</span>':'')
-      +' <span class="mp-open">↗ ещё раз — открыть</span>';
+      +' <button class="mp-open-btn" data-kbm-mini-open="'+escapeHtml(otherSlug)+'">Открыть ↗</button>';
     var svg=peek.parentNode.querySelector('.kbm-mini-svg');
     if(svg){ var gs=svg.querySelectorAll('[data-kbm-mini]'); for(var k=0;k<gs.length;k++){ gs[k].classList.toggle('mini-foc', gs[k].getAttribute('data-kbm-mini')===otherSlug); } }
     KBM.miniFocus=otherSlug;
@@ -6610,12 +6629,21 @@
   // Анти-метрика: меряем полезность, не вовлечённость. Последний выбор на концепт (append-only в reader_signals).
   function kbmSignalBar(slug){
     var cur=(KBM.signals&&KBM.signals[slug])||'';
+    var rate=(state.rating&&state.rating[slug])||0;
     function btn(k,lbl){ return '<button class="kbm-sig-btn'+(cur===k?' kbm-sig-on':'')+'" data-kbm-sig="'+k+'" data-kbm-sig-slug="'+escapeHtml(slug)+'">'+lbl+'</button>'; }
-    return '<div class="kbm-sig"><div class="kbm-sig-q">\u041f\u0440\u0438\u0433\u043e\u0434\u0438\u043b\u043e\u0441\u044c?</div><div class="kbm-sig-row">'
-      +btn('applicable','\u041f\u0440\u0438\u043c\u0435\u043d\u0438\u043c\u043e')
-      +btn('interesting','\u0418\u043d\u0442\u0435\u0440\u0435\u0441\u043d\u043e')
-      +btn('notfound','\u041d\u0435 \u043d\u0430\u0448\u0451\u043b')
-      +'</div></div>';
+    var stars='';
+    for(var i=1;i<=5;i++){ stars+='<button class="kbm-star'+(i<=rate?' kbm-star-on':'')+'" data-kbm-rate="'+i+'" data-kbm-rate-slug="'+escapeHtml(slug)+'">'+(i<=rate?'★':'☆')+'</button>'; }
+    return '<div class="kbm-sig">'
+      +'<div class="kbm-sig-q">Оцените карточку</div>'
+      +'<div class="kbm-stars">'+stars+(rate?'<span class="kbm-stars-n">'+rate+'/5</span>':'')+'</div>'
+      +'<div class="kbm-sig-row">'+btn('applicable','Применимо')+btn('interesting','Интересно')+btn('notfound','Не зашло')+'</div>'
+      +'</div>';
+  }
+  function kbmRate(slug, n){
+    if(!state.rating) state.rating={}; state.rating[slug]=n; saveState(); if(typeof haptic==='function') haptic(8);
+    try{ if(typeof SB!=='undefined') SB.from('reader_signals').insert({who:kbmGetLiker(), kind:'rate', ref:slug, meta:{stars:n}}).then(function(r){ if(r&&r.error) console.warn('rate:',r.error.message); }); }catch(e){}
+    var bar=document.querySelector('.kbm-sig');
+    if(bar){ var nb=document.createElement('div'); nb.innerHTML=kbmSignalBar(slug); if(nb.firstChild) bar.parentNode.replaceChild(nb.firstChild, bar); }
   }
   function kbmSignal(slug, kind){
     KBM.signals=KBM.signals||{}; KBM.signals[slug]=kind; haptic(8);
@@ -6642,16 +6670,18 @@
       +'</div>'
       +'<button class="kbm-like-btn'+(liked?' kbm-liked':'')+'" id="kbmDetHeart" data-kbm-like="'+escapeHtml(slug)+'">'+(liked?'♥ В избранном':'♡ В избранное')+'</button>'
       +'<div class="kbm-d-claim" id="kbmDetClaim">'+escapeHtml(claim)+'</div>';
-    body.innerHTML='<div id="kbmDetCard">'+hero+kbmStateBanner(node)+'<div id="kbmQuestTracker">'+questTrackerHtml(slug)+'</div>'+'<div class="kbm-sections" id="kbmDetSections"><div class="kbm-detail-pending"></div></div>'+kbmMiniMap(slug)+kbmChapterRefs(slug)+kbmSituationRefs(slug)+'</div>';
+    body.innerHTML='<div id="kbmDetCard">'+hero+kbmStateBanner(node)+'<div id="kbmQuestTracker">'+questTrackerHtml(slug)+'</div>'+'<div class="kbm-sections" id="kbmDetSections"><div class="kbm-detail-pending"></div></div>'+kbmMiniMap(slug)+kbmChapterRefs(slug)+kbmSituationRefs(slug)+'<div id="kbmSigWrap">'+kbmSignalBar(slug)+'</div>'+'<div id="kbmQuestAdvance">'+(typeof questAdvanceHtml==='function'?questAdvanceHtml(slug):'')+'</div>'+'</div>';
     body.scrollTop=0;
     var card=document.getElementById('kbmDetCard');
     if(card && !reduce){ card.classList.remove('kbm-card-fwd','kbm-card-back'); void card.offsetWidth; card.classList.add(dir==='back'?'kbm-card-back':'kbm-card-fwd'); }
     if(!body._kbmwired){ body._kbmwired=true;
       body.addEventListener('click',function(e){
+        var mopen=e.target.closest('[data-kbm-mini-open]'); if(mopen){ kbmDetail(mopen.getAttribute('data-kbm-mini-open')); return; }
         var mini=e.target.closest('[data-kbm-mini]'); if(mini){ var ms=mini.getAttribute('data-kbm-mini'); if(KBM.miniFocus===ms){ KBM.miniFocus=null; kbmDetail(ms); } else { kbmMiniFocus(ms); } return; }
         var exp=e.target.closest('[data-kbm-expand]'); if(exp){ cnFocusSlug(KBM.currentSlug); return; }
         var like=e.target.closest('[data-kbm-like]'); if(like){ kbmLikeToggle(like.getAttribute('data-kbm-like')); return; }
         var sig=e.target.closest('[data-kbm-sig]'); if(sig){ kbmSignal(sig.getAttribute('data-kbm-sig-slug'), sig.getAttribute('data-kbm-sig')); return; }
+        var rt=e.target.closest('[data-kbm-rate]'); if(rt){ kbmRate(rt.getAttribute('data-kbm-rate-slug'), parseInt(rt.getAttribute('data-kbm-rate'),10)); return; }
         var cj=e.target.closest('[data-kbm-conj]'); if(cj){ kbmFindingDetail(cj.getAttribute('data-kbm-conj')); return; }
         var chm=e.target.closest('[data-kbm-chmore]'); if(chm){ var lst=chm.parentNode.querySelector('[data-kbm-chmore-list]'); if(lst){ var hid=lst.classList.toggle('kbm-chrefs-hidden'); chm.innerHTML=hid?('Глубже ▸ ещё упоминания ('+lst.children.length+')'):'Свернуть ▾'; } return; }
         var chap=e.target.closest('[data-kbm-chapter]'); if(chap){ kbmGotoChapter(chap.getAttribute('data-kbm-book'), chap.getAttribute('data-kbm-chapter')); return; }
@@ -6806,7 +6836,7 @@
       +(function(){
         var cs=(KBM.conjByNode&&KBM.conjByNode[slug])||[];
         if(!cs.length) return '';
-        return '<div class="kbm-d-conj"><div class="kbm-d-conj-lbl">⌗ Гипотезы Афины · не проверено</div>'
+        return '<div class="kbm-d-conj"><div class="kbm-d-conj-lbl">⌗ Гипотезы системы · не проверено</div>'
           +cs.map(function(c){
             var other=(c.nodes||[]).filter(function(n){return n.slug!==slug;})[0];
             var k=KBM_CONJ_KIND[c.kind]||{lbl:c.kind};
@@ -6820,9 +6850,7 @@
           +'</div>';
       })()
       // 10. Источник
-      +(src?'<div class="kbm-d-src">'+escapeHtml(src)+'</div>':'')
-      +kbmSignalBar(slug)
-      +'<div id="kbmQuestAdvance">'+(typeof questAdvanceHtml==='function'?questAdvanceHtml(slug):'')+'</div>';
+      +(src?'<div class="kbm-d-src">'+escapeHtml(src)+'</div>':'');
     var claimEl=document.getElementById('kbmDetClaim'); if(claimEl && claim && claimEl.textContent!==claim){ claimEl.textContent=claim; }
     var sectionsEl=document.getElementById('kbmDetSections');
     if(sectionsEl){
@@ -7293,7 +7321,7 @@
             + menuRow('Админка', '', 'admin')
             + '</div>';
     }
-    rows += '<div class="menu-version">Версия 2026-06-22 16:01 · e4f9e1c</div>';
+    rows += '<div class="menu-version">Версия 2026-06-22 17:38 · 179c3ab</div>';
     body.innerHTML = '<div class="menu-v-head"><h2 class="menu-v-title">Меню</h2></div><div class="menu-v-list">'+rows+'</div>';
     Array.prototype.forEach.call(body.querySelectorAll('[data-menu-act]'), function(b){
       b.onclick = function(){ menuAct(b.getAttribute('data-menu-act')); };
@@ -8069,7 +8097,7 @@
     var html='<div class="q-intro">Маршрут — собранный путь по созвездию: одна тема, остановка за остановкой. Веди, не торопись — любую звезду можно открыть и отдельно.</div>';
     if(active.length){
       html+='<div class="q-sec">В пути</div>';
-      active.forEach(function(q){ html+=questCardHtml(q,false); });
+      active.forEach(function(q){ html+=questCardHtml(q,false)+'<button class="q-list-abandon" data-q-abandon="'+escapeHtml(q.key)+'">Оставить маршрут</button>'; });
     }
     html+='<div class="q-sec">'+(active.length?'Начать новый':'Начни отсюда')+'</div>';
     if(!questIsActive(rec.key) || questIsDone(rec)) html+=questCardHtml(rec,true);
@@ -8078,6 +8106,7 @@
     if(more) html+='<div class="q-sec q-sec-sub">Ещё маршруты</div>'+more;
     body.innerHTML=html;
     body.querySelectorAll('[data-quest]').forEach(function(b){ b.onclick=function(){ QUEST.detailKey=b.getAttribute('data-quest'); questDetailRender(); }; });
+    body.querySelectorAll('[data-q-abandon]').forEach(function(b){ b.onclick=function(e){ e.stopPropagation(); questAbandon(b.getAttribute('data-q-abandon')); }; });
   }
 
   function questDetailRender(){
@@ -10056,7 +10085,7 @@
     document.getElementById('scroller').addEventListener('touchend', function(){ setTimeout(onSelect,30); });
 
     // PWA: офлайн-оболочка + индикатор сети
-    if('serviceWorker' in navigator){ try{ navigator.serviceWorker.register('sw.js'); }catch(_){} }
+    if('serviceWorker' in navigator && location.protocol!=='file:' && location.origin!=='null'){ try{ var _swReg=navigator.serviceWorker.register('sw.js'); if(_swReg&&_swReg.catch) _swReg.catch(function(){}); }catch(_){} }
     window.addEventListener('offline', function(){ toast('Офлайн — читаешь сохранённое'); rtSetStatus(false); ONLINE_IDS={}; try{ renderPresence(); }catch(_){} });
     window.addEventListener('online',  function(){ toast('Снова в сети'); rtRetry=0; if(USER){ setupRealtime(); startReaderPresence(); } });
 
