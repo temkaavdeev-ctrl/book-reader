@@ -2137,6 +2137,47 @@
 .menu-set-row{ padding:13px 16px 15px }
 .menu-set-lbl{ display:block; font-size:13.5px; color:var(--muted); margin-bottom:9px }
 .menu-theme-seg{ width:100% }
+
+/* ── Пульт (cockpit): админ-обзор координации ────────────────────────────── */
+#cockpit{ position:fixed; inset:0; z-index:200; background:var(--bg); display:none; flex-direction:column }
+#cockpit.open{ display:flex }
+.cp-head{ display:flex; align-items:center; justify-content:space-between; padding:14px 18px; border-bottom:1px solid var(--line); flex:0 0 auto }
+.cp-head h2{ margin:0; font-size:19px; font-weight:700; letter-spacing:-.02em; color:var(--ink) }
+.cp-head-r{ display:flex; align-items:center; gap:12px }
+.cp-body{ flex:1 1 auto; overflow:auto; padding:18px 16px calc(28px + env(safe-area-inset-bottom,0px)); width:100%; max-width:720px; margin:0 auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain }
+.cp-empty{ color:var(--muted); text-align:center; padding:40px 0; font-size:14px }
+.cp-gov{ display:flex; align-items:center; gap:14px; padding:15px 17px; border-radius:15px; border:1px solid var(--line); background:var(--card); margin-bottom:16px }
+.cp-gov-st{ flex:1; min-width:0 }
+.cp-gov-lbl{ font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted) }
+.cp-gov-val{ font-size:18px; font-weight:750; color:var(--good); margin-top:2px }
+.cp-gov-val.paused{ color:var(--warn) }
+.cp-gov-reason{ font-size:12.5px; color:var(--muted); margin-top:3px }
+.cp-stop{ flex:none; border:none; border-radius:13px; padding:14px 24px; font-size:15px; font-weight:750; cursor:pointer; font-family:inherit; letter-spacing:.02em }
+.cp-stop.go{ background:#c0392b; color:#fff }
+.cp-stop.resume{ background:var(--good); color:#fff }
+.cp-stop:disabled{ opacity:.6 }
+.cp-sec{ margin:0 0 22px }
+.cp-sec-h{ font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin:0 0 10px; font-weight:700 }
+.cp-rank{ display:flex; flex-direction:column; gap:8px }
+.cp-rank-row{ display:flex; align-items:center; gap:13px; padding:12px 15px; border-radius:12px; background:var(--card); border:1px solid var(--line) }
+.cp-rank-row.top{ border-color:color-mix(in srgb,var(--accent) 50%,var(--line)); background:color-mix(in srgb,var(--accent) 6%,var(--card)) }
+.cp-rank-n{ font-size:21px; font-weight:800; color:var(--accent); min-width:30px; text-align:center; font-variant-numeric:tabular-nums }
+.cp-rank-role{ flex:1; font-size:15px; font-weight:650; color:var(--ink); min-width:0 }
+.cp-rank-meta{ font-size:12.5px; color:var(--muted); text-align:right; flex:none }
+.cp-chips{ display:flex; flex-wrap:wrap; gap:8px }
+.cp-chip{ display:inline-flex; align-items:center; gap:6px; padding:7px 12px; border-radius:10px; background:var(--card); border:1px solid var(--line); font-size:13px; color:var(--read) }
+.cp-chip b{ color:var(--ink); font-weight:650 }
+.cp-chip.warn{ border-color:color-mix(in srgb,var(--warn) 42%,var(--line)) }
+.cp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px }
+.cp-stat{ padding:11px 14px; border-radius:11px; background:var(--card); border:1px solid var(--line) }
+.cp-stat-v{ font-size:18px; font-weight:750; color:var(--ink); font-variant-numeric:tabular-nums }
+.cp-stat-v.bad{ color:var(--warn) }
+.cp-stat-k{ font-size:12px; color:var(--muted); margin-top:2px }
+.cp-ev-row{ padding:10px 0; border-top:1px solid var(--line); font-size:13.5px; color:var(--read); line-height:1.45 }
+.cp-ev-row:first-child{ border-top:none; padding-top:0 }
+.cp-ev-meta{ font-size:11.5px; color:var(--muted); margin-bottom:3px }
+.cp-ev-k{ color:var(--accent); font-weight:650 }
+.cp-foot{ text-align:center; color:var(--muted); font-size:11.5px; padding:8px 0 0 }
 </style>
 </head>
 <body>
@@ -2187,6 +2228,7 @@
             <button class="menu-item" id="miMarkers" style="display:none">Редакционные маркеры</button>
             <button class="menu-item" id="btnAdmin" style="display:none">Админка</button>
             <button class="menu-item" id="btnDispatch" style="display:none">Диспетчерская</button>
+            <button class="menu-item" id="btnCockpit" style="display:none">Пульт</button>
           </div>
         </div>
       </div>
@@ -2312,6 +2354,17 @@
     <div class="dsp-tabsel-menu" id="dspTabSelMenu"></div>
   </div>
   <div class="dsp-body" id="dspBody"></div>
+</div>
+
+<div id="cockpit">
+  <div class="cp-head">
+    <h2>Пульт</h2>
+    <div class="cp-head-r">
+      <span class="rt-dot" id="cpRtDot" title="Обновление"></span>
+      <button class="iconbtn" id="cpClose" aria-label="Закрыть">✕</button>
+    </div>
+  </div>
+  <div class="cp-body" id="cpBody"></div>
 </div>
 <div id="kbCard" class="kb-card-ov"></div>
 <div id="atomView" class="atom-view" aria-hidden="true"></div>
@@ -3734,6 +3787,7 @@
     ['editorSep','miDash','miExport','miMarkers'].forEach(function(id){ show(id, mod); });
     show('btnAdmin', isAdmin);
     show('btnDispatch', isAdmin);
+    show('btnCockpit', isAdmin);
     var ptb=document.getElementById('btnPanelTools'); if(ptb) ptb.style.display=(panelTab==='edits' && mod)?'':'none';
     if(!mod && state.markers){ state.markers=false; var mm=document.getElementById('miMarkers'); if(mm) mm.classList.remove('on'); renderChapter(); }
     if(!contrib && panelTab==='edits') setPanelTab('disc');
@@ -7096,12 +7150,13 @@
           + '</div></div></div>';
     if(typeof isAdmin!=='undefined' && isAdmin){
       rows += '<div class="menu-v-sec">Служебное</div><div class="menu-group">'
+            + menuRow('Пульт', '', 'cockpit')
             + menuRow('Диспетчерская', '', 'dispatch')
             + menuRow('Дашборд глав', '', 'dash')
             + menuRow('Админка', '', 'admin')
             + '</div>';
     }
-    rows += '<div class="menu-version">Версия 2026-06-22 12:02 · f930501</div>';
+    rows += '<div class="menu-version">Версия 2026-06-22 12:21 · c29ef58</div>';
     body.innerHTML = '<div class="menu-v-head"><h2 class="menu-v-title">Меню</h2></div><div class="menu-v-list">'+rows+'</div>';
     Array.prototype.forEach.call(body.querySelectorAll('[data-menu-act]'), function(b){
       b.onclick = function(){ menuAct(b.getAttribute('data-menu-act')); };
@@ -7118,6 +7173,7 @@
     if(act==='progress') clickId('btnJourney');
     else if(act==='changelog') clickId('btnBookLog');
     else if(act==='notifs') clickId('btnBell');
+    else if(act==='cockpit') clickId('btnCockpit');
     else if(act==='dispatch') clickId('btnDispatch');
     else if(act==='dash') clickId('miDash');
     else if(act==='admin') clickId('btnAdmin');
@@ -8472,6 +8528,82 @@
     }catch(e){ if(typeof toast==='function') toast('Не удалось: '+(e.message||e)); if(btn){ btn.disabled=false; btn.textContent='Готово · опубликовать →'; } }
   }
 
+  // ── Пульт (cockpit): админ-обзор координации + СТОП. Источник — RPC cockpit(). ──
+  var CP_POLL=null;
+  function openCockpit(){ if(typeof isAdmin==='undefined' || !isAdmin) return; var el=document.getElementById('cockpit'); if(!el) return; el.classList.add('open'); document.body.style.overflow='hidden'; cpRender(); cpPollStart(); }
+  function closeCockpit(){ var el=document.getElementById('cockpit'); if(el) el.classList.remove('open'); document.body.style.overflow=''; cpPollStop(); }
+  function cpPollStart(){ cpPollStop(); CP_POLL=setInterval(function(){ var el=document.getElementById('cockpit'); if(el && el.classList.contains('open')) cpRender(true); else cpPollStop(); }, 30000); }
+  function cpPollStop(){ if(CP_POLL){ clearInterval(CP_POLL); CP_POLL=null; } }
+  function cpAgo(iso){ if(!iso) return ''; var t=new Date(iso).getTime(); if(!t) return ''; var m=Math.round((Date.now()-t)/60000); if(m<1) return 'только что'; if(m<60) return m+' мин назад'; var h=Math.floor(m/60); if(h<24) return h+' ч назад'; return Math.floor(h/24)+' дн назад'; }
+  function cpRoleName(r){ return ({book:'Каллиопа · книга',reader:'Гефест · платформа',research:'Афина · наука',product:'Прометей · продукт',qa:'Фемида · QA',super:'Гермес · координация',intake:'Библиотекарь',analyst:'Метида · аналитик',human:'Человек',spare_2:'Резерв'})[r]||r; }
+  async function cpRender(silent){
+    var body=document.getElementById('cpBody'); if(!body) return;
+    var dot=document.getElementById('cpRtDot'); if(dot) dot.classList.add('on');
+    var r; try{ r=await SB.rpc('cockpit'); if(r.error) throw r.error; }
+    catch(e){ if(!silent) body.innerHTML='<div class="cp-empty">Не удалось загрузить пульт: '+escapeHtml(e.message||String(e))+'</div>'; if(dot) dot.classList.remove('on'); return; }
+    var d=r.data||{};
+    var gov=d.governance||{}, paused=!!gov.autonomy_paused;
+    var html='';
+    html+='<div class="cp-gov"><div class="cp-gov-st"><div class="cp-gov-lbl">Автономия команды</div>'
+      +'<div class="cp-gov-val'+(paused?' paused':'')+'">'+(paused?'НА ПАУЗЕ':'Активна')+'</div>'
+      +(paused&&gov.reason?'<div class="cp-gov-reason">'+escapeHtml(String(gov.reason))+'</div>':'')
+      +'</div><button class="cp-stop '+(paused?'resume':'go')+'" id="cpStopBtn">'+(paused?'▶ ПУСК':'■ СТОП')+'</button></div>';
+    var fires=d.fires_today||0, budget=gov.daily_fire_budget||0, cq=d.content_queue||{};
+    html+='<div class="cp-sec"><div class="cp-grid">'
+      +'<div class="cp-stat"><div class="cp-stat-v'+(budget&&fires>budget?' bad':'')+'">'+fires+' / '+budget+'</div><div class="cp-stat-k">запусков сегодня</div></div>'
+      +'<div class="cp-stat"><div class="cp-stat-v">'+(cq.pending||0)+' · '+(cq.in_flight||0)+'</div><div class="cp-stat-k">контент: ждёт · в работе</div></div>'
+      +'</div></div>';
+    var perm={book:0,reader:0,research:0,product:0};
+    (d.bus_open||[]).forEach(function(b){ if(Object.prototype.hasOwnProperty.call(perm,b.dst)) perm[b.dst]=b.n; });
+    var stale={}; (d.stale_contexts||[]).forEach(function(s){ stale[s.role]=s.age_h; });
+    var alive={}; (d.alive_sessions||[]).forEach(function(s){ alive[s.role]=s.heartbeat_min_ago; });
+    var ranked=Object.keys(perm).sort(function(a,b){ return perm[b]-perm[a]; });
+    html+='<div class="cp-sec"><div class="cp-sec-h">Открыть следующим</div><div class="cp-rank">';
+    ranked.forEach(function(role,i){
+      var meta=[perm[role]+' в шине'];
+      if(stale[role]!=null) meta.push('контекст '+Math.round(stale[role])+'ч');
+      if(alive[role]!=null) meta.push('● живой');
+      html+='<div class="cp-rank-row'+(i===0&&perm[role]>0?' top':'')+'"><div class="cp-rank-n">'+perm[role]+'</div>'
+        +'<div class="cp-rank-role">'+escapeHtml(cpRoleName(role))+'</div><div class="cp-rank-meta">'+meta.join(' · ')+'</div></div>';
+    });
+    html+='</div></div>';
+    var alives=d.alive_sessions||[];
+    if(alives.length){ html+='<div class="cp-sec"><div class="cp-sec-h">Живые сессии</div><div class="cp-chips">';
+      alives.forEach(function(s){ html+='<span class="cp-chip"><b>'+escapeHtml(cpRoleName(s.role))+'</b> · '+Math.round(s.heartbeat_min_ago)+'м'+(s.kind==='human'?' · человек':'')+'</span>'; });
+      html+='</div></div>'; }
+    var stales=d.stale_contexts||[];
+    if(stales.length){ html+='<div class="cp-sec"><div class="cp-sec-h">Дрейф контекстов</div><div class="cp-chips">';
+      stales.forEach(function(s){ html+='<span class="cp-chip warn"><b>'+escapeHtml(cpRoleName(s.role))+'</b> · '+Math.round(s.age_h)+'ч</span>'; });
+      html+='</div></div>'; }
+    var h=d.health||{};
+    function hs(v,k,bad){ return '<div class="cp-stat"><div class="cp-stat-v'+(bad?' bad':'')+'">'+(v||0)+'</div><div class="cp-stat-k">'+k+'</div></div>'; }
+    html+='<div class="cp-sec"><div class="cp-sec-h">Здоровье</div><div class="cp-grid">'
+      +hs(h.pending_candidates,'кандидаты на ревью',(h.pending_candidates||0)>0)
+      +hs(h.cards_thin,'тонкие карточки',(h.cards_thin||0)>0)
+      +hs(h.manuscript_unverified,'рукопись непроверена',(h.manuscript_unverified||0)>0)
+      +hs(h.falsifier_never_checked,'фальсификаторы не проверены',(h.falsifier_never_checked||0)>0)
+      +hs(h.orphan_nodes,'узлы-сироты',(h.orphan_nodes||0)>0)
+      +hs(h.firewall_breaches,'пробои файрвола',(h.firewall_breaches||0)>0)
+      +'</div></div>';
+    var evs=d.recent_events||[];
+    if(evs.length){ html+='<div class="cp-sec"><div class="cp-sec-h">События</div>';
+      evs.forEach(function(e){ html+='<div class="cp-ev-row"><div class="cp-ev-meta"><span class="cp-ev-k">'+escapeHtml(e.kind||'')+'</span> · '+escapeHtml(e.actor||'')+' · '+cpAgo(e.at)+'</div>'+escapeHtml(e.summary||'')+'</div>'; });
+      html+='</div>'; }
+    html+='<div class="cp-foot">обновлено '+cpAgo(d.generated_at)+' · автообновление 30с</div>';
+    body.innerHTML=html;
+    if(dot) setTimeout(function(){ dot.classList.remove('on'); }, 400);
+    var sb=document.getElementById('cpStopBtn'); if(sb) sb.onclick=function(){ cpToggleAutonomy(paused); };
+  }
+  async function cpToggleAutonomy(currentlyPaused){
+    var want=!currentlyPaused, reason='';
+    if(want){ reason=prompt('Причина паузы (в журнал):','ручная пауза'); if(reason===null) return; }
+    var sb=document.getElementById('cpStopBtn'); if(sb){ sb.disabled=true; sb.textContent='…'; }
+    try{ var by=(typeof USER!=='undefined'&&USER&&USER.email)?USER.email:'admin';
+      var r=await SB.rpc('set_autonomy',{p_paused:want,p_reason:reason||'',p_by:by}); if(r.error) throw r.error;
+      if(typeof toast==='function') toast(want?'Команда на паузе':'Команда возобновлена'); cpRender();
+    }catch(e){ if(typeof toast==='function') toast('Не удалось: '+(e.message||e)); cpRender(); }
+  }
+
   // ---------- data ----------
   var ADMIN = 'temka.avdeev@gmail.com';
   var BOOK = [], BYID = {}, DIAGS = {};
@@ -9675,6 +9807,8 @@
 
   (function(){
     var b=document.getElementById('btnDispatch'); if(b) b.onclick=function(){ closeMenus(); openDispatch(); };
+    var bc=document.getElementById('btnCockpit'); if(bc) bc.onclick=function(){ closeMenus(); openCockpit(); };
+    var cc=document.getElementById('cpClose'); if(cc) cc.onclick=closeCockpit;
     var c=document.getElementById('dspClose'); if(c) c.onclick=closeDispatch;
     var fb=document.getElementById('dspFire'); if(fb) fb.onclick=fireRoutine;
     var kc=document.getElementById('kbCard'); if(kc) kc.addEventListener('click', function(e){ if(e.target===kc || (e.target.closest && e.target.closest('[data-act="kb-close"]'))) kbCloseCard(); });
