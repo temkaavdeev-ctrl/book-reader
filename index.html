@@ -1789,11 +1789,12 @@
 #kbmDetBody.kbm-in{ animation:kbmDetIn .42s cubic-bezier(.2,.7,.2,1) both }
 @keyframes kbmDetIn{ from{opacity:0; transform:translateY(12px)} to{opacity:1; transform:none} }
 /* Хром отступает, пока исследуешь */
-  .constel-rec{ position:absolute; top:calc(56px + env(safe-area-inset-top,0px)); left:50%; transform:translateX(-50%); z-index:4; display:flex; align-items:center; gap:9px; max-width:min(420px,86%); padding:9px 15px; background:rgba(26,21,16,.88); -webkit-backdrop-filter:blur(12px) saturate(1.2); backdrop-filter:blur(12px) saturate(1.2); border:1px solid rgba(220,190,150,.3); border-radius:14px; cursor:pointer; box-shadow:0 8px 26px rgba(0,0,0,.4); transition:transform .15s, border-color .15s; animation:constelChipIn .25s cubic-bezier(.34,1.2,.5,1) }
+  .constel-rec{ position:absolute; bottom:calc(24px + env(safe-area-inset-bottom,0px)); left:50%; transform:translateX(-50%); z-index:4; display:flex; align-items:center; gap:9px; max-width:min(420px,86%); padding:9px 15px; background:rgba(26,21,16,.88); -webkit-backdrop-filter:blur(12px) saturate(1.2); backdrop-filter:blur(12px) saturate(1.2); border:1px solid rgba(220,190,150,.3); border-radius:14px; cursor:pointer; box-shadow:0 8px 26px rgba(0,0,0,.4); transition:transform .15s, border-color .15s; animation:constelChipIn .25s cubic-bezier(.34,1.2,.5,1) }
   .constel-rec:active{ transform:translateX(-50%) scale(.97) }
   .cn-rec-lbl{ font-family:var(--font-ui); font-size:10px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:rgba(228,182,118,.95); flex:none }
   .cn-rec-name{ font-size:14px; font-weight:600; color:#efe8db; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
   .cn-rec-arr{ color:rgba(228,182,118,.78); font-size:17px; flex:none; line-height:1 }
+  .cn-rec-x{ flex:none; margin-left:3px; width:23px; height:23px; padding:0; border:none; background:rgba(255,255,255,.08); color:rgba(228,182,118,.72); border-radius:50%; font-size:11px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center }
 .constel-top{ transition:opacity .4s ease }
 #constel.constel-exploring .constel-top{ opacity:0 }
 #constel.constel-exploring .constel-rec{ opacity:0; pointer-events:none; transition:opacity .35s ease }
@@ -6537,7 +6538,7 @@
     if(!isAtomSeries(slug)){ if(el0) el0.innerHTML=''; return; }   // только атомы серии «Ликбез», не любой узел с body
     var md=KBM.atom&&KBM.atom[slug];
     if(md===undefined){
-      try{ var r=await SB.from('kb_nodes').select('body').eq('slug',slug).single(); md=(r&&r.data&&r.data.body)||''; }
+      try{ var r=await SB.rpc('kb_atom_body',{p_slug:slug}); md=(r&&r.data)||''; }
       catch(e){ md=''; }
       KBM.atom=KBM.atom||{}; KBM.atom[slug]=md;
     }
@@ -6555,7 +6556,7 @@
     view.innerHTML='<div class="atom-wrap"><button class="atom-close" data-atom-close="1" aria-label="Закрыть">✕</button><div class="atom-load">Загрузка разбора…</div></div>';
     var md=KBM.atom&&KBM.atom[slug];
     if(md===undefined){
-      try{ var r=await SB.from('kb_nodes').select('body').eq('slug',slug).single(); md=(r&&r.data&&r.data.body)||''; }catch(e){ md=''; }
+      try{ var r=await SB.rpc('kb_atom_body',{p_slug:slug}); md=(r&&r.data)||''; }catch(e){ md=''; }
       KBM.atom=KBM.atom||{}; KBM.atom[slug]=md;
     }
     var wrap=view.querySelector('.atom-wrap');
@@ -7157,12 +7158,14 @@
   }
   async function cnRenderRec(){
     var el=document.getElementById('constelRec'); if(!el) return;
+    if(CN.recClosed){ el.style.display='none'; el.onclick=null; return; }
     var rec=null; try{ rec=await cnRecommend(); }catch(e){}
     if(!rec || !rec.node){ el.style.display='none'; el.onclick=null; return; }
     var lbl=rec.kind==='start'?'\u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u043e\u0442\u0441\u044e\u0434\u0430':'\u041f\u0440\u043e\u0434\u043e\u043b\u0436\u0438\u0442\u044c';
-    el.innerHTML='<span class="cn-rec-lbl">'+lbl+'</span><span class="cn-rec-name">'+escapeHtml(rec.node.title||rec.node.slug)+'</span><span class="cn-rec-arr">\u203a</span>';
+    el.innerHTML='<span class="cn-rec-lbl">'+lbl+'</span><span class="cn-rec-name">'+escapeHtml(rec.node.title||rec.node.slug)+'</span><span class="cn-rec-arr">\u203a</span><button class="cn-rec-x" aria-label="Скрыть">✕</button>';
     el.style.display='';
     el.onclick=function(){ cnToCard(rec.node); };
+    var rx=el.querySelector('.cn-rec-x'); if(rx) rx.onclick=function(e){ e.stopPropagation(); CN.recClosed=true; el.style.display='none'; };
   }
   function cnDraw(){
     var cv=document.getElementById('constelCanvas'); if(!cv) return;
@@ -7399,13 +7402,15 @@
   function cnSelect(n){
     CN.sel=n;
     var chip=document.getElementById('constelChip');
+    var rec=document.getElementById('constelRec');
     if(n){
       cnLegendHide();
       document.getElementById('constelChipKind').textContent=(KBM_KIND[n.n.kind]||n.n.kind)+' · '+(n.deg)+' связей';
       document.getElementById('constelChipTtl').textContent=n.title;
       var go=document.getElementById('constelChipGo'); go.onclick=function(){ cnToCard(n); };
       chip.style.display='';
-    } else { chip.style.display='none'; }
+      if(rec) rec.style.display='none';
+    } else { chip.style.display='none'; cnRenderRec(); }
     cnInvalidate();
   }
   function cnZoomAt(sx,sy,factor){
@@ -7538,11 +7543,14 @@
   }
   function cnReturnFromCard(){
     var km=document.getElementById('kbMode'); if(!km) return;
+    var backSlug=KBM.currentSlug;                                           // node being viewed — restore its selection, not a bare sky
     CN.on=true; CN.target=null; cnKick();                                   // resume the preserved cosmos behind
     var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
     function done(){ km.style.display='none'; km.classList.remove('kbm-over-constel','kbm-sheet-down'); }
     if(reduce){ done(); } else { km.classList.add('kbm-sheet-down'); setTimeout(done, 290); }
     KBM_HISTORY=[]; KBM.currentSlug=null; KBM.fromConstel=false;
+    var rn=backSlug?cnNodeBySlug(backSlug):CN.sel;                          // re-select node + recentre camera (item 4)
+    if(rn){ cnSelect(rn); cnFlyToNode(rn); }
   }
   function cnNodeBySlug(slug){ var a=CN.nodes||[]; for(var i=0;i<a.length;i++){ if(a[i].slug===slug) return a[i]; } return null; }
   function cnFlyToNode(node){
