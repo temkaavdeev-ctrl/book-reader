@@ -2123,6 +2123,7 @@
 .menu-v-s{ display:block; font-size:12.5px; color:var(--muted); margin-top:2px }
 .menu-v-arr{ color:var(--muted); font-size:20px; flex:none; line-height:1 }
 .menu-v-sec{ font-family:var(--font-ui); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin:0 0 7px 16px }
+.menu-version{ text-align:center; color:var(--muted); font-size:12px; letter-spacing:.02em; padding:14px 0 6px }
 
 /* Избранное как чистая вкладка — без поиска/осей */
 .kbm-bare .kbm-search-row, .kbm-bare .kbm-lens{ display:none; }
@@ -7096,6 +7097,7 @@
             + menuRow('Админка', '', 'admin')
             + '</div>';
     }
+    rows += '<div class="menu-version">Версия 2026-06-22 11:07 · 6da8601</div>';
     body.innerHTML = '<div class="menu-v-head"><h2 class="menu-v-title">Меню</h2></div><div class="menu-v-list">'+rows+'</div>';
     Array.prototype.forEach.call(body.querySelectorAll('[data-menu-act]'), function(b){
       b.onclick = function(){ menuAct(b.getAttribute('data-menu-act')); };
