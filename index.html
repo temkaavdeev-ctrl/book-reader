@@ -123,7 +123,7 @@
   #topMeta{font-family:var(--font-ui); font-size:11px; color:var(--muted); white-space:nowrap; flex:1;
     overflow:hidden; text-overflow:ellipsis; padding-left:2px}
   .top-actions{display:flex; align-items:center; gap:3px; margin-left:auto}
-  .iconbtn{height:38px; min-width:38px; padding:0 10px; border-radius:var(--r-m); border:1px solid transparent;
+  .iconbtn{height:42px; min-width:42px; padding:0 11px; border-radius:var(--r-m); border:1px solid transparent;
     background:transparent; color:var(--read); font-size:15px; display:inline-flex; align-items:center;
     justify-content:center; gap:6px; transition:background .12s,color .12s,border-color .12s}
   .iconbtn:hover{background:var(--accent-tint); color:var(--ink)}
@@ -528,7 +528,7 @@
     .top-actions .desktop-only{display:none}
   }
   @media(max-width:560px){
-    .iconbtn{padding:0 8px; min-width:36px; height:36px}
+    .iconbtn{padding:0 10px; min-width:42px; height:42px}
     .top-actions{gap:1px}
     #content{font-size:18.5px}
   }
@@ -541,7 +541,7 @@
      iOS bubble layer — clean SVG icons, sheets, segmented controls
      ============================================================ */
   #topbar{padding:9px 14px; gap:6px}
-  .iconbtn{height:40px; min-width:40px; padding:0 10px; border-radius:14px; color:var(--read); position:relative}
+  .iconbtn{height:44px; min-width:44px; padding:0 11px; border-radius:14px; color:var(--read); position:relative}
   .iconbtn:hover{background:var(--accent-tint); color:var(--ink)}
   .iconbtn.on{background:var(--accent-soft); color:var(--accent); border-color:transparent}
   .iconbtn .i{width:23px; height:23px; stroke:currentColor; stroke-width:1.8; fill:none;
@@ -1433,7 +1433,7 @@
   .kbm-sec-ana{ border-style:dashed }
   .kbm-d-src{ font-size:11px; color:var(--muted); font-family:var(--font-ui); line-height:1.5; margin-top:14px; padding-top:12px; border-top:1px solid var(--line) }
   /* Back button */
-  .kbm-back-btn{ display:flex; align-items:center; gap:5px; padding:4px 10px; border-radius:10px; background:var(--card); border:1px solid var(--line); min-width:0; max-width:160px }
+  .kbm-back-btn{ display:flex; align-items:center; justify-content:center; gap:6px; min-height:44px; padding:9px 14px; border-radius:11px; background:var(--card); border:1px solid var(--line); min-width:0; max-width:170px }
   .kbm-back-arr{ font-size:16px; flex-shrink:0 }
   .kbm-back-lbl{ font-size:12px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:120px; font-family:var(--font-ui) }
 
@@ -1451,7 +1451,7 @@
   .kbm-rel-card-title{ font-size:13px; font-weight:700; color:var(--ink); line-height:1.35; margin-bottom:5px }
   .kbm-rel-card-claim{ font-size:11.5px; color:var(--muted); line-height:1.45 }
   /* Back button with prev-node label */
-  .kbm-back-btn{ display:flex; align-items:center; gap:5px; height:auto; padding:4px 8px; border-radius:10px; background:var(--card); border:1px solid var(--line); min-width:0; max-width:160px }
+  .kbm-back-btn{ display:flex; align-items:center; justify-content:center; gap:6px; min-height:44px; padding:9px 13px; border-radius:11px; background:var(--card); border:1px solid var(--line); min-width:0; max-width:170px }
   .kbm-back-arr{ font-size:16px; flex-shrink:0 }
   .kbm-back-lbl{ font-size:12px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:120px; font-family:var(--font-ui) }
 
@@ -1652,7 +1652,9 @@
   .kbm-fnd-banner{ display:flex; align-items:center; gap:12px; width:100%; text-align:left; background:linear-gradient(135deg, var(--fnd-tint), var(--card)); border:1.5px dashed var(--fnd-line); border-radius:14px; padding:14px 16px; margin-bottom:12px; cursor:pointer; font-family:inherit; transition:border-color .15s,box-shadow .15s }
   .kbm-fnd-banner:hover{ border-color:var(--fnd); box-shadow:0 4px 16px color-mix(in srgb,var(--fnd) 14%,transparent) }
   .kbm-fnd-banner-ic{ font-size:23px; color:var(--fnd); flex-shrink:0; line-height:1 }
-  .kbm-fav-empty{ color:var(--muted); font-size:14px; line-height:1.6; padding:24px 4px; max-width:42ch }
+  .kbm-fav-empty{ color:var(--muted); font-size:14.5px; line-height:1.65; padding:48px 24px; max-width:34ch; margin:0 auto; text-align:center }
+  .kbm-fav-empty-mark{ font-size:42px; line-height:1; color:var(--accent); opacity:.5; margin-bottom:18px }
+  .kbm-fav-empty-tx{ }
   .kbm-fnd-banner-txt{ display:flex; flex-direction:column; gap:2px; flex:1 }
   .kbm-fnd-banner-txt b{ font-size:15.5px; color:var(--ink) }
   .kbm-fnd-banner-txt span{ font-size:12.5px; color:var(--muted) }
@@ -1779,6 +1781,38 @@
   .cn-leg-seg-hint{ font-size:11px; color:#9a8c77; text-align:center; margin-bottom:5px; min-height:14px }
   .cn-leg-ttl2{ margin-top:13px }
   .constel-hint{ position:absolute; left:0; right:0; bottom:calc(28px + env(safe-area-inset-bottom,0px)); text-align:center; color:#c2b39c; font-size:12.5px; letter-spacing:.01em; pointer-events:none; z-index:2; text-shadow:0 1px 4px rgba(0,0,0,.7); transition:opacity .5s; opacity:.92 }
+  .constel-preview-bar{ position:absolute; top:calc(12px + env(safe-area-inset-top,0px)); left:14px; display:flex; align-items:center; gap:11px; z-index:5 }
+  .constel-route-back{ min-height:44px; padding:0 17px; border-radius:22px; border:1px solid rgba(228,182,118,.55); background:rgba(30,24,18,.82); color:#f0d9b8; font-family:var(--font-ui); font-size:15px; font-weight:650; cursor:pointer; backdrop-filter:blur(8px); white-space:nowrap; box-shadow:0 4px 14px rgba(0,0,0,.35) }
+  .constel-route-back:active{ transform:scale(.97) }
+  .constel-route-cap{ color:#d8c6aa; font-size:13.5px; font-weight:600; text-shadow:0 1px 4px rgba(0,0,0,.7); max-width:46vw; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+  /* #2 сплеш-цитата при первом раскрытии космоса */
+  .cn-splash{ position:absolute; inset:0; z-index:8; display:flex; align-items:center; justify-content:center; padding:0 38px; background:radial-gradient(120% 90% at 50% 42%, #16161c 0%, #0d0d0f 62%, #090909 100%) }
+  .cn-splash-stars{ position:absolute; inset:0; pointer-events:none; background-image:
+    radial-gradient(1.5px 1.5px at 22% 28%, rgba(255,250,238,.9), transparent 60%),
+    radial-gradient(1.5px 1.5px at 78% 34%, rgba(228,200,150,.8), transparent 60%),
+    radial-gradient(1.2px 1.2px at 64% 70%, rgba(255,250,238,.7), transparent 60%),
+    radial-gradient(1.4px 1.4px at 34% 74%, rgba(200,210,255,.7), transparent 60%),
+    radial-gradient(1.1px 1.1px at 50% 16%, rgba(255,250,238,.6), transparent 60%),
+    radial-gradient(1.3px 1.3px at 14% 56%, rgba(228,200,150,.6), transparent 60%);
+    animation:cnTwinkle 4.2s ease-in-out infinite alternate }
+  @keyframes cnTwinkle{ from{opacity:.5} to{opacity:1} }
+  .cn-splash-inner{ position:relative; max-width:560px; text-align:center; opacity:0 }
+  .cn-splash.cn-splash-in .cn-splash-inner{ animation:cnQuoteIn 1.15s cubic-bezier(.2,.7,.2,1) both }
+  .cn-splash.cn-splash-out{ animation:cnSplashFade 1.2s cubic-bezier(.55,0,.9,.4) both }
+  @keyframes cnQuoteIn{ 0%{opacity:0; transform:translateY(12px)} 100%{opacity:1; transform:none} }
+  @keyframes cnSplashFade{ 0%{opacity:1} 100%{opacity:0} }
+  .cn-splash-q{ font-family:Georgia,'Times New Roman',serif; font-style:italic; font-size:23px; line-height:1.5; color:#ece0cd; letter-spacing:.01em }
+  .cn-splash-a{ margin-top:18px; font-family:var(--font-ui); font-size:14px; font-weight:600; letter-spacing:.04em; color:rgba(228,182,118,.85) }
+  @media (max-width:380px){ .cn-splash-q{ font-size:21px } }
+  /* #4 тихое цветение вехи: вся дисциплина зажглась */
+  .cn-bloom{ position:absolute; inset:0; z-index:7; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .6s ease; overflow:hidden }
+  .cn-bloom.cn-bloom-on{ opacity:1 }
+  .cn-bloom-glow{ position:absolute; left:50%; top:50%; width:10px; height:10px; border-radius:50%; transform:translate(-50%,-50%); background:radial-gradient(circle, hsla(var(--bloom-hue,40),85%,72%,.5) 0%, hsla(var(--bloom-hue,40),85%,60%,.16) 38%, transparent 70%) }
+  .cn-bloom.cn-bloom-on .cn-bloom-glow{ animation:cnBloomGlow 2.6s cubic-bezier(.2,.7,.2,1) forwards }
+  @keyframes cnBloomGlow{ 0%{ width:10px;height:10px; opacity:0 } 28%{ opacity:1 } 100%{ width:150vmax;height:150vmax; opacity:0 } }
+  .cn-bloom-tx{ position:relative; text-align:center; padding:0 32px; max-width:460px }
+  .cn-bloom-title{ font-family:Georgia,'Times New Roman',serif; font-style:italic; font-size:21px; color:#f0e6d4; line-height:1.42; text-shadow:0 2px 14px rgba(0,0,0,.6) }
+  .cn-bloom-sub{ margin-top:12px; font-family:var(--font-ui); font-size:13.5px; color:rgba(228,200,160,.85); text-shadow:0 1px 8px rgba(0,0,0,.7) }
   .constel-hint-gone{ opacity:0 }
   .constel-chip{ position:absolute; left:50%; transform:translateX(-50%); bottom:calc(20px + var(--tabbar-h) + env(safe-area-inset-bottom,0px)); width:min(360px,calc(100% - 28px)); background:rgba(34,34,40,.9); border:1px solid rgba(220,190,150,.28); border-radius:16px; padding:14px 16px; backdrop-filter:blur(12px); box-shadow:0 12px 40px rgba(0,0,0,.5); z-index:3; animation:constelChipIn .25s cubic-bezier(.34,1.2,.5,1) }
   @keyframes constelChipIn{ from{ opacity:0; transform:translateX(-50%) translateY(8px) } to{ opacity:1; transform:translateX(-50%) translateY(0) } }
@@ -1792,7 +1826,7 @@
 /* ════════ Перенос из KB-эксплорера ════════ */
 /* ── Карточка концепта: поток для чтения вместо «островов» ── */
 #kbmDetBody{ max-width:700px; margin:0 auto }
-.kbm-d-claim{ font-size:18.5px; line-height:1.55; margin:6px 0 20px }
+.kbm-d-claim{ font-family:var(--font-read); font-style:italic; font-size:20.5px; line-height:1.5; color:var(--ink); margin:12px 0 26px; padding:2px 0 2px 16px; border-left:2px solid var(--accent) }
 .kbm-sec{ margin:0; padding:22px 0 0; background:none; border:none; border-top:1px solid var(--line); border-radius:0 }
 .kbm-sec-body{ font-size:calc(15px * var(--kbm-read-scale,1.06)); line-height:1.62 }
 .kbm-sec-lbl{ margin-bottom:8px }
@@ -1859,9 +1893,11 @@
   .cn-rec-lbl{ font-family:var(--font-ui); font-size:10px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:rgba(228,182,118,.95); flex:none }
   .cn-rec-name{ font-size:14px; font-weight:600; color:#efe8db; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
   .cn-rec-arr{ color:rgba(228,182,118,.78); font-size:17px; flex:none; line-height:1 }
-  .cn-rec-x{ flex:none; margin-left:3px; width:23px; height:23px; padding:0; border:none; background:rgba(255,255,255,.08); color:rgba(228,182,118,.72); border-radius:50%; font-size:11px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center }
+  .cn-rec-x{ flex:none; margin-left:3px; width:32px; height:32px; padding:0; border:none; background:rgba(255,255,255,.08); color:rgba(228,182,118,.72); border-radius:50%; font-size:13px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center }
   .cn-rec-tx{ flex:1; min-width:0; display:flex; flex-direction:column; align-items:flex-start; gap:1px }
-  .cn-rec-spark{ flex:none; color:rgba(228,182,118,.95); font-size:15px; line-height:1; align-self:center }
+  .cn-rec-spark{ flex:none; color:rgba(228,182,118,.95); font-size:15px; line-height:1; align-self:center; animation:cnRecPulse 2.6s ease-in-out infinite }
+  @keyframes cnRecPulse{ 0%,100%{ opacity:.6; transform:scale(1) } 50%{ opacity:1; transform:scale(1.18) } }
+  .cn-rec-meta{ font-size:11px; color:rgba(228,200,160,.7); letter-spacing:.01em; margin-top:1px }
   .cn-rec-why{ font-size:11.5px; color:rgba(228,205,170,.72); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100% }
 .constel-top{ transition:opacity .4s ease }
 #constel.constel-exploring .constel-top{ opacity:0 }
@@ -1878,10 +1914,10 @@
 }
 
 /* ── Карточка как лист поверх космоса (без моргания, без перезагрузки) ── */
-#kbMode.kbm-over-constel{ z-index:65; animation:kbmSheetUp .34s cubic-bezier(.2,.7,.2,1) }
-@keyframes kbmSheetUp{ from{ transform:translateY(100%) } to{ transform:none } }
-#kbMode.kbm-sheet-down{ animation:kbmSheetDown .29s cubic-bezier(.4,0,.7,1) forwards }
-@keyframes kbmSheetDown{ from{ transform:none } to{ transform:translateY(100%) } }
+#kbMode.kbm-over-constel{ z-index:65; transform-origin:50% 100%; animation:kbmSheetUp .4s cubic-bezier(.22,.7,.2,1) }
+@keyframes kbmSheetUp{ from{ transform:translateY(100%) scale(.965) } to{ transform:none } }
+#kbMode.kbm-sheet-down{ transform-origin:50% 100%; animation:kbmSheetDown .32s cubic-bezier(.4,0,.7,1) forwards }
+@keyframes kbmSheetDown{ from{ transform:none } to{ transform:translateY(100%) scale(.965) } }
 @media (prefers-reduced-motion:reduce){ #kbMode.kbm-over-constel,#kbMode.kbm-sheet-down{ animation:none } }
 
 /* ── Card navigation: directional slide + streaming detail (smooth forward/back) ── */
@@ -2088,7 +2124,7 @@
 .atom-view.open{ display:block; animation:atomIn .32s cubic-bezier(.22,.61,.36,1) both }
 @keyframes atomIn{ from{ opacity:0; transform:translateY(10px) } to{ opacity:1; transform:none } }
 .atom-wrap{ max-width:680px; margin:0 auto; padding:54px 22px 80px; position:relative }
-.atom-close{ position:fixed; top:14px; right:14px; z-index:2; width:38px; height:38px; border-radius:50%; border:1px solid var(--line); background:var(--card); color:var(--muted); font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center }
+.atom-close{ position:fixed; top:14px; right:14px; z-index:2; width:44px; height:44px; border-radius:50%; border:1px solid var(--line); background:var(--card); color:var(--muted); font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center }
 .atom-close:hover{ color:var(--ink) }
 .atom-load,.atom-empty{ color:var(--muted); padding:40px 4px; font-size:15px }
 .atom-icon{ width:46px; height:46px; color:var(--accent); margin:0 0 18px }
@@ -2280,7 +2316,7 @@
 .q-prog-bar{ flex:1; height:5px; border-radius:3px; background:var(--line); overflow:hidden; }
 .q-prog-bar i{ display:block; height:100%; background:var(--accent); border-radius:3px; }
 .q-prog-n{ font-family:var(--font-ui); font-size:11.5px; color:var(--muted); flex-shrink:0; }
-.q-back{ background:none; border:none; color:var(--accent); font-family:var(--font-ui); font-size:14px; font-weight:600; cursor:pointer; padding:4px 0; margin-bottom:10px; }
+.q-back{ background:none; border:none; color:var(--accent); font-family:var(--font-ui); font-size:15px; font-weight:600; cursor:pointer; min-height:40px; padding:8px 2px; margin-bottom:6px; }
 .q-d-ttl{ font-family:var(--font-ui); font-size:23px; font-weight:700; color:var(--ink); letter-spacing:-.02em; margin-bottom:8px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; line-height:1.15; }
 .q-d-prom{ font-size:16px; line-height:1.5; color:var(--ink); margin-bottom:10px; }
 .q-d-desc{ font-size:14.5px; line-height:1.6; color:var(--read); margin-bottom:14px; }
@@ -2305,6 +2341,10 @@
 .q-cta:active{ transform:scale(.99); }
 .q-cta-ghost{ background:transparent; border:1px solid var(--line-2); color:var(--ink); }
 .constel-routes{ height:42px; padding:0 15px; border-radius:21px; border:1px solid rgba(220,179,107,.5); background:rgba(120,90,40,.32); color:#e8c079; font-family:var(--font-ui); font-size:14px; font-weight:650; cursor:pointer; backdrop-filter:blur(8px); white-space:nowrap; flex-shrink:0; transition:background .15s; }
+.constel-routes-fab{ position:absolute; right:14px; bottom:calc(var(--tabbar-h) + env(safe-area-inset-bottom,0px) + 82px); z-index:5; display:flex; align-items:center; gap:7px; min-height:46px; padding:0 18px; border-radius:23px; border:1px solid rgba(228,182,118,.5); background:rgba(30,24,18,.82); color:#f0d9b8; font-family:var(--font-ui); font-size:15px; font-weight:650; cursor:pointer; -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); box-shadow:0 6px 20px rgba(0,0,0,.4); transition:opacity .3s, transform .12s }
+.constel-routes-fab:active{ transform:scale(.96) }
+.constel-routes-fab .crf-ic{ color:rgba(228,182,118,.95); font-size:13px; line-height:1 }
+#constel.constel-exploring .constel-routes-fab{ opacity:0; pointer-events:none }
 .constel-routes:hover{ background:rgba(120,90,40,.5); }
 
 /* мини-трекер маршрута на карточке остановки */
@@ -2369,7 +2409,7 @@
 .kbm-fwd-btm{ margin:0 0 0 auto }   /* «Вперёд» прижата к правому краю ряда */
 /* #0 размер чтения — компактный A−/A+ сверху карточки */
 .kbm-readbar{ display:flex; justify-content:flex-end; gap:6px; margin:-2px 0 8px }
-.kbm-fbtn{ min-width:34px; height:28px; padding:0 9px; border:1px solid var(--line); background:var(--card); color:var(--muted); border-radius:9px; font-family:var(--font-ui); font-size:13px; font-weight:650; cursor:pointer; line-height:1 }
+.kbm-fbtn{ min-width:44px; height:38px; padding:0 12px; border:1px solid var(--line); background:var(--card); color:var(--muted); border-radius:9px; font-family:var(--font-ui); font-size:13px; font-weight:650; cursor:pointer; line-height:1 }
 .kbm-fbtn:active{ transform:scale(.94) }
 /* #3a сердечко в нижнем ряду навигации */
 .kbm-fav-btm{ font-size:16px; line-height:1; color:var(--muted); padding:4px 11px; min-width:0 }
@@ -2732,12 +2772,16 @@
   <canvas id="constelCanvas"></canvas>
   <div class="constel-top">
     <div class="constel-ttl">Созвездие<span id="constelCount"></span></div>
-    <button class="constel-routes" id="constelRoutesBtn">Маршруты</button>
     <button class="constel-ctl" id="constelDepthBtn" title="Глубина — взвешенные узлы">◐</button>
     <button class="constel-ctl" id="constelLegendBtn" title="Цвета дисциплин">◉</button>
     <button class="constel-ctl" id="constelReset" title="Показать всё">⊙</button>
   </div>
+  <div class="constel-preview-bar" id="constelPreviewBar" style="display:none">
+    <button class="constel-route-back" id="constelRouteBack">‹ К маршрутам</button>
+    <span class="constel-route-cap" id="constelRouteCap"></span>
+  </div>
   <div class="constel-hint" id="constelHint">одним пальцем — двигать · щипком — приблизить · двумя пальцами — повернуть</div>
+  <button class="constel-routes-fab" id="constelRoutesBtn"><span class="crf-ic">✦</span>Маршруты</button>
   <div class="constel-chip" id="constelChip" style="display:none">
     <div class="constel-chip-kind" id="constelChipKind"></div>
     <div class="constel-chip-ttl" id="constelChipTtl"></div>
@@ -2746,6 +2790,20 @@
   </div>
   <div id="constelLegend" style="display:none"></div>
   <div class="constel-rec" id="constelRec" style="display:none"></div>
+  <div class="cn-splash" id="cnSplash" style="display:none">
+    <div class="cn-splash-stars" aria-hidden="true"></div>
+    <div class="cn-splash-inner">
+      <div class="cn-splash-q" id="cnSplashQ"></div>
+      <div class="cn-splash-a" id="cnSplashA"></div>
+    </div>
+  </div>
+  <div class="cn-bloom" id="cnBloom" style="display:none">
+    <div class="cn-bloom-glow" aria-hidden="true"></div>
+    <div class="cn-bloom-tx">
+      <div class="cn-bloom-title" id="cnBloomTitle"></div>
+      <div class="cn-bloom-sub" id="cnBloomSub"></div>
+    </div>
+  </div>
 </div>
 <div id="shelf" style="display:none">
   <div class="shelf-inner">
@@ -5913,7 +5971,7 @@
       ? ((favMechs.length&&favTools.length)
           ? '<div class="kbm-fav-sec"><div class="kbm-fav-sec-h">Механизмы</div><div class="kbm-concept-list">'+favMechs.map(kbmConceptRow).join('')+'</div></div><div class="kbm-fav-sec"><div class="kbm-fav-sec-h">Инструменты</div><div class="kbm-concept-list">'+favTools.map(kbmConceptRow).join('')+'</div></div>'
           : '<div class="kbm-concept-list">'+liked.map(kbmConceptRow).join('')+'</div>')
-      : '<div class="kbm-fav-empty">\u0417\u0434\u0435\u0441\u044c \u0431\u0443\u0434\u0443\u0442 \u043a\u043e\u043d\u0446\u0435\u043f\u0442\u044b, \u043a\u043e\u0442\u043e\u0440\u044b\u0435 \u0442\u044b \u043e\u0442\u043c\u0435\u0442\u0438\u043b \u2665. \u041e\u0442\u043a\u0440\u043e\u0439 \u043b\u044e\u0431\u043e\u0439 \u0438 \u043d\u0430\u0436\u043c\u0438 \u00ab\u0412 \u0438\u0437\u0431\u0440\u0430\u043d\u043d\u043e\u0435\u00bb \u2014 \u043e\u043d \u043f\u043e\u044f\u0432\u0438\u0442\u0441\u044f \u0442\u0443\u0442.</div>');
+      : '<div class="kbm-fav-empty"><div class="kbm-fav-empty-mark">\u2661</div><div class="kbm-fav-empty-tx">Здесь соберётся то, что отозвалось. Открой любой концепт и отметь \u2665 — он останется тут, как горсть любимых звёзд.</div></div>');
     if(!body._wiredFav){ body._wiredFav=true;
       body.addEventListener('click',function(ev){
         var lk=ev.target.closest('[data-kbm-like]'); if(lk){ ev.stopPropagation(); kbmLikeToggle(lk.getAttribute('data-kbm-like')); kbmRenderFavorites(); return; }
@@ -7562,7 +7620,7 @@
             + menuRow('Админка', '', 'admin')
             + '</div>';
     }
-    rows += '<div class="menu-version">Версия 2026-06-22 21:52 · 3e09dea</div>';
+    rows += '<div class="menu-version">Версия 2026-06-22 22:46 · cb69c2a</div>';
     body.innerHTML = '<div class="menu-v-head"><h2 class="menu-v-title">Меню</h2></div><div class="menu-v-list">'+rows+'</div>';
     Array.prototype.forEach.call(body.querySelectorAll('[data-menu-act]'), function(b){
       b.onclick = function(){ menuAct(b.getAttribute('data-menu-act')); };
@@ -7736,6 +7794,26 @@
   // Рекомендация-первая-точка (как Прометей): ТОЛЬКО полные узлы (не stub/draft — уважать линзу).
   // Новичок → несущий полный узел (центральный). Возврат → kb_find_similar (семантика) от последнего посещённого; фолбэк — графовый сосед.
   function cnRecIsFull(n){ var st=(typeof kbmReadyState==='function'?(kbmReadyState(n)||{}).state:'ready'); return st!=='frontier' && st!=='hidden'; }
+  function cnSerendipity(anchor, vis){
+    var edges=KBM.edges||[], n1={};
+    edges.forEach(function(e){ if(e.src===anchor) n1[e.dst]=1; else if(e.dst===anchor) n1[e.src]=1; });
+    var aNode=KBM.bySlug[anchor], aDisc=(aNode?cnDiscOf(aNode):null), cand=[];
+    edges.forEach(function(e){
+      var via=null, far=null;
+      if(n1[e.src] && !n1[e.dst] && e.dst!==anchor){ via=e.src; far=e.dst; }
+      else if(n1[e.dst] && !n1[e.src] && e.src!==anchor){ via=e.dst; far=e.src; }
+      if(!far || vis(far)) return;
+      var fn=KBM.bySlug[far]; if(!fn || fn.node_layer==='scenario' || !cnRecIsFull(fn)) return;
+      var fDisc=cnDiscOf(fn), cross=(aDisc!=null && fDisc!=null && fDisc!==aDisc);
+      cand.push({node:fn, via:via, cross:cross, deg:fn.degree||0});
+    });
+    if(!cand.length) return null;
+    cand.sort(function(A,B){ if(A.cross!==B.cross) return A.cross?-1:1; return B.deg-A.deg; });
+    var pick=cand[((KBM._serenRot|0)>>2) % Math.min(cand.length,5)]; if(!pick) return null;
+    var vN=KBM.bySlug[pick.via], vT=vN?(vN.title||pick.via):'';
+    var vS=vT.length>20?vT.slice(0,18)+'\u2026':vT;
+    return {node:pick.node, reason:vS?('Перекличка через «'+vS+'»'):'Неожиданная перекличка'};
+  }
   async function cnRecommend(){
     var vd=state.visited||{}, nodes=(KBM.nodes||[]);
     if(!nodes.length || typeof kbmIsCore!=='function' || typeof kbmRank!=='function') return null;
@@ -7752,6 +7830,12 @@
     var anchorNode=KBM.bySlug && KBM.bySlug[anchor];
     var anchorTitle=anchorNode?(anchorNode.title||anchor):'';
     var anchorShort=anchorTitle.length>22?anchorTitle.slice(0,20)+'\u2026':anchorTitle;
+    // серендипность: иногда вместо ближайшего — настоящая, но неочевидная перекличка (через общий концепт, другая дисциплина)
+    KBM._serenRot=((KBM._serenRot|0)+1);
+    if(visCount>=4 && (KBM._serenRot%4===0)){
+      var _rh=cnSerendipity(anchor, vis);
+      if(_rh) return {node:_rh.node, kind:'continue', reason:_rh.reason};
+    }
     // 1) семантика: kb_find_similar от последнего узла → первый непосещённый полный концепт (НЕ kb_search — он битый)
     if(anchorNode && typeof SB!=='undefined'){
       try{
@@ -7779,14 +7863,19 @@
     if(unv.length) return {node:unv[0], kind:'continue', reason:'Несущий концепт, ещё не пройден'};
     return null;
   }
+  function cnPluralLink(n){ var d=n%10, h=n%100; if(d===1&&h!==11) return 'связь'; if(d>=2&&d<=4&&(h<10||h>=20)) return 'связи'; return 'связей'; }
   async function cnRenderRec(){
     var el=document.getElementById('constelRec'); if(!el) return;
     if(CN.recClosed){ el.style.display='none'; el.onclick=null; return; }
     var rec=null; try{ rec=await cnRecommend(); }catch(e){}
     if(!rec || !rec.node){ el.style.display='none'; el.onclick=null; return; }
     var lbl=rec.kind==='start'?'Начать путешествие':'Продолжить путешествие';
+    var kindLbl=(rec.node.kind && typeof KBM_KIND!=='undefined' && KBM_KIND[rec.node.kind])?String(KBM_KIND[rec.node.kind]).toLowerCase():'';
+    var degN=rec.node.degree||0;
+    var ctx=[]; if(kindLbl) ctx.push(kindLbl); if(degN) ctx.push(degN+' '+cnPluralLink(degN));
+    var ctxLine=ctx.length?'<span class="cn-rec-meta">'+escapeHtml(ctx.join(' · '))+'</span>':'';
     var why=rec.reason?'<span class="cn-rec-why">'+escapeHtml(rec.reason)+'</span>':'';
-    el.innerHTML='<span class="cn-rec-spark">\u2726</span><span class="cn-rec-tx"><span class="cn-rec-lbl">'+lbl+'</span><span class="cn-rec-name">'+escapeHtml(rec.node.title||rec.node.slug)+'</span>'+why+'</span><span class="cn-rec-arr">\u203a</span><button class="cn-rec-x" aria-label="Скрыть">✕</button>';
+    el.innerHTML='<span class="cn-rec-spark">\u2726</span><span class="cn-rec-tx"><span class="cn-rec-lbl">'+lbl+'</span><span class="cn-rec-name">'+escapeHtml(rec.node.title||rec.node.slug)+'</span>'+ctxLine+why+'</span><span class="cn-rec-arr">\u203a</span><button class="cn-rec-x" aria-label="Скрыть">✕</button>';
     el.style.display='';
     el.onclick=function(){ cnToCard(rec.node); };
     var rx=el.querySelector('.cn-rec-x'); if(rx) rx.onclick=function(e){ e.stopPropagation(); CN.recClosed=true; el.style.display='none'; };
@@ -7801,6 +7890,43 @@
     if(typeof questIsActive==='function' && !questIsActive(q.key)) return null;   // подсвечиваем только реально активный
     var set={}; for(var i=0;i<q.slugs.length;i++) set[q.slugs[i]]=1;
     return {set:set, order:q.slugs};
+  }
+  // #4 кадрировать камеру на весь маршрут (а не лететь к первому узлу) — маршрут в рамке, не «скролл»
+  function cnFitToRoute(order){
+    var xs=[], ys=[], nn;
+    for(var i=0;i<order.length;i++){ nn=cnNodeBySlug(order[i]); if(nn){ xs.push(nn.x); ys.push(nn.y); } }
+    if(!xs.length) return;
+    var minx=Math.min.apply(null,xs), maxx=Math.max.apply(null,xs), miny=Math.min.apply(null,ys), maxy=Math.max.apply(null,ys);
+    var cx=(minx+maxx)/2, cy=(miny+maxy)/2;
+    var spanx=Math.max(60,maxx-minx), spany=Math.max(60,maxy-miny);
+    var s=Math.min((CN.w-CN.w*0.36)/spanx, (CN.h-CN.h*0.44)/spany);
+    s=Math.max(0.4, Math.min(2.0, s));
+    CN.target={ x: CN.w/2 - cx*s, y: CN.h/2 - cy*s, s: s };
+    cnKick();
+  }
+  function cnUpdatePreviewBar(){
+    var bar=document.getElementById('constelPreviewBar'); if(!bar) return;
+    var fab=document.getElementById('constelRoutesBtn');
+    if(CN.preview){ bar.style.display='flex'; if(fab) fab.style.display='none'; var cap=document.getElementById('constelRouteCap'); if(cap) cap.textContent=CN.preview.title?('Маршрут «'+CN.preview.title+'»'):''; }
+    else { bar.style.display='none'; if(fab) fab.style.display=''; }
+  }
+  function cnPreviewEnter(key){
+    var q=(typeof questBy==='function')?questBy(key):null; if(!q||!(q.slugs||[]).length) return;
+    var set={}; for(var i=0;i<q.slugs.length;i++) set[q.slugs[i]]=1;
+    CN._prevDepth=CN.depth; CN.depth=false;                 // плоский вид — чистая трасса
+    CN.preview={set:set, order:q.slugs, key:key, title:q.title||''};
+    CN.previewT=0; CN._pvStart=null; CN.sel=null;
+    cnFitToRoute(q.slugs); cnUpdatePreviewBar(); cnKick();
+  }
+  function cnPreviewClear(){
+    if(CN.preview==null && CN._prevDepth==null) return;
+    CN.preview=null; CN.previewT=null; CN._pvStart=null;
+    if(CN._prevDepth!=null){ CN.depth=CN._prevDepth; CN._prevDepth=null; }
+    cnUpdatePreviewBar();
+  }
+  function cnPreviewExit(){
+    var key=CN.preview&&CN.preview.key; cnPreviewClear(); cnKick();
+    if(typeof openQuests==='function'){ if(typeof QUEST!=='undefined' && key) QUEST.detailKey=key; openQuests(); }
   }
   function cnDraw(){
     var cv=document.getElementById('constelCanvas'); if(!cv) return;
@@ -7838,9 +7964,11 @@
 
     // ── маршрут: подсветка активного маршрута на небе (путь + кольца стопов) ──
     var route=cnActiveRoute();
+    var pv = CN.preview ? (CN.previewT==null?1:CN.previewT) : 0;   // #4 раскрытие предпросмотра 0..1
+    var rrev = CN.preview ? pv : 1;                                 // трасса маршрута: предпросмотр 0..1, активный маршрут всегда 1
     // ── edges: alpha ramps continuously with zoom (far→none, mid→faint, near→clear) ──
     var eBase=Math.max(0, Math.min(1,(s-0.22)*0.9));
-    if(eBase>0.012 || sel){
+    if((eBase>0.012 || sel) && !CN.preview){
       g.globalCompositeOperation='lighter';
       for(var ei=0; ei<CN.edges.length; ei++){
         var e=CN.edges[ei];
@@ -7861,7 +7989,7 @@
     }
 
     // ── пройденная сеть: связи между ПРОЧИТАННЫМИ звёздами светятся тёплым — личная карта проявляется по мере чтения ──
-    if(state.visited){
+    if(state.visited && !CN.preview){
       g.globalCompositeOperation='lighter';
       var tw=Math.max(0.14,Math.min(0.5,(s-0.1)*0.55));
       for(var twi=0; twi<CN.edges.length; twi++){
@@ -7876,9 +8004,37 @@
       g.globalCompositeOperation='source-over';
     }
 
+    // ── пройденные маршруты: постоянные тёплые трассы с именами — личное небо хранит твои пути ──
+    if(!CN.preview && typeof QUEST!=='undefined' && QUEST.list && typeof questIsDone==='function'){
+      var doneR=[];
+      for(var dq=0; dq<QUEST.list.length; dq++){ var Q=QUEST.list[dq];
+        if(Q && (Q.slugs||[]).length>1 && questIsDone(Q) && (typeof questIsActive!=='function' || !questIsActive(Q.key))) doneR.push(Q);
+      }
+      if(doneR.length){
+        g.save();
+        for(var dri=0; dri<doneR.length; dri++){
+          var DR=doneR[dri], sg=DR.slugs, started=false, cxs=0, cys=0, cnt=0;
+          g.globalCompositeOperation='lighter';
+          g.strokeStyle='rgba(214,170,108,0.30)'; g.lineWidth=Math.max(0.8,1.2*s); g.setLineDash([]);
+          g.beginPath();
+          for(var k=0;k<sg.length;k++){ var dn=cnNodeBySlug(sg[k]); if(!dn) continue; if(!started){ g.moveTo(dn._sx,dn._sy); started=true; } else g.lineTo(dn._sx,dn._sy); cxs+=dn._sx; cys+=dn._sy; cnt++; }
+          if(started) g.stroke();
+          if(cnt && DR.title && s>0.34){     // имя созвездия у центроида (тонко, только при достаточном зуме)
+            g.globalCompositeOperation='source-over';
+            var lx=cxs/cnt, ly=cys/cnt;
+            g.font='600 11px Inter, sans-serif'; g.textAlign='center'; g.textBaseline='middle';
+            g.lineWidth=3; g.lineJoin='round'; g.strokeStyle='rgba(6,4,2,0.55)'; g.strokeText(DR.title, lx, ly);
+            g.fillStyle='rgba(226,188,132,0.62)'; g.fillText(DR.title, lx, ly);
+          }
+        }
+        g.globalCompositeOperation='source-over'; g.restore();
+      }
+    }
+
     // ── маршрут: линия пути под звёздами — пройденные сегменты сплошные, предстоящие пунктир ──
     if(route && route.order.length>1){
       g.save();
+      g.globalAlpha=rrev;
       for(var rri=0; rri<route.order.length-1; rri++){
         var rna=cnNodeBySlug(route.order[rri]), rnb=cnNodeBySlug(route.order[rri+1]);
         if(!rna||!rnb) continue;
@@ -7902,6 +8058,10 @@
       if(CN.depth){ if(n.weighted) vis=1; else vis*=0.12; }
       if(CN.layer!=='all' && n.cls!==CN.layer) vis*=0.14;   // фильтр слоёв: неподходящий класс гаснет
       if(route && route.set[n.slug] && vis<0.82) vis=0.82;   // стопы активного маршрута держим видимыми
+      if(CN.preview){                                         // #4 предпросмотр: трасса раскрывается из нуля, остальное гаснет почти в ноль
+        if(route && route.set[n.slug]) vis=Math.max(vis,0.9)*pv;
+        else if(n!==sel) vis*=(1-0.94*pv);
+      }
       if(vis<=0.012 && n!==sel) continue;
       var p=[n._sx,n._sy];
       if(p[0]<-40||p[0]>CN.w+40||p[1]<-40||p[1]>CN.h+40) continue;     // cull offscreen
@@ -7970,6 +8130,12 @@
         n.x=n._ax+(n._tx-n._ax)*e; n.y=n._ay+(n._ty-n._ay)*e;
       }
       if(gt>=1){ for(var j=0;j<CN.nodes.length;j++){ var m=CN.nodes[j]; m.x=m._tx; m.y=m._ty; } CN.assembling=false; }
+    }
+    // #4 раскрытие предпросмотра маршрута из нуля (easeOutCubic)
+    if(CN.preview && (CN.previewT==null || CN.previewT<1)){
+      if(CN._pvStart==null) CN._pvStart=now;
+      var pvt=Math.min(1,(now-CN._pvStart)/700); CN.previewT=1-Math.pow(1-pvt,3);
+      if(pvt<1) cnKick();
     }
     // camera easing toward target (smooth fly-to)
     if(CN.target){
@@ -8203,6 +8369,92 @@
       cnZoomAt(e.clientX-rect.left, e.clientY-rect.top, e.deltaY<0?1.12:0.89);
     },{passive:false});
   }
+  var CN_SPLASH_QUOTES=[
+    {t:'Мы сделаны из звёздного вещества.', a:'Карл Саган'},
+    {t:'Где-то нечто невероятное ждёт, чтобы быть познанным.', a:'Карл Саган'},
+    {t:'Мы — способ, которым космос познаёт самого себя.', a:'Карл Саган'},
+    {t:'Чтобы испечь яблочный пирог с нуля, нужно сперва создать Вселенную.', a:'Карл Саган'},
+    {t:'Две вещи наполняют душу: звёздное небо надо мной и нравственный закон во мне.', a:'Иммануил Кант'},
+    {t:'Самое прекрасное, что мы можем пережить, — это тайна.', a:'Альберт Эйнштейн'},
+    {t:'Воображение важнее знания.', a:'Альберт Эйнштейн'},
+    {t:'Смотрите на звёзды, а не под ноги.', a:'Стивен Хокинг'},
+    {t:'Земля — колыбель человечества, но нельзя вечно жить в колыбели.', a:'Константин Циолковский'},
+    {t:'Невозможное сегодня станет возможным завтра.', a:'Константин Циолковский'},
+    {t:'Сначала неизбежно идут мысль, фантазия, сказка — за ними научный расчёт.', a:'Константин Циолковский'},
+    {t:'Все мы в сточной канаве, но некоторые смотрят на звёзды.', a:'Оскар Уайльд'},
+    {t:'Совершенство достигается не тогда, когда нечего добавить, а когда нечего отнять.', a:'Антуан де Сент-Экзюпери'},
+    {t:'Зорко одно лишь сердце. Самого главного глазами не увидишь.', a:'Антуан де Сент-Экзюпери'},
+    {t:'Если хочешь построить корабль — пробуди в людях тоску по бескрайнему морю.', a:'Антуан де Сент-Экзюпери'},
+    {t:'Будущее не нужно предвидеть — его нужно делать.', a:'Антуан де Сент-Экзюпери'},
+    {t:'Дизайн — это не только то, как вещь выглядит, но и как она работает.', a:'Стив Джобс'},
+    {t:'Хорошего дизайна — как можно меньше.', a:'Дитер Рамс'},
+    {t:'Природа любит скрываться.', a:'Гераклит'},
+    {t:'Удивление — начало философии.', a:'Аристотель'},
+    {t:'Если бы звёзды загорались раз в тысячу лет — как люди верили бы и хранили память.', a:'Ралф Уолдо Эмерсон'},
+    {t:'Я часто думаю, что ночь живее и богаче красками, чем день.', a:'Винсент ван Гог'},
+    {t:'Почему светящиеся точки неба должны быть недоступнее тёмных точек на карте?', a:'Винсент ван Гог'},
+    {t:'Вера — это птица, что чувствует свет, когда заря ещё темна.', a:'Рабиндранат Тагор'},
+    {t:'Не молот, а танец воды доводит гальку до совершенства.', a:'Рабиндранат Тагор'},
+    {t:'Я верю, что листок травы не меньше, чем труд звёзд.', a:'Уолт Уитмен'},
+    {t:'Вечное молчание этих бесконечных пространств пугает меня.', a:'Блез Паскаль'},
+    {t:'Смотри на бег звёзд, словно вращаешься вместе с ними.', a:'Марк Аврелий'},
+    {t:'Вселенная — превращение; жизнь — то, чем мы её считаем.', a:'Марк Аврелий'},
+    {t:'Не потому что трудно — мы не дерзаем; а потому что не дерзаем — становится трудно.', a:'Сенека'},
+    {t:'Математика — это язык, на котором написана Вселенная.', a:'Галилео Галилей'},
+    {t:'Я лишь мыслил мысли Бога вслед за Ним.', a:'Иоганн Кеплер'},
+    {t:'Я был мальчиком на берегу, а великий океан истины лежал предо мной неоткрытым.', a:'Исаак Ньютон'},
+    {t:'Вооружённый пятью чувствами, человек исследует Вселенную и зовёт это приключение наукой.', a:'Эдвин Хаббл'},
+    {t:'Лишь тот день, к которому мы пробудились, — настоящий рассвет.', a:'Генри Дэвид Торо'},
+    {t:'Чтобы создать прерию, нужны клевер, одна пчела — и мечта.', a:'Эмили Дикинсон'},
+    {t:'Ты не капля в океане. Ты — океан в одной капле.', a:'Руми'},
+    {t:'Путь в тысячу ли начинается с одного шага.', a:'Лао-цзы'}
+  ];
+  function cnSplashShow(onReveal){
+    var sp=document.getElementById('cnSplash');
+    if(!sp || !CN_SPLASH_QUOTES.length){ if(onReveal) onReveal(); return; }
+    var q=CN_SPLASH_QUOTES[Math.floor(Math.random()*CN_SPLASH_QUOTES.length)];
+    var qe=document.getElementById('cnSplashQ'), ae=document.getElementById('cnSplashA');
+    if(qe) qe.textContent='«'+q.t+'»'; if(ae) ae.textContent=q.a?('— '+q.a):'';
+    sp.style.display='flex';
+    sp.classList.remove('cn-splash-out'); void sp.offsetWidth; sp.classList.add('cn-splash-in');
+    var done=false;
+    function reveal(){ if(done) return; done=true; sp.classList.remove('cn-splash-in'); sp.classList.add('cn-splash-out'); if(onReveal) onReveal(); setTimeout(function(){ sp.style.display='none'; sp.classList.remove('cn-splash-out'); }, 1250); }
+    clearTimeout(CN._splashTimer); CN._splashTimer=setTimeout(reveal, 2700);   // подержать цитату, затем раскрыть космос (медленное угасание)
+    sp.onclick=function(){ reveal(); };                                        // тап — пропустить
+  }
+  function cnFirstReveal(){
+    var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    if(!CN._splashShown && !reduce){ CN._splashShown=true; cnSplashShow(function(){ cnAssemble(); }); }
+    else { CN._splashShown=true; cnAssemble(); }
+  }
+  function cnCheckBlooms(){
+    try{
+      if(!CN.nodes || !CN.nodes.length) return;
+      var vd=state.visited||{}; if(!state.blooms) state.blooms={};
+      var tot={}, vno={};
+      CN.nodes.forEach(function(node){ var d=cnDiscOf(node.n); if(d==null) return; tot[d]=(tot[d]||0)+1; if(vd[node.slug]) vno[d]=(vno[d]||0)+1; });
+      var fire=null;
+      for(var d in tot){ if(!tot.hasOwnProperty(d)) continue; if(tot[d]>=4 && vno[d]===tot[d] && !state.blooms[d]){ fire=d; break; } }
+      if(!fire) return;
+      state.blooms[fire]=1; if(typeof saveState==='function') saveState();
+      cnBloomShow(fire);
+    }catch(e){}
+  }
+  function cnBloomShow(disc){
+    var bl=document.getElementById('cnBloom'); if(!bl) return;
+    var label=(typeof CN_DISC_LABEL!=='undefined' && CN_DISC_LABEL[disc])?CN_DISC_LABEL[disc]:disc;
+    var hue=(typeof cnHue==='function')?cnHue(disc):40;
+    var t=document.getElementById('cnBloomTitle'), su=document.getElementById('cnBloomSub');
+    if(t) t.textContent='«'+label+'» зажглась целиком';
+    if(su) su.textContent='Ты прошёл все звёзды этой области неба.';
+    bl.style.setProperty('--bloom-hue', hue);
+    bl.style.display='flex';
+    bl.classList.remove('cn-bloom-on'); void bl.offsetWidth; bl.classList.add('cn-bloom-on');
+    haptic(12);
+    function hide(){ bl.classList.remove('cn-bloom-on'); setTimeout(function(){ bl.style.display='none'; }, 650); }
+    clearTimeout(CN._bloomTimer); CN._bloomTimer=setTimeout(hide, 4000);
+    bl.onclick=function(){ clearTimeout(CN._bloomTimer); hide(); };
+  }
   function cnOpen(){
     if(!KBM.loaded || !(KBM.nodes||[]).length){ toast('Сначала откроется карта…'); return; }
     var ov=document.getElementById('constel'); if(!ov) return;
@@ -8212,18 +8464,21 @@
     var h=document.getElementById('constelHint'); if(h) h.classList.remove('constel-hint-gone');
     cnUpdateCount(); cnRenderRec();
     cnResize();
-    cnBuild();
-    cnFit(1.25);
+    var _sig=cnLayoutSig(); var _fresh=(CN._builtSig!==_sig);
+    if(_fresh){ cnBuild(); CN._builtSig=_sig; cnFit(1.25); }   // #1 строим+кадрируем только при первой/новой сборке графа
     cnWire();
     var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-    if(!reduce) cnAssemble(); else cnInvalidate(); // reduced-motion ⇒ one static frame, no fly-in
+    if(_fresh && !reduce) cnFirstReveal();                     // раскрытие — только при первой сборке (через сплеш-цитату)
+    else cnInvalidate();                                       // #1 повторный вход — тот же вид (камера/зум/поворот), без переигрывания
     haptic(8);
+    var _blD=(_fresh && !reduce)?4300:900;   // #4 после сплеша/сборки — тихо проверить, не зажглась ли дисциплина целиком
+    clearTimeout(CN._bloomCheck); CN._bloomCheck=setTimeout(cnCheckBlooms, _blD);
   }
   // Card is a sheet that rises OVER the constellation — the cosmos stays mounted underneath
   // (paused, not torn down), so there is no flash and returning needs no rebuild.
   function cnToCard(node, fromQuest){
     if(!node) return;
-    KBM.fromConstel=true; KBM.fromQuest=fromQuest||null; KBM.fromAtom=null; KBM.region=null; CN.preview=null;
+    KBM.fromConstel=true; KBM.fromQuest=fromQuest||null; KBM.fromAtom=null; KBM.region=null; if(typeof cnPreviewClear==='function') cnPreviewClear(); else CN.preview=null;
     CN.on=false; if(CN.raf){ cancelAnimationFrame(CN.raf); CN.raf=null; }   // pause cosmos, keep it mounted
     var ch=document.getElementById('constelChip'); if(ch) ch.style.display='none';
     var rcb=document.getElementById('constelRec'); if(rcb) rcb.style.display='none';   // #6b: или рекомендация, или открытая карточка — не оба внизу
@@ -8273,7 +8528,7 @@
   }
   function cnClose(){
     CN.on=false; if(CN.raf){ cancelAnimationFrame(CN.raf); CN.raf=null; }
-    CN.dragging=false; CN.assembling=false; CN.camV=null; CN._lastT=0; CN.vel=null; CN.rotVel=null; CN.preview=null;
+    CN.dragging=false; CN.assembling=false; CN.camV=null; CN._lastT=0; CN.vel=null; CN.rotVel=null; if(typeof cnPreviewClear==='function') cnPreviewClear(); else CN.preview=null;
     var ov=document.getElementById('constel'); if(ov) ov.style.display='none';
     CN.sel=null; cnLegendHide();
   }
@@ -8296,9 +8551,9 @@
       if(KBM.loaded && (KBM.nodes||[]).length){
         cnUpdateCount();
         if(h) h.classList.remove('constel-hint-gone');
-        cnBuild(); cnFit(1.25); cnWire();
+        cnBuild(); CN._builtSig=cnLayoutSig(); cnFit(1.25); cnWire();
         var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-        if(!reduce) cnAssemble(); else cnInvalidate();
+        if(!reduce) cnFirstReveal(); else cnInvalidate();
         haptic(8);
         setTimeout(function(){ ov.classList.remove('constel-enter'); }, 760);
         return;
@@ -8453,19 +8708,15 @@
   // Предпросмотр маршрута на небе (ещё не начат): подсветить трассу + навести камеру на первую остановку. Любопытство до старта.
   function questPreviewOnMap(key){
     var q=questBy(key); if(!q || !(q.slugs||[]).length) return;
-    var set={}; for(var i=0;i<q.slugs.length;i++) set[q.slugs[i]]=1;
-    if(typeof CN!=='undefined') CN.preview={set:set, order:q.slugs, key:key};
     closeQuests();
     if(typeof setView==='function') setView('constel');
-    var first=q.slugs[0];
     setTimeout(function(){
-      if(typeof cnFocusSlug==='function') cnFocusSlug(first);
-      else if(typeof cnFlyToNode==='function' && typeof cnNodeBySlug==='function'){ var n=cnNodeBySlug(first); if(n) cnFlyToNode(n); }
+      if(typeof cnPreviewEnter==='function') cnPreviewEnter(key);
       if(typeof toast==='function') toast('Трасса маршрута «'+(q.title||'маршрут')+'» на небе');
-    }, 380);
+    }, 360);
   }
 
-  function questAccept(key){ var qs=questState(); qs.active[key]=Date.now(); QUEST.focus=key; if(typeof CN!=='undefined') CN.preview=null; saveState();
+  function questAccept(key){ var qs=questState(); qs.active[key]=Date.now(); QUEST.focus=key; if(typeof cnPreviewClear==='function') cnPreviewClear(); else if(typeof CN!=='undefined') CN.preview=null; saveState();
     questSplash(key, function(){ questGoNext(key); }); }
   // Вводный сплеш старта маршрута: сменяющиеся короткие реплики (свои на каждый маршрут — из полей квеста), затем первая остановка. Тап = пропустить.
   function questSplash(key, done){
@@ -9355,6 +9606,14 @@
   // ====== ВЕРСИЯ ПРИЛОЖЕНИЯ (повышать с каждым апдейтом HTML) ======
   var APP_VERSION='5.60';
   var APP_CHANGELOG=[
+    {v:'1.0 (бета)', items:[
+      'Первый публичный релиз. Большое обновление облика: спокойная тёплая палитра и единый ритм во всём — Созвездие, Карта знаний и карточки концептов теперь в одном тоне, переходы между ними больше не режут глаз.',
+      'Приложение открывается прямо в Созвездие: при запуске появляется мысль о звёздах и творчестве от классиков, она мягко гаснет — и космос собирается на глазах. Возврат на вкладку больше не пересобирает карту: остаётся тот вид, на котором вы были.',
+      'Пройденные маршруты остаются в вашем небе постоянными именованными созвездиями — личная карта помнит пути, которые вы прошли.',
+      'Карточка концепта читается приятнее: ключевая мысль подаётся как эпиграф, размер шрифта настраивается, листать можно свайпами, а сама карточка мягко вырастает снизу. Кнопка «Маршруты» переехала вниз, под большой палец.',
+      'Рекомендации стали богаче — видно тип идеи и сколько у неё связей — и иногда показывают неожиданную, но настоящую перекличку между далёкими идеями.',
+      'Когда целая дисциплина зажигается полностью, небо тихо это отмечает мягким светом. Без очков, серий и давления — только ваше любопытство и ваша карта.',
+    ]},
     {v:'5.60', items:[
       'Созвездие стало живее: при открытии звёзды не появляются разом, а расцветают из центра наружу. Тап по звезде теперь подсвечивает и подписывает её прямых соседей — сразу видно, с чем связана идея. Названия читаются чётче (обводка вместо мягкой тени).',
       'Продуктовые методы (A/B-тест, OKR, JTBD, когорты и др.), у которых нет научной дисциплины, получили свой цвет и отдельную строку в легенде — раньше они подмешивались к поведенческой экономике.',
@@ -10252,6 +10511,7 @@
       var f=cnFitCam(); if(f){ CN.target=f; } cnKick(); };
     var lg=document.getElementById('constelLegendBtn'); if(lg) lg.onclick=function(){ cnLegendToggle(); };
     var rt=document.getElementById('constelRoutesBtn'); if(rt) rt.onclick=function(){ openQuests(); };
+    var rbk=document.getElementById('constelRouteBack'); if(rbk) rbk.onclick=function(){ if(typeof cnPreviewExit==='function') cnPreviewExit(); };
     var qc=document.getElementById('qClose'); if(qc) qc.onclick=function(){ closeQuests(); };
     var db=document.getElementById('constelDepthBtn');
     if(db) db.onclick=function(){
