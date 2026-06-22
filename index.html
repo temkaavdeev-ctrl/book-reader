@@ -1317,6 +1317,8 @@
   .kbm-body{ flex:1; overflow-y:auto; padding:12px 14px 80px }
   .kbm-empty{ text-align:center; color:var(--muted); padding:40px 20px; font-size:14px }
   .kbm-search-near{ font-size:13px; color:var(--muted); margin:2px 2px 12px; line-height:1.4 }
+  .kbm-bodyhits{ margin-top:18px; padding-top:14px; border-top:1px solid var(--line) }
+  .kbm-bodyhit-snip{ font-size:12px; color:var(--muted); line-height:1.45; margin:-2px 2px 8px 12px }
   .kbm-filterbar{ display:flex; align-items:center; gap:10px; margin:0 2px 12px }
   .kbm-filter-toggle{ background:none; border:1px solid var(--line); border-radius:9px; padding:6px 12px; font-size:13px; font-weight:600; color:var(--muted); cursor:pointer; font-family:inherit; transition:border-color .15s,color .15s }
   .kbm-filter-toggle.has{ color:var(--accent); border-color:color-mix(in srgb,var(--accent) 40%,var(--line)) }
@@ -1357,6 +1359,8 @@
   .kbm-tension:hover .kbm-tension-out{ text-decoration:underline }
   /* ── Concept rows (region + search) ── */
   .kbm-concept-list{ display:flex; flex-direction:column; gap:2px }
+  .kbm-fav-sec{ margin-bottom:18px }
+  .kbm-fav-sec-h{ font-family:var(--font-ui); font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin:6px 2px 8px }
   .kbm-crow{ display:flex; align-items:flex-start; gap:11px; padding:11px 4px 11px 0; cursor:pointer; position:relative; border-bottom:1px solid var(--line) }
   .kbm-crow:last-child{ border-bottom:none }
   .kbm-crow:hover .kbm-crow-title{ color:var(--accent) }
@@ -1376,6 +1380,7 @@
   .kbm-crow-stword{ font-size:11px; color:var(--muted); letter-spacing:.01em }
   .kbm-crow-stword-debunk{ color:var(--danger) }
   .kbm-rdot{ width:8px; height:8px; border-radius:50%; flex-shrink:0 }
+  .kbm-crow-wip{ font-size:10.5px; color:var(--muted); opacity:.75; font-style:italic; letter-spacing:.01em }
   .kbm-heart{ background:none; border:none; font-size:17px; color:var(--line-2); cursor:pointer; padding:2px 4px; flex-shrink:0; line-height:1; align-self:center }
   .kbm-heart:hover{ color:var(--danger) }
   .kbm-heart.kbm-liked{ color:var(--danger) }
@@ -1841,6 +1846,8 @@
   .cn-rec-name{ font-size:14px; font-weight:600; color:#efe8db; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
   .cn-rec-arr{ color:rgba(228,182,118,.78); font-size:17px; flex:none; line-height:1 }
   .cn-rec-x{ flex:none; margin-left:3px; width:23px; height:23px; padding:0; border:none; background:rgba(255,255,255,.08); color:rgba(228,182,118,.72); border-radius:50%; font-size:11px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center }
+  .cn-rec-tx{ flex:1; min-width:0; display:flex; flex-direction:column; align-items:flex-start; gap:1px }
+  .cn-rec-why{ font-size:11.5px; color:rgba(228,205,170,.72); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100% }
 .constel-top{ transition:opacity .4s ease }
 #constel.constel-exploring .constel-top{ opacity:0 }
 #constel.constel-exploring .constel-rec{ opacity:0; pointer-events:none; transition:opacity .35s ease }
@@ -2294,6 +2301,9 @@
 .qt-dot{ width:8px; height:8px; border-radius:50%; background:color-mix(in srgb,var(--accent) 22%,transparent); flex-shrink:0; transition:transform .15s; }
 .qt-dot-done{ background:var(--accent); }
 .qt-dot-cur{ background:var(--accent); box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 28%,transparent); transform:scale(1.15); }
+.qt-dot-ignite{ animation:qtIgnite .8s cubic-bezier(.22,.61,.36,1) both }
+@keyframes qtIgnite{ 0%{ transform:scale(1); box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 60%,transparent) } 35%{ transform:scale(1.7); box-shadow:0 0 0 7px color-mix(in srgb,var(--accent) 0%,transparent) } 100%{ transform:scale(1) } }
+@media (prefers-reduced-motion:reduce){ .qt-dot-ignite{ animation:none } }
 .qt-hint{ display:block; margin-top:8px; font-family:var(--font-ui); font-size:11.5px; color:var(--accent-2); opacity:.8; }
 
 /* кнопка закрытия легенды */
@@ -2334,8 +2344,13 @@
 .kbm-region-back-btm{ margin-top:22px; margin-bottom:6px }
 .q-d-hint{ font-size:13px; color:var(--muted); line-height:1.5; margin:2px 0 14px }
 .q-d-cta-top{ margin-bottom:6px }
+.q-preview-link{ display:block; width:100%; padding:9px; margin:0 0 4px; border:none; background:transparent; color:var(--accent); font-family:var(--font-ui); font-size:14px; font-weight:600; cursor:pointer; text-align:center }
+.q-preview-link:active{ opacity:.6 }
 .q-d-cta-btm{ margin-top:14px }
 .kbm-back-btm{ margin:20px 0 6px }
+.kbm-detnav{ display:flex; align-items:center; gap:10px; margin:20px 0 6px }
+.kbm-detnav .kbm-back-btm{ margin:0 }
+.kbm-fwd-btm{ margin:0 0 0 auto }   /* «Вперёд» прижата к правому краю ряда */
 </style>
 </head>
 <body>
@@ -5693,7 +5708,7 @@
   }
   function kbmSearch(q){
     KBM.q=q;
-    if(!q.trim()){ KBM.region?kbmRenderRegion(KBM.region):kbmRenderOverview(); return; }
+    if(!q.trim()){ clearTimeout(KBM._ftT); KBM.region?kbmRenderRegion(KBM.region):kbmRenderOverview(); return; }
     var ql=q.toLowerCase().trim();
     var hits=KBM.nodes.filter(function(n){
       if((n.title||'').toLowerCase().includes(ql)||(n.claim||'').toLowerCase().includes(ql)) return true;
@@ -5701,6 +5716,8 @@
       for(var i=0;i<t.length;i++){ if(t[i].label && t[i].label.toLowerCase().includes(ql)) return true; }
       return false;
     }).sort(function(a,b){ return (b.degree||0)-(a.degree||0); });
+    clearTimeout(KBM._ftT);   // поиск по ТЕЛУ карточек (kb_search_fulltext) — дебаунс, дописывает к локальным
+    if(ql.length>=3 && typeof SB!=='undefined'){ KBM._ftT=setTimeout(function(){ kbmBodySearch(q, ql, hits); }, 350); }
     var body=document.getElementById('kbmBody'); if(!body) return;
     var cnt=document.getElementById('kbmCount');
     if(hits.length){ clearTimeout(KBM._nfT);
@@ -5721,6 +5738,28 @@
       if(cnt) cnt.textContent='0 найдено';
       body.innerHTML='<div class="kbm-empty">Ничего не найдено по «'+escapeHtml(q)+'». Попробуй другое слово или загляни во «Всё».</div>';
     }
+  }
+  // Поиск по ТЕЛУ карточек: kb_search_fulltext (title+body+body_struct, ts_rank). Дописывает к локальным результатам секцию «нашлось в тексте». Гард по актуальности запроса.
+  async function kbmBodySearch(q, ql, localHits){
+    if(KBM.q!==q || typeof SB==='undefined') return;
+    var res; try{ res=await SB.rpc('kb_search_fulltext',{p_query:q}); }catch(e){ return; }
+    if(KBM.q!==q) return;                                  // пока ждали — запрос сменился
+    var data=(res&&res.data)||[]; if(!data.length) return;
+    var seen={}; (localHits||[]).forEach(function(n){ seen[n.slug]=1; });
+    var bodyHits=[];
+    for(var i=0;i<data.length;i++){ var r=data[i], n=KBM.bySlug&&KBM.bySlug[r.slug];
+      if(!n || seen[n.slug]) continue;                      // только концепты графа, не дубли локальных
+      if((n.title||'').toLowerCase().indexOf(ql)>=0) continue;   // нашлось бы и по названию — не дублируем
+      seen[n.slug]=1; bodyHits.push({n:n, snip:(r.snippet||'').replace(/<[^>]*>/g,'')}); if(bodyHits.length>=12) break;
+    }
+    if(!bodyHits.length) return;
+    var body=document.getElementById('kbmBody'); if(!body) return;
+    var empt=body.querySelector('.kbm-empty'); if(empt) empt.parentNode.removeChild(empt);   // было «ничего» → теперь нашли в тексте
+    var old=body.querySelector('.kbm-bodyhits'); if(old) old.parentNode.removeChild(old);
+    var sec=document.createElement('div'); sec.className='kbm-bodyhits';
+    sec.innerHTML='<div class="kbm-search-near">Нашлось в тексте карточек:</div>'
+      + bodyHits.map(function(h){ return '<div class="kbm-bodyhit">'+kbmConceptRow(h.n)+(h.snip?'<div class="kbm-bodyhit-snip">…'+escapeHtml(h.snip)+'…</div>':'')+'</div>'; }).join('');
+    body.appendChild(sec);
   }
   // ── Фильтры для плоского списка «Всё» (статус / наука / слой / роль) ──
   function kbmStatusValues(){ var c={}, order=['solid','mixed','contested','weak'], lbl={solid:'надёжная',mixed:'смешанная',contested:'спорная',weak:'слабая'};
@@ -5835,10 +5874,13 @@
     var lt=document.getElementById('kbmListTitle'); if(lt) lt.textContent='\u0418\u0437\u0431\u0440\u0430\u043d\u043d\u043e\u0435';
     var liked=(KBM.nodes||[]).filter(function(n){ return KBM.likes.has(n.slug); });
     liked.sort(function(a,b){ return ((kbmIsCore(b)?1:0)-(kbmIsCore(a)?1:0)) || ((b.degree||0)-(a.degree||0)); });
+    var favMechs=liked.filter(function(n){ return n.node_class!=='tool'; }), favTools=liked.filter(function(n){ return n.node_class==='tool'; });
     var cnt=document.getElementById('kbmCount'); if(cnt) cnt.textContent=liked.length?(liked.length+' '+kbmConceptWord(liked.length)):'';
     var km=document.getElementById('kbMode'); if(km) km.classList.add('kbm-bare');  // Избранное — чистая вкладка: без поиска/осей/«Обзор»
     body.innerHTML=(liked.length
-      ? '<div class="kbm-concept-list">'+liked.map(kbmConceptRow).join('')+'</div>'
+      ? ((favMechs.length&&favTools.length)
+          ? '<div class="kbm-fav-sec"><div class="kbm-fav-sec-h">Механизмы</div><div class="kbm-concept-list">'+favMechs.map(kbmConceptRow).join('')+'</div></div><div class="kbm-fav-sec"><div class="kbm-fav-sec-h">Инструменты</div><div class="kbm-concept-list">'+favTools.map(kbmConceptRow).join('')+'</div></div>'
+          : '<div class="kbm-concept-list">'+liked.map(kbmConceptRow).join('')+'</div>')
       : '<div class="kbm-fav-empty">\u0417\u0434\u0435\u0441\u044c \u0431\u0443\u0434\u0443\u0442 \u043a\u043e\u043d\u0446\u0435\u043f\u0442\u044b, \u043a\u043e\u0442\u043e\u0440\u044b\u0435 \u0442\u044b \u043e\u0442\u043c\u0435\u0442\u0438\u043b \u2665. \u041e\u0442\u043a\u0440\u043e\u0439 \u043b\u044e\u0431\u043e\u0439 \u0438 \u043d\u0430\u0436\u043c\u0438 \u00ab\u0412 \u0438\u0437\u0431\u0440\u0430\u043d\u043d\u043e\u0435\u00bb \u2014 \u043e\u043d \u043f\u043e\u044f\u0432\u0438\u0442\u0441\u044f \u0442\u0443\u0442.</div>');
     if(!body._wiredFav){ body._wiredFav=true;
       body.addEventListener('click',function(ev){
@@ -6303,11 +6345,23 @@
     var core=kbmIsCore(n);
     var isHub=(n.degree||0)>=10;
     var st=kbmReadyState(n);
-    var dim=(st.state==='frontier'||st.state==='hidden');
-    var stWord=(st.state==='frontier'||st.state==='hidden') ? st.reason
-      : (st.state==='boundary') ? '\u0433\u0440\u0430\u043d\u0438\u0446\u0430'
-      : (KBM_ROB[n.robustness]||'');
-    var statusHtml=stWord ? '<div class="kbm-crow-status"><span class="kbm-rdot" style="background:'+rCol+'"></span><span class="kbm-crow-stword'+(st.debunk?' kbm-crow-stword-debunk':'')+'">'+escapeHtml(stWord)+'</span></div>' : '';
+    // Канон status-display: ДВЕ оси, не в одном бейдже.
+    // 1) ПОЛНОТА (редакционная): неполная карточка → пригашена + тихий тег «дорабатывается».
+    var incomplete=(st.reason==='черновик'||st.reason==='неполная');
+    var dim=incomplete;
+    // 2) ДОКАЗАТЕЛЬНОСТЬ (эпистемика) — ТОЛЬКО механизмы, ТОЛЬКО когда требует внимания. Норма (solid/не оценено) — без слова. Инструменты — без эпист.бейджа (репликация неприменима). Единый регистр — нижний.
+    var isTool=(n.node_class==='tool');
+    var epiWord='', epiDebunk='';
+    if(!isTool){
+      if(st.debunk){ epiWord='развенчано'; epiDebunk=' kbm-crow-stword-debunk'; }
+      else if(st.contested){ epiWord=(st.reason==='спорный конструкт')?'спорный конструкт':'спорная'; }
+      else if(st.reason==='гипотеза') epiWord='гипотеза';
+      else if(n.robustness==='mixed') epiWord='смешанная';
+    }
+    var statusBits='';
+    if(epiWord) statusBits+='<span class="kbm-rdot" style="background:'+rCol+'"></span><span class="kbm-crow-stword'+epiDebunk+'">'+epiWord+'</span>';
+    if(incomplete) statusBits+='<span class="kbm-crow-wip">дорабатывается</span>';
+    var statusHtml=statusBits?'<div class="kbm-crow-status">'+statusBits+'</div>':'';
     var claimRaw=(n.claim||''), claim=claimRaw;
     if(claimRaw.length>90){ var _cut=claimRaw.slice(0,90), _sp=_cut.lastIndexOf(' '); claim=(_sp>60?_cut.slice(0,_sp):_cut)+'…'; }
     // Core marker wins over hub dot — it's the stronger editorial signal
@@ -6335,7 +6389,7 @@
   function kbmShowList(){
     document.getElementById('kbmList').style.display='flex';
     document.getElementById('kbmDet').style.display='none';
-    KBM_HISTORY=[]; KBM.currentSlug=null; KBM.fromAtom=null;
+    KBM_HISTORY=[]; KBM_FUTURE=[]; KBM.currentSlug=null; KBM.fromAtom=null;
     // Restore whichever map view was active (core / scenarios / playbook / findings / region / overview)
     if(KBM.loaded){
       if(KBM.region==='__core__') kbmRenderCore();
@@ -6370,11 +6424,17 @@
     var html=kbmBackBtnHtml();
     var btn=document.getElementById('kbmDetBack'); if(btn) btn.innerHTML=html;
     var btm=document.getElementById('kbmDetBackBtm'); if(btm) btm.innerHTML=html;
+    var fb=document.getElementById('kbmDetFwdBtm');
+    if(fb){
+      if(KBM_FUTURE.length){ var nx=KBM_FUTURE[KBM_FUTURE.length-1]; var t=nx.title||nx.slug||'\u0412\u043f\u0435\u0440\u0451\u0434';
+        fb.style.display=''; fb.innerHTML='<span class="kbm-back-lbl">'+escapeHtml(t.length>22?t.slice(0,20)+'\u2026':t)+'</span><span class="kbm-back-arr">\u2192</span>'; }
+      else fb.style.display='none';
+    }
   }
   function kbmGoBack(){
     var t=kbmBackTarget();
     switch(t.kind){
-      case 'card': KBM_HISTORY.pop(); KBM.currentSlug=null; kbmDetail(t.slug, true); break;
+      case 'card': var _cur=KBM.currentSlug; KBM_HISTORY.pop(); if(_cur && KBM.bySlug[_cur]) KBM_FUTURE.push({slug:_cur, title:(KBM.bySlug[_cur]||{}).title||_cur}); KBM.currentSlug=null; kbmDetail(t.slug, true); break;
       case 'atom': var _as=KBM.fromAtom; KBM.fromAtom=null; KBM.fromConstel=false; KBM.fromQuest=null; if(typeof kbmOpenAtom==='function') kbmOpenAtom(_as); break;
       case 'quest': kbmBackToQuest(KBM.fromQuest); break;
       case 'constel': cnReturnFromCard(); break;
@@ -6385,6 +6445,14 @@
       case 'law': if(typeof kbmLawDetail==='function') kbmLawDetail(KBM.lawSlug); else kbmShowList(); break;
       default: kbmShowList();
     }
+  }
+  function kbmGoForward(){
+    if(!KBM_FUTURE.length) return;
+    var nx=KBM_FUTURE.pop();
+    var _cur=KBM.currentSlug;
+    if(_cur && KBM.bySlug[_cur]) KBM_HISTORY.push({slug:_cur, title:(KBM.bySlug[_cur]||{}).title||_cur});
+    KBM.currentSlug=null;
+    kbmDetail(nx.slug, true);
   }
   function kbmShowDetail(){
     var list=document.getElementById('kbmList'), d=document.getElementById('kbmDet');
@@ -6725,7 +6793,7 @@
       +'</div>'
       +'<button class="kbm-like-btn'+(liked?' kbm-liked':'')+'" id="kbmDetHeart" data-kbm-like="'+escapeHtml(slug)+'">'+(liked?'♥ В избранном':'♡ В избранное')+'</button>'
       +'<div class="kbm-d-claim" id="kbmDetClaim">'+escapeHtml(claim)+'</div>';
-    body.innerHTML='<div id="kbmDetCard">'+hero+kbmStateBanner(node)+'<div id="kbmQuestTracker">'+questTrackerHtml(slug)+'</div>'+'<div class="kbm-sections" id="kbmDetSections"><div class="kbm-detail-pending"></div></div>'+kbmMiniMap(slug)+kbmChapterRefs(slug)+kbmSituationRefs(slug)+'<div id="kbmSigWrap">'+kbmSignalBar(slug)+'</div>'+'<div id="kbmQuestAdvance">'+(typeof questAdvanceHtml==='function'?questAdvanceHtml(slug):'')+'</div>'+'<button class="kbm-back-btn kbm-back-btm" id="kbmDetBackBtm" data-kbm-back-btm="1"><span class="kbm-back-arr">\u2190</span><span class="kbm-back-lbl">\u041d\u0430\u0437\u0430\u0434</span></button>'+'</div>';
+    body.innerHTML='<div id="kbmDetCard">'+hero+kbmStateBanner(node)+'<div id="kbmQuestTracker">'+questTrackerHtml(slug)+'</div>'+'<div class="kbm-sections" id="kbmDetSections"><div class="kbm-detail-pending"></div></div>'+kbmMiniMap(slug)+kbmChapterRefs(slug)+kbmSituationRefs(slug)+'<div id="kbmSigWrap">'+kbmSignalBar(slug)+'</div>'+'<div id="kbmQuestAdvance">'+(typeof questAdvanceHtml==='function'?questAdvanceHtml(slug):'')+'</div>'+'<div class="kbm-detnav"><button class="kbm-back-btn kbm-back-btm" id="kbmDetBackBtm" data-kbm-back-btm="1"><span class="kbm-back-arr">\u2190</span><span class="kbm-back-lbl">\u041d\u0430\u0437\u0430\u0434</span></button><button class="kbm-back-btn kbm-fwd-btm" id="kbmDetFwdBtm" data-kbm-fwd-btm="1" style="display:none"><span class="kbm-back-lbl">\u0412\u043f\u0435\u0440\u0451\u0434</span><span class="kbm-back-arr">\u2192</span></button></div>'+'</div>';
     body.scrollTop=0;
     var card=document.getElementById('kbmDetCard');
     if(card && !reduce){
@@ -6735,6 +6803,7 @@
     if(!body._kbmwired){ body._kbmwired=true;
       body.addEventListener('click',function(e){
         var bb=e.target.closest('[data-kbm-back-btm]'); if(bb){ if(typeof kbmGoBack==='function') kbmGoBack(); return; }
+        var fwb=e.target.closest('[data-kbm-fwd-btm]'); if(fwb){ if(typeof kbmGoForward==='function') kbmGoForward(); return; }
         var mopen=e.target.closest('[data-kbm-mini-open]'); if(mopen){ kbmDetail(mopen.getAttribute('data-kbm-mini-open')); return; }
         var mini=e.target.closest('[data-kbm-mini]'); if(mini){ var ms=mini.getAttribute('data-kbm-mini'); if(KBM.miniFocus===ms){ KBM.miniFocus=null; kbmDetail(ms); } else { kbmMiniFocus(ms); } return; }
         var exp=e.target.closest('[data-kbm-expand]'); if(exp){ cnFocusSlug(KBM.currentSlug); return; }
@@ -6763,6 +6832,7 @@
     if(typeof cnUpdateCount==='function') cnUpdateCount();
     if(typeof cnRenderRec==='function') cnRenderRec();
     if(typeof kbmRefreshTracker==='function') kbmRefreshTracker(slug);
+    try{ var _qd=document.querySelector('#kbmQuestTracker [data-qt-dot="'+slug+'"]'); if(_qd) _qd.classList.add('qt-dot-ignite'); }catch(_e){}   // искра на только что пройденной остановке
     if(typeof toast==='function') toast('Карточка пройдена \u2713');
     if(typeof questOnStopRead==='function') questOnStopRead(slug);   // последняя остановка маршрута → тихий момент финиша
   }
@@ -6786,11 +6856,13 @@
     }, 90);
   }
   async function kbmDetail(slug, isBack){
-    // History tracking: push current to stack on forward navigation
-    if(!isBack && KBM.currentSlug && KBM.currentSlug!==slug){
+    // История: на навигации ВПЕРЁД кладём текущую в back-стек — но ТОЛЬКО если это реальная карточка-концепт
+    // (не слаг находки/закона/сценария — иначе стек кривится: фикс #3).
+    if(!isBack && KBM.currentSlug && KBM.currentSlug!==slug && KBM.bySlug[KBM.currentSlug]){
       var curNode=KBM.bySlug[KBM.currentSlug];
       KBM_HISTORY.push({slug:KBM.currentSlug, title:curNode?curNode.title:KBM.currentSlug});
     }
+    if(!isBack) KBM_FUTURE=[];   // новая ветка вперёд обнуляет будущее (как в браузере)
     KBM.currentSlug=slug;
     if(slug){ if(!state.visited) state.visited={}; state.lastVisited=slug; saveState(); }
     kbmShowDetail();
@@ -7328,6 +7400,7 @@
       if(CN.on) cnClose();
       var _km=document.getElementById('kbMode'); if(_km) _km.classList.remove('kbm-bare');
       showView('list');
+      if(typeof KBM!=='undefined') KBM.region=null;   // вкладка Матчасть = своя домашняя поверхность, не наследует Избранное/др. срез (фикс stale-вкладок)
       openKbMode(); kbmShowList();
     } else if(name==='favorites'){
       if(CN.on) cnClose();
@@ -7382,7 +7455,7 @@
             + menuRow('Админка', '', 'admin')
             + '</div>';
     }
-    rows += '<div class="menu-version">Версия 2026-06-22 20:30 · 7cc9edd</div>';
+    rows += '<div class="menu-version">Версия 2026-06-22 21:05 · 795e2d8</div>';
     body.innerHTML = '<div class="menu-v-head"><h2 class="menu-v-title">Меню</h2></div><div class="menu-v-list">'+rows+'</div>';
     Array.prototype.forEach.call(body.querySelectorAll('[data-menu-act]'), function(b){
       b.onclick = function(){ menuAct(b.getAttribute('data-menu-act')); };
@@ -7563,12 +7636,15 @@
     function vis(s){ return !!vd[s]; }
     if(visCount===0){
       var cores=nodes.filter(function(n){ return kbmIsCore(n) && cnRecIsFull(n); });
-      var pool=(cores.length?cores:nodes.filter(cnRecIsFull)).sort(kbmRank);
-      return pool[0] ? {node:pool[0], kind:'start'} : null;
+      var fromCore=cores.length>0;
+      var pool=(fromCore?cores:nodes.filter(cnRecIsFull)).sort(kbmRank);
+      return pool[0] ? {node:pool[0], kind:'start', reason:(fromCore?'Несущий концепт — хорошее начало':'Удобная точка входа')} : null;
     }
     var anchor=state.lastVisited;
     if(!anchor || !vd[anchor]){ for(kk in vd){ if(vd[kk]){ anchor=kk; break; } } }
     var anchorNode=KBM.bySlug && KBM.bySlug[anchor];
+    var anchorTitle=anchorNode?(anchorNode.title||anchor):'';
+    var anchorShort=anchorTitle.length>22?anchorTitle.slice(0,20)+'\u2026':anchorTitle;
     // 1) семантика: kb_find_similar от последнего узла → первый непосещённый полный концепт (НЕ kb_search — он битый)
     if(anchorNode && typeof SB!=='undefined'){
       try{
@@ -7576,7 +7652,7 @@
         if(res && res.data && res.data.length){
           for(var i=0;i<res.data.length;i++){
             var sm=res.data[i].slug, nd=KBM.bySlug[sm];
-            if(sm && sm!==anchor && !vis(sm) && nd && nd.node_layer!=='scenario' && cnRecIsFull(nd)) return {node:nd, kind:'continue'};
+            if(sm && sm!==anchor && !vis(sm) && nd && nd.node_layer!=='scenario' && cnRecIsFull(nd)) return {node:nd, kind:'continue', reason:'Рядом с «'+anchorShort+'»'};
           }
         }
       }catch(e){}
@@ -7589,9 +7665,9 @@
       else if(e.dst===anchor && !vis(e.src) && (o=concept(e.src))) nb[e.src]=o;
     });
     var list=[], s2; for(s2 in nb) list.push(nb[s2]);
-    if(list.length){ list.sort(kbmRank); return {node:list[0], kind:'continue'}; }
+    if(list.length){ list.sort(kbmRank); return {node:list[0], kind:'continue', reason:'Связано с «'+anchorShort+'»'}; }
     var unv=nodes.filter(function(n){ return kbmIsCore(n) && cnRecIsFull(n) && !vis(n.slug); }).sort(kbmRank);
-    if(unv.length) return {node:unv[0], kind:'continue'};
+    if(unv.length) return {node:unv[0], kind:'continue', reason:'Несущий концепт, ещё не пройден'};
     return null;
   }
   async function cnRenderRec(){
@@ -7600,13 +7676,15 @@
     var rec=null; try{ rec=await cnRecommend(); }catch(e){}
     if(!rec || !rec.node){ el.style.display='none'; el.onclick=null; return; }
     var lbl=rec.kind==='start'?'\u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u043e\u0442\u0441\u044e\u0434\u0430':'\u041f\u0440\u043e\u0434\u043e\u043b\u0436\u0438\u0442\u044c';
-    el.innerHTML='<span class="cn-rec-lbl">'+lbl+'</span><span class="cn-rec-name">'+escapeHtml(rec.node.title||rec.node.slug)+'</span><span class="cn-rec-arr">\u203a</span><button class="cn-rec-x" aria-label="Скрыть">✕</button>';
+    var why=rec.reason?'<span class="cn-rec-why">'+escapeHtml(rec.reason)+'</span>':'';
+    el.innerHTML='<span class="cn-rec-tx"><span class="cn-rec-lbl">'+lbl+'</span><span class="cn-rec-name">'+escapeHtml(rec.node.title||rec.node.slug)+'</span>'+why+'</span><span class="cn-rec-arr">\u203a</span><button class="cn-rec-x" aria-label="Скрыть">✕</button>';
     el.style.display='';
     el.onclick=function(){ cnToCard(rec.node); };
     var rx=el.querySelector('.cn-rec-x'); if(rx) rx.onclick=function(e){ e.stopPropagation(); CN.recClosed=true; el.style.display='none'; };
   }
   // Активный маршрут для подсветки на небе: фокусный квест, иначе первый активный. {set, order} по слугам или null.
   function cnActiveRoute(){
+    if(CN.preview && CN.preview.order && CN.preview.order.length) return CN.preview;   // предпросмотр маршрута (ещё не начат)
     if(typeof QUEST==='undefined' || !QUEST || typeof questBy!=='function') return null;
     var q=questBy(QUEST.focus);
     if(!q && typeof questActiveList==='function'){ var al=questActiveList(); if(al&&al.length) q=al[0]; }
@@ -8036,7 +8114,7 @@
   // (paused, not torn down), so there is no flash and returning needs no rebuild.
   function cnToCard(node, fromQuest){
     if(!node) return;
-    KBM.fromConstel=true; KBM.fromQuest=fromQuest||null; KBM.fromAtom=null; KBM.region=null;
+    KBM.fromConstel=true; KBM.fromQuest=fromQuest||null; KBM.fromAtom=null; KBM.region=null; CN.preview=null;
     CN.on=false; if(CN.raf){ cancelAnimationFrame(CN.raf); CN.raf=null; }   // pause cosmos, keep it mounted
     var ch=document.getElementById('constelChip'); if(ch) ch.style.display='none';
     var km=document.getElementById('kbMode'); if(km){ km.classList.add('kbm-over-constel'); km.style.display='flex'; }
@@ -8085,7 +8163,7 @@
   }
   function cnClose(){
     CN.on=false; if(CN.raf){ cancelAnimationFrame(CN.raf); CN.raf=null; }
-    CN.dragging=false; CN.assembling=false; CN.camV=null; CN._lastT=0; CN.vel=null; CN.rotVel=null;
+    CN.dragging=false; CN.assembling=false; CN.camV=null; CN._lastT=0; CN.vel=null; CN.rotVel=null; CN.preview=null;
     var ov=document.getElementById('constel'); if(ov) ov.style.display='none';
     CN.sel=null; cnLegendHide();
   }
@@ -8250,6 +8328,7 @@
       + '<div class="q-d-meta">'+tot+' остановок · ~'+questMins(q)+' мин</div>'
       + progLine
       + '<div class="q-d-cta q-d-cta-top">'+cta+'</div>'
+      + '<button class="q-preview-link" data-q-preview="'+escapeHtml(q.key)+'">↗ Показать маршрут на небе</button>'
       + ctaHint
       + '<div class="q-stops">'+stops+'</div>'
       + (abandon?'<div class="q-d-cta q-d-cta-btm">'+abandon+'</div>':'');
@@ -8258,10 +8337,25 @@
     var con=body.querySelector('[data-q-continue]'); if(con) con.onclick=function(){ questGoNext(q.key); };
     var rst=body.querySelector('[data-q-restart]'); if(rst) rst.onclick=function(){ questGoNext(q.key); };
     var abn=body.querySelector('[data-q-abandon]'); if(abn) abn.onclick=function(){ questAbandon(q.key); };
+    var pv=body.querySelector('[data-q-preview]'); if(pv) pv.onclick=function(){ questPreviewOnMap(q.key); };
     body.querySelectorAll('[data-stop]').forEach(function(d){ d.onclick=function(){ QUEST.focus=q.key; questGoStop(d.getAttribute('data-stop')); }; });
   }
+  // Предпросмотр маршрута на небе (ещё не начат): подсветить трассу + навести камеру на первую остановку. Любопытство до старта.
+  function questPreviewOnMap(key){
+    var q=questBy(key); if(!q || !(q.slugs||[]).length) return;
+    var set={}; for(var i=0;i<q.slugs.length;i++) set[q.slugs[i]]=1;
+    if(typeof CN!=='undefined') CN.preview={set:set, order:q.slugs, key:key};
+    closeQuests();
+    if(typeof setView==='function') setView('constel');
+    var first=q.slugs[0];
+    setTimeout(function(){
+      if(typeof cnFocusSlug==='function') cnFocusSlug(first);
+      else if(typeof cnFlyToNode==='function' && typeof cnNodeBySlug==='function'){ var n=cnNodeBySlug(first); if(n) cnFlyToNode(n); }
+      if(typeof toast==='function') toast('Трасса маршрута «'+(q.title||'маршрут')+'» на небе');
+    }, 380);
+  }
 
-  function questAccept(key){ var qs=questState(); qs.active[key]=Date.now(); QUEST.focus=key; saveState();
+  function questAccept(key){ var qs=questState(); qs.active[key]=Date.now(); QUEST.focus=key; if(typeof CN!=='undefined') CN.preview=null; saveState();
     questSplash(key, function(){ questGoNext(key); }); }
   // Вводный сплеш старта маршрута: сменяющиеся короткие реплики (свои на каждый маршрут — из полей квеста), затем первая остановка. Тап = пропустить.
   function questSplash(key, done){
@@ -8340,7 +8434,7 @@
     if(typeof QUEST==='undefined' || !QUEST.list) return '';
     var q=questForStop(slug); if(!q) return '';
     var s=q.slugs||[], tot=s.length, idx=s.indexOf(slug);
-    var dots=s.map(function(ss){ var vis=state.visited && state.visited[ss], cur=(ss===slug); return '<span class="qt-dot'+(vis?' qt-dot-done':'')+(cur?' qt-dot-cur':'')+'"></span>'; }).join('');
+    var dots=s.map(function(ss){ var vis=state.visited && state.visited[ss], cur=(ss===slug); return '<span class="qt-dot'+(vis?' qt-dot-done':'')+(cur?' qt-dot-cur':'')+'" data-qt-dot="'+escapeHtml(ss)+'"></span>'; }).join('');
     return '<button class="qt" data-qt-map="'+escapeHtml(q.key)+'">'
       + '<span class="qt-top"><span class="qt-route">'+escapeHtml(q.title||q.key)+'</span><span class="qt-pos">остановка '+(idx>=0?idx+1:'?')+' из '+tot+'</span></span>'
       + '<span class="qt-dots">'+dots+'</span>'
@@ -9913,7 +10007,8 @@
   // ── KB Mode («База знаний») ───────────────────────────────────────────────
   var KBM={nodes:[],edges:[],scenarios:[],bySlug:{},findings:{conjectures:[],laws:[]},conjByNode:{},likes:new Set(),loaded:false,liker:null,currentSlug:null,bundles:{},memberships:{},miniFocus:null,
            lens:'all', region:null, scenarioSlug:null, findingSlug:null, lawSlug:null, q:''};
-  var KBM_HISTORY=[]; // navigation stack: [{slug, title}]
+  var KBM_HISTORY=[]; // back-стек навигации карточек: [{slug, title}]
+  var KBM_FUTURE=[];  // forward-стек: куда «вперёд» после «назад» (как в браузере)
   var KBM_KIND={effect:'Эффект',theory:'Теория',frame:'Рамка',phenomenon:'Феномен',method:'Метод',term:'Термин',scenario:'Сценарий'};
   var KBM_ROB={solid:'Подтверждена',mixed:'Смешанная',contested:'Спорная',weak:'Предварительная'};
   var KBM_ROB_COL={solid:'var(--good)',mixed:'var(--warn)',contested:'var(--danger)',weak:'var(--muted)'};
