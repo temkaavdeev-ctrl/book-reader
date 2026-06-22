@@ -2284,6 +2284,10 @@
 .kbm-star-on{ color:var(--accent); }
 .kbm-stars-n{ margin-left:7px; font-family:var(--font-ui); font-size:13px; font-weight:650; color:var(--accent); }
 .kbm-region-back-btm{ margin-top:22px; margin-bottom:6px }
+.q-d-hint{ font-size:13px; color:var(--muted); line-height:1.5; margin:2px 0 14px }
+.q-d-cta-top{ margin-bottom:6px }
+.q-d-cta-btm{ margin-top:14px }
+.kbm-back-btm{ margin:20px 0 6px }
 </style>
 </head>
 <body>
@@ -6296,39 +6300,36 @@
       else kbmRenderOverview();
     }
   }
+  function kbmBackTarget(){
+    if(KBM_HISTORY.length>0){ var p=KBM_HISTORY[KBM_HISTORY.length-1]; var t=p.title||p.slug||''; return {kind:'card', slug:p.slug, label:(t.length>22?t.slice(0,20)+'\u2026':t)}; }
+    if(KBM.fromQuest){ var q=(typeof questBy==='function')?questBy(KBM.fromQuest):null; return {kind:'quest', label:q?kbmShortTitle(q.title||'\u041c\u0430\u0440\u0448\u0440\u0443\u0442'):'\u041c\u0430\u0440\u0448\u0440\u0443\u0442'}; }
+    if(KBM.fromConstel) return {kind:'constel', label:'\u0421\u043e\u0437\u0432\u0435\u0437\u0434\u0438\u0435'};
+    if(KBM.region==='__playbook__'){ var sc=KBM.bySlug[KBM.scenarioSlug]; return {kind:'playbook', label:sc?kbmShortTitle(sc.title):'\u0421\u0438\u0442\u0443\u0430\u0446\u0438\u044f'}; }
+    if(KBM.region==='__scenarios__') return {kind:'scenarios', label:'\u0421\u0438\u0442\u0443\u0430\u0446\u0438\u0438'};
+    if(KBM.region==='__findings__') return {kind:'findings', label:'\u041d\u0430\u0445\u043e\u0434\u043a\u0438'};
+    if(KBM.region==='__finding__'){ var fc=kbmFindBySlug(KBM.findingSlug); return {kind:'finding', label:fc?'\u0413\u0438\u043f\u043e\u0442\u0435\u0437\u0430':'\u041d\u0430\u0445\u043e\u0434\u043a\u0438'}; }
+    if(KBM.region==='__law__') return {kind:'law', label:'\u0417\u0430\u043a\u043e\u043d'};
+    if(KBM.region) return {kind:'list', label:kbmShortTitle(KBM.region)};
+    return {kind:'list', label:'\u041a\u0430\u0440\u0442\u0430'};
+  }
+  function kbmBackBtnHtml(){ var t=kbmBackTarget(); return '<span class="kbm-back-arr">\u2190</span><span class="kbm-back-lbl">'+escapeHtml(t.label)+'</span>'; }
   function kbmUpdateBackBtn(){
-    var btn=document.getElementById('kbmDetBack'); if(!btn) return;
-    var fallback;
-    if(KBM.region==='__playbook__'){
-      var sc=KBM.bySlug[KBM.scenarioSlug];
-      fallback=sc?kbmShortTitle(sc.title):'Ситуация';
-    } else if(KBM.region==='__scenarios__') fallback='Ситуации';
-    else if(KBM.region==='__findings__') fallback='Находки';
-    else if(KBM.region==='__finding__'){ var fc=kbmFindBySlug(KBM.findingSlug); fallback=fc?'Гипотеза':'Находки'; }
-    else if(KBM.region==='__law__') fallback='Закон';
-    else fallback=KBM.region?kbmShortTitle(KBM.region):'Карта';
-    if(KBM.fromQuest && KBM_HISTORY.length===0){ var _fq=(typeof questBy==='function')?questBy(KBM.fromQuest):null; fallback=_fq?kbmShortTitle(_fq.title||'Маршрут'):'Маршрут'; }
-    else if(KBM.fromConstel && KBM_HISTORY.length===0) fallback='Созвездие';
-    if(KBM_HISTORY.length>0){
-      var prev=KBM_HISTORY[KBM_HISTORY.length-1];
-      var lbl=prev.title.length>22?prev.title.slice(0,20)+'…':prev.title;
-      btn.innerHTML='<span class="kbm-back-arr">←</span><span class="kbm-back-lbl">'+escapeHtml(lbl)+'</span>';
-    } else {
-      btn.innerHTML='<span class="kbm-back-arr">←</span><span class="kbm-back-lbl">'+escapeHtml(fallback)+'</span>';
-    }
+    var html=kbmBackBtnHtml();
+    var btn=document.getElementById('kbmDetBack'); if(btn) btn.innerHTML=html;
+    var btm=document.getElementById('kbmDetBackBtm'); if(btm) btm.innerHTML=html;
   }
   function kbmGoBack(){
-    if(KBM_HISTORY.length>0){
-      var prev=KBM_HISTORY.pop();
-      var goSlug=prev.slug;
-      KBM.currentSlug=null; // prevent re-push
-      kbmDetail(goSlug, true);
-    } else if(KBM.fromQuest){
-      kbmBackToQuest(KBM.fromQuest);
-    } else if(KBM.fromConstel){
-      cnReturnFromCard();
-    } else {
-      kbmShowList();
+    var t=kbmBackTarget();
+    switch(t.kind){
+      case 'card': KBM_HISTORY.pop(); KBM.currentSlug=null; kbmDetail(t.slug, true); break;
+      case 'quest': kbmBackToQuest(KBM.fromQuest); break;
+      case 'constel': cnReturnFromCard(); break;
+      case 'playbook': if(typeof kbmScenarioPlaybook==='function') kbmScenarioPlaybook(KBM.scenarioSlug); else kbmShowList(); break;
+      case 'scenarios': if(typeof kbmRenderScenarios==='function') kbmRenderScenarios(); else kbmShowList(); break;
+      case 'findings': if(typeof kbmRenderFindings==='function') kbmRenderFindings(); else kbmShowList(); break;
+      case 'finding': if(typeof kbmFindingDetail==='function') kbmFindingDetail(KBM.findingSlug); else kbmShowList(); break;
+      case 'law': if(typeof kbmLawDetail==='function') kbmLawDetail(KBM.lawSlug); else kbmShowList(); break;
+      default: kbmShowList();
     }
   }
   function kbmShowDetail(){
@@ -6670,12 +6671,13 @@
       +'</div>'
       +'<button class="kbm-like-btn'+(liked?' kbm-liked':'')+'" id="kbmDetHeart" data-kbm-like="'+escapeHtml(slug)+'">'+(liked?'♥ В избранном':'♡ В избранное')+'</button>'
       +'<div class="kbm-d-claim" id="kbmDetClaim">'+escapeHtml(claim)+'</div>';
-    body.innerHTML='<div id="kbmDetCard">'+hero+kbmStateBanner(node)+'<div id="kbmQuestTracker">'+questTrackerHtml(slug)+'</div>'+'<div class="kbm-sections" id="kbmDetSections"><div class="kbm-detail-pending"></div></div>'+kbmMiniMap(slug)+kbmChapterRefs(slug)+kbmSituationRefs(slug)+'<div id="kbmSigWrap">'+kbmSignalBar(slug)+'</div>'+'<div id="kbmQuestAdvance">'+(typeof questAdvanceHtml==='function'?questAdvanceHtml(slug):'')+'</div>'+'</div>';
+    body.innerHTML='<div id="kbmDetCard">'+hero+kbmStateBanner(node)+'<div id="kbmQuestTracker">'+questTrackerHtml(slug)+'</div>'+'<div class="kbm-sections" id="kbmDetSections"><div class="kbm-detail-pending"></div></div>'+kbmMiniMap(slug)+kbmChapterRefs(slug)+kbmSituationRefs(slug)+'<div id="kbmSigWrap">'+kbmSignalBar(slug)+'</div>'+'<div id="kbmQuestAdvance">'+(typeof questAdvanceHtml==='function'?questAdvanceHtml(slug):'')+'</div>'+'<button class="kbm-back-btn kbm-back-btm" id="kbmDetBackBtm" data-kbm-back-btm="1"><span class="kbm-back-arr">\u2190</span><span class="kbm-back-lbl">\u041d\u0430\u0437\u0430\u0434</span></button>'+'</div>';
     body.scrollTop=0;
     var card=document.getElementById('kbmDetCard');
     if(card && !reduce){ card.classList.remove('kbm-card-fwd','kbm-card-back'); void card.offsetWidth; card.classList.add(dir==='back'?'kbm-card-back':'kbm-card-fwd'); }
     if(!body._kbmwired){ body._kbmwired=true;
       body.addEventListener('click',function(e){
+        var bb=e.target.closest('[data-kbm-back-btm]'); if(bb){ if(typeof kbmGoBack==='function') kbmGoBack(); return; }
         var mopen=e.target.closest('[data-kbm-mini-open]'); if(mopen){ kbmDetail(mopen.getAttribute('data-kbm-mini-open')); return; }
         var mini=e.target.closest('[data-kbm-mini]'); if(mini){ var ms=mini.getAttribute('data-kbm-mini'); if(KBM.miniFocus===ms){ KBM.miniFocus=null; kbmDetail(ms); } else { kbmMiniFocus(ms); } return; }
         var exp=e.target.closest('[data-kbm-expand]'); if(exp){ cnFocusSlug(KBM.currentSlug); return; }
@@ -7321,7 +7323,7 @@
             + menuRow('Админка', '', 'admin')
             + '</div>';
     }
-    rows += '<div class="menu-version">Версия 2026-06-22 17:38 · 179c3ab</div>';
+    rows += '<div class="menu-version">Версия 2026-06-22 18:54 · 05cd822</div>';
     body.innerHTML = '<div class="menu-v-head"><h2 class="menu-v-title">Меню</h2></div><div class="menu-v-list">'+rows+'</div>';
     Array.prototype.forEach.call(body.querySelectorAll('[data-menu-act]'), function(b){
       b.onclick = function(){ menuAct(b.getAttribute('data-menu-act')); };
@@ -7928,7 +7930,7 @@
   // (paused, not torn down), so there is no flash and returning needs no rebuild.
   function cnToCard(node, fromQuest){
     if(!node) return;
-    KBM.fromConstel=true; KBM.fromQuest=fromQuest||null;
+    KBM.fromConstel=true; KBM.fromQuest=fromQuest||null; KBM.region=null;
     CN.on=false; if(CN.raf){ cancelAnimationFrame(CN.raf); CN.raf=null; }   // pause cosmos, keep it mounted
     var ch=document.getElementById('constelChip'); if(ch) ch.style.display='none';
     var km=document.getElementById('kbMode'); if(km){ km.classList.add('kbm-over-constel'); km.style.display='flex'; }
@@ -8131,17 +8133,20 @@
     var cta;
     if(done){ cta='<button class="q-cta q-cta-ghost" data-q-restart="'+escapeHtml(q.key)+'">Пройти заново</button>'; }
     else if(active){ cta='<button class="q-cta" data-q-continue="'+escapeHtml(q.key)+'">'+(next?('Продолжить — '+escapeHtml(questStopTitle(next))):'Открыть маршрут')+'</button>'; }
-    else { cta='<button class="q-cta" data-q-accept="'+escapeHtml(q.key)+'">Принять маршрут</button>'; }
+    else { cta='<button class="q-cta" data-q-accept="'+escapeHtml(q.key)+'">Начать маршрут</button>'; }
     var progLine = prog>0 ? ('<div class="q-d-prog">Пройдено '+prog+' из '+tot+((!active&&!done)?' · уже знакомо из прогулок':'')+'</div>') : '';
     var abandon = (active && !done) ? '<button class="q-abandon" data-q-abandon="'+escapeHtml(q.key)+'">Оставить маршрут</button>' : '';
+    var ctaHint=(!active && !done) ? '<div class="q-d-hint">Начни — и созвездие поведёт остановка за остановкой, отмечая пройденное. Или открой любую звезду ниже отдельно.</div>' : '';
     body.innerHTML='<button class="q-back" data-q-back="1">‹ Все маршруты</button>'
       + '<div class="q-d-ttl">'+escapeHtml(q.title||q.key)+(done?' <span class="q-badge q-badge-done">пройден</span>':'')+'</div>'
       + (q.promise?'<div class="q-d-prom">'+escapeHtml(q.promise)+'</div>':'')
       + (q.description?'<div class="q-d-desc">'+escapeHtml(q.description)+'</div>':'')
       + '<div class="q-d-meta">'+tot+' остановок · ~'+questMins(q)+' мин</div>'
       + progLine
+      + '<div class="q-d-cta q-d-cta-top">'+cta+'</div>'
+      + ctaHint
       + '<div class="q-stops">'+stops+'</div>'
-      + '<div class="q-d-cta">'+cta+abandon+'</div>';
+      + (abandon?'<div class="q-d-cta q-d-cta-btm">'+abandon+'</div>':'');
     var bk=body.querySelector('[data-q-back]'); if(bk) bk.onclick=function(){ QUEST.detailKey=null; questsRender(); };
     var acc=body.querySelector('[data-q-accept]'); if(acc) acc.onclick=function(){ questAccept(q.key); };
     var con=body.querySelector('[data-q-continue]'); if(con) con.onclick=function(){ questGoNext(q.key); };
@@ -8150,7 +8155,7 @@
     body.querySelectorAll('[data-stop]').forEach(function(d){ d.onclick=function(){ QUEST.focus=q.key; questGoStop(d.getAttribute('data-stop')); }; });
   }
 
-  function questAccept(key){ var qs=questState(); qs.active[key]=Date.now(); QUEST.focus=key; saveState(); questGoNext(key); }
+  function questAccept(key){ var qs=questState(); qs.active[key]=Date.now(); QUEST.focus=key; saveState(); var q=questBy(key); var n=q?(q.slugs||[]).length:0; if(typeof toast==='function') toast('Маршрут начат'+(n?' · '+n+' остановок':'')); questGoNext(key); }
   function questGoNext(key){ QUEST.focus=key; var q=questBy(key); if(!q) return; var next=questNextStop(q); if(!next) next=(q.slugs||[])[0]; questGoStop(next); }
   function questGoStop(slug){ closeQuests(); KBM_HISTORY=[]; KBM.currentSlug=null; var node=KBM.bySlug && KBM.bySlug[slug]; if(node && typeof cnToCard==='function') cnToCard(node, QUEST.focus); }
   function questAbandon(key){ var qs=questState(); delete qs.active[key]; if(QUEST.focus===key) QUEST.focus=null; saveState(); if(typeof toast==='function') toast('Маршрут оставлен — прогресс сохранён'); QUEST.detailKey=null; questsRender(); }
