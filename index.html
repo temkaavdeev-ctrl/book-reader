@@ -719,6 +719,26 @@
   /* убрать у крупных поверхностей дёрганье на тач */
   .iconbtn,.btn,.bn-item,.menu-item,.toc-item,.book-card{ touch-action:manipulation }
 
+  /* ── Финальная полировка UX (единый язык интерактива по всей Матчасти) ── */
+  /* единый плавный отклик + touch-action для всего тапаемого, чему не хватало */
+  .kbm-crow,.kbm-like-btn,.kbm-back-btn,.kbm-filter-toggle,.kbm-filter-chip,.kbm-filter-clear,
+  .kbm-fnd-banner,.kbm-fnd-node,.kbm-d-conj-link,.cn-rec,.cn-rec-x,.atom-close,.blb-x,
+  .constel-routes,.constel-ctl{
+    transition:transform .13s var(--spring), background .16s var(--ease), color .16s var(--ease), border-color .16s var(--ease), box-shadow .16s var(--ease);
+    touch-action:manipulation }
+  /* состояние нажатия — везде, где его не было: крупное мягче, мелкое глубже */
+  .kbm-crow:active,.kbm-like-btn:active,.kbm-back-btn:active,.kbm-filter-toggle:active,
+  .kbm-filter-chip:active,.kbm-fnd-banner:active,.kbm-fnd-node:active,.kbm-d-conj-link:active,
+  .cn-rec:active,.constel-routes:active{ transform:scale(.97) }
+  .cn-rec-x:active,.atom-close:active,.blb-x:active,.constel-ctl:active,.kbm-filter-clear:active{ transform:scale(.9) }
+  /* комфортная область клика для часто нажимаемого */
+  .kbm-like-btn{ min-height:40px }
+  .kbm-filter-toggle{ min-height:38px }
+  .kbm-filter-chip{ min-height:34px; padding:7px 11px }
+  /* крестики (×) — единый круглый ghost-стиль с достаточной зоной */
+  .blb-x{ width:34px; height:34px; padding:0; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px }
+  .blb-x:active,.cn-rec-x:active,.atom-close:active{ background:var(--accent-soft) }
+
   /* end-of-chapter rating (v2.6) */
   /* === End of chapter (v4.6) === */
   .chapter-end{max-width:680px; margin:0 auto; padding:0 32px 96px}
@@ -1412,7 +1432,7 @@
   /* The concept arrives when you dive in — a brief rise, matching the reading surface */
   .kbm-det.kbm-det-enter{ animation:kbmDetEnter .34s var(--spring) }
   @keyframes kbmDetEnter{ from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none} }
-  #kbmDetBody{ flex:1; overflow-y:auto; padding:16px 18px calc(var(--tabbar-h) + env(safe-area-inset-bottom,0px) + 28px) }
+  #kbmDetBody{ flex:1; overflow-y:auto; padding:18px 20px calc(var(--tabbar-h) + env(safe-area-inset-bottom,0px) + 28px) }
   .kbm-d-meta{ display:flex; flex-wrap:wrap; align-items:center; gap:7px; margin-bottom:12px }
   .kbm-kind{ font-family:var(--font-ui); font-size:11px; font-weight:600; letter-spacing:0; color:var(--muted) }
   .kbm-rob{ font-family:var(--font-ui); font-size:9.5px; font-weight:700; padding:2px 7px; border-radius:999px; color:#fff; letter-spacing:.03em }
@@ -1825,14 +1845,14 @@
 
 /* ════════ Перенос из KB-эксплорера ════════ */
 /* ── Карточка концепта: поток для чтения вместо «островов» ── */
-#kbmDetBody{ max-width:700px; margin:0 auto }
+#kbmDetBody{ width:100%; max-width:700px; margin:0 auto; overflow-wrap:break-word }
 .kbm-d-claim{ font-family:var(--font-read); font-style:italic; font-size:20.5px; line-height:1.5; color:var(--ink); margin:12px 0 26px; padding:2px 0 2px 16px; border-left:2px solid var(--accent) }
-.kbm-sec{ margin:0; padding:22px 0 0; background:none; border:none; border-top:1px solid var(--line); border-radius:0 }
-.kbm-sec-body{ font-size:calc(15px * var(--kbm-read-scale,1.06)); line-height:1.62 }
-.kbm-sec-lbl{ margin-bottom:8px }
+.kbm-sec{ margin:0; padding:28px 0 0; background:none; border:none; border-top:1px solid var(--line); border-radius:0 }
+.kbm-sec-body{ font-size:calc(16px * var(--kbm-read-scale,1.06)); line-height:1.68; color:var(--read) }
+.kbm-sec-lbl{ font-size:12px; letter-spacing:.02em; margin-bottom:10px }
 .kbm-sec-ana{ border-top:1px solid var(--line) }
 .kbm-sec-ana .kbm-sec-body{ font-style:italic; font-family:var(--font-read) }
-.kbm-sec-app{ background:none; border:none; border-top:1px solid var(--line); padding:18px 0 0 }
+.kbm-sec-app{ background:none; border:none; border-top:1px solid var(--line); padding:24px 0 0 }
 .kbm-sec-actual .kbm-sec-lbl{ color:color-mix(in srgb, var(--accent) 72%, var(--read)) }
 .kbm-sec-twin .kbm-sec-lbl{ color:color-mix(in srgb, var(--accent) 72%, var(--read)) }
 .kbm-sec-anti .kbm-sec-lbl{ color:var(--danger) }
@@ -1845,17 +1865,17 @@
 .kbm-sig-btn:active{ transform:scale(.97) }
 .kbm-sig-on{ border-color:color-mix(in srgb,var(--accent) 55%,var(--line)); background:var(--accent-tint); color:var(--accent); font-weight:600 }
 .kbm-sec-app .kbm-sec-body{ color:var(--read) }
-.kbm-sec-note,.kbm-sec-kontr{ background:none; border:none; border-top:1px solid var(--line); padding:18px 0 0 }
+.kbm-sec-note,.kbm-sec-kontr{ background:none; border:none; border-top:1px solid var(--line); padding:24px 0 0 }
 /* ── D2: «ход» (применение) ведёт; теория и устойчивость — в сворачиваемом блоке ── */
-.kbm-sec-lead{ margin:2px 0 4px; padding:14px 15px; border:1px solid color-mix(in srgb,var(--accent) 34%,var(--line)); border-left:3px solid var(--accent); border-radius:12px; background:var(--accent-tint) }
-.kbm-sec-lead .kbm-sec-body{ font-size:15px; color:var(--read) }
+.kbm-sec-lead{ margin:4px 0 6px; padding:17px 18px; border:1px solid color-mix(in srgb,var(--accent) 34%,var(--line)); border-left:3px solid var(--accent); border-radius:13px; background:var(--accent-tint) }
+.kbm-sec-lead .kbm-sec-body{ font-size:16px; color:var(--read) }
 .kbm-sec-lead .kbm-sec-lbl-app{ color:var(--accent) }
 .kbm-theory{ margin:0; border-top:1px solid var(--line) }
-.kbm-theory>summary.kbm-theory-sum{ list-style:none; cursor:pointer; display:flex; align-items:baseline; gap:9px; padding:16px 0 0; -webkit-tap-highlight-color:transparent }
+.kbm-theory>summary.kbm-theory-sum{ list-style:none; cursor:pointer; display:flex; align-items:baseline; gap:9px; padding:28px 0 2px; -webkit-tap-highlight-color:transparent }
 .kbm-theory>summary.kbm-theory-sum::-webkit-details-marker{ display:none }
 .kbm-theory-caret{ color:var(--muted); font-size:11px; transition:transform .18s ease }
 .kbm-theory[open] .kbm-theory-caret{ transform:rotate(90deg) }
-.kbm-theory-sum-t{ font-family:var(--font-ui); font-size:10.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--muted) }
+.kbm-theory-sum-t{ font-family:var(--font-ui); font-size:12.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--read) }
 .kbm-theory[open] .kbm-theory-sum-t{ color:var(--read) }
 .kbm-theory-sum-h{ font-size:12.5px; color:var(--muted); opacity:.8 }
 .kbm-theory-body{ padding-top:2px }
@@ -2234,6 +2254,10 @@
 .menu-set-row{ padding:13px 16px 15px }
 .menu-set-lbl{ display:block; font-size:13.5px; color:var(--muted); margin-bottom:9px }
 .menu-theme-seg{ width:100% }
+.menu-fs{ display:flex; align-items:center; gap:10px }
+.menu-fs-btn{ min-width:46px; height:38px; border:1px solid var(--line); background:var(--card); color:var(--read); border-radius:9px; font-family:var(--font-ui); font-size:14px; font-weight:650; cursor:pointer; line-height:1 }
+.menu-fs-btn:active{ transform:scale(.94) }
+.menu-fs-val{ min-width:34px; text-align:center; color:var(--muted); font-family:var(--font-read); line-height:1; transition:font-size .12s ease }
 
 /* ── Пульт (cockpit): админ-обзор координации ────────────────────────────── */
 #cockpit{ position:fixed; inset:0; z-index:200; background:var(--bg); display:none; flex-direction:column }
@@ -2341,10 +2365,6 @@
 .q-cta:active{ transform:scale(.99); }
 .q-cta-ghost{ background:transparent; border:1px solid var(--line-2); color:var(--ink); }
 .constel-routes{ height:42px; padding:0 15px; border-radius:21px; border:1px solid rgba(220,179,107,.5); background:rgba(120,90,40,.32); color:#e8c079; font-family:var(--font-ui); font-size:14px; font-weight:650; cursor:pointer; backdrop-filter:blur(8px); white-space:nowrap; flex-shrink:0; transition:background .15s; }
-.constel-routes-fab{ position:absolute; right:14px; bottom:calc(var(--tabbar-h) + env(safe-area-inset-bottom,0px) + 82px); z-index:5; display:flex; align-items:center; gap:7px; min-height:46px; padding:0 18px; border-radius:23px; border:1px solid rgba(228,182,118,.5); background:rgba(30,24,18,.82); color:#f0d9b8; font-family:var(--font-ui); font-size:15px; font-weight:650; cursor:pointer; -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); box-shadow:0 6px 20px rgba(0,0,0,.4); transition:opacity .3s, transform .12s }
-.constel-routes-fab:active{ transform:scale(.96) }
-.constel-routes-fab .crf-ic{ color:rgba(228,182,118,.95); font-size:13px; line-height:1 }
-#constel.constel-exploring .constel-routes-fab{ opacity:0; pointer-events:none }
 .constel-routes:hover{ background:rgba(120,90,40,.5); }
 
 /* мини-трекер маршрута на карточке остановки */
@@ -2772,6 +2792,7 @@
   <canvas id="constelCanvas"></canvas>
   <div class="constel-top">
     <div class="constel-ttl">Созвездие<span id="constelCount"></span></div>
+    <button class="constel-routes" id="constelRoutesBtn">Маршруты</button>
     <button class="constel-ctl" id="constelDepthBtn" title="Глубина — взвешенные узлы">◐</button>
     <button class="constel-ctl" id="constelLegendBtn" title="Цвета дисциплин">◉</button>
     <button class="constel-ctl" id="constelReset" title="Показать всё">⊙</button>
@@ -2781,7 +2802,6 @@
     <span class="constel-route-cap" id="constelRouteCap"></span>
   </div>
   <div class="constel-hint" id="constelHint">одним пальцем — двигать · щипком — приблизить · двумя пальцами — повернуть</div>
-  <button class="constel-routes-fab" id="constelRoutesBtn"><span class="crf-ic">✦</span>Маршруты</button>
   <div class="constel-chip" id="constelChip" style="display:none">
     <div class="constel-chip-kind" id="constelChipKind"></div>
     <div class="constel-chip-ttl" id="constelChipTtl"></div>
@@ -7123,7 +7143,7 @@
           +sec('История','📖',story,'kbm-sec-hist')
           +(note?'<div class="kbm-sec kbm-sec-note"><div class="kbm-sec-lbl">🔍 Об устойчивости</div><div class="kbm-sec-body">'+escapeHtml(note)+'</div></div>':'');
         if(!theory) return '';
-        var op=(!application && !ex)?' open':'';
+        var op=' open';   // теорию не прячем — видна по умолчанию, при желании сворачивается
         return '<details class="kbm-theory"'+op+'><summary class="kbm-theory-sum"><span class="kbm-theory-caret">▸</span><span class="kbm-theory-sum-t">Теория и глубина</span><span class="kbm-theory-sum-h">как и почему это работает</span></summary><div class="kbm-theory-body">'+theory+'</div></details>';
       })()
       // depth — «из чего объяснён» (its own visual hook, stays visible)
@@ -7611,7 +7631,14 @@
           + '<button class="seg-btn" data-th="light">\u0421\u0432\u0435\u0442\u043b\u0430\u044f</button>'
           + '<button class="seg-btn" data-th="dark">\u0422\u0451\u043c\u043d\u0430\u044f</button>'
           + '<button class="seg-btn" data-th="auto">\u0410\u0432\u0442\u043e</button>'
-          + '</div></div></div>';
+          + '</div></div>'
+          + '<div class="menu-set-row"><span class="menu-set-lbl">\u0420\u0430\u0437\u043c\u0435\u0440 \u0442\u0435\u043a\u0441\u0442\u0430</span>'
+          + '<div class="menu-fs" id="menuFs">'
+          + '<button class="menu-fs-btn" data-menu-font="dec" aria-label="\u041c\u0435\u043b\u044c\u0447\u0435">A\u2212</button>'
+          + '<span class="menu-fs-val" id="menuFsVal">\u0410\u0430</span>'
+          + '<button class="menu-fs-btn" data-menu-font="inc" aria-label="\u041a\u0440\u0443\u043f\u043d\u0435\u0435">A+</button>'
+          + '</div></div>'
+          + '</div>';
     if(typeof isAdmin!=='undefined' && isAdmin){
       rows += '<div class="menu-v-sec">Служебное</div><div class="menu-group">'
             + menuRow('Пульт', '', 'cockpit')
@@ -7620,7 +7647,7 @@
             + menuRow('Админка', '', 'admin')
             + '</div>';
     }
-    rows += '<div class="menu-version">Версия 2026-06-22 22:46 · cb69c2a</div>';
+    rows += '<div class="menu-version">Версия 2026-06-22 23:27 · 5aeb7d5</div>';
     body.innerHTML = '<div class="menu-v-head"><h2 class="menu-v-title">Меню</h2></div><div class="menu-v-list">'+rows+'</div>';
     Array.prototype.forEach.call(body.querySelectorAll('[data-menu-act]'), function(b){
       b.onclick = function(){ menuAct(b.getAttribute('data-menu-act')); };
@@ -7631,6 +7658,17 @@
       b.onclick=function(){ state.theme=b.getAttribute('data-th'); applyTheme(); if(typeof saveState==='function') saveState(); };
     }); }
     if(typeof applyTheme==='function') applyTheme();  // подсветить активную кнопку темы
+    // размер текста: общий state.fontSize (книга + карточка) через kbmFontStep
+    Array.prototype.forEach.call(body.querySelectorAll('[data-menu-font]'), function(b){
+      b.onclick=function(){ if(typeof kbmFontStep==='function') kbmFontStep(b.getAttribute('data-menu-font')); menuFsReflect(); };
+    });
+    menuFsReflect();
+  }
+  function menuFsReflect(){
+    var v=document.getElementById('menuFsVal'); if(!v) return;
+    var FS=(typeof FONTS!=='undefined'&&FONTS.length)?FONTS:[17,19,21,23];
+    var i=Math.max(0,Math.min(FS.length-1,(state.fontSize|0)));
+    v.style.fontSize=(13+i*3)+'px';
   }
   function menuAct(act){
     function clickId(id){ var e=document.getElementById(id); if(e) e.click(); }
