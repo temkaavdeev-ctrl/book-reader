@@ -1872,6 +1872,9 @@
 .kbm-fb-send{ margin-top:8px; min-height:40px; padding:0 16px; border:1px solid color-mix(in srgb,var(--accent) 40%,var(--line)); border-radius:var(--r-m); background:var(--accent-tint); color:var(--accent); font-family:var(--font-ui); font-size:13.5px; font-weight:650; cursor:pointer; transition:transform .13s var(--spring); touch-action:manipulation }
 .kbm-fb-send:active{ transform:scale(.97) }
 .kbm-fb-done{ margin-top:14px; font-size:13px; color:var(--muted); padding:11px 12px; border:1px dashed var(--line); border-radius:var(--r-m); text-align:center }
+.kbm-cstat{ font-size:12px; font-family:var(--font-ui); padding:7px 12px; border-radius:var(--r-m); margin-bottom:14px; border:1px solid var(--line) }
+.kbm-cstat-ready{ color:color-mix(in srgb,var(--accent) 85%,var(--ink)); background:var(--accent-tint); border-color:color-mix(in srgb,var(--accent) 30%,var(--line)) }
+.kbm-cstat-draft{ color:var(--muted); background:var(--card) }
 .kbm-intro{ position:relative; margin:0 0 16px; padding:16px 18px 17px; border:1px solid color-mix(in srgb,var(--accent) 26%,var(--line)); border-radius:var(--r-l); background:var(--accent-tint) }
 .kbm-intro-x{ position:absolute; top:8px; right:8px; width:30px; height:30px; border:none; background:transparent; color:var(--muted); border-radius:50%; cursor:pointer; font-size:13px; display:flex; align-items:center; justify-content:center; transition:transform .13s var(--spring); touch-action:manipulation }
 .kbm-intro-x:active{ background:var(--accent-soft); transform:scale(.9) }
@@ -6962,6 +6965,14 @@
   }
   // L2 измерение (canon v3 «Сейчас»): сигнал ПОЛЬЗЫ на карточке — применимо/интересно/не нашёл.
   // Анти-метрика: меряем полезность, не вовлечённость. Последний выбор на концепт (append-only в reader_signals).
+  function kbmCardStatus(slug){
+    var nd=KBM.bySlug&&KBM.bySlug[slug]; if(!nd) return '';
+    var cs=nd.content_status||'';
+    var dt=nd.updated_at?String(nd.updated_at).slice(0,10):'';
+    if(cs==='ready') return '<div class="kbm-cstat kbm-cstat-ready">\u2713 \u041a\u0430\u0440\u0442\u043e\u0447\u043a\u0430 \u0433\u043e\u0442\u043e\u0432\u0430'+(dt?' \u00b7 \u043e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u0430 '+dt:'')+'</div>';
+    if(cs==='draft') return '<div class="kbm-cstat kbm-cstat-draft">\u270f \u0415\u0449\u0451 \u0434\u043e\u043f\u0438\u0441\u044b\u0432\u0430\u0435\u0442\u0441\u044f'+(dt?' \u00b7 \u0438\u0437\u043c\u0435\u043d\u0435\u043d\u0430 '+dt:'')+'</div>';
+    return '';
+  }
   function kbmSignalBar(slug){
     var cur=(KBM.signals&&KBM.signals[slug])||'';
     var rate=(state.rating&&state.rating[slug])||0;
@@ -7019,8 +7030,7 @@
       +'<button class="kbm-like-btn'+(liked?' kbm-liked':'')+'" id="kbmDetHeart" data-kbm-like="'+escapeHtml(slug)+'">'+(liked?'♥ В избранном':'♡ В избранное')+'</button>'
       +'<div class="kbm-d-claim" id="kbmDetClaim">'+escapeHtml(claim)+'</div>';
     body.innerHTML='<div id="kbmDetCard">'
-      +'<div class="kbm-readbar"><button class="kbm-fbtn" data-kbm-font="dec" aria-label="\u041c\u0435\u043d\u044c\u0448\u0435">A\u2212</button><button class="kbm-fbtn" data-kbm-font="inc" aria-label="\u041a\u0440\u0443\u043f\u043d\u0435\u0435">A+</button></div>'
-      +hero+kbmStateBanner(node)+'<div id="kbmQuestTracker">'+questTrackerHtml(slug)+'</div>'+'<div class="kbm-sections" id="kbmDetSections"><div class="kbm-detail-pending"></div></div>'+kbmMiniMap(slug)+kbmChapterRefs(slug)+kbmSituationRefs(slug)+'<div id="kbmSigWrap">'+kbmSignalBar(slug)+'</div>'+'<div id="kbmQuestAdvance">'+(typeof questAdvanceHtml==='function'?questAdvanceHtml(slug):'')+'</div>'
+      +hero+kbmStateBanner(node)+'<div id="kbmQuestTracker">'+questTrackerHtml(slug)+'</div>'+'<div class="kbm-sections" id="kbmDetSections"><div class="kbm-detail-pending"></div></div>'+kbmMiniMap(slug)+kbmChapterRefs(slug)+kbmSituationRefs(slug)+'<div id="kbmSigWrap">'+kbmCardStatus(slug)+kbmSignalBar(slug)+'</div>'+'<div id="kbmQuestAdvance">'+(typeof questAdvanceHtml==='function'?questAdvanceHtml(slug):'')+'</div>'
       +'<div id="kbmCardNext" class="kbm-next"></div>'
       +'<div class="kbm-detnav"><button class="kbm-back-btn kbm-back-btm" id="kbmDetBackBtm" data-kbm-back-btm="1"><span class="kbm-back-arr">\u2190</span><span class="kbm-back-lbl">\u041d\u0430\u0437\u0430\u0434</span></button><button class="kbm-back-btn kbm-fav-btm'+(liked?' kbm-fav-on':'')+'" id="kbmDetFavBtm" data-kbm-like="'+escapeHtml(slug)+'" aria-label="\u0412 \u0438\u0437\u0431\u0440\u0430\u043d\u043d\u043e\u0435">'+(liked?'\u2665':'\u2661')+'</button><button class="kbm-back-btn kbm-fwd-btm" id="kbmDetFwdBtm" data-kbm-fwd-btm="1" style="display:none"><span class="kbm-back-lbl">\u0412\u043f\u0435\u0440\u0451\u0434</span><span class="kbm-back-arr">\u2192</span></button></div>'
       +'</div>';
@@ -7551,25 +7561,28 @@
   function kbCloseCard(){var ov=document.getElementById('kbCard');if(ov){ov.style.display='none';ov.innerHTML='';}}
   function renderShelf(){
     var box=document.getElementById('shelfList'); box.innerHTML='';
-    BOOKS.forEach(function(b){
-      var draft=(b._chapters!=null && b._chapters>0 && b._chapters<5);  // тонкая книга = черновик: бейдж + приглушение; тап открывает реальные главы
-      var card=document.createElement('div'); card.className='book-card'+(b.id===currentBook()?' current':'')+(draft?' book-card-draft':'');
-      if(draft){ var db=document.createElement('div'); db.className='book-draft-badge'; db.textContent='\u0447\u0435\u0440\u043d\u043e\u0432\u0438\u043a'; card.appendChild(db); }
-      var cov=document.createElement('div'); cov.className='book-cover'; cov.textContent=(b.title||'?').slice(0,1).toUpperCase();
-      var ti=document.createElement('div'); ti.className='book-title'; ti.textContent=b.title;
-      card.appendChild(cov); card.appendChild(ti);
-      if(b.subtitle){ var su=document.createElement('div'); su.className='book-sub'; su.textContent=b.subtitle; card.appendChild(su); }
-      if(b.id===currentBook()){
-        var st=bookReadStats();
-        if(st.total){
-          var pb=document.createElement('div'); pb.className='book-prog';
-          pb.innerHTML='<div class="bp-bar"><i style="width:'+st.pct+'%"></i></div><div class="bp-lbl">'+(st.pct>0?('Продолжить \u00b7 '+st.pct+'%'):'Начать чтение')+'</div>';
-          card.appendChild(pb);
+    // Книги — только для администратора (в работе, не для читателей)
+    if(typeof isAdmin!=='undefined' && isAdmin){
+      BOOKS.forEach(function(b){
+        var draft=(b._chapters!=null && b._chapters>0 && b._chapters<5);
+        var card=document.createElement('div'); card.className='book-card'+(b.id===currentBook()?' current':'')+(draft?' book-card-draft':'');
+        if(draft){ var db=document.createElement('div'); db.className='book-draft-badge'; db.textContent='\u0447\u0435\u0440\u043d\u043e\u0432\u0438\u043a'; card.appendChild(db); }
+        var cov=document.createElement('div'); cov.className='book-cover'; cov.textContent=(b.title||'?').slice(0,1).toUpperCase();
+        var ti=document.createElement('div'); ti.className='book-title'; ti.textContent=b.title;
+        card.appendChild(cov); card.appendChild(ti);
+        if(b.subtitle){ var su=document.createElement('div'); su.className='book-sub'; su.textContent=b.subtitle; card.appendChild(su); }
+        if(b.id===currentBook()){
+          var st=bookReadStats();
+          if(st.total){
+            var pb=document.createElement('div'); pb.className='book-prog';
+            pb.innerHTML='<div class="bp-bar"><i style="width:'+st.pct+'%"></i></div><div class="bp-lbl">'+(st.pct>0?('Продолжить \u00b7 '+st.pct+'%'):'Начать чтение')+'</div>';
+            card.appendChild(pb);
+          }
         }
-      }
-      card.onclick=function(){ openBook(b.id); };
-      box.appendChild(card);
-    });
+        card.onclick=function(){ openBook(b.id); };
+        box.appendChild(card);
+      });
+    }
     // Серия «Ликбез» — коллекция разборов (атомы = главы). Делает атомы находимыми с полки-дома.
     if(typeof ATOM_SERIES!=='undefined' && ATOM_SERIES.atoms && ATOM_SERIES.atoms.length){
       var sc=document.createElement('div'); sc.className='book-card series-card';
@@ -7698,7 +7711,7 @@
             + menuRow('Админка', '', 'admin')
             + '</div>';
     }
-    rows += '<div class="menu-version">Версия 2026-06-23 07:03 · 03803c6</div>';
+    rows += '<div class="menu-version">Версия 2026-06-23 07:59 · 6257248</div>';
     body.innerHTML = '<div class="menu-v-head"><h2 class="menu-v-title">Меню</h2></div><div class="menu-v-list">'+rows+'</div>';
     Array.prototype.forEach.call(body.querySelectorAll('[data-menu-act]'), function(b){
       b.onclick = function(){ menuAct(b.getAttribute('data-menu-act')); };
