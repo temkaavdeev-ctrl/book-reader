@@ -37,7 +37,7 @@
     --line:#E5E5E4; --line-2:#D7D7D6;
     --accent:#B0792B; --accent-2:#9A6B1F; --accent-soft:#F3E9D7; --accent-tint:#FAF4EA; --text-on-accent:#ffffff;
     --hl:#fbe7a0; --hl-edge:#d8a838;
-    --good:#4E7C5A; --warn:#C28A3A; --danger:#B5503C;
+    --good:#3E7D52; --warn:#B8801F; --danger:#B0452F; --info:#6B5CA5; --tension:#C2546A;
     --code:#f1ece0; --tip:#201d17; --tip-fg:#fbf8f1;
     --mk-bg:#f4ebd9; --mk-line:#e6d6b4; --mk-fg:#9b7338;
     --shadow:0 2px 8px rgba(50,40,20,.06); --shadow-lg:0 10px 34px rgba(45,35,18,.13);
@@ -47,8 +47,8 @@
     /* шкала отступов 4·8·12·16·24·32·48 */
     --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px; --sp-7:48px;
     /* движение: длительности + кривые (один словарь на все переходы) */
-    --dur-fast:120ms; --dur-base:200ms; --dur-slow:320ms;
-    --ease-std:cubic-bezier(.4,0,.2,1); --ease-out:cubic-bezier(.16,1,.3,1); --ease-in:cubic-bezier(.4,0,1,1);
+    --dur-instant:80ms; --dur-fast:140ms; --dur-base:200ms; --dur-slow:280ms; --dur-deliberate:360ms;
+    --ease-std:cubic-bezier(.2,0,0,1); --ease-out:cubic-bezier(.16,1,.3,1); --ease-in:cubic-bezier(.4,0,1,1); --ease-decelerate:cubic-bezier(0,0,0,1); --ease-accelerate:cubic-bezier(.3,0,1,1); --ease-spring:cubic-bezier(.16,1,.3,1);
   }
   html[data-theme="dark"]{
     --bg:#161619; --panel:#26262A; --card:#1F1F23;
@@ -56,7 +56,7 @@
     --line:#2D2D33; --line-2:#393940;
     --accent:#d7a664; --accent-2:#e2b473; --accent-soft:#2E2719; --accent-tint:#221d14; --text-on-accent:#1B1A17;
     --hl:#574518; --hl-edge:#c39a3c;
-    --good:#6FA07C; --warn:#d6a84e; --danger:#D98A6E;
+    --good:#6FA07C; --warn:#d6a84e; --danger:#D98A6E; --info:#9a8cd0; --tension:#d4798b;
     --code:#2a2619; --tip:#34302a; --tip-fg:#f1ece1;
     --mk-bg:#332c1e; --mk-line:#4a4030; --mk-fg:#cda665;
     --shadow:0 2px 10px rgba(0,0,0,.38); --shadow-lg:0 14px 44px rgba(0,0,0,.5);
@@ -71,7 +71,7 @@
   html[data-theme="dark"] #content .twist-feedback{ color:var(--read) }
   *{box-sizing:border-box}
   @media (prefers-reduced-motion: reduce){
-    :root{ --dur-fast:1ms; --dur-base:1ms; --dur-slow:1ms; }
+    :root{ --dur-instant:1ms; --dur-fast:1ms; --dur-base:1ms; --dur-slow:1ms; --dur-deliberate:1ms; }
     *{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important; }
   }
   html{background:var(--bg)}
@@ -1783,12 +1783,12 @@
   #constel{ position:fixed; inset:0; z-index:45; background:#0d0d0f; overscroll-behavior:none; touch-action:none }
   #constelCanvas{ position:absolute; inset:0; width:100%; height:100%; display:block; cursor:grab; touch-action:none; -webkit-user-select:none; user-select:none; -webkit-touch-callout:none }
   #constelCanvas:active{ cursor:grabbing }
-  .constel-top{ position:absolute; top:0; left:0; right:0; display:flex; align-items:center; gap:12px; padding:calc(12px + env(safe-area-inset-top,0px)) 16px 12px; background:linear-gradient(#0e0c0aee, #0e0c0a00); pointer-events:none; z-index:2 }
+  .constel-top{ position:absolute; top:0; left:0; right:0; display:flex; align-items:center; gap:8px; padding:calc(12px + env(safe-area-inset-top,0px)) 16px 12px; background:linear-gradient(#0e0c0aee, #0e0c0a00); pointer-events:none; z-index:2 }
   .constel-top > *{ pointer-events:auto }
-  .constel-close, .constel-reset, .constel-ctl{ width:42px; height:42px; border-radius:50%; border:1px solid rgba(220,190,150,.22); background:rgba(30,24,18,.7); color:#e8d9c5; font-size:19px; cursor:pointer; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(8px); transition:border-color .15s,background .15s; flex-shrink:0 }
+  .constel-close, .constel-reset, .constel-ctl{ width:38px; height:38px; border-radius:50%; border:1px solid rgba(220,190,150,.22); background:rgba(30,24,18,.7); color:#e8d9c5; font-size:19px; cursor:pointer; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(8px); transition:border-color .15s,background .15s; flex-shrink:0 }
   .constel-close:hover, .constel-reset:hover, .constel-ctl:hover{ border-color:rgba(220,190,150,.5) }
   .constel-ctl.on{ border-color:rgba(220,179,107,.6); background:rgba(120,90,40,.4); color:#e8c079 }
-  .constel-ttl{ flex:1; min-width:0; font-family:var(--font-ui); font-size:16px; font-weight:700; color:#f0e4d2; letter-spacing:-.01em; text-shadow:0 1px 4px rgba(0,0,0,.6) }
+  .constel-ttl{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-family:var(--font-ui); font-size:16px; font-weight:700; color:#f0e4d2; letter-spacing:-.01em; text-shadow:0 1px 4px rgba(0,0,0,.6) }
   .constel-ttl span{ font-weight:400; color:#b7a892; font-size:13px }
   .constel-listbtn{ height:42px; padding:0 18px; border-radius:21px; border:1px solid color-mix(in srgb,var(--accent) 45%,var(--line-2)); background:linear-gradient(135deg, color-mix(in srgb,var(--accent) 30%,transparent), color-mix(in srgb,var(--accent) 10%,transparent)); color:var(--accent); font-family:var(--font-ui); font-size:14.5px; font-weight:600; cursor:pointer; backdrop-filter:blur(8px); display:flex; align-items:center; gap:6px; transition:border-color .15s,background .15s; white-space:nowrap }
   .constel-listbtn:hover{ border-color:var(--accent); background:color-mix(in srgb,var(--accent) 20%,transparent) }
@@ -1856,7 +1856,7 @@
   --fs-claim:calc(20px * var(--kbm-read-scale,1.08)); --fs-h:calc(14px * var(--kbm-read-scale,1.08));
   --fs-body:calc(16px * var(--kbm-read-scale,1.08)); --fs-label:calc(12.5px * var(--kbm-read-scale,1.08));
   --fs-small:calc(11.5px * var(--kbm-read-scale,1.08)) }
-.kbm-d-claim{ font-family:var(--font-read); font-style:italic; font-size:var(--fs-claim); line-height:1.5; color:var(--ink); margin:12px 0 26px; padding:2px 0 2px 16px; border-left:2px solid var(--accent) }
+.kbm-d-claim{ font-family:var(--font-read); font-style:normal; font-size:var(--fs-claim); line-height:1.5; color:var(--ink); margin:12px 0 26px; padding:2px 0 2px 16px; border-left:2px solid var(--accent) }
 .kbm-sec{ margin:0; padding:28px 0 0; background:none; border:none; border-top:1px solid var(--line); border-radius:0 }
 .kbm-sec-body{ font-size:var(--fs-body); line-height:1.68; color:var(--read) }
 .kbm-sec-lbl{ font-size:var(--fs-label); letter-spacing:.02em; margin-bottom:10px }
@@ -2419,7 +2419,7 @@
 .q-cta{ display:block; width:100%; padding:15px; border-radius:14px; border:none; background:var(--accent); color:var(--text-on-accent); font-family:var(--font-ui); font-size:16px; font-weight:650; cursor:pointer; transition:transform .1s; }
 .q-cta:active{ transform:scale(.99); }
 .q-cta-ghost{ background:transparent; border:1px solid var(--line-2); color:var(--ink); }
-.constel-routes{ height:42px; padding:0 15px; border-radius:21px; border:1px solid rgba(220,179,107,.5); background:rgba(120,90,40,.32); color:#e8c079; font-family:var(--font-ui); font-size:14px; font-weight:650; cursor:pointer; backdrop-filter:blur(8px); white-space:nowrap; flex-shrink:0; transition:background .15s; }
+.constel-routes{ height:38px; padding:0 13px; border-radius:21px; border:1px solid rgba(220,179,107,.5); background:rgba(120,90,40,.32); color:#e8c079; font-family:var(--font-ui); font-size:14px; font-weight:650; cursor:pointer; backdrop-filter:blur(8px); white-space:nowrap; flex-shrink:0; transition:background .15s; }
 .constel-routes:hover{ background:rgba(120,90,40,.5); }
 
 /* мини-трекер маршрута на карточке остановки */
@@ -2504,6 +2504,55 @@
 .guest-teaser{position:fixed;left:50%;transform:translateX(-50%);bottom:76px;z-index:70;display:flex;align-items:center;gap:10px;max-width:92vw;padding:8px 10px 8px 15px;border-radius:999px;background:color-mix(in srgb,var(--accent) 10%,var(--card));border:1px solid var(--line);box-shadow:0 6px 20px rgba(0,0,0,.18);font:12.5px/1.2 var(--font-ui);color:var(--ink)}
 .guest-teaser-tx{opacity:.85}
 .guest-teaser-btn{flex:none;padding:6px 15px;border-radius:999px;border:0;background:var(--accent);color:#fff;font:600 12.5px var(--font-ui);cursor:pointer}
+
+/* Лендинг (Б4b-3) — совсем простой вход для гостя */
+.landing{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--bg);overflow:auto}
+.landing-card{max-width:440px;width:100%}
+.landing-title{font:700 26px/1.2 var(--font-ui);color:var(--ink);margin-bottom:10px;letter-spacing:-.01em}
+.landing-sub{font:15px/1.5 var(--font-ui);color:var(--muted);margin-bottom:22px}
+.landing-list{list-style:none;padding:0;margin:0 0 26px;display:flex;flex-direction:column;gap:11px}
+.landing-list li{position:relative;padding-left:18px;font:14px/1.45 var(--font-ui);color:var(--read)}
+.landing-list li:before{content:'';position:absolute;left:3px;top:8px;width:5px;height:5px;border-radius:50%;background:var(--accent)}
+.landing-cta{display:flex;flex-direction:column;gap:10px}
+.landing-btn{padding:13px 18px;border-radius:var(--r-m);border:1px solid var(--line);background:var(--card);color:var(--ink);font:600 15px var(--font-ui);cursor:pointer}
+.landing-btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* B20: десктоп — ограничить длину строки контента Матчасти/карточки (~680-720px) */
+@media (min-width:760px){
+  #kbmBody > *{ max-width:720px; margin-left:auto; margin-right:auto }
+}
+
+/* Лендинг — тёмная тема + мерцающие мини-звёзды (как Созвездие) */
+.landing{ background:#0e0c0a }
+.landing .landing-title{ color:#f5ecd9 }
+.landing .landing-sub{ color:#b8a890 }
+.landing .landing-list li{ color:#d6c6ae }
+.landing-stars{ position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:0 }
+.landing-stars i{ position:absolute; border-radius:50%; background:#fff; opacity:.25; box-shadow:0 0 3px rgba(255,255,255,.5); animation:landingTwinkle ease-in-out infinite }
+.landing-card{ position:relative; z-index:1 }
+@keyframes landingTwinkle{ 0%,100%{ opacity:.16 } 50%{ opacity:.9 } }
+@media (prefers-reduced-motion:reduce){ .landing-stars i{ animation:none; opacity:.4 } }
+.landing-btn{ background:rgba(44,36,26,.5); border-color:rgba(220,190,150,.22); color:#f0e4d2; -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px) }
+.landing-btn-primary{ background:var(--accent); border-color:transparent; color:#231706 }
+
+/* B03: слой 2 — «Разобрать глубже» (disclosure) */
+.kbm-deep{ margin:18px 0 6px; border-top:1px solid var(--line); }
+.kbm-deep-sum{ display:flex; align-items:center; gap:9px; padding:14px 2px; cursor:pointer; list-style:none; -webkit-user-select:none; user-select:none }
+.kbm-deep-sum::-webkit-details-marker{ display:none }
+.kbm-deep-sum::marker{ content:'' }
+.kbm-deep-caret{ color:var(--accent); font-size:13px; transition:transform .2s; flex:none }
+.kbm-deep[open] .kbm-deep-caret{ transform:rotate(90deg) }
+.kbm-deep-lbl{ font:600 15.5px var(--font-ui); color:var(--ink) }
+.kbm-deep-hint{ font:12.5px var(--font-ui); color:var(--muted) }
+.kbm-deep-body{ padding-top:2px; animation:kbmDeepIn .26s ease }
+@keyframes kbmDeepIn{ from{ opacity:0; transform:translateY(-4px) } to{ opacity:1; transform:none } }
+@media (prefers-reduced-motion:reduce){ .kbm-deep-body{ animation:none } }
+
+/* B18: находки с весом 0 — тусклее (и сортируются в конец) */
+.kbm-fnd-tile-w0{ opacity:.5 }
+
+/* B13: расшифровка термина (тултип) */
+.kbm-term{ border-bottom:1px dotted var(--muted); cursor:help; text-decoration:none }
 </style>
 </head>
 <body>
@@ -2854,9 +2903,9 @@
   <div class="constel-top">
     <div class="constel-ttl">Созвездие<span id="constelCount"></span></div>
     <button class="constel-routes" id="constelRoutesBtn">Маршруты</button>
-    <button class="constel-ctl" id="constelDepthBtn" title="Глубина — взвешенные узлы">◐</button>
-    <button class="constel-ctl" id="constelLegendBtn" title="Цвета дисциплин">◉</button>
-    <button class="constel-ctl" id="constelReset" title="Показать всё">⊙</button>
+    <button class="constel-ctl" id="constelDepthBtn" title="Глубина — взвешенные узлы" aria-label="Глубина">◐</button>
+    <button class="constel-ctl" id="constelLegendBtn" title="Цвета дисциплин" aria-label="Цвета дисциплин">◉</button>
+    <button class="constel-ctl" id="constelReset" title="Показать всё" aria-label="Показать всё">⊙</button>
   </div>
   <div class="constel-preview-bar" id="constelPreviewBar" style="display:none">
     <button class="constel-route-back" id="constelRouteBack">‹ К маршрутам</button>
@@ -4105,6 +4154,33 @@
   }
   // Гость тапнул member-действие → мягкий тост (вход — в тизере), действие не выполняем.
   function kbGuestGate(msg){ if(window.__GUEST){ try{ if(typeof toast==='function') toast(msg||'Войдите, чтобы сохранить'); }catch(_){ } return true; } return false; }
+  // Совсем простой лендинг — вход для незалогиненного (если не дип-ссылка на карточку).
+  function showLanding(){
+    window.__GUEST=true;
+    var g=document.getElementById('authGate'); if(g) g.style.display='none';
+    showTabbar(false);
+    var _gt=document.getElementById('guestTeaser'); if(_gt&&_gt.remove) _gt.remove();
+    var el=document.getElementById('landing');
+    if(!el){ el=document.createElement('div'); el.id='landing'; el.className='landing'; document.body.appendChild(el); }
+    el.innerHTML='<div class="landing-stars" id="landingStars" aria-hidden="true"></div>'
+      +'<div class="landing-card">'
+      +'<div class="landing-title">Система знаний о продукте</div>'
+      +'<div class="landing-sub">Научные теории, факты, подходы и фреймворки. И звёзды.</div>'
+      +'<ul class="landing-list">'
+      +'<li>Концепты влияния и решений: как работает, границы, связи</li>'
+      +'<li>Подходы и фреймворки для продуктовой работы</li>'
+      +'<li>Карта-созвездие — видны связи между идеями</li>'
+      +'</ul>'
+      +'<div class="landing-cta">'
+      +'<button class="landing-btn landing-btn-primary" id="landingBrowse">Открыть базу</button>'
+      +'<button class="landing-btn" id="landingLogin">Войти по приглашению</button>'
+      +'</div></div>';
+    el.style.display='flex';
+    var sf=document.getElementById('landingStars');
+    if(sf && !sf.childNodes.length){ var sh=''; for(var si=0; si<46; si++){ var sz=(Math.random()<0.82?1:2); sh+='<i style="left:'+(Math.random()*100).toFixed(2)+'%;top:'+(Math.random()*100).toFixed(2)+'%;width:'+sz+'px;height:'+sz+'px;animation-delay:'+(Math.random()*4).toFixed(2)+'s;animation-duration:'+(2.6+Math.random()*3).toFixed(2)+'s"></i>'; } sf.innerHTML=sh; }
+    var b=document.getElementById('landingBrowse'); if(b) b.onclick=function(){ el.style.display='none'; enterGuest(); };
+    var l=document.getElementById('landingLogin'); if(l) l.onclick=function(){ el.style.display='none'; try{ showGate('login'); }catch(_){ } };
+  }
   function updateAuthUI(){
     document.getElementById('userBox').style.display = USER? 'flex':'none';
     if(USER) document.getElementById('userEmail').textContent=USER.email||'аккаунт';
@@ -4184,8 +4260,8 @@
   }
   async function onAuth(session){
     USER = session ? session.user : null;
-    if(!USER){ isAdmin=isMember=false; loadedUserId=null; updateAuthUI(); enterGuest(); return; }
-    window.__GUEST=false; var _gt=document.getElementById('guestTeaser'); if(_gt&&_gt.remove) _gt.remove();
+    if(!USER){ isAdmin=isMember=false; loadedUserId=null; updateAuthUI(); if(/^#\/c\//.test(location.hash||'')){ enterGuest(); } else { showLanding(); } return; }
+    window.__GUEST=false; var _gt=document.getElementById('guestTeaser'); if(_gt&&_gt.remove) _gt.remove(); var _ld=document.getElementById('landing'); if(_ld) _ld.style.display='none';
     if(loadedUserId===USER.id && BOOK.length){           // уже загружено для этого пользователя — не перезагружаем
       document.getElementById('authGate').style.display='none'; updateAuthUI(); return;
     }
@@ -6086,7 +6162,7 @@
         :'<div class="kbm-empty">Под выбранные фильтры ничего не подходит.</div>');
       return;
     }
-    if(listTitle) listTitle.textContent='Список';
+    if(listTitle){ var _al=document.querySelector('.kbm-lens-btn.kbm-lens-sel .kbm-lens-lbl'); listTitle.textContent=(_al && _al.textContent.trim()) || 'Список'; }
     var regions=kbmRegions(KBM.lens);
     var placed=regions.reduce(function(s,r){return s+r.count;},0);
     var cnt=document.getElementById('kbmCount'); if(cnt) cnt.textContent=KBM.nodes.length+' '+kbmConceptWord(KBM.nodes.length);
@@ -6427,7 +6503,11 @@
     var cnt=document.getElementById('kbmCount'); if(cnt) cnt.textContent=kbmPlural(conj.length+laws.length,'находка','находки','находок');
     // order conjectures: bridge, gap, cross-cutting, law-instance
     var ord={bridge:0,gap:1,'cross-cutting':2,'law-instance':3};
-    var cs=conj.slice().sort(function(a,b){ return (ord[a.kind]||9)-(ord[b.kind]||9); });
+    var cs=conj.slice().sort(function(a,b){
+      var wa=(Number(a.weight)>0?0:1), wb=(Number(b.weight)>0?0:1);
+      if(wa!==wb) return wa-wb;                         // B18: вес 0 — в конец
+      return (ord[a.kind]||9)-(ord[b.kind]||9);
+    });
     function conjTile(c){
       var k=KBM_CONJ_KIND[c.kind]||{lbl:c.kind,hint:''};
       var st=(c.status&&c.status!=='conjecture')?('<span class="kbm-fnd-tile-st kbm-fnd-st-'+escapeHtml(c.status)+'">'+(KBM_FND_STATUS[c.status]||c.status)+'</span>'):'';
@@ -6435,14 +6515,14 @@
       var epLine=(c.kind==='cross-cutting')
         ? ep.length+' концептов'
         : ep.slice(0,2).join('  ·  ');
-      return '<button class="kbm-fnd-tile kbm-fnd-tile-'+escapeHtml(c.kind)+(c.status==='refuted'?' kbm-fnd-tile-refuted':'')+'" data-fnd="'+escapeHtml(c.slug)+'">'
+      return '<button class="kbm-fnd-tile kbm-fnd-tile-'+escapeHtml(c.kind)+(c.status==='refuted'?' kbm-fnd-tile-refuted':'')+(Number(c.weight)>0?'':' kbm-fnd-tile-w0')+'" data-fnd="'+escapeHtml(c.slug)+'">'
         +'<div class="kbm-fnd-tile-top"><span class="kbm-fnd-kind">'+escapeHtml(k.lbl)+'</span>'+st+'<span class="kbm-fnd-tile-w" title="вес подсказки">'+kbmWt(c.weight)+'</span></div>'
         +'<div class="kbm-fnd-tile-ep">'+escapeHtml(epLine)+'</div>'
         +'<div class="kbm-fnd-tile-stmt">'+escapeHtml((c.statement||'').slice(0,140)+((c.statement||'').length>140?'…':''))+'</div>'
         +'</button>';
     }
     function lawTile(l){
-      return '<button class="kbm-fnd-tile kbm-fnd-tile-law" data-law="'+escapeHtml(l.slug)+'">'
+      return '<button class="kbm-fnd-tile kbm-fnd-tile-law'+(Number(l.weight)>0?'':' kbm-fnd-tile-w0')+'" data-law="'+escapeHtml(l.slug)+'">'
         +'<div class="kbm-fnd-tile-top"><span class="kbm-fnd-kind kbm-fnd-kind-law">закон · '+escapeHtml(KBM_LAW_DOMAIN[l.domain]||l.domain||'принцип')+'</span><span class="kbm-fnd-tile-w" title="вес подсказки">'+kbmWt(l.weight)+'</span></div>'
         +'<div class="kbm-fnd-tile-lawttl">'+escapeHtml(l.title||l.slug)+'</div>'
         +'<div class="kbm-fnd-tile-stmt">'+escapeHtml((l.statement||'').slice(0,140)+((l.statement||'').length>140?'…':''))+'</div>'
@@ -6451,6 +6531,7 @@
     var html='<button class="kbm-region-back" data-region-back-f="1">← Вся карта</button>'
       +'<div class="kbm-fnd-deep-hdr"><span class="kbm-fnd-deep-mark">◆</span><span>Глубокий слой карты — исследовательский конец. Не основной поток: для тех, кому интересны её края.</span></div>'
       +'<div class="kbm-fnd-intro">Догадки системы о связях, которых ещё нет в карте. Каждая помечена как <b>непроверенная</b> и показывает, чем её можно опровергнуть. Пунктир — значит гипотеза, не установленный факт.</div>';
+    if(!cs.length && !laws.length){ html+='<div class="kbm-empty">Пока нет находок. Система добавит гипотезы, когда в карте наберётся больше связей.</div>'; }
     if(cs.length){
       html+='<div class="kbm-fnd-grouplbl">Гипотезы</div><div class="kbm-fnd-list">'+cs.map(conjTile).join('')+'</div>';
     }
@@ -6808,6 +6889,8 @@
   }
   async function kbmRenderCardNext(slug){
     var box=document.getElementById('kbmCardNext'); if(!box) return;
+    // B04: один primary-CTA. На остановке маршрута основной — «Следующая остановка» (kbmQuestAdvance); «Дальше» не дублируем.
+    if(typeof questForStop==='function' && questForStop(slug)){ box.innerHTML=''; return; }
     var rec=null; try{ rec=await kbmCardNext(slug); }catch(e){}
     if(KBM.currentSlug!==slug) return;                 // ушли с карточки, пока считали
     box=document.getElementById('kbmCardNext'); if(!box) return;
@@ -7121,6 +7204,28 @@
   }
   // L2 измерение (canon v3 «Сейчас»): сигнал ПОЛЬЗЫ на карточке — применимо/интересно/не нашёл.
   // Анти-метрика: меряем полезность, не вовлечённость. Последний выбор на концепт (append-only в reader_signals).
+  // B13: расшифровка англицизмов при первой встрече (тултип). Глоссарий расширяется контентом.
+  var KB_GLOSS={
+    'FOMO':'страх упустить выгоду (fear of missing out)',
+    'JTBD':'jobs to be done — «работа», ради которой нанимают продукт',
+    'loss aversion':'неприятие потери — потеря ощущается сильнее равной выгоды',
+    'loss-aversion':'неприятие потери — потеря ощущается сильнее равной выгоды',
+    'ostrich effect':'эффект страуса — избегание неприятной информации',
+    'ostrich-effect':'эффект страуса — избегание неприятной информации',
+    'anchoring':'якорение — привязка оценки к первому числу',
+    'nudge':'подталкивание — мягкая архитектура выбора',
+    'priming':'прайминг — предварительная настройка восприятия',
+    'framing':'фрейминг — подача в рамке/контексте'
+  };
+  function kbmGloss(html){
+    if(!html) return html;
+    try{ Object.keys(KB_GLOSS).forEach(function(term){
+      var esc=term.replace(/[-/\\^$*+?.()|[\]{}]/g,'\\$&');
+      var re=new RegExp('(^|[\\s(«>])('+esc+')(?=[\\s.,;:!?)«»<]|$)','i');
+      html=html.replace(re,function(m,pre,t){ return pre+'<abbr class="kbm-term" title="'+KB_GLOSS[term]+'">'+t+'</abbr>'; });
+    }); }catch(e){}
+    return html;
+  }
   function kbmCardStatus(slug){
     var nd=KBM.bySlug&&KBM.bySlug[slug]; if(!nd) return '';
     var cs=nd.content_status||'';
@@ -7229,7 +7334,7 @@
       +(rob?'<span class="kbm-rob" style="background:'+col+'">'+escapeHtml(KBM_ROB[rob]||rob)+'</span>':'')
       +(epi?'<span class="kbm-es">'+escapeHtml(KBM_ES[epi]||epi)+'</span>':'')
       +'</div>'
-      +'<div class="kbm-d-claim" id="kbmDetClaim">'+escapeHtml(claim)+'</div>';
+      +'<div class="kbm-d-claim" id="kbmDetClaim">'+kbmGloss(escapeHtml(claim))+'</div>';
     body.innerHTML='<div id="kbmDetCard">'
       +hero+kbmStateBanner(node)+'<div id="kbmQuestTracker">'+questTrackerHtml(slug)+'</div>'+'<div class="kbm-sections" id="kbmDetSections"><div class="kbm-detail-pending"></div></div>'+kbmMiniMap(slug)+kbmChapterRefs(slug)+kbmSituationRefs(slug)+'<div id="kbmSigWrap">'+kbmSignalBar(slug)+'</div>'+'<div id="kbmQuestAdvance">'+(typeof questAdvanceHtml==='function'?questAdvanceHtml(slug):'')+'</div>'
       +'<div id="kbmCardNext" class="kbm-next"></div>'
@@ -7388,49 +7493,46 @@
         +'</div></div>';
     }
     // НАРРАТИВ (директива Артёма #4): claim(крючок) → КАК РАБОТАЕТ (понимание) → В ПРОДУКТЕ (ход+пример) → ГРАНИЦЫ → СВЯЗИ. Понимание раньше применения — карточка читается как история, без мешанины.
-    var howBlock=(function(){
-      var theory=sec('Механизм','⚙',mechanism,'kbm-sec-mech')
-        +sec('Аналогия','◎',analogy,'kbm-sec-ana')
-        +sec('История','📖',story,'kbm-sec-hist')
-        +(note?'<div class="kbm-sec kbm-sec-note"><div class="kbm-sec-lbl">'+kbmSecIc('rob')+' Об устойчивости</div><div class="kbm-sec-body">'+escapeHtml(note)+'</div></div>':'');
-      if(!theory) return '';
-      return '<details class="kbm-theory" open><summary class="kbm-theory-sum"><span class="kbm-theory-caret">▸</span><span class="kbm-theory-sum-t">Как это работает</span><span class="kbm-theory-sum-h">механизм и почему</span></summary><div class="kbm-theory-body">'+theory+'</div></details>';
+    var theoryInner=sec('Механизм','⚙',mechanism,'kbm-sec-mech')
+      +sec('Аналогия','◎',analogy,'kbm-sec-ana')
+      +sec('История','📖',story,'kbm-sec-hist')
+      +(note?'<div class="kbm-sec kbm-sec-note"><div class="kbm-sec-lbl">'+kbmSecIc('rob')+' Об устойчивости</div><div class="kbm-sec-body">'+escapeHtml(note)+'</div></div>':'');
+    var conjHtml=(function(){
+      var cs=(KBM.conjByNode&&KBM.conjByNode[slug])||[];
+      if(!cs.length) return '';
+      return '<div class="kbm-d-conj"><div class="kbm-d-conj-lbl">⌗ Гипотезы системы · не проверено</div>'
+        +cs.map(function(c){
+          var other=(c.nodes||[]).filter(function(n){return n.slug!==slug;})[0];
+          var k=KBM_CONJ_KIND[c.kind]||{lbl:c.kind};
+          var tail=(c.kind==='cross-cutting')?('связь с группой из '+((c.nodes||[]).length)+' концептов')
+                  :(other?('возможная связь с «'+kbmShortTitle(other.title)+'»'):'');
+          return '<button class="kbm-d-conj-link" data-kbm-conj="'+escapeHtml(c.slug)+'">'
+            +'<span class="kbm-fnd-kind">'+escapeHtml(k.lbl)+'</span>'
+            +'<span class="kbm-d-conj-txt">'+escapeHtml(tail)+'</span>'
+            +'<span class="kbm-d-conj-arr">→</span></button>';
+        }).join('')
+        +'</div>';
     })();
-    var html=
-      // 1. КАК ЭТО РАБОТАЕТ — понимание до применения
-      howBlock
-      // 2. В ПРОДУКТЕ — ход, затем пример
-      +(application?'<div class="kbm-sec kbm-sec-app kbm-sec-lead"><div class="kbm-sec-lbl kbm-sec-lbl-app">'+kbmSecIc('apply')+' Как применить в продукте</div><div class="kbm-sec-body">'+escapeHtml(application)+'</div></div>':'')
-      // concrete case — grounds the move
+    // B03: карточка в ДВА СЛОЯ. Слой 1 = Определение (hero) + «Как применить» + реакция (ниже, kbmSigWrap).
+    // Слой 2 = механизм/пример/границы/связи/гипотезы/источник — под disclosure «Разобрать глубже» (не стена сразу).
+    var critBlock=(kontr&&(b.robustness==='contested'||b.robustness==='mixed')
+      ?'<div class="kbm-sec kbm-sec-kontr"><div class="kbm-sec-lbl">⚠ Границы и критика</div><div class="kbm-sec-body">'+escapeHtml(kontr)+'</div></div>':'');
+    var deepInner=theoryInner
       +'<div id="atomEntry" class="atom-entry"></div>'
       +wedgeX
       +sec('Пример','→',ex,'kbm-sec-ex')
       +practiceX+unknownX
-      // 3. ГРАНИЦЫ — критика видна для contested/mixed (флаг честности)
-      +(kontr&&(b.robustness==='contested'||b.robustness==='mixed')
-        ?'<div class="kbm-sec kbm-sec-kontr"><div class="kbm-sec-lbl">⚠ Границы и критика</div><div class="kbm-sec-body">'+escapeHtml(kontr)+'</div></div>':'')
-      // 4. СВЯЗИ И ГЛУБИНА — из чего объяснён
       +depthHtml
-      // Гипотезы Афины об этом концепте — честность видна и со стороны узла
-      +(function(){
-        var cs=(KBM.conjByNode&&KBM.conjByNode[slug])||[];
-        if(!cs.length) return '';
-        return '<div class="kbm-d-conj"><div class="kbm-d-conj-lbl">⌗ Гипотезы системы · не проверено</div>'
-          +cs.map(function(c){
-            var other=(c.nodes||[]).filter(function(n){return n.slug!==slug;})[0];
-            var k=KBM_CONJ_KIND[c.kind]||{lbl:c.kind};
-            var tail=(c.kind==='cross-cutting')?('связь с группой из '+((c.nodes||[]).length)+' концептов')
-                    :(other?('возможная связь с «'+kbmShortTitle(other.title)+'»'):'');
-            return '<button class="kbm-d-conj-link" data-kbm-conj="'+escapeHtml(c.slug)+'">'
-              +'<span class="kbm-fnd-kind">'+escapeHtml(k.lbl)+'</span>'
-              +'<span class="kbm-d-conj-txt">'+escapeHtml(tail)+'</span>'
-              +'<span class="kbm-d-conj-arr">→</span></button>';
-          }).join('')
-          +'</div>';
-      })()
-      // 10. Источник
+      +conjHtml
       +(src?'<div class="kbm-d-src">'+escapeHtml(src)+'</div>':'');
-    var claimEl=document.getElementById('kbmDetClaim'); if(claimEl && claim && claimEl.textContent!==claim){ claimEl.textContent=claim; }
+    var hasDeep=!!(theoryInner||ex||depthHtml||conjHtml||src||practiceX||unknownX||wedgeX);
+    var html=
+      (application?'<div class="kbm-sec kbm-sec-app kbm-sec-lead"><div class="kbm-sec-lbl kbm-sec-lbl-app">'+kbmSecIc('apply')+' Как применить в продукте</div><div class="kbm-sec-body">'+kbmGloss(escapeHtml(application))+'</div></div>':'')
+      +critBlock
+      +(hasDeep
+        ?'<details class="kbm-deep"><summary class="kbm-deep-sum"><span class="kbm-deep-caret">▸</span><span class="kbm-deep-lbl">Разобрать глубже</span><span class="kbm-deep-hint">механизм · пример · связи</span></summary><div class="kbm-deep-body">'+deepInner+'</div></details>'
+        :deepInner);
+    var claimEl=document.getElementById('kbmDetClaim'); if(claimEl && claim){ claimEl.innerHTML=kbmGloss(escapeHtml(claim)); }
     var sectionsEl=document.getElementById('kbmDetSections');
     if(sectionsEl){
       sectionsEl.innerHTML=html;
@@ -7912,7 +8014,7 @@
             + menuRow('Админка', '', 'admin')
             + '</div>';
     }
-    rows += '<div class="menu-version">Версия 2026-06-24 13:56 · 57d22cc</div>';
+    rows += '<div class="menu-version">Версия 2026-06-24 15:26 · 2d14db3</div>';
     body.innerHTML = '<div class="menu-v-head"><h2 class="menu-v-title">Меню</h2></div><div class="menu-v-list">'+rows+'</div>';
     Array.prototype.forEach.call(body.querySelectorAll('[data-menu-act]'), function(b){
       b.onclick = function(){ menuAct(b.getAttribute('data-menu-act')); };
@@ -7947,7 +8049,7 @@
     else if(act==='login'){ try{ showGate('login'); }catch(e){} }
     else if(act==='signout'){ try{ if(SB&&SB.auth) SB.auth.signOut(); }catch(e){} }
   }
-  function cnHue(disc){ return (disc!=null && CN_DISC_HUE[disc]!=null)?CN_DISC_HUE[disc]:30; }
+  function cnHue(disc){ return (disc!=null && CN_DISC_HSL[disc])?CN_DISC_HSL[disc][0]:30; }
   // Deterministic pseudo-random from a string (stable layout across devices/sessions).
   function cnHash(str){ var h=2166136261>>>0; for(var i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,16777619); } return (h>>>0)/4294967295; }
   function cnDiscOf(n){ var t=n.tags||[]; for(var i=0;i<t.length;i++){ if(t[i].axis==='discipline') return t[i].slug; } return null; }
@@ -8043,12 +8145,13 @@
     (KBM.nodes||[]).forEach(function(n){
       var p=P[n.slug]; if(!p) return;
       var deg=n.degree||0, rob=n.robustness, disc=cnDiscOf(n), noD=(disc==null);
+      var dh=disc?CN_DISC_HSL[disc]:null;   // канон-триада [h,s,l] или null (нейтраль: продуктовые практики / лингвистика / без дисциплины)
       var _lst=kbmReadyState(n), lensDim=(_lst.state==='frontier'||_lst.state==='hidden');
       var node={slug:n.slug, title:n.title, x:p.x, y:p.y, z:(cnHash(n.slug+'z')-0.5)*1000, deg:deg,
         r: 2.2 + Math.sqrt(deg)*1.65,            // radius by degree (hubs big)
-        hue: noD?172:cnHue(disc),                // no discipline (PM methods) → distinct teal
-        sat: noD?52:(rob==='contested'?32:60),   // contested reads desaturated
-        light: rob==='solid'?64 : rob==='mixed'?56 : 48,  // brightness by robustness
+        hue: (dh?dh[0]:210),                                                  // канон ds-foundation; вне 8 хюэ → нейтраль
+        sat: (dh?(rob==='contested'?Math.max(8,dh[1]-22):dh[1]):7),            // нейтраль (продукт.практики/лингв./без-дисц) — серый; contested десатурирован
+        light: (dh?(dh[2]+(rob==='solid'?6:rob==='contested'?-7:0)):(rob==='solid'?64:rob==='mixed'?56:48)),  // канон-светлота + модуляция robustness
         rob: rob, lensDim: lensDim,              // линза: фронтир/неполное тусклее (яркость=подтверждённость)
         // appear-zoom: hubs emerge early (far), periphery fades in as you approach.
         // This is what turns the old 3 hard LODs into a continuous reveal.
@@ -8611,8 +8714,10 @@
     var p=document.getElementById('constelLegend'); if(!p) return;
     var counts={}, Lc={all:CN.nodes.length, mechanism:0, tool:0};
     for(var i=0;i<CN.nodes.length;i++){ var d=cnDiscOf(CN.nodes[i].n)||'_'; counts[d]=(counts[d]||0)+1; var c=CN.nodes[i].cls; if(c==='mechanism')Lc.mechanism++; else if(c==='tool')Lc.tool++; }
-    var items=[]; for(var k in CN_DISC_HUE){ if(CN_DISC_HUE.hasOwnProperty(k)) items.push({slug:k, label:CN_DISC_LABEL[k]||k, hue:CN_DISC_HUE[k], n:counts[k]||0}); }
-    if(counts['_']) items.push({slug:'_', label:'Без дисциплины', hue:172, n:counts['_']});
+    var items=[];
+    for(var k in CN_DISC_HSL){ if(CN_DISC_HSL.hasOwnProperty(k)){ var _d=CN_DISC_HSL[k]; items.push({slug:k, label:CN_DISC_LABEL[k]||k, color:'hsl('+_d[0]+','+(_d[1]+6)+'%,'+(_d[2]+10)+'%)', n:counts[k]||0}); } }
+    ['disc-product-practice','disc-linguistics'].forEach(function(k){ if(counts[k]) items.push({slug:k, label:CN_DISC_LABEL[k]||k, color:'#9a948c', n:counts[k]}); });   // вне 8 канон-хюэ → нейтраль
+    if(counts['_']) items.push({slug:'_', label:'Без дисциплины', color:'#9a948c', n:counts['_']});
     items.sort(function(a,b){ return b.n-a.n; });
     var L3=[['all','Всё','все идеи'],['mechanism','Механизмы','как работает поведение'],['tool','Инструменты','что делает практик']];
     var curHint=L3[0][2]; for(var hh=0;hh<L3.length;hh++){ if(L3[hh][0]===CN.layer) curHint=L3[hh][2]; }
@@ -8622,7 +8727,7 @@
     });
     html+='</div><div class="cn-leg-seg-hint">'+curHint+'</div>';
     html+='<div class="cn-leg-ttl cn-leg-ttl2">Цвет — дисциплина</div>';
-    items.forEach(function(it){ if(!it.n) return; html+='<div class="cn-leg-row"><span class="cn-leg-dot" style="background:hsl('+it.hue+',62%,63%)"></span><span class="cn-leg-lbl">'+it.label+'</span><span class="cn-leg-n">'+it.n+'</span></div>'; });
+    items.forEach(function(it){ if(!it.n) return; html+='<div class="cn-leg-row"><span class="cn-leg-dot" style="background:'+it.color+'"></span><span class="cn-leg-lbl">'+it.label+'</span><span class="cn-leg-n">'+it.n+'</span></div>'; });
     html+='<div class="cn-leg-note">Инструменты — с кольцом. Ярче звезда — крепче подтверждено, бледнее — спорное. Размер — число связей. Рядом — связанные идеи.</div>';
     p.innerHTML=html;
     if(!p._wiredL){ p._wiredL=true;
@@ -10735,7 +10840,7 @@
   var KBM_HISTORY=[]; // back-стек навигации карточек: [{slug, title}]
   var KBM_FUTURE=[];  // forward-стек: куда «вперёд» после «назад» (как в браузере)
   var KBM_KIND={effect:'Эффект',theory:'Теория',frame:'Рамка',phenomenon:'Феномен',method:'Метод',term:'Термин',scenario:'Сценарий'};
-  var KBM_ROB={solid:'Подтверждена',mixed:'Смешанная',contested:'Спорная',weak:'Предварительная'};
+  var KBM_ROB={solid:'Устойчивая',mixed:'Смешанная',contested:'Спорная',weak:'Предварительная'};
   var KBM_ROB_COL={solid:'var(--good)',mixed:'var(--warn)',contested:'var(--danger)',weak:'var(--muted)'};
   var KBM_ES={'empirical-effect':'эмпирический эффект','empirical-law':'закон','framework':'концепция',
     'heuristic':'эвристика','hypothesis':'гипотеза','contested-construct':'спорный конструкт','metaphor':'метафора'};
@@ -10819,11 +10924,16 @@
     assembling:false, asmStart:0, asmDur:1300, bg:null
   };
   // Warm-biased hue per discipline — gold→amber→copper→rose→violet (violet ties to findings).
-  var CN_DISC_HUE={
-    'disc-behavioral-econ':38, 'disc-org-systems':18, 'disc-ux-hci':330,
-    'disc-social':350, 'disc-cognitive':50, 'disc-motivation':12,
-    'disc-neuro':280, 'disc-linguistics':200, 'disc-evolutionary':95,
-    'disc-product-practice':130
+  // Дисциплины — КАНОН ds-foundation (hex→HSL). 8 различимых; «продуктовые практики» и «без дисциплины» — НЕ хюэ (нейтрально, B10/B11).
+  var CN_DISC_HSL={
+    'disc-behavioral-econ':[32,51,55],  // #C79152
+    'disc-cognitive':[45,66,55],        // #D8B23E
+    'disc-ux-hci':[348,47,55],          // #C2546A
+    'disc-social':[252,29,52],          // #6B5CA5
+    'disc-org-systems':[180,39,42],     // #3E8E8E
+    'disc-motivation':[10,58,46],       // #B0452F
+    'disc-neuro':[267,46,56],           // #8A5CC2
+    'disc-evolutionary':[143,33,46]     // #4E9A6B
   };
   var CN_DISC_LABEL={
     'disc-behavioral-econ':'Поведенческая экономика', 'disc-ux-hci':'UX / HCI',
