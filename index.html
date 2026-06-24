@@ -1334,7 +1334,7 @@
   .kbm-inner{ display:flex; flex-direction:column; flex:1; overflow:hidden }
   /* Header */
   .kbm-head{ display:flex; align-items:flex-start; gap:10px; padding:14px 16px 10px; border-bottom:1px solid var(--line); flex-shrink:0 }
-  .kbm-title{ font-family:var(--font-ui); font-size:24px; font-weight:700; margin:0; flex:1; min-width:0; line-height:1.18; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden }
+  .kbm-title{ font-family:var(--font-ui); font-size:24px; font-weight:700; margin:0; flex:1; min-width:0; line-height:1.18; word-break:break-word; overflow-wrap:anywhere }
   .kbm-count{ font-family:var(--font-ui); font-size:11px; color:var(--muted); white-space:nowrap; letter-spacing:.03em }
   /* Search */
   .kbm-search-row{ padding:10px 14px 0; flex-shrink:0; position:relative }
@@ -1862,7 +1862,25 @@
 .kbm-sec-lbl{ font-size:var(--fs-label); letter-spacing:.02em; margin-bottom:10px }
 .kbm-sec-ana{ border-top:1px solid var(--line) }
 .kbm-sec-ana .kbm-sec-body{ font-style:italic; font-family:var(--font-read) }
-.kbm-sec-app{ background:none; border:none; border-top:1px solid var(--line); padding:24px 0 0 }
+.kbm-sec-app{ background:color-mix(in srgb,var(--accent) 6%,transparent); border:1px solid color-mix(in srgb,var(--accent) 18%,transparent); border-left:3px solid var(--accent); border-radius:var(--r-m); padding:15px 16px; margin:20px 0 }
+.kbm-sec-app .kbm-sec-lbl-app{ font-size:13.5px; font-weight:750; letter-spacing:.01em; margin-bottom:9px; display:flex; align-items:center; gap:7px }
+.kbm-sec-app .kbm-sec-body{ font-size:15px; line-height:1.5 }
+.kbm-sec-ic{ vertical-align:-2px; opacity:.85; flex:none }
+/* FR-04: единый верхний ряд действий — назад / избранное / поделиться (≥44px) */
+.kbm-det-actions{ display:flex; align-items:center; gap:8px; margin:0 0 16px }
+.kbm-act{ display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:44px; min-width:44px; padding:0 14px; border-radius:var(--r-m); border:1px solid var(--line-2); background:transparent; color:var(--muted); font-family:var(--font-ui); font-size:13px; font-weight:600; cursor:pointer; transition:background .15s,color .15s,border-color .15s; touch-action:manipulation }
+.kbm-act:active{ transform:scale(.94) }
+.kbm-act-ic{ font-size:16px; line-height:1 }
+.kbm-act-nav{ color:var(--ink) }
+.kbm-act-gap{ flex:1 }
+.kbm-act-fav.kbm-act-on{ color:var(--danger); border-color:color-mix(in srgb,var(--danger) 40%,var(--line-2)) }
+.kbm-act-share{ color:var(--accent); border-color:color-mix(in srgb,var(--accent) 32%,var(--line-2)) }
+@media (max-width:359px){ .kbm-act-lbl{ display:none } .kbm-act{ padding:0 12px } }
+/* FR-03: заголовок концепта — перенос, без обрезки (кегль вписывает kbmFitTitle) */
+#kbmDetTitle{ line-height:1.16; word-break:break-word; overflow-wrap:anywhere; hyphens:auto }
+/* FR-06: заголовок отзыва + персистентный sent-state (peak-end) */
+.kbm-sig-head{ font-family:var(--font-ui); font-size:14px; font-weight:700; color:var(--ink); margin:0 0 11px }
+.kbm-sig-ack{ font-family:var(--font-ui); font-size:12.5px; font-weight:650; color:var(--good); margin:10px 0 2px }
 .kbm-sec-actual .kbm-sec-lbl{ color:color-mix(in srgb, var(--accent) 72%, var(--read)) }
 .kbm-sec-twin .kbm-sec-lbl{ color:color-mix(in srgb, var(--accent) 72%, var(--read)) }
 .kbm-sec-anti .kbm-sec-lbl{ color:var(--danger) }
@@ -2019,7 +2037,10 @@
 
 /* ── Mini constellation map inside a card: the concept's neighbourhood ── */
 .kbm-mini{ position:relative; margin:14px 0 2px }
-.kbm-mini-svg{ width:100%; height:auto; display:block; overflow:visible }
+.kbm-mini-svg{ width:100%; height:auto; display:block; overflow:visible; touch-action:none; cursor:grab; background:color-mix(in srgb,var(--accent) 3%,transparent); border-radius:var(--r-m) }
+.kbm-mini-svg:active{ cursor:grabbing }
+.kbm-mini-vp{ will-change:transform }
+.kbm-card-foot{ margin-top:22px; padding-top:14px; border-top:1px solid var(--line); text-align:center }
 .kbm-mini-edge{ stroke:var(--line-2); stroke-width:1 }
 .kbm-mini-edge-hit{ stroke:transparent; stroke-width:14; fill:none; pointer-events:stroke; cursor:pointer }
 .kbm-mini-edge-tense{ stroke:var(--danger); stroke-dasharray:3 3; opacity:.85 }
@@ -2029,7 +2050,7 @@
 .kbm-mini-hit{ fill:transparent; cursor:pointer }
 .kbm-mini-node{ cursor:pointer }
 .kbm-mini-center{ cursor:zoom-in }
-.kbm-mini-lbl{ font-size:10px; fill:var(--muted); font-family:var(--font-ui); letter-spacing:.01em; pointer-events:auto; cursor:pointer; transition:fill .15s }
+.kbm-mini-lbl{ font-size:12px; fill:var(--muted); font-family:var(--font-ui); letter-spacing:.01em; pointer-events:auto; cursor:pointer; transition:fill .15s }
 .kbm-mini-node-tense .kbm-mini-lbl{ fill:var(--danger) }
 .kbm-mini-node.mini-foc .kbm-mini-dot{ stroke:var(--accent); stroke-width:2.5 }
 .kbm-mini-node.mini-foc .kbm-mini-lbl{ fill:var(--ink); font-weight:700 }
@@ -6605,11 +6626,10 @@
   function kbmUpdateBackBtn(){
     var html=kbmBackBtnHtml();
     var btn=document.getElementById('kbmDetBack'); if(btn) btn.innerHTML=html;
-    var btm=document.getElementById('kbmDetBackBtm'); if(btm) btm.innerHTML=html;
-    var fb=document.getElementById('kbmDetFwdBtm');
+    var fb=document.querySelector('.kbm-act-fwd');
     if(fb){
-      if(KBM_FUTURE.length){ var nx=KBM_FUTURE[KBM_FUTURE.length-1]; var t=nx.title||nx.slug||'\u0412\u043f\u0435\u0440\u0451\u0434';
-        fb.style.display=''; fb.innerHTML='<span class="kbm-back-lbl">'+escapeHtml(t.length>22?t.slice(0,20)+'\u2026':t)+'</span><span class="kbm-back-arr">\u2192</span>'; }
+      if(KBM_FUTURE.length){ var nx=KBM_FUTURE[KBM_FUTURE.length-1]; var t=nx.title||nx.slug||'Вперёд';
+        fb.style.display=''; var fl=fb.querySelector('.kbm-act-lbl'); if(fl) fl.textContent=(t.length>18?t.slice(0,16)+'…':t); }
       else fb.style.display='none';
     }
   }
@@ -6757,7 +6777,7 @@
     if(relation==='same-family'||relation==='uses-tool'||relation==='adjacent-to') return 2;
     return 1; // related — noise
   }
-  function kbmMiniShortT(t){ t=(t||'').replace(/\s*\([^)]*[A-Za-z][^)]*\)\s*$/,''); return t.length>15? t.slice(0,14)+'…':t; }
+  function kbmMiniShortT(t){ t=(t||'').replace(/\s*\([^)]*[A-Za-z][^)]*\)\s*$/,''); return t.length>19? t.slice(0,18)+'…':t; }
   // Neighbours of a node, deduped to the strongest typed edge per other-node.
   function kbmNeighbors(slug){
     var E=KBM.edges||[], byOther={};
@@ -6802,7 +6822,7 @@
     if(!nodes.length && !forces.length){
       return '<div class="kbm-mini"><div class="kbm-mini-empty">Одинокая звезда — пока без связей в карте.</div></div>';
     }
-    var W=300,H=190,cx=W/2,cy=H/2,R=66,RAD=Math.PI/180;
+    var W=300,H=190,cx=W/2,cy=H/2,R=52,RAD=Math.PI/180;
     function place(list, baseDeg, spreadDeg){
       var n=list.length, out=[];
       for(var i=0;i<n;i++){ var t=(n===1)?baseDeg:(baseDeg-spreadDeg+(2*spreadDeg)*(i/(n-1))); var th=t*RAD;
@@ -6833,7 +6853,7 @@
       var c=Math.cos(p.deg*RAD), s=Math.sin(p.deg*RAD);
       var anchor= c<-0.2?'end':(c>0.2?'start':'middle');
       return { p:p, rc:(KBM_ROB_COL[nd.robustness]||'var(--muted)'), anchor:anchor,
-        lx:(c<-0.2? p.x-8 : (c>0.2? p.x+8 : p.x)),
+        lx:(c<-0.2? p.x-6 : (c>0.2? p.x+6 : p.x)),
         ly:(p.y + (s>0.5? -9 : (s<-0.5? 15 : 3.5))), txt:kbmMiniShortT(nd.title||p.d.other) };
     });
     ['end','start','middle'].forEach(function(a){
@@ -6854,7 +6874,7 @@
         +'<text class="kbm-mini-force-lbl" x="'+cx+'" y="11" text-anchor="middle">◆ '+escapeHtml(kbmMiniShortT(fn.title||forces[0].other))+'</text>';
     }
     var centerSvg='<g class="kbm-mini-center" data-kbm-expand="1"><circle class="kbm-mini-hit" cx="'+cx+'" cy="'+cy+'" r="18"/><circle class="kbm-mini-core" cx="'+cx+'" cy="'+cy+'" r="8"/></g>';
-    var svg='<svg class="kbm-mini-svg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" aria-hidden="true">'+edgesSvg+ring2Svg+forceSvg+nodesSvg+centerSvg+'</svg>';
+    var svg='<svg class="kbm-mini-svg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet"><g class="kbm-mini-vp" id="kbmMiniVp">'+edgesSvg+ring2Svg+forceSvg+nodesSvg+centerSvg+'</g></svg>';
     function kbmMiniHas(b){ return nodes.some(function(x){ return x.bucket===b; }); }
     var miniLeg='';
     if(kbmMiniHas('found')||kbmMiniHas('cons')||kbmMiniHas('tense')||kbmMiniHas('kin')){
@@ -6871,7 +6891,30 @@
   }
   function kbmMiniPeekHint(slug){
     var nd=KBM.bySlug[slug]||{};
-    return 'Окрестность концепта · <b>слева</b> — на чём стоит, <b>справа</b> — к чему ведёт. Коснись звезды — покажу связь и кнопку открыть.';
+    return 'Окрестность концепта · <b>слева</b> — на чём стоит, <b>справа</b> — к чему ведёт. Коснись звезды — связь и переход; <b>щипок</b> — зум, <b>тащи</b> — двигать.';
+  }
+  // FR-05: пинч-зум + пан мини-навигатора. Содержимое в #kbmMiniVp; тап по узлу остаётся переходом (порог 6px).
+  function kbmMiniWire(svg){
+    if(!svg || svg._miniwired) return; svg._miniwired=true;
+    var vp=svg.querySelector('#kbmMiniVp'); if(!vp) return;
+    var W=300,H=190, st={s:1,x:0,y:0}, pts={}, last=null, pinch=null, moved=0;
+    function clamp(){ st.s=Math.max(1,Math.min(4,st.s)); var mnx=W*(1-st.s), mny=H*(1-st.s); st.x=Math.max(mnx,Math.min(0,st.x)); st.y=Math.max(mny,Math.min(0,st.y)); }
+    function apply(){ clamp(); vp.setAttribute('transform','translate('+st.x.toFixed(1)+' '+st.y.toFixed(1)+') scale('+st.s.toFixed(3)+')'); svg.style.overflow=(st.s>1.02?'hidden':'visible'); }
+    function loc(e){ var r=svg.getBoundingClientRect(); return { x:(e.clientX-r.left)/(r.width||1)*W, y:(e.clientY-r.top)/(r.height||1)*H }; }
+    svg.addEventListener('pointerdown',function(e){ pts[e.pointerId]=loc(e); var k=Object.keys(pts); moved=0;
+      if(k.length===1){ last=pts[e.pointerId]; pinch=null; }
+      else if(k.length===2){ var a=pts[k[0]],b=pts[k[1]]; pinch={d:Math.hypot(a.x-b.x,a.y-b.y)||1, s0:st.s, x0:st.x, y0:st.y, cx:(a.x+b.x)/2, cy:(a.y+b.y)/2}; last=null; }
+    });
+    svg.addEventListener('pointermove',function(e){ if(!(e.pointerId in pts)) return; var p=loc(e); var k=Object.keys(pts);
+      if(k.length>=2 && pinch){ pts[e.pointerId]=p; var a=pts[k[0]],b=pts[k[1]]; var d=Math.hypot(a.x-b.x,a.y-b.y)||1; var ns=pinch.s0*(d/pinch.d);
+        var mx=(pinch.cx-pinch.x0)/pinch.s0, my=(pinch.cy-pinch.y0)/pinch.s0;
+        st.s=ns; st.x=pinch.cx-mx*ns; st.y=pinch.cy-my*ns; apply(); e.preventDefault();
+      } else if(k.length===1 && last){ var dx=p.x-last.x, dy=p.y-last.y; moved+=Math.abs(dx)+Math.abs(dy);
+        if(moved>6){ try{ svg.setPointerCapture(e.pointerId); }catch(_){}; st.x+=dx; st.y+=dy; last=p; apply(); e.preventDefault(); }
+      }
+    });
+    function up(e){ try{ svg.releasePointerCapture(e.pointerId); }catch(_){} delete pts[e.pointerId]; var k=Object.keys(pts); pinch=null; last=k.length?pts[k[0]]:null; }
+    svg.addEventListener('pointerup',up); svg.addEventListener('pointercancel',up);
   }
   function kbmMiniFocus(otherSlug){
     var peek=document.getElementById('kbmMiniPeek'); if(!peek) return;
@@ -7021,24 +7064,34 @@
     if(cs==='draft') return '<div class="kbm-cstat kbm-cstat-draft">\u270f \u0415\u0449\u0451 \u0434\u043e\u043f\u0438\u0441\u044b\u0432\u0430\u0435\u0442\u0441\u044f'+(dt?' \u00b7 \u0438\u0437\u043c\u0435\u043d\u0435\u043d\u0430 '+dt:'')+'</div>';
     return '';
   }
+  // FR-08: единые линейные иконки секций (штрих 1.6, viewBox 32) — вместо разнобойных эмодзи.
+  function kbmSecIc(n){
+    var p={
+      apply:'<path d="M7 6 h13 a2 2 0 0 1 2 2 v13 a2 2 0 0 1-2 2 H7 a2 2 0 0 1-2-2 V8 a2 2 0 0 1 2-2 Z"/><path d="M10.5 15.5 l3 3 l6-7"/>',
+      rob:'<circle cx="14" cy="14" r="8"/><path d="M19.8 19.8 l6 6"/>'
+    }[n]||'';
+    return '<svg class="kbm-sec-ic" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>';
+  }
   function kbmSignalBar(slug){
-    // B2 c823314d: «Применимо · Спорно · Нужно глубже» — вердикт о ценности контента, не вопрос к юзеру.
+    // B2 c823314d / FR-06: «Применимо · Спорно · Нужно глубже» — вердикт о ценности контента. Заголовок + персистентный sent-state (peak-end), без тёмных паттернов.
     var cur=(KBM.signals&&KBM.signals[slug])||'';
     function btn(k,lbl,hint){
       var on=(cur===k);
       return '<button class="kbm-sig-btn'+(on?' kbm-sig-on':'')+'" data-kbm-sig="'+k+'" data-kbm-sig-slug="'+escapeHtml(slug)+'" title="'+escapeHtml(hint||'')+'">'+lbl+'</button>';
     }
     return '<div class="kbm-sig">'
+      +'<div class="kbm-sig-head">Как вам карточка?</div>'
       +'<div class="kbm-sig-row">'
         +btn('applicable','Применимо','Полезно и применимо на практике')
         +btn('disputed','Спорно','Спорно — это честно, не негативно')
         +btn('needs-depth','Нужно глубже','Хочу больше информации по этому концепту')
       +'</div>'
+      +(cur?'<div class="kbm-sig-ack">Записал · спасибо</div>':'')
       +kbmFeedbackHtml(slug)
       +'</div>';
   }
   function kbmFeedbackHtml(slug){
-    if(KBM.fbSent&&KBM.fbSent[slug]) return '<div class="kbm-fb-done">Спасибо — отзыв записан.</div>';
+    if(KBM.fbSent&&KBM.fbSent[slug]) return '<div class="kbm-fb-done">Записал · спасибо — учтём.</div>';
     return '<div class="kbm-fb"><div class="kbm-fb-lbl">Поделитесь мыслью об этом концепте</div>'
       +'<textarea class="kbm-fb-in" id="kbmFbIn" rows="2" placeholder="Пример из практики, вопрос, несогласие — что угодно. Прочитаем." data-kbm-fb-slug="'+escapeHtml(slug)+'"></textarea>'
       +'<button class="kbm-fb-send" data-kbm-fb-send="'+escapeHtml(slug)+'">Отправить отзыв</button></div>';
@@ -7077,30 +7130,47 @@
       setTimeout(function(){ t.classList.remove('kbm-toast-in'); setTimeout(function(){ if(t.parentNode) t.parentNode.removeChild(t); }, 300); }, 2200);
     }catch(e){}
   }
+  // FR-03: заголовок концепта НИКОГДА не обрезаем. Вписываем в ≤2 строки уменьшением кегля до минимума.
+  function kbmFitTitle(el){
+    try{
+      if(!el) return;
+      el.style.fontSize='';
+      if(el.offsetWidth<40){ requestAnimationFrame(function(){ kbmFitTitle(el); }); return; }   // layout ещё не готов — повторим
+      var base=parseFloat(getComputedStyle(el).fontSize)||24, size=base, min=16, guard=0;
+      function over(){ var lh=parseFloat(getComputedStyle(el).lineHeight)||size*1.18; return el.scrollHeight > Math.ceil(lh*2)+2; }
+      while(over() && size>min && guard++<32){ size-=1; el.style.fontSize=size+'px'; }
+    }catch(e){}
+  }
   function kbmRenderCard(slug, node, dir){
     var body=document.getElementById('kbmDetBody'); if(!body) return;
-    var title=document.getElementById('kbmDetTitle'); if(title) title.textContent=node.title||slug;
+    var title=document.getElementById('kbmDetTitle'); if(title){ title.textContent=node.title||slug; if(typeof kbmFitTitle==='function') requestAnimationFrame(function(){ kbmFitTitle(title); }); }
     var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
     var kind=node.kind, rob=node.robustness, epi=node.epistemic_status, claim=node.claim||'';
     var col=KBM_ROB_COL[rob]||'var(--muted)', kCol=KBM_KIND_COL[kind]||'var(--accent)';
     var liked=KBM.likes.has(slug), core=kbmIsCore(node);
-    var hero='<div class="kbm-d-meta">'
+    var actions='<div class="kbm-det-actions">'
+      +'<button class="kbm-act kbm-act-nav" data-kbm-back-btm="1" aria-label="Назад"><span class="kbm-act-ic">\u2190</span><span class="kbm-act-lbl">Назад</span></button>'
+      +'<button class="kbm-act kbm-act-nav kbm-act-fwd" data-kbm-fwd-btm="1" aria-label="Вперёд" style="display:none"><span class="kbm-act-lbl">Вперёд</span><span class="kbm-act-ic">\u2192</span></button>'
+      +'<span class="kbm-act-gap"></span>'
+      +'<button class="kbm-act kbm-act-fav'+(liked?' kbm-act-on':'')+'" data-kbm-like="'+escapeHtml(slug)+'" aria-label="В избранное"><span class="kbm-act-ic">'+(liked?'\u2665':'\u2661')+'</span><span class="kbm-act-lbl">'+(liked?'В избранном':'Избранное')+'</span></button>'
+      +'<button class="kbm-act kbm-act-share" data-kbm-share="'+escapeHtml(slug)+'" aria-label="Поделиться"><span class="kbm-act-ic">\u2934</span><span class="kbm-act-lbl">Поделиться</span></button>'
+      +'</div>';
+    var hero=actions+'<div class="kbm-d-meta">'
       +(core?'<span class="kbm-d-core">★ Несущий концепт</span>':'')
       +(kind?'<span class="kbm-kind" style="color:'+kCol+'">'+escapeHtml(KBM_KIND[kind]||kind)+'</span>':'')
       +(rob?'<span class="kbm-rob" style="background:'+col+'">'+escapeHtml(KBM_ROB[rob]||rob)+'</span>':'')
       +(epi?'<span class="kbm-es">'+escapeHtml(KBM_ES[epi]||epi)+'</span>':'')
       +'</div>'
-      +'<button class="kbm-like-btn'+(liked?' kbm-liked':'')+'" id="kbmDetHeart" data-kbm-like="'+escapeHtml(slug)+'">'+(liked?'♥ В избранном':'♡ В избранное')+'</button>'
-      +'<button class="kbm-share-btn" data-kbm-share="'+escapeHtml(slug)+'" aria-label="Поделиться">\u2934 Поделиться</button>'
       +'<div class="kbm-d-claim" id="kbmDetClaim">'+escapeHtml(claim)+'</div>';
     body.innerHTML='<div id="kbmDetCard">'
-      +hero+kbmStateBanner(node)+'<div id="kbmQuestTracker">'+questTrackerHtml(slug)+'</div>'+'<div class="kbm-sections" id="kbmDetSections"><div class="kbm-detail-pending"></div></div>'+kbmMiniMap(slug)+kbmChapterRefs(slug)+kbmSituationRefs(slug)+'<div id="kbmSigWrap">'+kbmCardStatus(slug)+kbmSignalBar(slug)+'</div>'+'<div id="kbmQuestAdvance">'+(typeof questAdvanceHtml==='function'?questAdvanceHtml(slug):'')+'</div>'
+      +hero+kbmStateBanner(node)+'<div id="kbmQuestTracker">'+questTrackerHtml(slug)+'</div>'+'<div class="kbm-sections" id="kbmDetSections"><div class="kbm-detail-pending"></div></div>'+kbmMiniMap(slug)+kbmChapterRefs(slug)+kbmSituationRefs(slug)+'<div id="kbmSigWrap">'+kbmSignalBar(slug)+'</div>'+'<div id="kbmQuestAdvance">'+(typeof questAdvanceHtml==='function'?questAdvanceHtml(slug):'')+'</div>'
       +'<div id="kbmCardNext" class="kbm-next"></div>'
-      +'<div class="kbm-detnav"><button class="kbm-back-btn kbm-back-btm" id="kbmDetBackBtm" data-kbm-back-btm="1"><span class="kbm-back-arr">\u2190</span><span class="kbm-back-lbl">\u041d\u0430\u0437\u0430\u0434</span></button><button class="kbm-back-btn kbm-fav-btm'+(liked?' kbm-fav-on':'')+'" id="kbmDetFavBtm" data-kbm-like="'+escapeHtml(slug)+'" aria-label="\u0412 \u0438\u0437\u0431\u0440\u0430\u043d\u043d\u043e\u0435">'+(liked?'\u2665':'\u2661')+'</button><button class="kbm-back-btn kbm-fwd-btm" id="kbmDetFwdBtm" data-kbm-fwd-btm="1" style="display:none"><span class="kbm-back-lbl">\u0412\u043f\u0435\u0440\u0451\u0434</span><span class="kbm-back-arr">\u2192</span></button></div>'
+      +'<div class="kbm-card-foot">'+kbmCardStatus(slug)+'</div>'
       +'</div>';
     body.scrollTop=0;
     if(typeof kbmApplyReadSize==='function') kbmApplyReadSize();
     if(typeof kbmRenderCardNext==='function') kbmRenderCardNext(slug);
+    if(typeof kbmMiniWire==='function'){ var _ms=body.querySelector('.kbm-mini-svg'); if(_ms) kbmMiniWire(_ms); }
     var card=document.getElementById('kbmDetCard');
     if(card && !reduce){
       if(!KBM._cardRevealed && dir!=='back'){ KBM._cardRevealed=true; card.classList.add('kbm-card-reveal'); }   // ПЕРВОЕ открытие: нежное раскрытие блоков сверху вниз; дальше — обычный слайд
@@ -7254,7 +7324,7 @@
       var theory=sec('Механизм','⚙',mechanism,'kbm-sec-mech')
         +sec('Аналогия','◎',analogy,'kbm-sec-ana')
         +sec('История','📖',story,'kbm-sec-hist')
-        +(note?'<div class="kbm-sec kbm-sec-note"><div class="kbm-sec-lbl">🔍 Об устойчивости</div><div class="kbm-sec-body">'+escapeHtml(note)+'</div></div>':'');
+        +(note?'<div class="kbm-sec kbm-sec-note"><div class="kbm-sec-lbl">'+kbmSecIc('rob')+' Об устойчивости</div><div class="kbm-sec-body">'+escapeHtml(note)+'</div></div>':'');
       if(!theory) return '';
       return '<details class="kbm-theory" open><summary class="kbm-theory-sum"><span class="kbm-theory-caret">▸</span><span class="kbm-theory-sum-t">Как это работает</span><span class="kbm-theory-sum-h">механизм и почему</span></summary><div class="kbm-theory-body">'+theory+'</div></details>';
     })();
@@ -7262,7 +7332,7 @@
       // 1. КАК ЭТО РАБОТАЕТ — понимание до применения
       howBlock
       // 2. В ПРОДУКТЕ — ход, затем пример
-      +(application?'<div class="kbm-sec kbm-sec-app kbm-sec-lead"><div class="kbm-sec-lbl kbm-sec-lbl-app">📱 Применение в продукте</div><div class="kbm-sec-body">'+escapeHtml(application)+'</div></div>':'')
+      +(application?'<div class="kbm-sec kbm-sec-app kbm-sec-lead"><div class="kbm-sec-lbl kbm-sec-lbl-app">'+kbmSecIc('apply')+' Как применить в продукте</div><div class="kbm-sec-body">'+escapeHtml(application)+'</div></div>':'')
       // concrete case — grounds the move
       +'<div id="atomEntry" class="atom-entry"></div>'
       +wedgeX
@@ -7444,19 +7514,15 @@
     // Update heart button in cards list
     document.querySelectorAll('[data-kbm-like="'+slug+'"]').forEach(function(b){
       var nl=KBM.likes.has(slug);
-      b.textContent=nl?'♥':'♡'; b.title=nl?'В избранном':'В избранное';
+      var ic=b.querySelector('.kbm-act-ic');
+      if(ic){ ic.textContent=nl?'♥':'♡'; var lbl=b.querySelector('.kbm-act-lbl'); if(lbl) lbl.textContent=nl?'В избранном':'Избранное'; b.classList.toggle('kbm-act-on',nl); }
+      else { b.textContent=nl?'♥':'♡'; b.title=nl?'В избранном':'В избранное'; }
       // Heart "breathes" — fills with a brief physical pulse when claimed
       if(nowLiked && !b.classList.contains('kbm-like-btn')){
         b.classList.remove('kbm-heart-pop'); void b.offsetWidth; b.classList.add('kbm-heart-pop');
       }
     });
-    // Update detail heart if open
-    var dh=document.getElementById('kbmDetHeart');
-    if(dh && dh.getAttribute('data-kbm-like')===slug){
-      var nl=KBM.likes.has(slug);
-      dh.textContent=nl?'♥ В избранном':'♡ В избранное';
-      dh.classList.toggle('kbm-liked',nl);
-    }
+    // #kbmDetHeart удалён (FR-04): ряд действий обновлён выше.
     if(off && typeof toast==='function') toast('Офлайн — отметка не сохранится без сети');
   }
   function kbColor(r){ return KB_ROB[r]||KB_ROB.inbox; }
@@ -7775,7 +7841,7 @@
             + menuRow('Админка', '', 'admin')
             + '</div>';
     }
-    rows += '<div class="menu-version">Версия 2026-06-24 04:08 · ef49c97</div>';
+    rows += '<div class="menu-version">Версия 2026-06-24 09:58 · 937e094</div>';
     body.innerHTML = '<div class="menu-v-head"><h2 class="menu-v-title">Меню</h2></div><div class="menu-v-list">'+rows+'</div>';
     Array.prototype.forEach.call(body.querySelectorAll('[data-menu-act]'), function(b){
       b.onclick = function(){ menuAct(b.getAttribute('data-menu-act')); };
@@ -8030,21 +8096,61 @@
     return null;
   }
   function cnPluralLink(n){ var d=n%10, h=n%100; if(d===1&&h!==11) return 'связь'; if(d>=2&&d<=4&&(h<10||h>=20)) return 'связи'; return 'связей'; }
-  async function cnRenderRec(){
-    var el=document.getElementById('constelRec'); if(!el) return;
-    if(CN.recClosed){ el.style.display='none'; el.onclick=null; return; }
-    var rec=null; try{ rec=await cnRecommend(); }catch(e){}
-    if(!rec || !rec.node){ el.style.display='none'; el.onclick=null; return; }
-    var lbl=rec.kind==='start'?'Начать путешествие':'Продолжить путешествие';
+  // FR-01: мгновенная рекомендация без сети — маршрут-осведомлённая. Семантику дорисовываем на месте (без позднего попа/сдвига).
+  function cnRecommendSync(){
+    var vd=state.visited||{}, nodes=(KBM.nodes||[]);
+    if(!nodes.length || typeof kbmIsCore!=='function' || typeof kbmRank!=='function') return null;
+    var rt=(typeof cnActiveRoute==='function')?cnActiveRoute():null;
+    if(rt && rt.order && rt.order.length){
+      for(var ri=0;ri<rt.order.length;ri++){ var rs=rt.order[ri]; if(!vd[rs]){ var rn=KBM.bySlug&&KBM.bySlug[rs]; if(rn) return {node:rn, kind:'route', reason:(rt.title?'Маршрут «'+(rt.title.length>20?rt.title.slice(0,18)+'…':rt.title)+'»':'Дальше по маршруту')}; } }
+    }
+    var visCount=0, kk; for(kk in vd){ if(vd[kk]) visCount++; }
+    function vis(s){ return !!vd[s]; }
+    if(visCount===0){
+      var cores=nodes.filter(function(n){ return kbmIsCore(n) && cnRecIsFull(n); });
+      var fromCore=cores.length>0;
+      var pool=(fromCore?cores:nodes.filter(cnRecIsFull)).sort(kbmRank);
+      return pool[0] ? {node:pool[0], kind:'start', reason:(fromCore?'Несущий концепт — хорошее начало':'Удобная точка входа')} : null;
+    }
+    var anchor=state.lastVisited;
+    if(!anchor || !vd[anchor]){ for(kk in vd){ if(vd[kk]){ anchor=kk; break; } } }
+    var anchorNode=KBM.bySlug && KBM.bySlug[anchor];
+    var anchorTitle=anchorNode?(anchorNode.title||anchor):'';
+    var anchorShort=anchorTitle.length>22?anchorTitle.slice(0,20)+'…':anchorTitle;
+    function concept(s){ var x=KBM.bySlug[s]; return (x && x.node_layer!=='scenario' && cnRecIsFull(x)) ? x : null; }
+    var nb={}, o;
+    (KBM.edges||[]).forEach(function(e){
+      if(e.src===anchor && !vis(e.dst) && (o=concept(e.dst))) nb[e.dst]=o;
+      else if(e.dst===anchor && !vis(e.src) && (o=concept(e.src))) nb[e.src]=o;
+    });
+    var list=[], s2; for(s2 in nb) list.push(nb[s2]);
+    if(list.length){ list.sort(kbmRank); return {node:list[0], kind:'continue', reason:'Связано с «'+anchorShort+'»'}; }
+    var unv=nodes.filter(function(n){ return kbmIsCore(n) && cnRecIsFull(n) && !vis(n.slug); }).sort(kbmRank);
+    if(unv.length) return {node:unv[0], kind:'continue', reason:'Несущий концепт, ещё не пройден'};
+    return null;
+  }
+  function cnPaintRec(el, rec){
+    var lbl=rec.kind==='start'?'Начать путешествие':(rec.kind==='route'?'Дальше по маршруту':'Продолжить путешествие');
     var kindLbl=(rec.node.kind && typeof KBM_KIND!=='undefined' && KBM_KIND[rec.node.kind])?String(KBM_KIND[rec.node.kind]).toLowerCase():'';
     var degN=rec.node.degree||0;
     var ctx=[]; if(kindLbl) ctx.push(kindLbl); if(degN) ctx.push(degN+' '+cnPluralLink(degN));
     var ctxLine=ctx.length?'<span class="cn-rec-meta">'+escapeHtml(ctx.join(' · '))+'</span>':'';
     var why=rec.reason?'<span class="cn-rec-why">'+escapeHtml(rec.reason)+'</span>':'';
-    el.innerHTML='<span class="cn-rec-spark">\u2726</span><span class="cn-rec-tx"><span class="cn-rec-lbl">'+lbl+'</span><span class="cn-rec-name">'+escapeHtml(rec.node.title||rec.node.slug)+'</span>'+ctxLine+why+'</span><span class="cn-rec-arr">\u203a</span><button class="cn-rec-x" aria-label="Скрыть">✕</button>';
+    el.innerHTML='<span class="cn-rec-spark">✦</span><span class="cn-rec-tx"><span class="cn-rec-lbl">'+lbl+'</span><span class="cn-rec-name">'+escapeHtml(rec.node.title||rec.node.slug)+'</span>'+ctxLine+why+'</span><span class="cn-rec-arr">›</span><button class="cn-rec-x" aria-label="Скрыть">✕</button>';
     el.style.display='';
     el.onclick=function(){ cnToCard(rec.node); };
     var rx=el.querySelector('.cn-rec-x'); if(rx) rx.onclick=function(e){ e.stopPropagation(); CN.recClosed=true; el.style.display='none'; };
+  }
+  // Стабильный блок «куда дальше»: мгновенно (sync), затем тихое уточнение семантикой на месте.
+  function cnRenderRec(){
+    var el=document.getElementById('constelRec'); if(!el) return;
+    if(CN.recClosed){ el.style.display='none'; el.onclick=null; return; }
+    var sync=cnRecommendSync();
+    if(sync && sync.node){ cnPaintRec(el, sync); }
+    else { el.style.display='none'; el.onclick=null; }
+    if(!sync || sync.kind!=='route'){
+      cnRecommend().then(function(rec){ if(CN.recClosed || !rec || !rec.node) return; if(!sync || rec.node.slug!==sync.node.slug) cnPaintRec(el, rec); }).catch(function(){});
+    }
   }
   // Активный маршрут для подсветки на небе: фокусный квест, иначе первый активный. {set, order} по слугам или null.
   function cnActiveRoute(){
@@ -8573,12 +8679,21 @@
     {t:'Лишь тот день, к которому мы пробудились, — настоящий рассвет.', a:'Генри Дэвид Торо'},
     {t:'Чтобы создать прерию, нужны клевер, одна пчела — и мечта.', a:'Эмили Дикинсон'},
     {t:'Ты не капля в океане. Ты — океан в одной капле.', a:'Руми'},
-    {t:'Путь в тысячу ли начинается с одного шага.', a:'Лао-цзы'}
+    {t:'Путь в тысячу ли начинается с одного шага.', a:'Лао-цзы'},
+    {t:'Знать, что знаешь, и знать, чего не знаешь, — вот настоящее знание.', a:'Конфуций'},
+    {t:'Самое непостижимое во Вселенной — то, что она постижима.', a:'Альберт Эйнштейн'},
+    {t:'Карта — не территория.', a:'Альфред Коржибски'},
+    {t:'Кто смотрит наружу — видит сон; кто смотрит внутрь — пробуждается.', a:'Карл Густав Юнг'},
+    {t:'Мы видим мир не таким, каков он есть, а такими, каковы мы сами.', a:'Анаис Нин'},
+    {t:'Лучше иметь вопросы без ответов, чем ответы, которые нельзя подвергнуть сомнению.', a:'Ричард Фейнман'},
+    {t:'Удивление — это начало понимания.', a:'народная мудрость'},
+    {t:'Любопытство — это отвага, заданная вопросом.', a:'неизвестный автор'}
   ];
   function cnSplashShow(onReveal){
     var sp=document.getElementById('cnSplash');
     if(!sp || !CN_SPLASH_QUOTES.length){ if(onReveal) onReveal(); return; }
-    var q=CN_SPLASH_QUOTES[Math.floor(Math.random()*CN_SPLASH_QUOTES.length)];
+    var qn=CN_SPLASH_QUOTES.length, qi; do{ qi=Math.floor(Math.random()*qn); }while(qn>1 && qi===CN._lastQuote);
+    CN._lastQuote=qi; var q=CN_SPLASH_QUOTES[qi];
     var qe=document.getElementById('cnSplashQ'), ae=document.getElementById('cnSplashA');
     if(qe) qe.textContent='«'+q.t+'»'; if(ae) ae.textContent=q.a?('— '+q.a):'';
     sp.style.display='flex';
