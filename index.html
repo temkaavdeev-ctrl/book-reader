@@ -2499,6 +2499,11 @@
 .kbm-next-name{ font-size:var(--fs-h); font-weight:600; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
 .kbm-next-why{ font-size:var(--fs-small); color:var(--muted) }
 .kbm-next-arr{ flex:none; color:var(--accent); font-size:20px; line-height:1 }
+
+/* Гостевой тизер (Б4b) — плавающая пилюля над таб-баром */
+.guest-teaser{position:fixed;left:50%;transform:translateX(-50%);bottom:76px;z-index:70;display:flex;align-items:center;gap:10px;max-width:92vw;padding:8px 10px 8px 15px;border-radius:999px;background:color-mix(in srgb,var(--accent) 10%,var(--card));border:1px solid var(--line);box-shadow:0 6px 20px rgba(0,0,0,.18);font:12.5px/1.2 var(--font-ui);color:var(--ink)}
+.guest-teaser-tx{opacity:.85}
+.guest-teaser-btn{flex:none;padding:6px 15px;border-radius:999px;border:0;background:var(--accent);color:#fff;font:600 12.5px var(--font-ui);cursor:pointer}
 </style>
 </head>
 <body>
@@ -4077,6 +4082,29 @@
     document.getElementById('authConfig').style.display   = (mode==='config')?'block':'none';
     document.getElementById('authNomember').style.display = (mode==='nomember')?'block':'none';
   }
+  function kbShowGuestTeaser(){
+    if(document.getElementById('guestTeaser')) return;
+    var b=document.createElement('div'); b.id='guestTeaser'; b.className='guest-teaser';
+    b.innerHTML='<span class="guest-teaser-tx">Открытая часть базы. Полный доступ — по приглашению.</span><button class="guest-teaser-btn" id="guestLoginBtn">Войти</button>';
+    document.body.appendChild(b);
+    var lb=document.getElementById('guestLoginBtn'); if(lb) lb.onclick=function(){ try{ showGate('login'); }catch(_){ } };
+  }
+  function enterGuest(){
+    try{
+      window.__GUEST=true;
+      var g=document.getElementById('authGate'); if(g) g.style.display='none';
+      showTabbar(true);
+      if(typeof showView==='function') showView('list');
+      if(typeof openKbMode==='function') openKbMode();
+      if(typeof kbmLoad==='function'){
+        if(!(typeof KBM!=='undefined' && KBM.loaded)){ kbmLoad().then(function(){ if(typeof kbmShowList==='function') kbmShowList(); }); }
+        else if(typeof kbmShowList==='function'){ kbmShowList(); }
+      }
+      kbShowGuestTeaser();
+    }catch(e){ try{ showGate('login'); }catch(_){ } }
+  }
+  // Гость тапнул member-действие → мягкий тост (вход — в тизере), действие не выполняем.
+  function kbGuestGate(msg){ if(window.__GUEST){ try{ if(typeof toast==='function') toast(msg||'Войдите, чтобы сохранить'); }catch(_){ } return true; } return false; }
   function updateAuthUI(){
     document.getElementById('userBox').style.display = USER? 'flex':'none';
     if(USER) document.getElementById('userEmail').textContent=USER.email||'аккаунт';
@@ -4156,7 +4184,8 @@
   }
   async function onAuth(session){
     USER = session ? session.user : null;
-    if(!USER){ isAdmin=isMember=false; loadedUserId=null; updateAuthUI(); showGate('login'); return; }
+    if(!USER){ isAdmin=isMember=false; loadedUserId=null; updateAuthUI(); enterGuest(); return; }
+    window.__GUEST=false; var _gt=document.getElementById('guestTeaser'); if(_gt&&_gt.remove) _gt.remove();
     if(loadedUserId===USER.id && BOOK.length){           // уже загружено для этого пользователя — не перезагружаем
       document.getElementById('authGate').style.display='none'; updateAuthUI(); return;
     }
@@ -5656,7 +5685,7 @@
     detail.style.display='';
     if(detail.dataset.loaded){ detail.scrollIntoView({behavior:'smooth',block:'nearest'}); return; }
     detail.innerHTML='<div class="dsp-load" style="padding:8px 0">Загрузка…</div>';
-    var r=await SB.rpc('kb_node_bundle',{p_slug:slug});
+    var r=await kbmBundleRpc(slug);
     if(r.error){ detail.innerHTML='<div class="kbp-empty">Не удалось загрузить.</div>'; return; }
     var b=r.data||{};
     var col=KBP_ROB_COL[b.robustness]||'var(--muted)';
@@ -5688,7 +5717,7 @@
     var nb=document.createElement('div'); nb.className='kbp-neighbor';
     nb.innerHTML='<div class="dsp-load" style="padding:6px 0">Загрузка…</div>';
     nodeEl.appendChild(nb);
-    var r=await SB.rpc('kb_node_bundle',{p_slug:slug});
+    var r=await kbmBundleRpc(slug);
     if(r.error){ nb.innerHTML='<div class="kbp-empty">Нет данных.</div>'; return; }
     var b=r.data||{}, col=KBP_ROB_COL[b.robustness]||'var(--muted)';
     var body=b.body||{};
@@ -5732,7 +5761,30 @@
     for(var i=0;i<3;i++){ var s=document.createElement('i'); s.textContent='♥'; s.style.setProperty('--dx',((i-1)*13)+'px'); s.style.animationDelay=(i*0.06)+'s'; box.appendChild(s); }
     document.body.appendChild(box); setTimeout(function(){ if(box.parentNode) box.parentNode.removeChild(box); }, 1100);
   }catch(e){} }
+  function kbmBundleRpc(slug){ return SB.rpc(window.__GUEST?'kb_public_bundle':'kb_node_bundle',{p_slug:slug}); }
+  async function kbmLoadPublic(){
+    var bodyEl=document.getElementById('kbmBody'); if(bodyEl) bodyEl.innerHTML='<div class="dsp-load">Загрузка публичной карты…</div>';
+    function pfail(){ if(bodyEl) bodyEl.innerHTML='<div class="kbm-load-fail"><div class="kbm-load-fail-msg">Не удалось загрузить публичную карту.</div><button class="kbm-retry-btn" data-kbm-retry="1">Повторить</button></div>'; var rb=bodyEl&&bodyEl.querySelector('[data-kbm-retry]'); if(rb) rb.onclick=function(){ kbmLoadPublic(); }; }
+    try{
+      var gr=await withTimeout(SB.rpc('kb_public_graph'), 12000, 'Карта');
+      if(gr.error){ pfail(); return; }
+      var G=gr.data||{};
+      var live=(G.nodes||[]).filter(function(n){ return n.robustness!=='inbox' && n.status!=='inbox'; });
+      KBM.scenarios=[];                                   // ситуации — только членам
+      KBM.nodes=live.filter(function(n){ return n.node_layer!=='scenario'; });
+      KBM.edges=(G.edges||[]);
+      KBM.bySlug={}; live.forEach(function(n){ KBM.bySlug[n.slug]=n; });
+      KBM.likes=new Set(); KBM.signals={}; KBM.roots={}; KBM.memberships={};
+      KBM.findings={conjectures:[],laws:[]}; KBM.conjByNode={};
+      KBM.loaded=true;
+      if(typeof kbmRenderLens==='function') kbmRenderLens();
+      if(typeof kbmRenderOverview==='function') kbmRenderOverview();
+      if(!KBM._dlWired){ KBM._dlWired=true; try{ window.addEventListener('hashchange', kbmCheckDeepLink); }catch(e){} }
+      kbmCheckDeepLink();
+    }catch(e){ pfail(); }
+  }
   async function kbmLoad(){
+    if(window.__GUEST) return kbmLoadPublic();             // гость: только публичные данные, без member-RPC
     var bodyEl=document.getElementById('kbmBody'); if(bodyEl) bodyEl.innerHTML='<div class="dsp-load">Загрузка карты…</div>';
     function fail(msg){
       if(!bodyEl) return;
@@ -6318,7 +6370,7 @@
     body.innerHTML=backBtn+'<div class="dsp-load">Загрузка…</div>';
     kbmWirePlaybook(body);
     var r;
-    try{ r=await withTimeout(SB.rpc('kb_node_bundle',{p_slug:slug}), 10000, 'Ситуация'); }
+    try{ r=await withTimeout(kbmBundleRpc(slug), 10000, 'Ситуация'); }
     catch(e){ r={error:e}; }
     if(r.error||!r.data){
       body.innerHTML=backBtn+'<div class="kbm-load-fail"><div class="kbm-load-fail-msg">Не удалось загрузить ситуацию.</div>'
@@ -7110,6 +7162,7 @@
       +'<button class="kbm-fb-send" data-kbm-fb-send="'+escapeHtml(slug)+'">Отправить отзыв</button></div>';
   }
   function kbmFeedback(slug){
+    if(kbGuestGate('Отзывы — после входа')) return;
     var ta=document.getElementById('kbmFbIn'); if(!ta) return; var txt=(ta.value||'').trim(); if(!txt) return;
     try{ if(typeof SB!=='undefined') SB.from('reader_signals').insert({who:kbmGetLiker(), kind:'feedback', ref:slug, meta:{text:txt}}).then(function(r){ if(r&&r.error) console.warn('feedback:',r.error.message); }); }catch(e){}
     if(!KBM.fbSent) KBM.fbSent={}; KBM.fbSent[slug]=1;
@@ -7117,6 +7170,7 @@
     var bar=document.querySelector('.kbm-sig'); if(bar){ var nb=document.createElement('div'); nb.innerHTML=kbmSignalBar(slug); if(nb.firstChild) bar.parentNode.replaceChild(nb.firstChild, bar); }
   }
   function kbmSignal(slug, kind){
+    if(kbGuestGate('Оценка — после входа')) return;
     KBM.signals=KBM.signals||{}; KBM.signals[slug]=kind; haptic(8);
     try{ SB.from('reader_signals').insert({who:kbmGetLiker(), kind:kind, ref:slug}).then(function(r){ if(r&&r.error) console.warn('signal:',r.error.message); }); }catch(e){}
     var bar=document.querySelector('.kbm-sig');
@@ -7124,6 +7178,7 @@
   }
   // L1 измерение: лёгкое событие входа/пути (fire-and-forget). Анти-метрика: НЕ время/сессии.
   function kbmLogEvent(kind, ref, meta){
+    if(window.__GUEST) return;
     try{ SB.from('reader_signals').insert({who:kbmGetLiker(), kind:kind, ref:ref||null, meta:meta||null}).then(function(r){ if(r&&r.error) console.warn('event:',r.error.message); }); }catch(e){}
   }
   // C4: поделиться концептом — дип-ссылка #/c/<slug>. navigator.share → буфер → тост. Всё защищено.
@@ -7218,7 +7273,7 @@
     if(!state.visited) state.visited={};
     if(state.visited[slug]) return;
     state.visited[slug]=1;
-    try{ if(typeof SB!=='undefined' && typeof kbmGetLiker==='function'){ var _off=(typeof navigator!=='undefined' && navigator.onLine===false); SB.from('reader_signals').insert({who:kbmGetLiker(), kind:'visit', ref:slug}).then(function(r){ if(r&&r.error&&!_off) console.warn('visit:',r.error.message); }); } }catch(e){}
+    try{ if(typeof SB!=='undefined' && typeof kbmGetLiker==='function' && !window.__GUEST){ var _off=(typeof navigator!=='undefined' && navigator.onLine===false); SB.from('reader_signals').insert({who:kbmGetLiker(), kind:'visit', ref:slug}).then(function(r){ if(r&&r.error&&!_off) console.warn('visit:',r.error.message); }); } }catch(e){}
     saveState();
     if(typeof cnUpdateCount==='function') cnUpdateCount();
     if(typeof cnRenderRec==='function') cnRenderRec();
@@ -7269,7 +7324,7 @@
     var b=KBM.bundles&&KBM.bundles[slug];
     if(!b){
       var r;
-      try{ r=await withTimeout(SB.rpc('kb_node_bundle',{p_slug:slug}), 10000, 'Концепт'); }
+      try{ r=await withTimeout(kbmBundleRpc(slug), 10000, 'Концепт'); }
       catch(e){ r={error:e}; }
       if(KBM.currentSlug!==slug) return;                 // user navigated away while fetching → drop this render
       if(r && !r.error && r.data){ KBM.bundles=KBM.bundles||{}; KBM.bundles[slug]=r.data; b=r.data; }
@@ -7510,6 +7565,7 @@
   function closeAtomSeries(){ var v=document.getElementById('seriesView'); if(!v) return; v.classList.remove('open'); v.setAttribute('aria-hidden','true');
     var av=document.getElementById('atomView'); if(!(av&&av.classList.contains('open'))) document.body.style.overflow=''; }
   async function kbmLikeToggle(slug){
+    if(kbGuestGate('Избранное — после входа')) return;
     var liked=KBM.likes.has(slug);
     var off=(typeof navigator!=='undefined' && navigator.onLine===false);
     if(liked){
@@ -7803,10 +7859,12 @@
       try{ closeMenus(); }catch(_){}
       showView('menu'); renderMenuView();
     } else if(name==='books'){
+      if(kbGuestGate('Полка и книга — после входа')) return;
       if(CN.on) cnClose();
       showView('shelf');
       renderShelf();
     } else if(name==='text'){
+      if(kbGuestGate('Книга — после входа')) return;
       if(CN.on) cnClose();
       showView('reader');
     }
@@ -7854,7 +7912,7 @@
             + menuRow('Админка', '', 'admin')
             + '</div>';
     }
-    rows += '<div class="menu-version">Версия 2026-06-24 10:19 · 52ef69a</div>';
+    rows += '<div class="menu-version">Версия 2026-06-24 13:56 · 57d22cc</div>';
     body.innerHTML = '<div class="menu-v-head"><h2 class="menu-v-title">Меню</h2></div><div class="menu-v-list">'+rows+'</div>';
     Array.prototype.forEach.call(body.querySelectorAll('[data-menu-act]'), function(b){
       b.onclick = function(){ menuAct(b.getAttribute('data-menu-act')); };
@@ -8904,6 +8962,7 @@
   }
 
   async function openQuests(){
+    if(kbGuestGate('Маршруты — после входа')) return;
     var el=document.getElementById('quests'); if(!el) return;
     QUEST.detailKey=null;
     el.classList.add('open'); document.body.style.overflow='hidden';
@@ -11058,7 +11117,7 @@
     SB.auth.onAuthStateChange(function(ev, session){ onAuth(session); });
     var got=await SB.auth.getSession();
     var sess = got.data && got.data.session;
-    if(!sess){ cnClose(); showView('none'); showGate('login'); }   // на деле не залогинен → убрать все виды, показать вход
+    if(!sess){ cnClose(); }   // не залогинен → onAuth(null) поднимет гостевой режим (публичная зона)
     hideSplash();
     await onAuth(sess);
   })();
