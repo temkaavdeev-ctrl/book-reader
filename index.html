@@ -5803,13 +5803,26 @@
     }
   }
   // Helper: get a node's region label for the active lens
+  // Толерантный резолв slug: точное → префикс «slug-» → начинается с slug. Чтобы #/c/jtbd нашёл jtbd-christensen, а не падал тихо.
+  function kbmResolveSlug(slug){
+    if(!slug || !KBM.bySlug) return null;
+    if(KBM.bySlug[slug]) return slug;
+    var keys=Object.keys(KBM.bySlug), i, cand=[];
+    for(i=0;i<keys.length;i++){ if(keys[i].indexOf(slug+'-')===0) cand.push(keys[i]); }
+    if(!cand.length){ for(i=0;i<keys.length;i++){ if(keys[i].indexOf(slug)===0) cand.push(keys[i]); } }
+    if(!cand.length) return null;
+    cand.sort(function(a,b){ return a.length-b.length; });   // ближайший к запросу
+    return cand[0];
+  }
   function kbmCheckDeepLink(){
-    // C4: открыть концепт по дип-ссылке #/c/<slug>. Срабатывает ТОЛЬКО на этом хэше; иначе no-op (обычный старт не трогаем). Всё в try/catch.
+    // C4: открыть концепт по дип-ссылке #/c/<slug>. Срабатывает ТОЛЬКО на этом хэше; иначе no-op. Всё в try/catch.
     try{
       var m=(location.hash||'').match(/^#\/c\/([^/?&#]+)/);
       if(!m) return;
-      var slug=decodeURIComponent(m[1]);
-      if(!KBM.loaded || !KBM.bySlug || !KBM.bySlug[slug]) return;   // ждём загрузку; неизвестный slug — тихо мимо
+      var req=decodeURIComponent(m[1]);
+      if(!KBM.loaded || !KBM.bySlug) return;                 // ждём загрузку
+      var slug=kbmResolveSlug(req);
+      if(!slug) return;                                      // не нашли даже толерантно — тихо мимо
       if(KBM._dlOpened===slug) return; KBM._dlOpened=slug;
       if(typeof openKbMode==='function') openKbMode();
       if(typeof kbmShowList==='function') kbmShowList();
@@ -7841,7 +7854,7 @@
             + menuRow('Админка', '', 'admin')
             + '</div>';
     }
-    rows += '<div class="menu-version">Версия 2026-06-24 09:58 · 937e094</div>';
+    rows += '<div class="menu-version">Версия 2026-06-24 10:19 · 52ef69a</div>';
     body.innerHTML = '<div class="menu-v-head"><h2 class="menu-v-title">Меню</h2></div><div class="menu-v-list">'+rows+'</div>';
     Array.prototype.forEach.call(body.querySelectorAll('[data-menu-act]'), function(b){
       b.onclick = function(){ menuAct(b.getAttribute('data-menu-act')); };
