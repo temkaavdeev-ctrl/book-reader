@@ -733,6 +733,10 @@
   .cn-rec-x:active,.atom-close:active,.blb-x:active,.constel-ctl:active,.kbm-filter-clear:active{ transform:scale(.9) }
   /* комфортная область клика для часто нажимаемого */
   .kbm-like-btn{ min-height:40px }
+  .kbm-share-btn{ display:inline-flex; align-items:center; gap:6px; min-height:40px; margin-left:8px; padding:8px 14px; border-radius:var(--r-m); border:1px solid var(--line-2); background:transparent; color:var(--muted); font-family:var(--font-ui); font-size:13px; font-weight:600; cursor:pointer; transition:background .15s,color .15s; touch-action:manipulation }
+  .kbm-share-btn:active{ transform:scale(.9) }
+  .kbm-toast{ position:fixed; left:50%; bottom:90px; transform:translate(-50%,12px); max-width:80vw; padding:11px 16px; border-radius:var(--r-l); background:var(--ink); color:var(--bg); font-family:var(--font-ui); font-size:13px; font-weight:600; box-shadow:0 8px 24px rgba(0,0,0,.22); opacity:0; transition:opacity .25s,transform .25s; z-index:9999; pointer-events:none; text-align:center; word-break:break-all }
+  .kbm-toast-in{ opacity:1; transform:translate(-50%,0) }
   .kbm-filter-toggle{ min-height:38px }
   .kbm-filter-chip{ min-height:34px; padding:7px 11px }
   /* крестики (×) — единый круглый ghost-стиль с достаточной зоной */
@@ -1351,6 +1355,9 @@
   .kbm-body{ flex:1; overflow-y:auto; padding:12px 14px 80px }
   .kbm-empty{ text-align:center; color:var(--muted); padding:40px 20px; font-size:14px }
   .kbm-search-near{ font-size:13px; color:var(--muted); margin:2px 2px 12px; line-height:1.4 }
+  .kbm-search-add{ display:block; width:100%; margin-top:16px; padding:13px; border-radius:var(--r-m); border:1px dashed color-mix(in srgb,var(--accent) 40%,var(--line)); background:var(--accent-tint); color:var(--accent); font-family:var(--font-ui); font-size:13px; font-weight:600; cursor:pointer; text-align:center; transition:background .15s,border-color .15s }
+  .kbm-search-add:active{ transform:scale(.98) }
+  .kbm-search-add-done{ margin-top:16px; padding:13px; border-radius:var(--r-m); background:color-mix(in srgb,var(--accent) 7%,transparent); color:var(--muted); font-size:13px; text-align:center; line-height:1.4 }
   .kbm-bodyhits{ margin-top:18px; padding-top:14px; border-top:1px solid var(--line) }
   .kbm-bodyhit-snip{ font-size:12px; color:var(--muted); line-height:1.45; margin:-2px 2px 8px 12px }
   .kbm-filterbar{ display:flex; align-items:center; gap:10px; margin:0 2px 12px }
@@ -2154,6 +2161,10 @@
 .kbm-state-boundary{ border-color:color-mix(in srgb, var(--accent) 40%, var(--line)); background:color-mix(in srgb, var(--accent) 8%, transparent); }
 .kbm-state-frontier{ border-style:dashed; border-color:color-mix(in srgb, var(--muted) 42%, var(--line)); }
 .kbm-state-frontier .kbm-state-h{ color:var(--muted); font-weight:500; }
+/* B2: дорабатывается — пригашенный баннер, две оси не смешивать */
+.kbm-state-wip{ border-style:dashed; border-color:color-mix(in srgb, var(--muted) 32%, var(--line)); background:color-mix(in srgb, var(--muted) 5%, transparent); }
+.kbm-state-wip .kbm-state-h{ color:var(--muted); font-weight:500; font-size:12px; }
+.kbm-state-wip .kbm-state-b{ font-size:12px; opacity:.8; }
 
 
 /* ── Бренд-глиф Constellation (сплэш + вход) ── */
@@ -2411,6 +2422,7 @@
 
 /* нижняя кнопка-продвижение по маршруту (на дне карточки) */
 .q-adv{ margin:24px 0 6px; padding-top:16px; border-top:1px solid var(--line); }
+.q-adv-gg{ font-family:var(--font-ui); font-size:12.5px; font-weight:650; color:var(--accent); background:color-mix(in srgb, var(--accent) 9%, transparent); border:1px solid color-mix(in srgb, var(--accent) 22%, transparent); border-radius:var(--r-m); padding:8px 12px; margin-bottom:11px; }
 .q-adv-hint{ font-family:var(--font-ui); font-size:12.5px; color:var(--muted); margin-bottom:11px; }
 .q-adv-done{ font-family:var(--font-ui); font-size:13px; font-weight:650; color:var(--good); margin-bottom:11px; }
 .q-adv-btn{ display:flex; align-items:center; gap:10px; width:100%; padding:14px 16px; border:none; border-radius:13px; background:var(--accent); color:var(--text-on-accent); cursor:pointer; font-family:inherit; text-align:left; transition:transform .1s; }
@@ -2876,7 +2888,7 @@
   <div class="foot"><div class="spacer"></div><button class="btn" id="appLogClose">Закрыть</button></div>
 </div>
 <div class="modal" id="journeyModal" style="width:440px">
-  <h3 id="jrTitle">Ваш путь</h3>
+  <h3 id="jrTitle">Мой прогресс</h3>
   <div class="body"><div id="jrBody"></div></div>
   <div class="foot"><div class="spacer"></div><button class="btn primary" id="jrClose">Закрыть</button></div>
 </div>
@@ -5733,7 +5745,7 @@
       KBM.bySlug={};
       live.forEach(function(n){ KBM.bySlug[n.slug]=n; });
       KBM.likes=new Set(((lr&&lr.data)||[]).map(function(r){return r.node_slug;}));
-      KBM.signals={}; var _L2S=['applicable','interesting','notfound'];   // L2 сигнал полезности: последний на концепт
+      KBM.signals={}; var _L2S=['applicable','disputed','needs-depth','interesting','notfound'];  // B2: +disputed/needs-depth (c823314d)
       ((sr&&sr.data)||[]).forEach(function(r){ if(_L2S.indexOf(r.kind)>=0) KBM.signals[r.ref]=r.kind; else if(r.kind==='visit' && r.ref){ if(!state.visited) state.visited={}; state.visited[r.ref]=1; } });
       if(typeof saveState==='function') saveState();   // влить серверные посещённые в локальный кэш
       KBM.roots={}; ((rr&&rr.data)||[]).forEach(function(r){ var k=KB_ROOTMAP[r.root]; if(k){ (KBM.roots[r.slug]=KBM.roots[r.slug]||{})[k]=Number(r.weight); } });
@@ -5763,11 +5775,26 @@
       });
       KBM.loaded=true;
       kbmRenderLens(); kbmRenderOverview();
+      if(!KBM._dlWired){ KBM._dlWired=true; try{ window.addEventListener('hashchange', kbmCheckDeepLink); }catch(e){} }
+      kbmCheckDeepLink();
     }catch(e){
       fail((e&&e.message)||'Не удалось загрузить карту.');
     }
   }
   // Helper: get a node's region label for the active lens
+  function kbmCheckDeepLink(){
+    // C4: открыть концепт по дип-ссылке #/c/<slug>. Срабатывает ТОЛЬКО на этом хэше; иначе no-op (обычный старт не трогаем). Всё в try/catch.
+    try{
+      var m=(location.hash||'').match(/^#\/c\/([^/?&#]+)/);
+      if(!m) return;
+      var slug=decodeURIComponent(m[1]);
+      if(!KBM.loaded || !KBM.bySlug || !KBM.bySlug[slug]) return;   // ждём загрузку; неизвестный slug — тихо мимо
+      if(KBM._dlOpened===slug) return; KBM._dlOpened=slug;
+      if(typeof openKbMode==='function') openKbMode();
+      if(typeof kbmShowList==='function') kbmShowList();
+      if(typeof kbmDetail==='function') kbmDetail(slug);
+    }catch(e){}
+  }
   function kbmNodeRegion(node, lens){
     var tags=node.tags||[];
     for(var i=0;i<tags.length;i++){ if(tags[i].axis===lens) return tags[i].label; }
@@ -5866,11 +5893,22 @@
     KBM._nfT=setTimeout(function(){ if(ql.length<3) return; KBM._nfSeen=KBM._nfSeen||{}; if(KBM._nfSeen[ql]) return; KBM._nfSeen[ql]=1; kbmLogEvent('notfound', null, {q:q}); }, 1200);
     if(near.length){
       if(cnt) cnt.textContent='близкое: '+near.length;
-      body.innerHTML='<div class="kbm-search-near">Точного совпадения нет — близкое по смыслу:</div><div class="kbm-concept-list">'+near.map(function(x){ return kbmConceptRow(x.n); }).join('')+'</div>';
+      body.innerHTML='<div class="kbm-search-near">Точного совпадения нет — близкое по смыслу:</div><div class="kbm-concept-list">'+near.map(function(x){ return kbmConceptRow(x.n); }).join('')+'</div>'+kbmSearchAddCta(q);
     } else {
       if(cnt) cnt.textContent='0 найдено';
-      body.innerHTML='<div class="kbm-empty">Ничего не найдено по «'+escapeHtml(q)+'». Попробуй другое слово или загляни во «Всё».</div>';
+      body.innerHTML='<div class="kbm-empty">Ничего не найдено по «'+escapeHtml(q)+'». Попробуй другое слово или загляни во «Всё».</div>'+kbmSearchAddCta(q);
     }
+  }
+  // B3: «не нашёл? добавить» — тупик поиска превращаем в захват спроса (искал-ничего = главный провал work-surface).
+  function kbmSearchAddCta(q){
+    return '<button class="kbm-search-add" data-kbm-request="'+escapeHtml(q)+'">Не нашли нужное? Запросить концепт →</button>';
+  }
+  function kbmRequestConcept(q){
+    q=(q||'').trim(); if(!q) return;
+    kbmLogEvent('request-concept', null, {q:q});
+    if(typeof haptic==='function') haptic(10);
+    var btns=document.querySelectorAll('[data-kbm-request]');
+    for(var i=0;i<btns.length;i++){ var b=btns[i], d=document.createElement('div'); d.className='kbm-search-add-done'; d.textContent='Записали запрос «'+q+'» — посмотрим. Спасибо.'; if(b.parentNode) b.parentNode.replaceChild(d,b); }
   }
   // Поиск по ТЕЛУ карточек: kb_search_fulltext (title+body+body_struct, ts_rank). Дописывает к локальным результатам секцию «нашлось в тексте». Гард по актуальности запроса.
   async function kbmBodySearch(q, ql, localHits){
@@ -5948,6 +5986,7 @@
         var rt=e.target.closest('[data-region]'); if(rt){ var rn=rt.getAttribute('data-region'); if(KBM.lens==='product-lever') kbmRenderGoal(rn); else kbmRenderRegion(rn); return; }
         var like=e.target.closest('[data-kbm-like]'); if(like){ e.stopPropagation(); kbmLikeToggle(like.getAttribute('data-kbm-like')); return; }
         var cr=e.target.closest('[data-kbm-slug]'); if(cr){ kbmDetail(cr.getAttribute('data-kbm-slug')); return; }
+        var rq=e.target.closest('[data-kbm-request]'); if(rq){ kbmRequestConcept(rq.getAttribute('data-kbm-request')); return; }
       });
     }
     var listTitle=document.getElementById('kbmListTitle');
@@ -6490,7 +6529,7 @@
     var st=kbmReadyState(n);
     // Канон status-display: ДВЕ оси, не в одном бейдже.
     // 1) ПОЛНОТА (редакционная): неполная карточка → пригашена + тихий тег «дорабатывается».
-    var incomplete=(st.reason==='черновик'||st.reason==='неполная');
+    var incomplete=(st.state==='wip'||st.reason==='черновик'||st.reason==='неполная'||st.reason==='край карты');  // B2: wip=draft пригашен; B1: край-карты stub тоже пригашен
     var dim=incomplete;
     // 2) ДОКАЗАТЕЛЬНОСТЬ (эпистемика) — ТОЛЬКО механизмы, ТОЛЬКО когда требует внимания. Норма (solid/не оценено) — без слова. Инструменты — без эпист.бейджа (репликация неприменима). Единый регистр — нижний.
     var isTool=(n.node_class==='tool');
@@ -6654,12 +6693,13 @@
   }
   // Предпочитаемый класс по ОЦЕНКАМ пользователя (механизмы vs инструменты) — сигнал для рекомендаций.
   function kbmPreferredClass(){
-    var r=state.rating||{}, sum={}, cnt={}, k;
-    for(k in r){ var n=KBM.bySlug&&KBM.bySlug[k]; if(!n||!r[k]) continue; var c=(n.node_class==='tool')?'tool':'mech'; sum[c]=(sum[c]||0)+r[k]; cnt[c]=(cnt[c]||0)+1; }
-    if(!cnt.mech&&!cnt.tool) return null;
-    var am=cnt.mech?sum.mech/cnt.mech:0, at=cnt.tool?sum.tool/cnt.tool:0;
-    if(Math.abs(am-at)<0.5) return null;
-    return am>at?'mech':'tool';
+    // B2-fix (c823314d): персонализация по вердиктам применимости, а не по звёздам (звёзды убраны).
+    // applicable = «полезно мне» (вес 1), needs-depth = вовлечён, но мало (0.5), disputed = нейтрально (skip).
+    var sig=KBM.signals||{}, w={applicable:1,'needs-depth':0.5}, sum={mech:0,tool:0}, k;
+    for(k in sig){ var ww=w[sig[k]]; if(!ww) continue; var n=KBM.bySlug&&KBM.bySlug[k]; if(!n) continue; sum[(n.node_class==='tool')?'tool':'mech']+=ww; }
+    if(!sum.mech&&!sum.tool) return null;
+    if(Math.abs(sum.mech-sum.tool)<1) return null;   // нужен перевес хотя бы в одно «применимо»
+    return sum.mech>sum.tool?'mech':'tool';
   }
   // #5 MVP РЕКОМЕНДАЦИИ: из ТЕКУЩЕЙ карточки — следующая (учёт посещений+оценок: непосещённое, ближе к предпочитаемому классу; семантика → граф → несущий). Видна, когда долистал до конца.
   async function kbmCardNext(slug){
@@ -6911,8 +6951,8 @@
   var KBM_READY_EPI={ 'empirical-effect':1,'empirical-law':1,'framework':1,'heuristic':1 };
   function kbmReadyState(n){
     if(!n) return {state:'frontier',reason:'не оценено'};
-    if(n.content_status==='draft') return {state:'hidden',reason:'черновик'};
-    if(n.maturity==='stub') return {state:'hidden',reason:'неполная'};
+    if(n.content_status==='draft') return {state:'wip',reason:'дорабатывается'};  // B2: draft пригашаем+бейдж, не прячем
+    if(n.maturity==='stub') return {state:'frontier',reason:'край карты'};  // B1: оф-рельсовый stub честно как фронтир, не прячем (иначе пустая карточка)
     if(n.maturity==='partial') return {state:'frontier',reason:'неполная'};
     var rob=n.robustness, epi=n.epistemic_status;
     if(n.verify_flag) return {state:'frontier',reason:'развенчано',debunk:n.verify_flag,contested:rob==='contested'};
@@ -6928,6 +6968,14 @@
   function kbmStateBanner(n){
     var st=kbmReadyState(n);
     if(st.state==='ready'||st.state==='hidden') return '';  // готов = чисто; скрытый на карточку и не попадёт
+    if(st.state==='wip'){  // B2: дорабатывается — показываем баннер, не прячем
+      return '<div class="kbm-state kbm-state-wip"><div class="kbm-state-h">✏ Дорабатывается</div>'
+        +'<div class="kbm-state-b">Карточка в работе: суть и источники есть, остальное допишем.</div></div>';
+    }
+    if(st.reason==='край карты'){  // B1: оф-рельсовый stub как фронтир — суть+источники, не пусто
+      return '<div class="kbm-state kbm-state-frontier"><div class="kbm-state-h">Край карты</div>'
+        +'<div class="kbm-state-b">Сюда мы ещё не дошли: суть и источники есть, остальное дорабатываем.</div></div>';
+    }
     if(st.debunk){
       return '<div class="kbm-state kbm-state-debunk"><div class="kbm-state-h">\u26a0 \u041f\u0435\u0440\u0435\u0441\u043c\u043e\u0442\u0440\u0435\u043d\u043e \u043d\u0430\u0443\u043a\u043e\u0439</div>'
         +'<div class="kbm-state-b">'+escapeHtml(st.debunk)+'</div></div>';
@@ -6974,14 +7022,18 @@
     return '';
   }
   function kbmSignalBar(slug){
+    // B2 c823314d: «Применимо · Спорно · Нужно глубже» — вердикт о ценности контента, не вопрос к юзеру.
     var cur=(KBM.signals&&KBM.signals[slug])||'';
-    var rate=(state.rating&&state.rating[slug])||0;
-    function btn(k,lbl){ return '<button class="kbm-sig-btn'+(cur===k?' kbm-sig-on':'')+'" data-kbm-sig="'+k+'" data-kbm-sig-slug="'+escapeHtml(slug)+'">'+lbl+'</button>'; }
-    var stars='';
-    for(var i=1;i<=5;i++){ stars+='<button class="kbm-star'+(i<=rate?' kbm-star-on':'')+'" data-kbm-rate="'+i+'" data-kbm-rate-slug="'+escapeHtml(slug)+'">'+(i<=rate?'★':'☆')+'</button>'; }
+    function btn(k,lbl,hint){
+      var on=(cur===k);
+      return '<button class="kbm-sig-btn'+(on?' kbm-sig-on':'')+'" data-kbm-sig="'+k+'" data-kbm-sig-slug="'+escapeHtml(slug)+'" title="'+escapeHtml(hint||'')+'">'+lbl+'</button>';
+    }
     return '<div class="kbm-sig">'
-      +'<div class="kbm-sig-q">Оцените карточку</div>'
-      +'<div class="kbm-stars">'+stars+(rate?'<span class="kbm-stars-n">'+rate+'/5</span>':'')+'</div>'
+      +'<div class="kbm-sig-row">'
+        +btn('applicable','Применимо','Полезно и применимо на практике')
+        +btn('disputed','Спорно','Спорно — это честно, не негативно')
+        +btn('needs-depth','Нужно глубже','Хочу больше информации по этому концепту')
+      +'</div>'
       +kbmFeedbackHtml(slug)
       +'</div>';
   }
@@ -6998,12 +7050,6 @@
     if(typeof haptic==='function') haptic(10);
     var bar=document.querySelector('.kbm-sig'); if(bar){ var nb=document.createElement('div'); nb.innerHTML=kbmSignalBar(slug); if(nb.firstChild) bar.parentNode.replaceChild(nb.firstChild, bar); }
   }
-  function kbmRate(slug, n){
-    if(!state.rating) state.rating={}; state.rating[slug]=n; saveState(); if(typeof haptic==='function') haptic(8);
-    try{ if(typeof SB!=='undefined') SB.from('reader_signals').insert({who:kbmGetLiker(), kind:'rate', ref:slug, meta:{stars:n}}).then(function(r){ if(r&&r.error) console.warn('rate:',r.error.message); }); }catch(e){}
-    var bar=document.querySelector('.kbm-sig');
-    if(bar){ var nb=document.createElement('div'); nb.innerHTML=kbmSignalBar(slug); if(nb.firstChild) bar.parentNode.replaceChild(nb.firstChild, bar); }
-  }
   function kbmSignal(slug, kind){
     KBM.signals=KBM.signals||{}; KBM.signals[slug]=kind; haptic(8);
     try{ SB.from('reader_signals').insert({who:kbmGetLiker(), kind:kind, ref:slug}).then(function(r){ if(r&&r.error) console.warn('signal:',r.error.message); }); }catch(e){}
@@ -7013,6 +7059,23 @@
   // L1 измерение: лёгкое событие входа/пути (fire-and-forget). Анти-метрика: НЕ время/сессии.
   function kbmLogEvent(kind, ref, meta){
     try{ SB.from('reader_signals').insert({who:kbmGetLiker(), kind:kind, ref:ref||null, meta:meta||null}).then(function(r){ if(r&&r.error) console.warn('event:',r.error.message); }); }catch(e){}
+  }
+  // C4: поделиться концептом — дип-ссылка #/c/<slug>. navigator.share → буфер → тост. Всё защищено.
+  function kbmShareCard(slug){
+    if(!slug) return;
+    var url=location.origin+location.pathname+'#/c/'+encodeURIComponent(slug);
+    var n=KBM.bySlug&&KBM.bySlug[slug], title=(n&&n.title)?n.title:'Концепт';
+    try{ kbmLogEvent('share', slug, null); }catch(e){}
+    if(typeof haptic==='function') haptic(8);
+    try{ if(navigator.share){ navigator.share({title:title, url:url}).catch(function(){}); return; } }catch(e){}
+    try{ if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(url).then(function(){ kbmShareToast('Ссылка скопирована'); }, function(){ kbmShareToast(url); }); return; } }catch(e){}
+    kbmShareToast(url);
+  }
+  function kbmShareToast(msg){
+    try{ var t=document.createElement('div'); t.className='kbm-toast'; t.textContent=msg; document.body.appendChild(t);
+      requestAnimationFrame(function(){ t.classList.add('kbm-toast-in'); });
+      setTimeout(function(){ t.classList.remove('kbm-toast-in'); setTimeout(function(){ if(t.parentNode) t.parentNode.removeChild(t); }, 300); }, 2200);
+    }catch(e){}
   }
   function kbmRenderCard(slug, node, dir){
     var body=document.getElementById('kbmDetBody'); if(!body) return;
@@ -7028,6 +7091,7 @@
       +(epi?'<span class="kbm-es">'+escapeHtml(KBM_ES[epi]||epi)+'</span>':'')
       +'</div>'
       +'<button class="kbm-like-btn'+(liked?' kbm-liked':'')+'" id="kbmDetHeart" data-kbm-like="'+escapeHtml(slug)+'">'+(liked?'♥ В избранном':'♡ В избранное')+'</button>'
+      +'<button class="kbm-share-btn" data-kbm-share="'+escapeHtml(slug)+'" aria-label="Поделиться">\u2934 Поделиться</button>'
       +'<div class="kbm-d-claim" id="kbmDetClaim">'+escapeHtml(claim)+'</div>';
     body.innerHTML='<div id="kbmDetCard">'
       +hero+kbmStateBanner(node)+'<div id="kbmQuestTracker">'+questTrackerHtml(slug)+'</div>'+'<div class="kbm-sections" id="kbmDetSections"><div class="kbm-detail-pending"></div></div>'+kbmMiniMap(slug)+kbmChapterRefs(slug)+kbmSituationRefs(slug)+'<div id="kbmSigWrap">'+kbmCardStatus(slug)+kbmSignalBar(slug)+'</div>'+'<div id="kbmQuestAdvance">'+(typeof questAdvanceHtml==='function'?questAdvanceHtml(slug):'')+'</div>'
@@ -7051,8 +7115,8 @@
         var mini=e.target.closest('[data-kbm-mini]'); if(mini){ var ms=mini.getAttribute('data-kbm-mini'); if(KBM.miniFocus===ms){ KBM.miniFocus=null; kbmDetail(ms); } else { kbmMiniFocus(ms); } return; }
         var exp=e.target.closest('[data-kbm-expand]'); if(exp){ cnFocusSlug(KBM.currentSlug); return; }
         var like=e.target.closest('[data-kbm-like]'); if(like){ kbmLikeToggle(like.getAttribute('data-kbm-like')); return; }
+        var shc=e.target.closest('[data-kbm-share]'); if(shc){ kbmShareCard(shc.getAttribute('data-kbm-share')); return; }
         var sig=e.target.closest('[data-kbm-sig]'); if(sig){ kbmSignal(sig.getAttribute('data-kbm-sig-slug'), sig.getAttribute('data-kbm-sig')); return; }
-        var rt=e.target.closest('[data-kbm-rate]'); if(rt){ kbmRate(rt.getAttribute('data-kbm-rate-slug'), parseInt(rt.getAttribute('data-kbm-rate'),10)); return; }
         var fbs=e.target.closest('[data-kbm-fb-send]'); if(fbs){ kbmFeedback(fbs.getAttribute('data-kbm-fb-send')); return; }
         var cj=e.target.closest('[data-kbm-conj]'); if(cj){ kbmFindingDetail(cj.getAttribute('data-kbm-conj')); return; }
         var chm=e.target.closest('[data-kbm-chmore]'); if(chm){ var lst=chm.parentNode.querySelector('[data-kbm-chmore-list]'); if(lst){ var hid=lst.classList.toggle('kbm-chrefs-hidden'); chm.innerHTML=hid?('Глубже ▸ ещё упоминания ('+lst.children.length+')'):'Свернуть ▾'; } return; }
@@ -7711,7 +7775,7 @@
             + menuRow('Админка', '', 'admin')
             + '</div>';
     }
-    rows += '<div class="menu-version">Версия 2026-06-23 07:59 · 6257248</div>';
+    rows += '<div class="menu-version">Версия 2026-06-24 04:08 · ef49c97</div>';
     body.innerHTML = '<div class="menu-v-head"><h2 class="menu-v-title">Меню</h2></div><div class="menu-v-list">'+rows+'</div>';
     Array.prototype.forEach.call(body.querySelectorAll('[data-menu-act]'), function(b){
       b.onclick = function(){ menuAct(b.getAttribute('data-menu-act')); };
@@ -8909,15 +8973,18 @@
     var q=questForStop(slug); if(!q) return '';
     var s=q.slugs||[], idx=s.indexOf(slug); if(idx<0) return '';
     var read=state.visited && state.visited[slug];
+    // C2 goal-gradient (санкционированный рычаг): на финишной прямой — ободрение близости цели. Без вины/лосс-фрейминга/стрика.
+    var prog=(typeof questProgress==='function')?questProgress(q):0, left=Math.max(0, s.length-prog);
+    var gg=(left>0 && left<=2 && s.length>=3) ? '<div class="q-adv-gg">Финишная прямая — ещё '+left+' '+kbmPlural(left,'остановка','остановки','остановок')+' до конца маршрута</div>' : '';
     var head = read ? '<div class="q-adv-done">✓ Остановка пройдена</div>' : '<div class="q-adv-hint">Дочитайте до конца — остановка отметится пройденной.</div>';
     if(idx < s.length-1){
       var nxt=s[idx+1];
-      return '<div class="q-adv">'+head
+      return '<div class="q-adv">'+gg+head
         + '<button class="q-adv-btn" data-qt-next="'+escapeHtml(nxt)+'"><span class="q-adv-txt"><span class="q-adv-lbl">Следующая остановка</span><span class="q-adv-t">'+escapeHtml(questStopTitle(nxt))+'</span></span><span class="q-adv-arr">→</span></button>'
         + '<button class="q-adv-map" data-qt-map="'+escapeHtml(q.key)+'">Весь маршрут</button>'
         + '</div>';
     }
-    return '<div class="q-adv">'+head
+    return '<div class="q-adv">'+gg+head
       + '<button class="q-adv-btn" data-qt-map="'+escapeHtml(q.key)+'"><span class="q-adv-txt"><span class="q-adv-lbl">Последняя остановка</span><span class="q-adv-t">Вернуться к маршруту</span></span><span class="q-adv-arr">→</span></button>'
       + '</div>';
   }
