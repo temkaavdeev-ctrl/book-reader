@@ -1956,10 +1956,16 @@
 #kbmDetBody.kbm-in{ animation:kbmDetIn .42s cubic-bezier(.2,.7,.2,1) both }
 @keyframes kbmDetIn{ from{opacity:0; transform:translateY(12px)} to{opacity:1; transform:none} }
 /* Хром отступает, пока исследуешь */
-  .constel-rec{ position:absolute; bottom:calc(20px + var(--tabbar-h) + env(safe-area-inset-bottom,0px)); left:50%; transform:translateX(-50%); z-index:4; display:flex; align-items:center; gap:9px; max-width:min(420px,86%); padding:9px 15px; background:rgba(34,34,40,.88); -webkit-backdrop-filter:blur(12px) saturate(1.2); backdrop-filter:blur(12px) saturate(1.2); border:1px solid rgba(220,190,150,.3); border-radius:14px; cursor:pointer; box-shadow:0 8px 26px rgba(0,0,0,.4); transition:transform .15s, border-color .15s; animation:constelChipIn .25s cubic-bezier(.34,1.2,.5,1) }
-  .constel-rec:active{ transform:translateX(-50%) scale(.97) }
+  .constel-rec{ position:absolute; bottom:calc(10px + var(--tabbar-h) + env(safe-area-inset-bottom,0px)); left:12px; right:12px; z-index:4; display:flex; align-items:stretch; gap:0; padding:0; overflow:hidden; background:rgba(26,24,22,.9); -webkit-backdrop-filter:blur(16px) saturate(1.2); backdrop-filter:blur(16px) saturate(1.2); border:1px solid rgba(220,190,150,.26); border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.46); animation:constelChipIn .25s cubic-bezier(.34,1.2,.5,1) }
+  .cn-nav-routes{ flex:none; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; width:86px; padding:10px 8px; border:0; background:transparent; color:rgba(232,192,121,.96); cursor:pointer; border-right:1px solid rgba(220,190,150,.16); transition:background .15s }
+  .cn-nav-routes:active{ background:rgba(255,255,255,.07) }
+  .cn-nav-routes-ic{ display:block }
+  .cn-nav-routes-lbl{ font:600 12px var(--font-ui); letter-spacing:.01em; color:rgba(232,192,121,.96) }
+  .cn-nav-next{ flex:1; min-width:0; display:flex; align-items:center; gap:11px; padding:10px 14px; border:0; background:transparent; cursor:pointer; text-align:left; transition:background .15s }
+  .cn-nav-next:active{ background:rgba(255,255,255,.07) }
+  .cn-nav-routesonly .cn-nav-routes{ flex:1; flex-direction:row; gap:9px; width:auto; border-right:0 }
   .cn-rec-lbl{ font-family:var(--font-ui); font-size:10px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:rgba(228,182,118,.95); flex:none }
-  .cn-rec-name{ font-size:14px; font-weight:600; color:#efe8db; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+  .cn-rec-name{ font-size:14.5px; font-weight:600; color:#efe8db; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; line-height:1.25 }
   .cn-rec-arr{ color:rgba(228,182,118,.78); font-size:17px; flex:none; line-height:1 }
   .cn-rec-x{ flex:none; margin-left:3px; width:32px; height:32px; padding:0; border:none; background:rgba(255,255,255,.08); color:rgba(228,182,118,.72); border-radius:50%; font-size:13px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center }
   .cn-rec-tx{ flex:1; min-width:0; display:flex; flex-direction:column; align-items:flex-start; gap:1px }
@@ -2148,7 +2154,7 @@
 #kbmBody{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-bottom,0px) + 14px); }
 #shelf{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-bottom,0px) + 8px); }
 #constelLegend{ bottom:calc(20px + var(--tabbar-h) + env(safe-area-inset-bottom,0px)) !important; }
-.constel-hint{ bottom:calc(22px + var(--tabbar-h) + env(safe-area-inset-bottom,0px)) !important; }
+.constel-hint{ bottom:calc(96px + var(--tabbar-h) + env(safe-area-inset-bottom,0px)) !important; }
 .constel-chip{ bottom:calc(20px + var(--tabbar-h) + env(safe-area-inset-bottom,0px)) !important; }
 
 
@@ -2553,6 +2559,77 @@
 
 /* B13: расшифровка термина (тултип) */
 .kbm-term{ border-bottom:1px dotted var(--muted); cursor:help; text-decoration:none }
+
+/* FR-09: гостевой режим — гость видит ТОЛЬКО карточку (read-only) */
+body.guest-only #tabbar{ display:none !important; }
+.guest-card-cta{ position:sticky; bottom:0; left:0; right:0; margin-top:26px;
+  padding:16px 18px calc(16px + env(safe-area-inset-bottom));
+  background:#1C1A17; color:#F5F2EC; border-top:1px solid rgba(255,255,255,.08);
+  border-radius:16px 16px 0 0; box-shadow:0 -10px 28px rgba(0,0,0,.20);
+  display:flex; flex-direction:column; gap:11px; align-items:stretch; z-index:6; }
+.guest-card-cta-tx{ font-size:14px; line-height:1.45; opacity:.86; }
+.guest-card-cta-btn{ padding:13px 16px; border:none; border-radius:12px;
+  background:var(--accent); color:var(--text-on-accent); font-weight:600; font-size:15px;
+  cursor:pointer; transition:filter .14s ease; }
+.guest-card-cta-btn:active{ filter:brightness(.93); }
+
+/* FR-02: счётчик «Исследовано N из 420» кликабелен → список освоенного (карта освоенного) */
+.cn-count-link{ text-decoration:underline; text-decoration-style:dotted; text-decoration-thickness:1px; text-underline-offset:2px; }
+.cn-count-link:active{ opacity:.7; }
+
+/* ===== FR-10: Инвайты + Сообщество ===== */
+/* Экран погашения #/join (на тёмном .landing) */
+.join-form{ display:flex; flex-direction:column; gap:10px; margin-top:18px; }
+.join-inp{ width:100%; height:44px; padding:0 14px; border:1px solid rgba(255,255,255,.16); border-radius:12px;
+  background:rgba(255,255,255,.06); color:#F5F2EC; font-size:15px; font-family:inherit; box-sizing:border-box; outline:none; }
+.join-inp::placeholder{ color:rgba(245,242,236,.5); }
+.join-inp:focus{ border-color:var(--accent); }
+.join-msg{ min-height:18px; font-size:13px; line-height:1.4; color:#E8B98C; margin-top:2px; }
+/* Управление инвайтами (в светлом Меню) */
+.inv-back{ background:none; border:none; color:var(--accent); font-size:15px; font-family:inherit; cursor:pointer; padding:6px 0; }
+.inv-wrap,.comm-wrap{ padding:4px 2px 24px; }
+.inv-load{ color:var(--muted); padding:18px 4px; }
+.inv-bal{ display:flex; align-items:baseline; gap:10px; padding:14px 16px; background:var(--accent-tint); border:1px solid var(--accent-soft); border-radius:16px; }
+.inv-bal-n{ font-size:30px; font-weight:700; color:var(--accent-2); font-variant-numeric:tabular-nums; }
+.inv-bal-l{ font-size:13px; color:var(--read); line-height:1.3; }
+.inv-prog{ margin:14px 2px; }
+.inv-prog-l{ font-size:12.5px; color:var(--muted); margin-bottom:6px; }
+.inv-prog-bar{ height:6px; border-radius:999px; background:var(--line-2); overflow:hidden; }
+.inv-prog-bar span{ display:block; height:100%; background:var(--accent); border-radius:999px; transition:width .3s ease; }
+.inv-gen{ width:100%; height:46px; margin:6px 0 4px; border:none; border-radius:12px; background:var(--accent); color:var(--text-on-accent); font-size:15px; font-weight:600; font-family:inherit; cursor:pointer; }
+.inv-gen-off{ background:var(--line-2); color:var(--muted); cursor:default; }
+.inv-sec{ font-size:11px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); margin:18px 4px 8px; }
+.inv-link{ padding:12px 14px; border:1px solid var(--line); border-radius:14px; margin-bottom:8px; background:var(--card); }
+.inv-link-tx{ font-size:12px; color:var(--read); word-break:break-all; line-height:1.4; font-variant-numeric:tabular-nums; }
+.inv-link-acts{ display:flex; align-items:center; gap:8px; margin-top:10px; flex-wrap:wrap; }
+.inv-link-meta{ font-size:12px; color:var(--muted); margin-right:auto; }
+.inv-copy,.inv-rev{ height:34px; padding:0 14px; border-radius:999px; font-size:13px; font-family:inherit; cursor:pointer; border:1px solid var(--line-2); background:var(--bg); color:var(--ink); }
+.inv-copy{ border-color:var(--accent); color:var(--accent-2); }
+.inv-rev{ color:var(--read); }
+.inv-redeemed{ font-size:14px; color:var(--read); padding:4px 2px; }
+.inv-note{ font-size:12.5px; line-height:1.5; color:var(--muted); margin-top:16px; padding:0 2px; }
+/* Сообщество */
+.comm-stats{ display:flex; gap:10px; margin:4px 0 14px; }
+.comm-stat{ flex:1; text-align:center; padding:14px 6px; border:1px solid var(--line); border-radius:14px; background:var(--card); }
+.comm-stat b{ display:block; font-size:24px; font-weight:700; color:var(--ink); font-variant-numeric:tabular-nums; }
+.comm-stat span{ font-size:11.5px; color:var(--muted); line-height:1.25; }
+.comm-mandala{ display:flex; justify-content:center; padding:12px; margin:6px 0; border-radius:18px;
+  background:radial-gradient(circle at 50% 45%, #15130F 0%, #0E0D0C 100%); border:1px solid #2A2620; }
+.comm-svg{ width:100%; max-width:320px; height:auto; }
+.comm-edge{ stroke:rgba(199,145,82,.28); stroke-width:1; }
+.comm-node{ fill:#D7A664; }
+.comm-node{ animation:commTwinkle 3.2s ease-in-out infinite; }
+@keyframes commTwinkle{ 0%,100%{ opacity:.55; } 50%{ opacity:1; } }
+.comm-empty{ color:rgba(245,242,236,.7); font-size:13.5px; text-align:center; padding:40px 16px; line-height:1.5; }
+@media (prefers-reduced-motion: reduce){ .comm-node{ animation:none; opacity:.85; } }
+
+/* Диспетчерская: вкладка «Таски» — приоритет-чипы (адаптивны к теме) */
+.tsk-pri{ font-family:var(--font-ui); font-size:11px; font-weight:700; letter-spacing:.01em; padding:2px 9px; border-radius:999px; border:1px solid var(--line); white-space:nowrap; }
+.tsk-p0{ color:var(--danger); border-color:var(--danger); background:color-mix(in srgb,var(--danger) 14%,transparent); }
+.tsk-p1{ color:var(--warn); border-color:var(--warn); background:color-mix(in srgb,var(--warn) 14%,transparent); }
+.tsk-p2{ color:var(--accent); border-color:var(--accent-soft); background:var(--accent-tint); }
+.tsk-p3{ color:var(--muted); border-color:var(--line); background:transparent; }
+.dsp-card.tsk-done{ opacity:.5; }
 </style>
 </head>
 <body>
@@ -2714,6 +2791,7 @@
   <div class="fire-bar" id="fireBar" style="display:none"></div>
   <div class="dsp-tabs" id="dspTabs">
     <button data-dt="bus" class="on">Шина<span class="dsp-badge" id="dbgBus"></span></button>
+    <button data-dt="tasks">Таски<span class="dsp-badge" id="dbgTasks"></span></button>
     <button data-dt="flow">Поток</button>
     <button data-dt="review">Ревью<span class="dsp-badge" id="dbgRev"></span></button>
     <button data-dt="pub">Публикация<span class="dsp-badge" id="dbgPub"></span></button>
@@ -2902,7 +2980,6 @@
   <canvas id="constelCanvas"></canvas>
   <div class="constel-top">
     <div class="constel-ttl">Созвездие<span id="constelCount"></span></div>
-    <button class="constel-routes" id="constelRoutesBtn">Маршруты</button>
     <button class="constel-ctl" id="constelDepthBtn" title="Глубина — взвешенные узлы" aria-label="Глубина">◐</button>
     <button class="constel-ctl" id="constelLegendBtn" title="Цвета дисциплин" aria-label="Цвета дисциплин">◉</button>
     <button class="constel-ctl" id="constelReset" title="Показать всё" aria-label="Показать всё">⊙</button>
@@ -3399,7 +3476,7 @@
     // Sync mobile selector label
     var lbl=document.getElementById('dspTabSelLbl'); if(lbl) lbl.textContent=DSP_TAB_LBL[name]||name;
     dspCloseTabSel();
-    var fn={bus:renderBus,flow:renderFlow,review:renderReview,pub:renderPub,ctx:renderCtx,dec:renderDec,src:renderSrc,health:renderHealth,briefs:renderBriefs,kb:renderKB}[name];
+    var fn={bus:renderBus,tasks:renderTasks,flow:renderFlow,review:renderReview,pub:renderPub,ctx:renderCtx,dec:renderDec,src:renderSrc,health:renderHealth,briefs:renderBriefs,kb:renderKB}[name];
     if(fn) fn();
   }
   function dspBuildTabSel(){
@@ -3433,6 +3510,7 @@
       var b=await SB.from('bus').select('id',{count:'exact',head:true}).eq('status','open'); dspSetBadge('dbgBus', b.count);
       var p=await SB.from('chapter_versions').select('id',{count:'exact',head:true}).eq('status','draft'); dspSetBadge('dbgPub', p.count);
       var s=await SB.from('sources').select('id',{count:'exact',head:true}).eq('status','inbox'); dspSetBadge('dbgSrc', s.count);
+      try{ var tk=await SB.from('feature_requests').select('ref',{count:'exact',head:true}).neq('status','done'); dspSetBadge('dbgTasks', tk.count); }catch(_){}
       try{ var rq=await SB.rpc('content_review_queue'); var nrev=((rq&&rq.data)||[]).filter(function(x){return x.status==='review';}).length; dspSetBadge('dbgRev', nrev); }catch(_){}
       // Mirror the bus badge onto the mobile selector button (the one count worth surfacing collapsed)
       var bm=document.getElementById('dbgBusM');
@@ -3477,6 +3555,52 @@
     var r=await SB.from('bus').update({status:'done',updated_at:new Date().toISOString()}).eq('id',id);
     if(r.error){ alert('Не удалось: '+r.error.message); return; }
     dspBadges(); renderBus();
+  }
+  // ── Вкладка «Таски»: бэклог feature_requests по приоритету + подъём приоритета ──
+  function dspPrank(p){ var m={p0:0,p1:1,p2:2,p3:3}; return (p&&m[p]!=null)?m[p]:3; }
+  async function renderTasks(){
+    var body=document.getElementById('dspBody'), f=dspTaskF;
+    body.innerHTML='<div class="dsp-filters">'
+      + dspFsel('status',{'active':'Активные','':'Все','done':'Готово'}, f.status)
+      + '</div><div id="dspList"><div class="dsp-load">Загрузка…</div></div>';
+    dspWireFilters(function(k,v){ dspTaskF[k]=v; renderTasks(); });
+    var r=await SB.from('feature_requests').select('*'), list=document.getElementById('dspList');
+    if(r.error){ list.innerHTML=dspErr('Нет доступа к feature_requests: '+r.error.message); return; }
+    var rows=r.data||[];
+    if(f.status==='active') rows=rows.filter(function(x){ return x.status!=='done'; });
+    else if(f.status==='done') rows=rows.filter(function(x){ return x.status==='done'; });
+    rows.sort(function(a,b){
+      var ad=(a.status==='done')?1:0, bd=(b.status==='done')?1:0; if(ad!==bd) return ad-bd;
+      var pr=dspPrank(a.priority)-dspPrank(b.priority); if(pr) return pr;
+      return String(a.ref||'').localeCompare(String(b.ref||''));
+    });
+    if(!rows.length){ list.innerHTML='<div class="dsp-empty">Тасок нет.</div>'; return; }
+    var PLBL={p0:'критично',p1:'высокий',p2:'средний',p3:'низкий'};
+    list.innerHTML=rows.map(function(t){
+      var pr=t.priority||'p3', top=(dspPrank(pr)===0), done=(t.status==='done');
+      return '<div class="dsp-card tsk'+(done?' tsk-done':'')+'">'
+        +'<div class="dsp-row1">'
+        +'<span class="tsk-pri tsk-'+dspEsc(pr)+'">'+dspEsc(pr.toUpperCase())+' · '+dspEsc(PLBL[pr]||'')+'</span>'
+        +'<span class="dsp-chip ghost">'+dspEsc(t.ref||'')+'</span>'
+        +(t.area?'<span class="dsp-chip ghost">'+dspEsc(t.area)+'</span>':'')
+        +'<span class="dsp-chip '+(done?'done':'k-task')+'">'+dspEsc(t.status||'')+'</span>'
+        +(t.effort?'<span class="dsp-chip ghost">'+dspEsc(t.effort)+'</span>':'')
+        +'<span class="dsp-age">'+dspEsc(t.owner||'')+'</span></div>'
+        +'<div class="dsp-subj">'+dspEsc(t.title||'')+'</div>'
+        +'<div class="dsp-acts">'
+        +'<button class="dsp-btn" data-act="task-up" data-ref="'+dspEsc(t.ref)+'" data-pri="'+dspEsc(pr)+'"'+(top?' disabled':'')+'>↑ Поднять приоритет</button>'
+        +'</div></div>';
+    }).join('');
+  }
+  async function taskBump(ref, cur){
+    if(!ref) return;
+    var order=['p3','p2','p1','p0'], i=order.indexOf(cur); if(i<0) i=0;
+    var next=order[Math.min(i+1, order.length-1)];
+    if(next===cur) return;                                  // уже p0 — выше некуда
+    var r=await SB.from('feature_requests').update({priority:next, updated_at:new Date().toISOString()}).eq('ref',ref);
+    if(r.error){ alert('Не удалось поднять приоритет: '+r.error.message); return; }
+    if(typeof toast==='function') toast('Приоритет '+ref+' → '+next.toUpperCase());
+    dspBadges(); renderTasks();
   }
   async function renderPub(){
     var body=document.getElementById('dspBody');
@@ -4131,26 +4255,25 @@
     document.getElementById('authConfig').style.display   = (mode==='config')?'block':'none';
     document.getElementById('authNomember').style.display = (mode==='nomember')?'block':'none';
   }
-  function kbShowGuestTeaser(){
-    if(document.getElementById('guestTeaser')) return;
-    var b=document.createElement('div'); b.id='guestTeaser'; b.className='guest-teaser';
-    b.innerHTML='<span class="guest-teaser-tx">Открытая часть базы. Полный доступ — по приглашению.</span><button class="guest-teaser-btn" id="guestLoginBtn">Войти</button>';
-    document.body.appendChild(b);
-    var lb=document.getElementById('guestLoginBtn'); if(lb) lb.onclick=function(){ try{ showGate('login'); }catch(_){ } };
-  }
-  function enterGuest(){
+  // FR-09: гость по дип-ссылке #/c/<slug> видит ТОЛЬКО карточку (read-only), без explorer-хрома
+  // (таб-бар/список/созвездие/тизер выпилены). Загрузку и открытие ведёт публичный путь:
+  // kbmLoadPublic() в конце сам вызывает kbmCheckDeepLink() → открывает #/c/<slug>.
+  function showGuestCard(slug){
     try{
       window.__GUEST=true;
       var g=document.getElementById('authGate'); if(g) g.style.display='none';
-      showTabbar(true);
-      if(typeof showView==='function') showView('list');
-      if(typeof openKbMode==='function') openKbMode();
-      if(typeof kbmLoad==='function'){
-        if(!(typeof KBM!=='undefined' && KBM.loaded)){ kbmLoad().then(function(){ if(typeof kbmShowList==='function') kbmShowList(); }); }
-        else if(typeof kbmShowList==='function'){ kbmShowList(); }
+      var _ld=document.getElementById('landing'); if(_ld) _ld.style.display='none';
+      document.body.classList.add('guest-only');
+      showTabbar(false);
+      if(typeof showView==='function') showView('list');     // монтирует #kbMode (детальный слой внутри)
+      if(typeof KBM!=='undefined' && KBM.loaded){
+        var s=(typeof kbmResolveSlug==='function')?kbmResolveSlug(slug):slug;
+        if(s && typeof kbmDetail==='function') kbmDetail(s);
+        else if(typeof kbmShowList==='function') kbmShowList();
+      } else if(typeof kbmLoadPublic==='function'){
+        kbmLoadPublic();   // по завершении сам откроет карточку по хэшу через kbmCheckDeepLink
       }
-      kbShowGuestTeaser();
-    }catch(e){ try{ showGate('login'); }catch(_){ } }
+    }catch(e){ try{ showLanding(); }catch(_){ } }
   }
   // Гость тапнул member-действие → мягкий тост (вход — в тизере), действие не выполняем.
   function kbGuestGate(msg){ if(window.__GUEST){ try{ if(typeof toast==='function') toast(msg||'Войдите, чтобы сохранить'); }catch(_){ } return true; } return false; }
@@ -4172,13 +4295,11 @@
       +'<li>Карта-созвездие — видны связи между идеями</li>'
       +'</ul>'
       +'<div class="landing-cta">'
-      +'<button class="landing-btn landing-btn-primary" id="landingBrowse">Открыть базу</button>'
-      +'<button class="landing-btn" id="landingLogin">Войти по приглашению</button>'
+      +'<button class="landing-btn landing-btn-primary" id="landingLogin">Войти по приглашению</button>'
       +'</div></div>';
     el.style.display='flex';
     var sf=document.getElementById('landingStars');
     if(sf && !sf.childNodes.length){ var sh=''; for(var si=0; si<46; si++){ var sz=(Math.random()<0.82?1:2); sh+='<i style="left:'+(Math.random()*100).toFixed(2)+'%;top:'+(Math.random()*100).toFixed(2)+'%;width:'+sz+'px;height:'+sz+'px;animation-delay:'+(Math.random()*4).toFixed(2)+'s;animation-duration:'+(2.6+Math.random()*3).toFixed(2)+'s"></i>'; } sf.innerHTML=sh; }
-    var b=document.getElementById('landingBrowse'); if(b) b.onclick=function(){ el.style.display='none'; enterGuest(); };
     var l=document.getElementById('landingLogin'); if(l) l.onclick=function(){ el.style.display='none'; try{ showGate('login'); }catch(_){ } };
   }
   function updateAuthUI(){
@@ -4260,8 +4381,14 @@
   }
   async function onAuth(session){
     USER = session ? session.user : null;
-    if(!USER){ isAdmin=isMember=false; loadedUserId=null; updateAuthUI(); if(/^#\/c\//.test(location.hash||'')){ enterGuest(); } else { showLanding(); } return; }
-    window.__GUEST=false; var _gt=document.getElementById('guestTeaser'); if(_gt&&_gt.remove) _gt.remove(); var _ld=document.getElementById('landing'); if(_ld) _ld.style.display='none';
+    if(!USER){ isAdmin=isMember=false; loadedUserId=null; updateAuthUI(); var _jn=(location.hash||'').match(/^#\/join\/([^/?&#]+)/); var _dl=(location.hash||'').match(/^#\/c\/([^/?&#]+)/); if(_jn){ showJoin(decodeURIComponent(_jn[1])); } else if(_dl){ showGuestCard(decodeURIComponent(_dl[1])); } else { showLanding(); } return; }
+    window.__GUEST=false; document.body.classList.remove('guest-only'); var _gt=document.getElementById('guestTeaser'); if(_gt&&_gt.remove) _gt.remove(); var _ld=document.getElementById('landing'); if(_ld) _ld.style.display='none';
+    if(window.__JOIN_CODE){                                  // FR-10: погашение приглашения — ДО проверки членства (whitelist заполнится)
+      var _jc=window.__JOIN_CODE, _jnm=window.__JOIN_NAME||''; window.__JOIN_CODE=null; window.__JOIN_NAME=null;
+      var _rd; try{ _rd=await SB.rpc('invite_redeem',{p_code:_jc, p_name:_jnm}); }catch(e){ _rd={error:{message:String((e&&e.message)||e)}}; }
+      if(_rd && _rd.error){ if(typeof showJoinError==='function') showJoinError(_rd.error.message); return; }   // ссылка недействительна/истекла — остаёмся на экране погашения с ошибкой
+      var _jv=document.getElementById('joinView'); if(_jv) _jv.style.display='none'; document.body.classList.remove('guest-only');
+    }
     if(loadedUserId===USER.id && BOOK.length){           // уже загружено для этого пользователя — не перезагружаем
       document.getElementById('authGate').style.display='none'; updateAuthUI(); return;
     }
@@ -6100,11 +6227,14 @@
     return order.filter(function(k){ return c[k]; }).map(function(k){ return {val:k,label:lbl[k],n:c[k]}; }); }
   function kbmAxisValues(axis){ var c={}; (KBM.nodes||[]).forEach(function(n){ kbmTagLabels(n,axis).forEach(function(l){ c[l]=(c[l]||0)+1; }); });
     return Object.keys(c).sort(function(a,b){ return c[b]-c[a]; }).map(function(l){ return {val:l,label:l,n:c[l]}; }); }
+  // FR-02: «карта освоенного» — значения фильтра по прогрессу. Источник истины — state.visited (исследованные карточки).
+  function kbmExploredValues(){ var vd=state.visited||{}, nodes=(KBM.nodes||[]), y=0; nodes.forEach(function(n){ if(vd[n.slug]) y++; }); var no=nodes.length-y; var out=[]; if(y) out.push({val:'yes',label:'Исследованные',n:y}); if(no>0) out.push({val:'no',label:'Не исследованные',n:no}); return out; }
   function kbmPassFilters(n,F){
     if(F.status && n.robustness!==F.status) return false;
     if(F.discipline && kbmTagLabels(n,'discipline').indexOf(F.discipline)<0) return false;
     if(F.layer && kbmTagLabels(n,'layer').indexOf(F.layer)<0) return false;
     if(F.role && kbmTagLabels(n,'role').indexOf(F.role)<0) return false;
+    if(F.explored){ var seen=!!(state.visited && state.visited[n.slug]); if(F.explored==='yes' && !seen) return false; if(F.explored==='no' && seen) return false; }
     return true;
   }
   function kbmIntroCard(){
@@ -6117,8 +6247,8 @@
       +'</div>';
   }
   function kbmFilterBar(){
-    var F=KBM.filters||{}, dims=[['status','Статус',kbmStatusValues()],['discipline','Наука',kbmAxisValues('discipline')],['layer','Слой',kbmAxisValues('layer')],['role','Роль',kbmAxisValues('role')]];
-    var active=['status','discipline','layer','role'].filter(function(k){ return F[k]; }).length;
+    var F=KBM.filters||{}, dims=[['explored','Прогресс',kbmExploredValues()],['status','Статус',kbmStatusValues()],['discipline','Наука',kbmAxisValues('discipline')],['layer','Слой',kbmAxisValues('layer')],['role','Роль',kbmAxisValues('role')]];
+    var active=['explored','status','discipline','layer','role'].filter(function(k){ return F[k]; }).length;
     var h='<div class="kbm-filterbar"><button class="kbm-filter-toggle'+(active?' has':'')+'" data-kbm-filter-toggle="1">Фильтр'+(active?' · '+active:'')+'<span class="kbm-filter-arr">'+(KBM.filterOpen?' ▾':' ▸')+'</span></button>'+(active?'<button class="kbm-filter-clear" data-kbm-filter-clear="1">Сбросить</button>':'')+'</div>';
     if(!KBM.filterOpen) return h;
     h+='<div class="kbm-filter-panel">';
@@ -6128,6 +6258,14 @@
       h+='</div></div>';
     });
     return h+'</div>';
+  }
+  // FR-02: тап по счётчику «Исследовано N из 420» → Матчасть, срез «Всё», фильтр «Исследованные» (твоя карта освоенного).
+  function kbmOpenExplored(){
+    KBM.lens='all'; KBM.region=null; KBM.goalView=false; KBM.q='';
+    KBM.filters=KBM.filters||{}; KBM.filters.explored='yes'; KBM.filterOpen=true;
+    if(typeof setView==='function') setView('base');               // → Матчасть: openKbMode + kbmShowList → kbmRenderOverview (lens=all, фильтр применится)
+    else { if(typeof openKbMode==='function') openKbMode(); if(typeof kbmShowList==='function') kbmShowList(); }
+    if(typeof kbmRenderLens==='function') kbmRenderLens();          // подсветить активную линзу «Всё»
   }
   // ── Overview: region tiles (the "territory" view) ──────────────────────
   function kbmRenderOverview(){
@@ -6780,6 +6918,7 @@
     }
   }
   function kbmGoBack(){
+    if(window.__GUEST){ if(typeof showLanding==='function') showLanding(); return; }   // FR-09: гость — назад ведёт на лендинг
     var t=kbmBackTarget();
     switch(t.kind){
       case 'card': var _cur=KBM.currentSlug; KBM_HISTORY.pop(); if(_cur && KBM.bySlug[_cur]) KBM_FUTURE.push({slug:_cur, title:(KBM.bySlug[_cur]||{}).title||_cur}); KBM.currentSlug=null; kbmDetail(t.slug, true); break;
@@ -7314,6 +7453,13 @@
       while(over() && size>min && guard++<32){ size-=1; el.style.fontSize=size+'px'; }
     }catch(e){}
   }
+  // FR-09: липкая нижняя CTA на гостевой карточке → ведёт на лендинг (вход по приглашению).
+  function guestCardCta(){
+    return '<div class="guest-card-cta">'
+      +'<div class="guest-card-cta-tx">Это одна карточка из системы знаний о продукте.</div>'
+      +'<button class="guest-card-cta-btn" data-guest-join>Вся база — по приглашению →</button>'
+      +'</div>';
+  }
   function kbmRenderCard(slug, node, dir){
     var body=document.getElementById('kbmDetBody'); if(!body) return;
     var title=document.getElementById('kbmDetTitle'); if(title){ title.textContent=node.title||slug; if(typeof kbmFitTitle==='function') requestAnimationFrame(function(){ kbmFitTitle(title); }); }
@@ -7321,11 +7467,12 @@
     var kind=node.kind, rob=node.robustness, epi=node.epistemic_status, claim=node.claim||'';
     var col=KBM_ROB_COL[rob]||'var(--muted)', kCol=KBM_KIND_COL[kind]||'var(--accent)';
     var liked=KBM.likes.has(slug), core=kbmIsCore(node);
+    var G=window.__GUEST;   // FR-09: гостевая карточка — минимальный read-only вид
     var actions='<div class="kbm-det-actions">'
       +'<button class="kbm-act kbm-act-nav" data-kbm-back-btm="1" aria-label="Назад"><span class="kbm-act-ic">\u2190</span><span class="kbm-act-lbl">Назад</span></button>'
       +'<button class="kbm-act kbm-act-nav kbm-act-fwd" data-kbm-fwd-btm="1" aria-label="Вперёд" style="display:none"><span class="kbm-act-lbl">Вперёд</span><span class="kbm-act-ic">\u2192</span></button>'
       +'<span class="kbm-act-gap"></span>'
-      +'<button class="kbm-act kbm-act-fav'+(liked?' kbm-act-on':'')+'" data-kbm-like="'+escapeHtml(slug)+'" aria-label="В избранное"><span class="kbm-act-ic">'+(liked?'\u2665':'\u2661')+'</span><span class="kbm-act-lbl">'+(liked?'В избранном':'Избранное')+'</span></button>'
+      +(G?'':'<button class="kbm-act kbm-act-fav'+(liked?' kbm-act-on':'')+'" data-kbm-like="'+escapeHtml(slug)+'" aria-label="В избранное"><span class="kbm-act-ic">'+(liked?'\u2665':'\u2661')+'</span><span class="kbm-act-lbl">'+(liked?'В избранном':'Избранное')+'</span></button>')
       +'<button class="kbm-act kbm-act-share" data-kbm-share="'+escapeHtml(slug)+'" aria-label="Поделиться"><span class="kbm-act-ic">\u2934</span><span class="kbm-act-lbl">Поделиться</span></button>'
       +'</div>';
     var hero=actions+'<div class="kbm-d-meta">'
@@ -7335,14 +7482,24 @@
       +(epi?'<span class="kbm-es">'+escapeHtml(KBM_ES[epi]||epi)+'</span>':'')
       +'</div>'
       +'<div class="kbm-d-claim" id="kbmDetClaim">'+kbmGloss(escapeHtml(claim))+'</div>';
+    if(G){
+      // FR-09 гость: только суть+надёжность+«как применить»/«Разобрать глубже»+Поделиться, и липкая CTA на лендинг.
+      // Пропущены: трекер маршрута, мини-карта, главы, ситуации, сигнал-бар, advance, «дальше», подвал.
+      body.innerHTML='<div id="kbmDetCard">'
+        +hero+kbmStateBanner(node)
+        +'<div class="kbm-sections" id="kbmDetSections"><div class="kbm-detail-pending"></div></div>'
+        +guestCardCta()
+        +'</div>';
+    } else {
     body.innerHTML='<div id="kbmDetCard">'
       +hero+kbmStateBanner(node)+'<div id="kbmQuestTracker">'+questTrackerHtml(slug)+'</div>'+'<div class="kbm-sections" id="kbmDetSections"><div class="kbm-detail-pending"></div></div>'+kbmMiniMap(slug)+kbmChapterRefs(slug)+kbmSituationRefs(slug)+'<div id="kbmSigWrap">'+kbmSignalBar(slug)+'</div>'+'<div id="kbmQuestAdvance">'+(typeof questAdvanceHtml==='function'?questAdvanceHtml(slug):'')+'</div>'
       +'<div id="kbmCardNext" class="kbm-next"></div>'
       +'<div class="kbm-card-foot">'+kbmCardStatus(slug)+'</div>'
       +'</div>';
+    }
     body.scrollTop=0;
     if(typeof kbmApplyReadSize==='function') kbmApplyReadSize();
-    if(typeof kbmRenderCardNext==='function') kbmRenderCardNext(slug);
+    if(!G && typeof kbmRenderCardNext==='function') kbmRenderCardNext(slug);
     if(typeof kbmMiniWire==='function'){ var _ms=body.querySelector('.kbm-mini-svg'); if(_ms) kbmMiniWire(_ms); }
     var card=document.getElementById('kbmDetCard');
     if(card && !reduce){
@@ -7351,6 +7508,7 @@
     }
     if(!body._kbmwired){ body._kbmwired=true;
       body.addEventListener('click',function(e){
+        var gj=e.target.closest('[data-guest-join]'); if(gj){ if(typeof showLanding==='function') showLanding(); return; }
         var bb=e.target.closest('[data-kbm-back-btm]'); if(bb){ if(typeof kbmGoBack==='function') kbmGoBack(); return; }
         var fwb=e.target.closest('[data-kbm-fwd-btm]'); if(fwb){ if(typeof kbmGoForward==='function') kbmGoForward(); return; }
         var ff=e.target.closest('[data-kbm-font]'); if(ff){ kbmFontStep(ff.getAttribute('data-kbm-font')); return; }
@@ -7454,7 +7612,6 @@
     var kontr=bd['\u043a\u043e\u043d\u0442\u0440\u0442\u0435\u043e\u0440\u0438\u044f']||'';
     var src=bd['\u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a\u0438']||'';
     var note=b.robustness_note||'';
-    var edges=(b.edges||[]).filter(function(e){return e.strength!=='weak';}).slice(0,10);
     if(title) title.textContent=b.title||slug;
     var dep=kbRootStats(slug); var depthHtml='';
     if(dep){ var dbars=KB_ORD.map(function(k){ var val=dep.vec[k]; if(!val) return ''; return '<div class="kbd-bar"><span class="kbd-n">'+KB_ROOT_RU[k]+'</span><span class="kbd-t"><span class="kbd-f" style="width:'+(val*100)+'%;background:rgb('+KB_ROOT_RGB[k].join(',')+')"></span></span><span class="kbd-v">'+val.toFixed(2)+'</span></div>'; }).join('');
@@ -7468,30 +7625,8 @@
     var wedgeX=extras('wedge'), practiceX=extras('practice');
     var unknownX=Object.keys(bd).filter(function(k){ return k.charAt(0)!=='_' && !KBM_KNOWN_KEYS[k] && bd[k] && typeof bd[k]==='string'; })
       .map(function(k){ return sec(k.charAt(0).toUpperCase()+k.slice(1).replace(/-/g,' '),'\u2022',bd[k],'kbm-sec-extra'); }).join('');
-    // Related cards strip from cache
-    var relCardsHtml='';
-    if(edges.length){
-      relCardsHtml='<div class="kbm-related">'
-        +'<div class="kbm-d-edges-lbl">Связанные концепты</div>'
-        +'<div class="kbm-rel-strip">'
-        +edges.map(function(e){
-          var relLabel=KBM_REL[e.relation]||e.relation;
-          var relNode=KBM.bySlug[e.other];
-          var relClaim=relNode?(relNode.claim||'').slice(0,80)+((relNode.claim||'').length>80?'…':''):'';
-          var relCol=relNode?(KBM_ROB_COL[relNode.robustness]||'var(--muted)'):'var(--muted)';
-          var relKind=relNode?(KBM_KIND[relNode.kind]||relNode.kind):'';
-          return '<button class="kbm-rel-card" data-kbm-nav="'+escapeHtml(e.other)+'">'
-            +'<div class="kbm-rel-card-top">'
-            +'<span class="kbm-rel-tag">'+escapeHtml(relLabel)+'</span>'
-            +'<span class="kbm-rel-dot" style="background:'+relCol+'"></span>'
-            +'</div>'
-            +(relKind?'<div class="kbm-rel-kind">'+escapeHtml(relKind)+'</div>':'')
-            +'<div class="kbm-rel-card-title">'+escapeHtml(e.other_title||e.other)+'</div>'
-            +(relClaim?'<div class="kbm-rel-card-claim">'+escapeHtml(relClaim)+'</div>':'')
-            +'</button>';
-        }).join('')
-        +'</div></div>';
-    }
+    // Примечание: «Связанные концепты» (kbm-related strip) в карточке НЕ рендерятся — связи показывает мини-карта
+    // (kbmMiniMap). Прежний билдер relCardsHtml был мёртвым кодом (никогда не вставлялся, даже до распила) — убран.
     // НАРРАТИВ (директива Артёма #4): claim(крючок) → КАК РАБОТАЕТ (понимание) → В ПРОДУКТЕ (ход+пример) → ГРАНИЦЫ → СВЯЗИ. Понимание раньше применения — карточка читается как история, без мешанины.
     var theoryInner=sec('Механизм','⚙',mechanism,'kbm-sec-mech')
       +sec('Аналогия','◎',analogy,'kbm-sec-ana')
@@ -7991,6 +8126,13 @@
       + menuRow('Что нового', 'История обновлений', 'changelog')
       + menuRow('Уведомления', '', 'notifs')
       + '</div>';
+    // FR-10: Сообщество — только для вошедших членов
+    if(signedIn && typeof isMember!=='undefined' && isMember){
+      rows += '<div class="menu-v-sec">\u0421\u043e\u043e\u0431\u0449\u0435\u0441\u0442\u0432\u043e</div><div class="menu-group">'
+            + menuRow('\u041f\u0440\u0438\u0433\u043b\u0430\u0448\u0435\u043d\u0438\u044f', '\u0412\u0430\u0448\u0438 \u0438\u043d\u0432\u0430\u0439\u0442\u044b \u0438 \u0431\u0430\u043b\u0430\u043d\u0441', 'invites')
+            + menuRow('\u0421\u043e\u043e\u0431\u0449\u0435\u0441\u0442\u0432\u043e', '\u0413\u0440\u0430\u0444 \u043f\u0440\u0438\u0433\u043b\u0430\u0448\u0435\u043d\u0438\u0439', 'community')
+            + '</div>';
+    }
     // Настройки — тема на всё приложение (light/dark/auto), завязана на общий механизм applyTheme/state.theme
     rows += '<div class="menu-v-sec">\u041d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438</div><div class="menu-group">'
           + '<div class="menu-set-row"><span class="menu-set-lbl">\u0422\u0435\u043c\u0430</span>'
@@ -8014,7 +8156,7 @@
             + menuRow('Админка', '', 'admin')
             + '</div>';
     }
-    rows += '<div class="menu-version">Версия 2026-06-24 15:26 · 2d14db3</div>';
+    rows += '<div class="menu-version">Версия 2026-06-25 04:30 · 21ad42f</div>';
     body.innerHTML = '<div class="menu-v-head"><h2 class="menu-v-title">Меню</h2></div><div class="menu-v-list">'+rows+'</div>';
     Array.prototype.forEach.call(body.querySelectorAll('[data-menu-act]'), function(b){
       b.onclick = function(){ menuAct(b.getAttribute('data-menu-act')); };
@@ -8040,14 +8182,173 @@
   function menuAct(act){
     function clickId(id){ var e=document.getElementById(id); if(e) e.click(); }
     if(act==='progress') clickId('btnJourney');
-    else if(act==='changelog') clickId('btnBookLog');
+    else if(act==='changelog') openAppLog();
     else if(act==='notifs') clickId('btnBell');
     else if(act==='cockpit') clickId('btnCockpit');
     else if(act==='dispatch') clickId('btnDispatch');
     else if(act==='dash') clickId('miDash');
     else if(act==='admin') clickId('btnAdmin');
     else if(act==='login'){ try{ showGate('login'); }catch(e){} }
+    else if(act==='invites'){ if(typeof renderInvites==='function') renderInvites(); }
+    else if(act==='community'){ if(typeof renderCommunity==='function') renderCommunity(); }
     else if(act==='signout'){ try{ if(SB&&SB.auth) SB.auth.signOut(); }catch(e){} }
+  }
+  // ===== FR-10: Инвайты + Сообщество (стадии 2-3) =====
+  // Бэкенд (стадия 1) уже в проде: RPC invite_generate/revoke/redeem/community + invite_links/invite_grants.
+  // Принадлежность, не лидерборд; мандала анонимна; 37ч — гигиена ссылок (firewall 1592f131).
+
+  function inviteUrl(code){ return location.origin + location.pathname + '#/join/' + encodeURIComponent(code); }
+
+  // ── Экран погашения по ссылке #/join/<code> ────────────────────────────────
+  function showJoin(code){
+    var g=document.getElementById('authGate'); if(g) g.style.display='none';
+    var _ld=document.getElementById('landing'); if(_ld) _ld.style.display='none';
+    if(typeof showTabbar==='function') showTabbar(false);
+    document.body.classList.add('guest-only');           // без хрома (как гостевая карточка)
+    var el=document.getElementById('joinView');
+    if(!el){ el=document.createElement('div'); el.id='joinView'; el.className='landing'; document.body.appendChild(el); }
+    el.innerHTML='<div class="landing-stars" id="joinStars" aria-hidden="true"></div>'
+      +'<div class="landing-card join-card">'
+      +'<div class="landing-title">Вас пригласили</div>'
+      +'<div class="landing-sub">Создайте вход — и вы внутри. Система знаний о продукте.</div>'
+      +'<div class="join-form">'
+      +'<input id="joinName" class="join-inp" type="text" placeholder="Ваше имя" autocomplete="name">'
+      +'<input id="joinEmail" class="join-inp" type="email" placeholder="Email" autocomplete="email" inputmode="email">'
+      +'<input id="joinPass" class="join-inp" type="password" placeholder="Пароль (от 6 символов)" autocomplete="new-password">'
+      +'<button class="landing-btn landing-btn-primary" id="joinBtn">Войти по приглашению</button>'
+      +'<div class="join-msg" id="joinMsg"></div>'
+      +'</div></div>';
+    el.style.display='flex';
+    var sf=document.getElementById('joinStars');
+    if(sf && !sf.childNodes.length){ var sh=''; for(var si=0; si<46; si++){ var sz=(Math.random()<0.82?1:2); sh+='<i style="left:'+(Math.random()*100).toFixed(2)+'%;top:'+(Math.random()*100).toFixed(2)+'%;width:'+sz+'px;height:'+sz+'px;animation-delay:'+(Math.random()*4).toFixed(2)+'s;animation-duration:'+(2.6+Math.random()*3).toFixed(2)+'s"></i>'; } sf.innerHTML=sh; }
+    var btn=document.getElementById('joinBtn'); if(btn) btn.onclick=function(){ joinSubmit(code); };
+    var pass=document.getElementById('joinPass'); if(pass) pass.onkeydown=function(e){ if(e.key==='Enter') joinSubmit(code); };
+  }
+  function showJoinError(m){
+    var el=document.getElementById('joinMsg'); if(el) el.textContent=(typeof authErr==='function'?authErr(m):('Ошибка: '+String(m||'')));
+    var b=document.getElementById('joinBtn'); if(b) b.disabled=false;
+  }
+  function joinSubmit(code){
+    var name=(document.getElementById('joinName').value||'').trim();
+    var email=(document.getElementById('joinEmail').value||'').trim();
+    var pass=(document.getElementById('joinPass').value||'');
+    var msg=document.getElementById('joinMsg');
+    if(!name){ msg.textContent='Введите имя.'; return; }
+    if(!email || email.indexOf('@')<1){ msg.textContent='Введите корректный email.'; return; }
+    if(pass.length<6){ msg.textContent='Пароль минимум 6 символов.'; return; }
+    if(!SB){ msg.textContent='Подключение к Supabase не настроено.'; return; }
+    var btn=document.getElementById('joinBtn'); btn.disabled=true; msg.textContent='Минутку…';
+    // Имя+код запоминаем — onAuth выполнит invite_redeem после установления сессии.
+    window.__JOIN_CODE=code; window.__JOIN_NAME=name;
+    SB.auth.signUp({ email:email, password:pass }).then(function(res){
+      if(res.error){
+        if(/already registered/i.test(res.error.message||'')){
+          return SB.auth.signInWithPassword({ email:email, password:pass }).then(function(r2){
+            if(r2.error){ window.__JOIN_CODE=null; showJoinError(r2.error.message); }
+          });
+        }
+        window.__JOIN_CODE=null; showJoinError(res.error.message); return;
+      }
+      if(!(res.data && res.data.session)){
+        window.__JOIN_CODE=null; btn.disabled=false;
+        msg.textContent='Аккаунт создан, но включено подтверждение email — выключите «Confirm email» в Supabase и войдите.';
+        return;
+      }
+      // успех → onAuth выполнит redeem (через __JOIN_CODE)
+    }).catch(function(err){ window.__JOIN_CODE=null; showJoinError((err&&err.message)||err); });
+  }
+
+  // ── Управление инвайтами (в Меню) ──────────────────────────────────────────
+  function menuBack(){ if(typeof renderMenuView==='function') renderMenuView(); }
+  function wireInvBack(scope){ var b=scope.querySelector('[data-inv-back]'); if(b) b.onclick=menuBack; }
+  async function renderInvites(){
+    var body=document.getElementById('menuViewBody'); if(!body) return;
+    body.innerHTML='<div class="menu-v-head"><button class="inv-back" data-inv-back="1">\u2039 \u041c\u0435\u043d\u044e</button><h2 class="menu-v-title">\u041f\u0440\u0438\u0433\u043b\u0430\u0448\u0435\u043d\u0438\u044f</h2></div><div class="inv-wrap"><div class="inv-load">\u0417\u0430\u0433\u0440\u0443\u0437\u043a\u0430\u2026</div></div>';
+    wireInvBack(body);
+    var info=null, links=[];
+    try{ var c=await SB.rpc('invite_community'); if(!c.error) info=c.data; }catch(e){}
+    try{ var l=await SB.from('invite_links').select('code,status,created_at,expires_at,redeemed_at').order('created_at',{ascending:false}); if(!l.error) links=l.data||[]; }catch(e){}
+    var wrap=body.querySelector('.inv-wrap'); if(!wrap) return;
+    var bal=info?info.balance:3, avail=info?info.available:0, prog=(info&&info.next_invite_progress)||{have:0,need:5};
+    var now=new Date();
+    var active=links.filter(function(x){ return x.status==='active' && new Date(x.expires_at)>now; });
+    var redeemed=links.filter(function(x){ return x.status==='redeemed'; });
+    var h='<div class="inv-bal"><div class="inv-bal-n">'+avail+'</div><div class="inv-bal-l">\u0441\u0432\u043e\u0431\u043e\u0434\u043d\u044b\u0445 \u043f\u0440\u0438\u0433\u043b\u0430\u0448\u0435\u043d\u0438\u0439 \u0438\u0437 '+bal+'</div></div>';
+    var pc=Math.max(0,Math.min(100,Math.round((prog.have/(prog.need||5))*100)));
+    h+='<div class="inv-prog"><div class="inv-prog-l">\u0414\u043e \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0435\u0433\u043e \u043f\u0440\u0438\u0433\u043b\u0430\u0448\u0435\u043d\u0438\u044f: '+prog.have+' \u0438\u0437 '+prog.need+' \u0440\u0435\u0430\u043a\u0446\u0438\u0439</div><div class="inv-prog-bar"><span style="width:'+pc+'%"></span></div></div>';
+    h+='<button class="inv-gen'+(avail<=0?' inv-gen-off':'')+'" data-inv-gen="1"'+(avail<=0?' disabled':'')+'>\u0421\u043e\u0437\u0434\u0430\u0442\u044c \u0441\u0441\u044b\u043b\u043a\u0443-\u043f\u0440\u0438\u0433\u043b\u0430\u0448\u0435\u043d\u0438\u0435</button>';
+    if(active.length){
+      h+='<div class="inv-sec">\u0410\u043a\u0442\u0438\u0432\u043d\u044b\u0435 \u0441\u0441\u044b\u043b\u043a\u0438</div>';
+      active.forEach(function(x){
+        var url=inviteUrl(x.code); var hrs=Math.max(0,Math.round((new Date(x.expires_at)-now)/3600000));
+        h+='<div class="inv-link"><div class="inv-link-tx">'+escapeHtml(url)+'</div>'
+          +'<div class="inv-link-acts"><span class="inv-link-meta">\u0438\u0441\u0442\u0435\u043a\u0430\u0435\u0442 \u0447\u0435\u0440\u0435\u0437 '+hrs+' \u0447</span>'
+          +'<button class="inv-copy" data-inv-copy="'+escapeHtml(url)+'">\u041a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c</button>'
+          +'<button class="inv-rev" data-inv-rev="'+escapeHtml(x.code)+'">\u041e\u0442\u043e\u0437\u0432\u0430\u0442\u044c</button></div></div>';
+      });
+    }
+    if(redeemed.length){ h+='<div class="inv-sec">\u041f\u0440\u0438\u043d\u044f\u043b\u0438 \u043f\u0440\u0438\u0433\u043b\u0430\u0448\u0435\u043d\u0438\u0435</div><div class="inv-redeemed">'+redeemed.length+' \u0443\u0436\u0435 \u0432\u043d\u0443\u0442\u0440\u0438</div>'; }
+    h+='<div class="inv-note">\u041f\u0440\u0438\u0433\u043b\u0430\u0448\u0435\u043d\u0438\u044f \u2014 \u043f\u0440\u043e \u043f\u0440\u0438\u043d\u0430\u0434\u043b\u0435\u0436\u043d\u043e\u0441\u0442\u044c, \u043d\u0435 \u043f\u0440\u043e \u0433\u043e\u043d\u043a\u0443. \u0421\u0441\u044b\u043b\u043a\u0430 \u0436\u0438\u0432\u0451\u0442 37 \u0447\u0430\u0441\u043e\u0432; \u043d\u0435\u0438\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u043d\u043d\u0443\u044e \u043c\u043e\u0436\u043d\u043e \u043e\u0442\u043e\u0437\u0432\u0430\u0442\u044c.</div>';
+    wrap.innerHTML=h;
+    if(!wrap._wired){ wrap._wired=true;
+      wrap.addEventListener('click', function(e){
+        var g=e.target.closest('[data-inv-gen]'); if(g){ if(!g.disabled) inviteGenerate(); return; }
+        var c=e.target.closest('[data-inv-copy]'); if(c){ inviteCopy(c.getAttribute('data-inv-copy')); return; }
+        var r=e.target.closest('[data-inv-rev]'); if(r){ inviteRevoke(r.getAttribute('data-inv-rev')); return; }
+      });
+    }
+  }
+  async function inviteGenerate(){
+    try{ var r=await SB.rpc('invite_generate'); if(r && r.error){ if(typeof toast==='function') toast(/\u0441\u0432\u043e\u0431\u043e\u0434\u043d/i.test(r.error.message||'')?'\u041d\u0435\u0442 \u0441\u0432\u043e\u0431\u043e\u0434\u043d\u044b\u0445 \u043f\u0440\u0438\u0433\u043b\u0430\u0448\u0435\u043d\u0438\u0439':'\u041d\u0435 \u0432\u044b\u0448\u043b\u043e, \u043f\u043e\u0432\u0442\u043e\u0440\u0438\u0442\u0435'); } }
+    catch(e){ if(typeof toast==='function') toast('\u041d\u0435 \u0432\u044b\u0448\u043b\u043e, \u043f\u043e\u0432\u0442\u043e\u0440\u0438\u0442\u0435'); }
+    renderInvites();
+  }
+  async function inviteRevoke(code){ try{ await SB.rpc('invite_revoke',{p_code:code}); }catch(e){} renderInvites(); }
+  function inviteCopy(url){
+    try{
+      if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(url); }
+      else { var t=document.createElement('textarea'); t.value=url; t.style.position='fixed'; t.style.opacity='0'; document.body.appendChild(t); t.select(); try{ document.execCommand('copy'); }catch(_){ } t.remove(); }
+      if(typeof toast==='function') toast('\u0421\u0441\u044b\u043b\u043a\u0430 \u0441\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u0430');
+    }catch(e){ if(typeof toast==='function') toast('\u0421\u043a\u043e\u043f\u0438\u0440\u0443\u0439\u0442\u0435 \u0432\u0440\u0443\u0447\u043d\u0443\u044e'); }
+  }
+
+  // ── Вкладка «Сообщество» (граф приглашений, анонимно) ──────────────────────
+  async function renderCommunity(){
+    var body=document.getElementById('menuViewBody'); if(!body) return;
+    body.innerHTML='<div class="menu-v-head"><button class="inv-back" data-inv-back="1">\u2039 \u041c\u0435\u043d\u044e</button><h2 class="menu-v-title">\u0421\u043e\u043e\u0431\u0449\u0435\u0441\u0442\u0432\u043e</h2></div><div class="comm-wrap"><div class="inv-load">\u0421\u043e\u0431\u0438\u0440\u0430\u044e\u2026</div></div>';
+    wireInvBack(body);
+    var info=null; try{ var c=await SB.rpc('invite_community'); if(!c.error) info=c.data; }catch(e){}
+    var wrap=body.querySelector('.comm-wrap'); if(!wrap) return;
+    if(!info){ wrap.innerHTML='<div class="kbm-empty">\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u0437\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u044c.</div>'; return; }
+    var invitedN=(info.invited&&info.invited.length)||0;
+    var h='<div class="comm-stats">'
+      +'<div class="comm-stat"><b>'+(info.size||0)+'</b><span>\u0432 \u0441\u043e\u043e\u0431\u0449\u0435\u0441\u0442\u0432\u0435</span></div>'
+      +'<div class="comm-stat"><b>'+invitedN+'</b><span>\u0432\u044b \u043f\u0440\u0438\u0433\u043b\u0430\u0441\u0438\u043b\u0438</span></div>'
+      +'<div class="comm-stat"><b>'+(info.available||0)+'</b><span>\u0441\u0432\u043e\u0431\u043e\u0434\u043d\u044b\u0445 \u0438\u043d\u0432\u0430\u0439\u0442\u043e\u0432</span></div>'
+      +'</div>';
+    h+='<div class="comm-mandala">'+communityMandala(info)+'</div>';
+    var prog=info.next_invite_progress||{have:0,need:5};
+    h+='<div class="inv-prog"><div class="inv-prog-l">\u0414\u043e \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0435\u0433\u043e \u043f\u0440\u0438\u0433\u043b\u0430\u0448\u0435\u043d\u0438\u044f: '+prog.have+' \u0438\u0437 '+prog.need+'</div><div class="inv-prog-bar"><span style="width:'+Math.round((prog.have/(prog.need||5))*100)+'%"></span></div></div>';
+    h+='<div class="inv-note">\u041c\u0430\u043d\u0434\u0430\u043b\u0430 \u2014 \u0440\u0435\u0430\u043b\u044c\u043d\u044b\u0435 \u0441\u0432\u044f\u0437\u0438 \u043f\u0440\u0438\u0433\u043b\u0430\u0448\u0435\u043d\u0438\u0439, \u0430\u043d\u043e\u043d\u0438\u043c\u043d\u043e. \u041a\u0430\u0440\u0442\u0430 \u043f\u0440\u0438\u043d\u0430\u0434\u043b\u0435\u0436\u043d\u043e\u0441\u0442\u0438, \u043d\u0435 \u0440\u0435\u0439\u0442\u0438\u043d\u0433.</div>';
+    wrap.innerHTML=h;
+  }
+  function communityMandala(info){
+    var edges=(info&&info.edges)||[];
+    var ids={}, order=[];
+    edges.forEach(function(e){ [e.from,e.to].forEach(function(id){ if(id && !ids[id]){ ids[id]=true; order.push(id); } }); });
+    if(!order.length){ return '<div class="comm-empty">\u041f\u043e\u043a\u0430 \u0442\u0438\u0445\u043e. \u041f\u0440\u0438\u0433\u043b\u0430\u0441\u0438\u0442\u0435 \u043f\u0435\u0440\u0432\u043e\u0433\u043e \u2014 \u0438 \u0437\u0434\u0435\u0441\u044c \u0437\u0430\u0436\u0436\u0451\u0442\u0441\u044f \u043f\u0435\u0440\u0432\u0430\u044f \u0441\u0432\u044f\u0437\u044c.</div>'; }
+    var W=300,H=300,cx=150,cy=150,R=112;
+    var pos={}; order.forEach(function(id,i){ var a=(i/order.length)*Math.PI*2 - Math.PI/2; pos[id]={x:cx+Math.cos(a)*R, y:cy+Math.sin(a)*R}; });
+    var svg='<svg viewBox="0 0 '+W+' '+H+'" class="comm-svg" aria-label="\u0413\u0440\u0430\u0444 \u0441\u043e\u043e\u0431\u0449\u0435\u0441\u0442\u0432\u0430">';
+    edges.forEach(function(e){ var a=pos[e.from], b=pos[e.to]; if(a&&b){ svg+='<line x1="'+a.x.toFixed(1)+'" y1="'+a.y.toFixed(1)+'" x2="'+b.x.toFixed(1)+'" y2="'+b.y.toFixed(1)+'" class="comm-edge"/>'; } });
+    order.forEach(function(id,i){ var p=pos[id]; svg+='<circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="4.5" class="comm-node" style="animation-delay:'+((i%7)*0.45).toFixed(2)+'s"/>'; });
+    svg+='</svg>';
+    return svg;
+  }
+
+  // Роутинг #/join во время сессии (на загрузке его ловит onAuth). Безопасно: только без юзера.
+  function joinHashCheck(){
+    try{ if(typeof USER!=='undefined' && USER) return; var m=(location.hash||'').match(/^#\/join\/([^/?&#]+)/); if(m) showJoin(decodeURIComponent(m[1])); }catch(e){}
   }
   function cnHue(disc){ return (disc!=null && CN_DISC_HSL[disc])?CN_DISC_HSL[disc][0]:30; }
   // Deterministic pseudo-random from a string (stable layout across devices/sessions).
@@ -8196,6 +8497,14 @@
     if(vis>tot) vis=tot;
     var pct=tot?Math.round(vis/tot*100):0;
     el.textContent = vis>0 ? (' · \u0418\u0441\u0441\u043b\u0435\u0434\u043e\u0432\u0430\u043d\u043e '+vis+' \u0438\u0437 '+tot+' \u00b7 '+pct+'%') : (' · '+tot+' \u0438\u0434\u0435\u0439');
+    // FR-02: исследовано → тап открывает список исследованного (карта освоенного)
+    var tap=(vis>0);
+    el.classList.toggle('cn-count-link', tap);
+    el.style.cursor = tap ? 'pointer' : '';
+    if(tap){ el.setAttribute('role','button'); el.setAttribute('tabindex','0'); el.setAttribute('title','\u041f\u043e\u043a\u0430\u0437\u0430\u0442\u044c \u0441\u043f\u0438\u0441\u043e\u043a \u0438\u0441\u0441\u043b\u0435\u0434\u043e\u0432\u0430\u043d\u043d\u043e\u0433\u043e'); }
+    else { el.removeAttribute('role'); el.removeAttribute('tabindex'); el.removeAttribute('title'); }
+    el.onclick = tap ? function(e){ if(e&&e.stopPropagation) e.stopPropagation(); if(typeof kbmOpenExplored==='function') kbmOpenExplored(); } : null;
+    el.onkeydown = tap ? function(e){ if((e.key==='Enter'||e.key===' ')){ e.preventDefault(); if(typeof kbmOpenExplored==='function') kbmOpenExplored(); } } : null;
   }
   // Рекомендация-первая-точка (как Прометей): ТОЛЬКО полные узлы (не stub/draft — уважать линзу).
   // Новичок → несущий полный узел (центральный). Возврат → kb_find_similar (семантика) от последнего посещённого; фолбэк — графовый сосед.
@@ -8304,26 +8613,31 @@
     return null;
   }
   function cnPaintRec(el, rec){
-    var lbl=rec.kind==='start'?'Начать путешествие':(rec.kind==='route'?'Дальше по маршруту':'Продолжить путешествие');
-    var kindLbl=(rec.node.kind && typeof KBM_KIND!=='undefined' && KBM_KIND[rec.node.kind])?String(KBM_KIND[rec.node.kind]).toLowerCase():'';
-    var degN=rec.node.degree||0;
-    var ctx=[]; if(kindLbl) ctx.push(kindLbl); if(degN) ctx.push(degN+' '+cnPluralLink(degN));
-    var ctxLine=ctx.length?'<span class="cn-rec-meta">'+escapeHtml(ctx.join(' · '))+'</span>':'';
-    var why=rec.reason?'<span class="cn-rec-why">'+escapeHtml(rec.reason)+'</span>':'';
-    el.innerHTML='<span class="cn-rec-spark">✦</span><span class="cn-rec-tx"><span class="cn-rec-lbl">'+lbl+'</span><span class="cn-rec-name">'+escapeHtml(rec.node.title||rec.node.slug)+'</span>'+ctxLine+why+'</span><span class="cn-rec-arr">›</span><button class="cn-rec-x" aria-label="Скрыть">✕</button>';
+    var routeIc='<svg class="cn-nav-routes-ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M8 17.4 16 6.6"/></svg>';
+    var routesZone='<button class="cn-nav-routes" id="cnNavRoutes" aria-label="Маршруты">'+routeIc+'<span class="cn-nav-routes-lbl">Маршруты</span></button>';
+    var nextZone='';
+    if(rec && rec.node){
+      var lbl=rec.kind==='start'?'Начать':(rec.kind==='route'?'Следующая остановка':'Продолжить');
+      var kindLbl=(rec.node.kind && typeof KBM_KIND!=='undefined' && KBM_KIND[rec.node.kind])?String(KBM_KIND[rec.node.kind]).toLowerCase():'';
+      var degN=rec.node.degree||0;
+      var ctx=[]; if(kindLbl) ctx.push(kindLbl); if(degN) ctx.push(degN+' '+cnPluralLink(degN));
+      var ctxLine=ctx.length?'<span class="cn-rec-meta">'+escapeHtml(ctx.join(' · '))+'</span>':'';
+      nextZone='<button class="cn-nav-next" id="cnNavNext"><span class="cn-rec-spark" aria-hidden="true">✦</span><span class="cn-rec-tx"><span class="cn-rec-lbl">'+lbl+'</span><span class="cn-rec-name">'+escapeHtml(rec.node.title||rec.node.slug)+'</span>'+ctxLine+'</span><span class="cn-rec-arr">›</span></button>';
+    }
+    el.className='constel-rec'+(nextZone?'':' cn-nav-routesonly');
+    el.innerHTML=routesZone+nextZone;
     el.style.display='';
-    el.onclick=function(){ cnToCard(rec.node); };
-    var rx=el.querySelector('.cn-rec-x'); if(rx) rx.onclick=function(e){ e.stopPropagation(); CN.recClosed=true; el.style.display='none'; };
+    el.onclick=null;
+    var rz=el.querySelector('#cnNavRoutes'); if(rz) rz.onclick=function(e){ e.stopPropagation(); if(typeof openQuests==='function') openQuests(); };
+    var nz=el.querySelector('#cnNavNext'); if(nz && rec && rec.node) nz.onclick=function(e){ e.stopPropagation(); cnToCard(rec.node); };
   }
-  // Стабильный блок «куда дальше»: мгновенно (sync), затем тихое уточнение семантикой на месте.
+  // Постоянный нижний навигатор «куда дальше»: слева Маршруты, справа следующий концепт (sync мгновенно, затем тихое уточнение).
   function cnRenderRec(){
     var el=document.getElementById('constelRec'); if(!el) return;
-    if(CN.recClosed){ el.style.display='none'; el.onclick=null; return; }
     var sync=cnRecommendSync();
-    if(sync && sync.node){ cnPaintRec(el, sync); }
-    else { el.style.display='none'; el.onclick=null; }
+    cnPaintRec(el, (sync&&sync.node)?sync:null);
     if(!sync || sync.kind!=='route'){
-      cnRecommend().then(function(rec){ if(CN.recClosed || !rec || !rec.node) return; if(!sync || rec.node.slug!==sync.node.slug) cnPaintRec(el, rec); }).catch(function(){});
+      cnRecommend().then(function(rec){ if(rec && rec.node && (!sync || rec.node.slug!==sync.node.slug)) cnPaintRec(el, rec); }).catch(function(){});
     }
   }
   // Активный маршрут для подсветки на небе: фокусный квест, иначе первый активный. {set, order} по слугам или null.
@@ -10068,338 +10382,15 @@
   var APP_VERSION='5.60';
   var APP_CHANGELOG=[
     {v:'1.0 (бета)', items:[
-      'Первый публичный релиз. Большое обновление облика: спокойная тёплая палитра и единый ритм во всём — Созвездие, Карта знаний и карточки концептов теперь в одном тоне, переходы между ними больше не режут глаз.',
-      'Приложение открывается прямо в Созвездие: при запуске появляется мысль о звёздах и творчестве от классиков, она мягко гаснет — и космос собирается на глазах. Возврат на вкладку больше не пересобирает карту: остаётся тот вид, на котором вы были.',
-      'Пройденные маршруты остаются в вашем небе постоянными именованными созвездиями — личная карта помнит пути, которые вы прошли.',
-      'Карточка концепта читается приятнее: ключевая мысль подаётся как эпиграф, размер шрифта настраивается, листать можно свайпами, а сама карточка мягко вырастает снизу. Кнопка «Маршруты» переехала вниз, под большой палец.',
-      'Рекомендации стали богаче — видно тип идеи и сколько у неё связей — и иногда показывают неожиданную, но настоящую перекличку между далёкими идеями.',
-      'Когда целая дисциплина зажигается полностью, небо тихо это отмечает мягким светом. Без очков, серий и давления — только ваше любопытство и ваша карта.',
+      'Первый публичный релиз платформы. Весь интерфейс — Созвездие, Карта знаний и карточки концептов — сведён к единому визуальному канону: спокойная тёплая палитра, восемь дисциплин с устойчивыми цветами, а продуктовые методы вне науки (A/B-тест, OKR, JTBD и др.) — отдельным нейтральным тоном, без ложной «научности». Переходы между поверхностями больше не режут глаз.',
+      'Надёжность идеи теперь читается одинаково везде — устойчивая · смешанная · оспаривается — и яркость звезды в Созвездии означает то же самое. Спорное мы не прячем: это честность, а не недостаток.',
+      'Карточку концепта можно открыть по прямой ссылке без входа — только сама карточка, read-only, с честной пометкой о надёжности и источниками. Стартовый экран стал тёмным, со звёздами, в тон Созвездию; полный доступ — по приглашению.',
+      'Карточка переработана и читается в два слоя: сверху — суть, пометка о надёжности и «как применить» (ключевой мост от науки к практике); глубже, по желанию, — механизм, аналогии, примеры, связи и источники. Одна основная кнопка вместо нескольких конкурирующих.',
+      'Карточка стала аккуратнее в мелочах: длинные названия больше не обрезаются (до двух строк), а англицизмы (FOMO, anchoring, nudge, framing…) поясняются прямо при первой встрече в тексте.',
+      'У Созвездия появилась постоянная нижняя панель: слева — «Маршруты», справа — «Продолжить» и следующая остановка. Верх карты разгрузили, чтобы заголовок помещался целиком.',
+      'Слой «Находки» стал честнее: догадки с нулевым весом уходят вниз списка и приглушаются — слабая гипотеза не выглядит наравне с проверенной. И там, где раньше мог встретить пустой экран (нет находок, ничего не нашлось, край карты), теперь короткое понятное пояснение, а не тишина.',
+      'По-прежнему без серий, ежедневных «не пропусти», очков и давления. Единственный прогресс — внутренний: ваше любопытство и ваша личная карта.',
     ]},
-    {v:'5.60', items:[
-      'Созвездие стало живее: при открытии звёзды не появляются разом, а расцветают из центра наружу. Тап по звезде теперь подсвечивает и подписывает её прямых соседей — сразу видно, с чем связана идея. Названия читаются чётче (обводка вместо мягкой тени).',
-      'Продуктовые методы (A/B-тест, OKR, JTBD, когорты и др.), у которых нет научной дисциплины, получили свой цвет и отдельную строку в легенде — раньше они подмешивались к поведенческой экономике.',
-    ]},
-    {v:'5.59', items:[
-      'Карта знаний и карточки концептов теперь в той же тёплой тёмной палитре, что и Созвездие — переход между картой, карточкой и звёздами больше не режет глаз.',
-      'У Созвездия появилась легенда цветов: кнопка «цвета» показывает, какая дисциплина каким цветом светится и сколько в ней идей. Яркость звезды по-прежнему означает, насколько крепко идея подтверждена.',
-    ]},
-    {v:'5.58', items:[
-      'Приложение теперь открывается прямо в Созвездие: при запуске мягко проявляется тёплый космос, а звёзды слетаются в созвездие, как только загрузится карта знаний. Книга и полка никуда не делись — они в одном-двух касаниях (закрыть Созвездие, потом Карту).',
-    ]},
-    {v:'5.57', items:[
-      'Созвездие стало заметно плавнее и больше не подтормаживает: звёзды и их свечение рисуются из заранее готовых заготовок, а кадр обновляется только когда что-то движется — телефон не греется и не тратит заряд впустую.',
-      'Приближение теперь непрерывное: вместо трёх резких ступеней идеи проявляются постепенно по мере того, как вы подлетаете ближе — сперва крупные хабы, затем всё остальное. И названия больше не наезжают друг на друга: при тесноте остаётся более важное.',
-    ]},
-    {v:'5.56', items:[
-      'Созвездие: весь граф знаний как тёплый космос. Кнопка «✦ Созвездие» в Карте открывает полноэкранную звёздную карту всех 317 идей — хабы светят ярче, дисциплины образуют территории, связи тянутся паутиной света.',
-      'Можно летать и приближать: дальний зум — масштаб и форма, ближний — отдельные идеи с названиями. Тап по звезде подсвечивает её связи и открывает карточку. Созвездие собирается на глазах при открытии.',
-    ]},
-    {v:'5.55', items:[
-      'Новый слой Карты — «Находки»: гипотезы и порождающие законы, которые система выдвигает сама, честно помеченные как непроверенные. Видно, чем каждую догадку можно опровергнуть, и какие свидетельства за и против.',
-      'Честность структурна: гипотеза рисуется пунктиром между концептами, не сплошной линией — догадка никогда не выглядит как установленный факт. У концептов-участников появляется пометка о гипотезе Афины.',
-    ]},
-    {v:'5.54', items:[
-      'Вход стал спокойнее: при загрузке видно название, а не пустой экран; вход и «создать пароль» теперь явно различимы — понятно, где вы впервые, а где возвращаетесь.',
-      'Первый вход не требует имени: можно сразу к чтению, а представиться — по желанию. Убрано двойное «Добро пожаловать».',
-    ]},
-    {v:'5.53', items:[
-      'Реалтайм стал живым и честным: связь восстанавливается сама после метро, сна или смены сети — а точка у «сейчас читают» показывает реальное состояние, не украшение. Если связь пропала, об этом видно, а не тишина вместо обновлений.',
-      '«Сейчас читают» теперь точное и мгновенное (через настоящий presence, а не опрос раз в минуту). Когда другой читатель пишет в обсуждение — оно мягко оживает в реальном времени.',
-    ]},
-    {v:'5.52', items:[
-      'Исправлено: черновик главы больше не вызывает ложное уведомление «глава обновлена». Уведомляем только когда правки реально опубликованы — черновик ещё не изменение для читателя.',
-    ]},
-    {v:'5.51', items:[
-      'Полировка под iPhone: поля ввода больше не вызывают рывок-зум при касании (на iOS Safari это происходило с любым шрифтом меньше 16px). Прокрутка Карты и диспетчерской больше не «протекает» в фон и не залипает на краях.',
-    ]},
-    {v:'5.50', items:[
-      'Устойчивость к плохой сети: если карта, ситуация или концепт не загрузились (медленно или нет связи) — честное сообщение и кнопка «Повторить» вместо вечной «Загрузки…». Запросы больше не висят бесконечно — есть таймаут.',
-      'Книга при обрыве сети показывает сохранённую копию и не блокируется. Лайк офлайн честно предупреждает, что не сохранится без сети.',
-    ]},
-    {v:'5.49', items:[
-      'Карта работает быстрее: связанные концепты и навигация ищутся по индексу за одно действие вместо перебора всех 244 узлов на каждый рендер. Список ситуаций считает связи за один проход. Прокрутка чтения легче — горячие элементы кэшируются.',
-    ]},
-    {v:'5.48', items:[
-      'Карта научилась ситуациям: вход «Ситуации» — чекаут, пейволл, онбординг и другие экраны работы. Открываешь ситуацию и видишь собранный плейбук: какие силы в игре, каких ловушек избегать (красным), какими инструментами работать, в какие соседние ситуации ведёт путь. Каждый элемент — ссылка вглубь.',
-      'Сценарий — это плейбук «я делаю X, что учесть», а не карточка-определение. Силы и инструменты раскрываются в свои концепты, соседние ситуации — в свои плейбуки.',
-    ]},
-    {v:'5.47', items:[
-      'Живой отклик в моментах решения: сердечко «наполняется» коротким толчком, когда отмечаешь концепт; верный прогноз встречает чуть более тёплый отклик, чем неверный; выбранная реакция на главу пульсирует в ответ на касание.',
-      'Переходы перетекают, а не моргают: полка плавно уходит, когда открываешь книгу; концепт мягко поднимается, когда ныряешь в него с карты. Везде с уважением к «уменьшить движение».',
-    ]},
-    {v:'5.46', items:[
-      'Цельность интерфейса: «База знаний / Карта знаний / Карта» — теперь везде одно имя «Карта». Углы скруглений сведены к тихой системе (было 18 разных значений). Кнопки подчинены одной грамматике: ✕ закрывает слой, ← возвращает на шаг внутри.',
-      'Момент фиксации предсказания стал живым: выбранный вариант «защёлкивается» под нажатием, блок на миг оседает — короткий физичный отклик перед тем, как откроется реальность. С мягкой вибрацией на телефонах и уважением к «уменьшить движение».',
-    ]},
-    {v:'5.45', items:[
-      'Чтение на телефоне: размытие скрытого ответа в виджете-разрыве больше не подлагивает при скролле на iOS (вынесено на отдельный GPU-слой).',
-    ]},
-    {v:'5.44', items:[
-      'Карта: несущие концепты (28 ключевых идей) теперь выделены — звёздочка, крупнее, всегда первыми в регионе. На обзоре — вход «Несущие концепты»: костяк, с которого начать, если не нужны все 244. В карточке — бейдж «Несущий концепт».',
-      'Карту удобнее читать с телефона: крупнее строки, названия, метки регионов; больше области под палец; выше поле поиска.',
-    ]},
-    {v:'5.43', items:[
-      'Диспетчерская удобнее с телефона: 8 вкладок свёрнуты в компактный селектор «текущая ▾» (на узком экране) — видно весь список, попадаешь пальцем. Шапка чище — убрана лишняя кнопка «Обновить» (там и так realtime).',
-      'Публикация: пять кнопок в ряд свёрнуты в одно главное действие «Опубликовать» + «Дифф», остальное (текст главы, отклонить, откатить) под «⋯ Ещё». Перестало давить на узком экране.',
-    ]},
-    {v:'5.42', items:[
-      'Полка: вход «Карта знаний» рядом с книгами — концепты, инструменты и сценарии продуктовой работы в одном графе. Под капотом: схема узла расширена под сценарии и инструменты (слой узла + статус «слот/черновик/готово»), карта различает слои. Контент наполняется отдельно.',
-    ]},
-    {v:'5.41', items:[
-      'Исправлен баг: предсказания не сохранялись (learner писался как ID вместо email, RLS молча отклонял все события). Теперь сохраняются. Уверенность из слайдера тоже пишется в базу — копится калибровка: где уверенность расходится с реальностью.',
-    ]},
-    {v:'5.40', items:[
-      'База знаний → Карта: вместо ленты из 204 карточек — карта местности. Линза сверху переключает срез территории (по слоям книги / по задаче / по дисциплине / по роли). Обзор показывает регионы плитками с числом концептов и концептами-ориентирами. Тап на регион — концепты внутри (ключевые крупнее) плюс «линии напряжения»: где идеи этого региона противоречат или конкурируют с соседними. Глубже — карточка концепта и переходы по связям.',
-    ]},
-    {v:'5.39', items:[
-      'База знаний — полная карточка: добавлены все 8 полей body_struct. Механизм (⚙ как работает), Аналогия (◎ для запоминания), Пример, Применение в продукте (📱 выделено цветом — самое ценное для PM), История/происхождение (📖), Устойчивость и Критика для спорных. Источник — в низу. Порядок соответствует логике освоения концепта.',
-    ]},
-    {v:'5.38', items:[
-      'База знаний — редизайн: карточки с цветной полоской по типу (Эффект=янтарь, Теория=синий, Рамка=фиолетовый, Феномен=тёмно-бирюзовый, Метод=зелёный). Надёжность — цветная точка вместо повторяющегося бейджа (только для спорных/смешанных добавляется подпись). Фильтры — горизонтальный скролл в 2 строки, не занимают весь экран.',
-    ]},
-    {v:'5.37', items:[
-      'База знаний: граф-навигация. Рядом с деталью концепта — горизонтальная лента связанных карточек (тип связи + надёжность + название + суть). Тап → переход на ту карточку, данные берутся из кеша (без запросов). Кнопка «Назад» показывает название предыдущего концепта — можно вернуться к нему. История навигации хранится в стеке.',
-    ]},
-    {v:'5.36', items:[
-      'TWIST разрыв: полная переработка дизайна. Крупный бейдж-кружок (✓/✗/≈) с pop-анимацией — мгновенный сигнал. Echo: короткий курсив вместо жирного полного текста. Фидбек: левая полоска без белой карточки-в-карточке. Метрики едут снизу вверх (translateY+opacity) с интервалом 340мс. Разрыв и механизм появляются по очереди после последней метрики.',
-    ]},
-    {v:'5.35', items:[
-      'Режим «База знаний»: 204 концепта в карточках — вид, поиск (название+суть), фильтры по типу и надёжности, фильтр «понравившиеся». Карточка: тип, бейдж надёжности цветом, суть. Детальная страница: полная суть, критика для contested/mixed, пример, источник, связанные концепты с типом связи — тапабельные, навигация концепт→концепт. Лайк сохраняется в KB (без регистрации, per-браузер).',
-    ]},
-    {v:'5.34', items:[
-      'Тёмная тема для TWIST: убран хардкод #eef5ee, добавлены dark-mode overrides (оба механизма: data-theme=dark и prefers-color-scheme). Меню «…»: кнопка «↺ Сбросить предсказания» — чистит localStorage TWIST этой главы и возвращает все виджеты в неотвеченное состояние (learning_events не трогает).',
-    ]},
-    {v:'5.33', items:[
-      'TWIST: добавлен reveal_kind=расхождение (цифры расходятся: + зелёный, − красный, поэтапно). Разделитель ribbon_lines изменён на ;; (безопасно для прозы). Финальный формат маркера согласован с Каллиопой.',
-    ]},
-    {v:'5.32', items:[
-      'TWIST: двухшаговый коммит — выбор варианта подсвечивает его, появляется кнопка «Выкатить →» (или глагол из маркера). По нажатию: лента релиза из ribbon_lines контента (~800мс/строка, пропустить), затем поэтапное раскрытие по reveal_kind: метрики = строки с числами по одной, неоднозначно = два столбца, остальные = проза. Эхо прогноза в разрыве. KB-чипы убраны — глубина только через PROOF в прозе.',
-    ]},
-    {v:'5.31', items:[
-      'TWIST: свободный ввод заменён тапабельными кнопками-вариантами (формат opt_a/b/c/d с ::verdict::feedback). Варианты перемешиваются детерминированно по id сцены. Уверенность — слайдер 1–5. После выбора: подсветка правильного/неправильного + feedback под кнопкой + разрыв.',
-    ]},
-    {v:'5.30', items:[
-      'Исправлен баг публикации tail: новые главы без part/ord теперь получают предупреждение с полями для заполнения прямо в панели; сообщение об ошибке различает «не заполнен part» от «обрезка md». publish_version и publish_version_force обновлены: book_id несут оба, null part/ord обрабатываются через coalesce. cv_commit принимает p_part и p_ord.',
-    ]},
-    {v:'5.29', items:[
-      'PROOF-маркер: <!-- PROOF: id=... | anchor="фраза" | claim=... | source=... | kb_nodes=... | status=solid --> — фраза в прозе получает пунктирное подчёркивание, тап открывает карточку с источником, утверждением, статусом надёжности и чипами KB-концептов. По умолчанию текст чистый, глубина — по запросу.',
-    ]},
-    {v:'5.28', items:[
-      'TWIST v2 — pm-decision механика: три хода-кнопки (А/Б/В) вместо свободного ввода, ставка уверенности 1–5, текст ниже маркера скрыт размытием до выбора, после фиксации — анимированный релиз-нарратив «выкатываю…→аналитика…→ответ», статистика «ты против N читателей». Диаграмма trust_poles добавлена в базу (g11b исправлен).',
-    ]},
-    {v:'5.27', items:[
-      'TWIST-маркеры: новый формат <!-- TWIST: id=... | commit_q=... | wrong_intuition=... | reveal=... | why=... | kb_nodes=... --> разворачивается в виджет с типичной ошибкой (тап = автозаполнение), свободным вводом и разрывом после фиксации. Прогноз в localStorage + learning_events. Тап на KB-концепт → открывает его карточку в панели.',
-    ]},
-    {v:'5.26', items:[
-      'Обучающий слой: маркер <!-- PREDICT --> в тексте главы разворачивается в блок «Предскажи → увидь». Читатель фиксирует прогноз (выбор или свободный текст), после чего видит что случилось и свой прогноз рядом. Ответ хранится в сессии и логируется в learning_events. Без баллов, без оценок — только разрыв.',
-    ]},
-    {v:'5.25', items:[
-      'Защита публикации: размер черновика vs живой главы теперь виден рядом; если черновик < 500 симв или < 25% живой — красный бейдж «заглушка» и кнопка становится предупреждающей. Ошибки publish_version теперь видны (раньше молчала). Кнопка «↩ Откатить» для восстановления главы. Карта базы: добавлена подписка на kb_edges в realtime-канал.',
-    ]},
-    {v:'5.24', items:[
-      'TOC: главы с частичным прогрессом (10–96%) теперь показывают тонкую полоску прочитанного — видно, где ты остановился. Свайп по зоне «Дальше/Назад» меняет главу. Исправлен баг с закрытием мини-карточки соседнего концепта.',
-    ]},
-    {v:'5.23', items:[
-      'Панель «Концепты главы» в потоке чтения: после текста — сворачиваемая полка с теориями и эффектами, привязанными к главе. Раскрой концепт — увидишь бейдж надёжности, главное утверждение, оговорки для спорных теорий, источник и смысловые связи. Тап по соседнему концепту — показывает его утверждение прямо здесь, без перехода. Загружается по требованию.',
-    ]},
-    {v:'5.22', items:[
-      'Публикация: кнопка «📄 md» у каждого черновика открывает inline-редактор — можно вставить текст или загрузить .md файл, видно количество слов и символов. По кнопке «Сохранить черновик» контент сразу записывается в chapter_versions без лимита на размер.',
-    ]},
-    {v:'5.21', items:[
-      'Мобильный аудит: точки маргинальной карты теперь 24px touch target (было 5px — нетапабельно); карта базы на мобиле переключается на список вместо SVG-графа; тёмная тема для блоков «Теория»; поиск по главе закрывается при смене главы и скроллит страницу наверх при открытии; кнопка Гермеса сжимается до ⚡ на узких экранах.',
-    ]},
-    {v:'5.20', items:[
-      'Теоретические блоки теперь показывают название теории из term= (например «Kahneman & Tversky / Prospect Theory») и контекст из trigger= — единый стиль с SYMPTOM/TRYIT. Маргинальная карта: цветные точки на правом краю страницы показывают, где в главе стоят метки — кликните, чтобы прокрутить. Поиск по главе: нажмите / или Ctrl+F, или «Поиск по главе» в меню «···».',
-    ]},
-    {v:'5.19', items:[
-      'Метки на тексте теперь обновляются в реальном времени — чужие реакции появляются без перезагрузки страницы. PWA: при деплое новой версии внизу экрана появляется «Новая версия готова → Обновить» — одно касание вместо «удали и переустанови».',
-    ]},
-    {v:'5.18', items:[
-      'В тексте глав теперь рендерятся маркеры SYMPTOM («Узнаёте?») и TRYIT («На практике») — янтарный и зелёный блоки, которые раньше вырезались. В Диспетчерской появился индикатор realtime-соединения (зелёная точка рядом с «Запустить Гермеса»). Метки статусов и надёжности в Научбазе переведены на русский. Полировка капитализации.',
-    ]},
-    {v:'5.17', items:[
-      'Карта базы: force-directed layout — узлы больше не лепятся в блоб, а расходятся под действием физики (отталкивание + спринги рёбер + притяжение к кластеру). Туман-ореолы вокруг кластеров. Ховер по узлу показывает мини-карточку. Метки для ключевых узлов «в книге». Поиск по названию без перезагрузки. Умные рёбра: при фильтре подсвечиваются связанные узлы, в полном виде — тихий фон.',
-    ]},
-    {v:'5.16', items:[
-      '«Карта базы» ожила: звёзды мягко мерцают, а теории, изменившиеся с прошлого захода, подсвечиваются пульсом и счётчиком ✦. Узлы кликабельны — тап открывает карточку теории (утверждение, оговорки, источник, ссылка, главы, соседи). Добавлены фильтры (inbox / проверено / в книге / спорные) и блок «спорные требуют внимания» + белые пятна базы.',
-    ]},
-    {v:'5.15', items:[
-      'В Диспетчерской появилась кнопка «Запустить Гермеса» — ручной запуск надзорной сессии; после запуска показывает ссылку на сессию. Кнопка блокируется на время запроса.',
-    ]},
-    {v:'5.14', items:[
-      'В Диспетчерскую добавлена «Карта базы» — живая визуализация научной базы: граф теорий по темам (цвет — надёжность, заливка — стадия проверки, размер — охват глав), конвейер inbox→проверено→в книге и шкала надёжности. Обновляется в реальном времени по мере наполнения базы.',
-    ]},
-    {v:'5.13', items:[
-      'Диспетчерская теперь живая: шина и панели обновляются в реальном времени без кнопки. Брифы можно править прямо в Диспетчерской (со слиянием при конфликте версий), плюс предупреждение, если по одной роли за час писали разные треды.',
-    ]},
-    {v:'5.12', items:[
-      'Добавлена «Диспетчерская» — единый экран координации для админа: шина задач, публикация черновиков с диффом по абзацам, контекст, решения, научбаза, здоровье и брифы.',
-    ]},
-    {v:'5.11', items:[
-      'Теория теперь видна как отдельная врезка (раньше текла обычными абзацами), ключевые термины — с тонким подчёркиванием.',
-    ]},
-    {v:'5.10', items:[
-      'Исправлено: свайп вниз по меню «···» теперь закрывает только это меню, а не всю панель.',
-    ]},
-    {v:'5.9', items:[
-      'Панель откликов перерисована в духе iOS: на телефоне — низовой лист с ручкой, аккуратные вкладки, карточки обсуждения.',
-      'Инструменты редактора убраны в меню «···» — вкладка «Правки» больше не забита.',
-    ]},
-    {v:'5.8', items:[
-      'Убрали «О главе» — она дублировала «Что изменилось». Теперь одно место.',
-    ]},
-    {v:'5.7', items:[
-      'Вместо заметок — закладки: выделите фразу и сохраните, чтобы вернуться. Список закладок — в меню «···» (только ваши, видны лишь вам).',
-      'Панель отметок стала компактнее по высоте.',
-    ]},
-    {v:'5.6', items:[
-      'Реакции теперь только по месту (выделите фразу) — чипы в конце главы убраны. Конец главы чище: оценка и обсуждение.',
-      'Каждый инструмент про своё: реакция — по месту, звёзды — оценка главы, обсуждение — разговор.',
-    ]},
-    {v:'5.5', items:[
-      '«Метки на тексте» переехали из меню «···» в настройки чтения («Aa») — там им место рядом с темой и шрифтом.',
-    ]},
-    {v:'5.4', items:[
-      'Панель отметок при выделении теперь с подписями («\ud83e\udd14 Запутался») и заголовком — понятно без догадок.',
-      'При первом чтении — разовая подсказка, как отмечать места в тексте.',
-    ]},
-    {v:'5.3', items:[
-      'Убрал режим погружения (тап по тексту) — мешал чтению и отметкам.',
-      'Панель реакций при выделении теперь внизу экрана — системное меню «Копировать» больше её не перекрывает.',
-    ]},
-    {v:'5.2', items:[
-      'Отметки по месту: выделите фразу — и поставьте реакцию (вкл. «похоже на ИИ») или заметку прямо в тексте.',
-      'Автор видит тепловую карту: где и насколько часто читатели спотыкаются. Тумблер «Метки на тексте» в меню.',
-    ]},
-    {v:'5.1', items:[
-      'Дашборд на телефоне — теперь карточками вместо широкой таблицы: читается без горизонтального скролла.',
-    ]},
-    {v:'5.0', items:[
-      'Новый тип реакции «Похоже на ИИ» — можно отметить главу, где текст звучит машинно.',
-      'Чейнджлог глав: под заголовком появляется «Что изменилось» — видно, что правилось именно в этой главе.',
-    ]},
-    {v:'4.9', items:[
-      'Режим погружения: тап по тексту прячет весь интерфейс — остаются только буквы.',
-      'В оглавлении появился бейдж «обновлено» у глав, которые вы читали в старой версии.',
-    ]},
-    {v:'4.8', items:[
-      'Сигнал об обновлении книги: точка на «···» и мягкая плашка при входе — читатель сразу видит, что есть новое.',
-    ]},
-    {v:'4.7', items:[
-      '«Что нового» в меню «···»: читатели видят историю изменений, как чейнджлог самой читальни.',
-    ]},
-    {v:'4.6', items:[
-      'Новый красивый низ главы: единый выровненный блок — оценка, реакции, обсуждение и навигация по центру, без пустот.',
-    ]},
-    {v:'4.5', items:[
-      'Офлайн-чтение: приложение и прочитанные главы открываются без сети.',
-      'Установка как нативное приложение: иконка, имя, полноэкранный режим.',
-    ]},
-    {v:'4.4', items:[
-      'Живые обновления: реакции, оценки, комментарии и обсуждения обновляются сами, без перезагрузки. Дашборд живой.',
-    ]},
-    {v:'4.3', items:[
-      'Тонкая типографика: сглаживание шрифта, лигатуры и старостильные цифры в тексте — литературный вид.',
-    ]},
-    {v:'4.2', items:[
-      'Тема «Авто»: днём светло, вечером и ночью — тёмно, приложение подстраивается само.',
-      'Смена темы — плавным переливом цвета.',
-    ]},
-    {v:'4.1', items:[
-      'Убрал листание глав свайпом — оно сбивало.',
-      'Дашборд на телефоне: сводка больше не уезжает, название главы закреплено слева при прокрутке.',
-    ]},
-    {v:'4.0', items:[
-      'Исправлено по-настоящему: меню «···» больше не серое и все пункты нажимаются.',
-    ]},
-    {v:'3.9', items:[
-      'Исправлено: в меню «···» на телефоне снова нажимаются все пункты (включая «Админку»).',
-    ]},
-    {v:'3.8', items:[
-      '«Моё чтение» в меню «···»: личная карта пути — главы заполняются по мере чтения, и виден ваш вклад.',
-    ]},
-    {v:'3.7', items:[
-      'Довел все тексты до тёплого, живого тона — пустые экраны, подсказки, благодарности.',
-    ]},
-    {v:'3.6', items:[
-      'Момент «глава прочитана» теперь ловится вовремя — на конце текста, сразу и мягче.',
-      'Сообщения о прогрессе стали ободряющими — без пугающего «осталось 30» в начале.',
-      'Тексты по всему приложению — теплее и живее.',
-    ]},
-    {v:'3.5', items:[
-      'Приветствия стали теплее и живее, и учитывают выходные.',
-      'Приветственное окно появляется плавно, а не выскакивает.',
-      'Окна открываются и закрываются мягко.',
-    ]},
-    {v:'3.4', items:[
-      'Поле ответа/правки больше не прячется за клавиатурой на телефоне.',
-      'Мобильные правки: действия на карточке («к месту», «ответить» и др.) больше не вылезают за экран.',
-      'Админка на телефоне: строка пользователя аккуратнее, дашборд прокручивается вбок.',
-    ]},
-    {v:'3.3', items:[
-      'Админка: роль выбирается сразу при добавлении, есть кнопка «Скопировать приглашение».',
-      'Видно, кто из приглашённых уже зашёл.',
-      'Удаление пользователя и правки — в два шага (защита от случайного).',
-    ]},
-    {v:'3.2', items:[
-      'Нижние панели закрываются свайпом вниз.',
-      'В момент завершения главы кнопка «Дальше» мягко приглашает продолжить.',
-      'Лёгкая вибро-отдача на оценке/реакции (где поддерживается).',
-    ]},
-    {v:'3.1', items:[
-      'Экран входа теперь сразу объясняет, что это и зачем — проще начать новичку.',
-    ]},
-    {v:'3.0', items:[
-      'Листайте главы свайпом влево/вправо (на телефоне).',
-      'Нижние панели теперь с лёгким затемнением фона — понятно, что закрыть можно тапом мимо.',
-      'Оглавление сразу прокручивается к текущей главе.',
-    ]},
-    {v:'2.9', items:[
-      'Живое присутствие: когда книгу читает кто-то ещё — видно «Сейчас читают: N» с живой точкой.',
-      'Исправлено: на телефоне окна (в т.ч. админка) снова открываются ровно снизу.',
-    ]},
-    {v:'2.8', items:[
-      'В конце главы появилась кнопка «Обсудить главу» — обсуждение больше не нужно искать.',
-      'Под заголовком главы — оценка времени чтения.',
-    ]},
-    {v:'2.7', items:[
-      'Под капотом: чище разметка (семантические теги) и лучше доступность для скринридеров.',
-    ]},
-    {v:'2.6', items:[
-      'Оценка главы (звёзды) теперь в конце главы, рядом с реакциями.',
-      'Управление именами в админке аккуратно умещается на телефоне.',
-    ]},
-    {v:'2.5', items:[
-      'Полировка интерфейса: пружинные плавные анимации и переходы, мягкие нажатия.',
-      'Текст главы плавно появляется при переходе; нижние панели — с «ручкой» как в iOS.',
-      'Мобильные детали: без серой вспышки при тапе, инерционный скролл, безопасные зоны под вырез, тонкие скроллбары.',
-    ]},
-    {v:'2.4', items:[
-      'Исправлено: на телефоне меню «···» и Админка открываются корректно (фильтр панели ломал позиционирование).',
-      'После загрузки content.json понятное сообщение: обновились версии глав или текст тот же.'
-    ]},
-    {v:'2.3', items:[
-      'Прогресс чтения в меню («Прочитано N из M») — мягко мотивирует дойти до конца (эффект градиента цели).',
-      'Тёплый момент в конце главы: «Глава прочитана · осталось N» (правило пик-конец).',
-      'На полке у книги — полоса прогресса и «Продолжить · %» (незавершённое тянет вернуться).',
-      'Маленькое спасибо за отклик и приятные микро-нажатия (бережное подкрепление вклада).'
-    ]},
-    {v:'2.2', items:[
-      'Исправлен баг: после удаления поиска приложение не загружало главы (обрывалась инициализация). Теперь всё открывается.',
-      'Боковое меню на телефоне аккуратнее: не на весь экран, с затемнением и закрытием по тапу мимо.'
-    ]},
-    {v:'2.1', items:[
-      'Новый дизайн в стиле iOS: чистые иконки вместо эмодзи, одна верхняя панель — больше места под текст.',
-      'Кнопка «Aa» — лист настроек чтения: тема, выбор шрифта (Литературный · Книжный · Гротеск · Системный), размер.',
-      'Вторичные действия собраны под кнопкой «···»; поиск убран.',
-      'Версия приложения и эта история изменений — по клику на название слева вверху.'
-    ]},
-    {v:'2.0', items:[
-      'Полка с несколькими книгами.',
-      'Дополнения к главе (книги/статьи/теории) и чейнджлог главы для всех читателей.',
-      'История версий глав с авто-уведомлением о правках.',
-      'Дашборд для редактора и роли: читатель · контрибьютор · редактор.'
-    ]}
   ];
   (function(){
     var v=document.getElementById('appVer'); if(v) v.textContent=APP_VERSION;
@@ -10797,6 +10788,7 @@
   document.getElementById('authSwitch').onclick=function(){ setAuthMode(authMode==='signin'?'signup':'signin'); };
   document.getElementById('authEmail').addEventListener('keydown', function(e){ if(e.key==='Enter') doAuth(); });
   document.getElementById('authPass').addEventListener('keydown', function(e){ if(e.key==='Enter') doAuth(); });
+  try{ window.addEventListener('hashchange', function(){ if(typeof joinHashCheck==='function') joinHashCheck(); }); }catch(_e){}   // FR-10: #/join во время сессии
   document.getElementById('btnPwd').onclick=function(){
     document.getElementById('pwdNew').value=''; document.getElementById('pwdMsg').textContent='';
     showModal('pwdModal'); setTimeout(function(){ document.getElementById('pwdNew').focus(); },50);
@@ -11238,7 +11230,8 @@
 
   var dspChan=null, dspRtTimer=null, dspEditing=false;
   var fireBusy=false;
-  var DSP_TAB_LBL={bus:'Шина',flow:'Поток',review:'Ревью',pub:'Публикация',ctx:'Контекст',dec:'Решения',src:'Научбаза',kb:'Граф',health:'Здоровье',briefs:'Брифы'};
+  var DSP_TAB_LBL={bus:'Шина',tasks:'Таски',flow:'Поток',review:'Ревью',pub:'Публикация',ctx:'Контекст',dec:'Решения',src:'Научбаза',kb:'Граф',health:'Здоровье',briefs:'Брифы'};
+  var dspTaskF={status:'active'};
 
 
 
@@ -11297,6 +11290,7 @@
         var x=e.target.closest('[data-act]'); if(!x) return;
         var act=x.getAttribute('data-act'), id=x.getAttribute('data-id');
         if(act==='bus-done') busDone(id);
+        else if(act==='task-up') taskBump(x.getAttribute('data-ref'), x.getAttribute('data-pri'));
         else if(act==='bus-reply') busReply(id, x.getAttribute('data-src'));
         else if(act==='pub-pub') pubPublish(id, x.getAttribute('data-suspect')==='1');
         else if(act==='pub-rej'){ pubCloseMore(id); pubReject(id); }
