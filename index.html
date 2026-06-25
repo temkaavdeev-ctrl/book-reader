@@ -2653,6 +2653,22 @@ body.guest-only #tabbar{ display:none !important; }
 .dsp-inp:focus{ outline:none; border-color:var(--accent); }
 .mt-new{ margin:0 0 12px; padding:11px 13px; border:1px solid var(--accent-soft); border-radius:11px; background:var(--accent-tint); font-size:13px; color:var(--read); line-height:1.5; word-break:break-all; }
 .mt-new-tok{ font-family:var(--font-mono,ui-monospace,monospace); color:var(--accent-2); }
+
+/* G: экран-заглушка после создания аккаунта */
+.signup-loader{ position:fixed; inset:0; z-index:9999; background:#0b0e14; display:flex; align-items:center; justify-content:center; overflow:hidden; transition:opacity .45s ease; }
+.signup-loader.su-out{ opacity:0; }
+.signup-loader .landing-stars{ position:absolute; inset:0; }
+.su-box{ position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; gap:22px; padding:24px; }
+.su-spin{ width:34px; height:34px; border-radius:50%; border:2px solid rgba(255,255,255,.14); border-top-color:#e8c87a; animation:su-rot .9s linear infinite; }
+@keyframes su-rot{ to{ transform:rotate(360deg); } }
+.su-tx{ color:#e9e2d4; font-size:15px; letter-spacing:.01em; text-align:center; min-height:20px; opacity:0; max-width:80vw; }
+.su-tx.su-in{ animation:su-fade 1.8s ease both; }
+@keyframes su-fade{ 0%{opacity:0;transform:translateY(5px)} 16%{opacity:1;transform:none} 84%{opacity:1} 100%{opacity:0;transform:translateY(-4px)} }
+@media (prefers-reduced-motion: reduce){ .su-spin{ animation:none } .su-tx.su-in{ animation:none; opacity:1 } }
+
+/* H: раскрытый второй слой — повернуть каретку */
+.kbm-deep[open] .kbm-deep-caret{ transform:rotate(90deg); }
+.kbm-deep-caret{ display:inline-block; transition:transform .18s ease; }
 </style>
 </head>
 <body>
@@ -3012,7 +3028,6 @@ body.guest-only #tabbar{ display:none !important; }
     <button class="constel-route-back" id="constelRouteBack">‹ К маршрутам</button>
     <span class="constel-route-cap" id="constelRouteCap"></span>
   </div>
-  <div class="constel-hint" id="constelHint">одним пальцем — двигать · щипком — приблизить · двумя пальцами — повернуть</div>
   <div class="constel-chip" id="constelChip" style="display:none">
     <div class="constel-chip-kind" id="constelChipKind"></div>
     <div class="constel-chip-ttl" id="constelChipTtl"></div>
@@ -4319,6 +4334,7 @@ body.guest-only #tabbar{ display:none !important; }
   }catch(e){} }
   // ---------- auth UI ----------
   function showGate(mode){
+    try{ if(window.__SIGNUP_FLOW) hideSignupLoader(); }catch(_){}
     showTabbar(false);
     document.getElementById('authGate').style.display='flex';
     document.getElementById('authForm').style.display     = (mode==='login')?'block':'none';
@@ -4409,6 +4425,7 @@ body.guest-only #tabbar{ display:none !important; }
         return;
       }
       // успех → onAuthStateChange продолжит
+      if(authMode==='signup'){ window.__SIGNUP_FLOW=true; try{ showSignupLoader(); }catch(_){} }
     }).catch(function(err){ btn.disabled=false; msg.textContent=authErr((err&&err.message)||err); });
   }
   function authErr(m){
@@ -4419,6 +4436,24 @@ body.guest-only #tabbar{ display:none !important; }
     if(/rate limit|Too many|For security/i.test(m)) return 'Слишком много попыток, подождите минуту и повторите.';
     if(/Failed to fetch|NetworkError|timeout|timed out|fetch/i.test(m)) return 'Нет связи с базой. Возможно, проект Supabase «уснул» — откройте его панель и нажмите Resume, затем повторите.';
     return 'Ошибка: '+m;
+  }
+  // G: тёплый экран-заглушка после создания аккаунта (пока идёт первая загрузка)
+  function showSignupLoader(){
+    if(document.getElementById('signupLoader')) return;
+    var ov=document.createElement('div'); ov.id='signupLoader'; ov.className='signup-loader';
+    ov.innerHTML='<div class="landing-stars" id="suStars" aria-hidden="true"></div><div class="su-box"><div class="su-spin" aria-hidden="true"></div><div class="su-tx" id="suTx"></div></div>';
+    document.body.appendChild(ov);
+    var sf=ov.querySelector('#suStars'); if(sf){ var sh=''; for(var i=0;i<46;i++){ var sz=(Math.random()<0.82?1:2); sh+='<i style="left:'+(Math.random()*100).toFixed(2)+'%;top:'+(Math.random()*100).toFixed(2)+'%;width:'+sz+'px;height:'+sz+'px;animation-delay:'+(Math.random()*4).toFixed(2)+'s;animation-duration:'+(2.6+Math.random()*3).toFixed(2)+'s"></i>'; } sf.innerHTML=sh; }
+    var texts=['Настраиваем ваш аккаунт','Работает только без VPN','Прибираемся, выбрасываем мусор','Раскладываем созвездие','Почти готово…'];
+    var tx=ov.querySelector('#suTx'), i=0;
+    var tick=function(){ if(!tx) return; tx.textContent=texts[i%texts.length]; tx.classList.remove('su-in'); void tx.offsetWidth; tx.classList.add('su-in'); i++; };
+    tick(); ov._iv=setInterval(tick, 1800);
+  }
+  function hideSignupLoader(){
+    var ov=document.getElementById('signupLoader'); if(!ov) return;
+    if(ov._iv){ clearInterval(ov._iv); ov._iv=null; }
+    ov.classList.add('su-out'); window.__SIGNUP_FLOW=false;
+    setTimeout(function(){ if(ov && ov.remove) ov.remove(); }, 480);
   }
   function canContribute(){ return isAdmin || myRole==='contributor' || myRole==='editor'; }
   function canModerate(){ return isAdmin || myRole==='editor'; }
@@ -4480,7 +4515,14 @@ body.guest-only #tabbar{ display:none !important; }
       }
       // Поднять Созвездие сразу (поверх книги, без await до этого) и параллельно начать грузить граф —
       // чтобы книга не мелькала, а звёзды собрались как можно раньше. Решение про приветствие — в конце.
-      if(landingMode()==='constel' && (_view===null || _view==='constel')){ setView('constel'); }
+      var _cardDL=(location.hash||'').match(/^#\/c\/([^/?&#]+)/);
+      if(_cardDL){
+        try{ if(typeof openKbMode==='function') openKbMode();
+             if(typeof KBM!=='undefined' && KBM.loaded){ if(typeof kbmCheckDeepLink==='function') kbmCheckDeepLink(); }
+             else if(typeof kbmLoad==='function'){ kbmLoad(); }   // по завершении сам откроет карточку (kbmCheckDeepLink)
+        }catch(e){}
+      }
+      else if(landingMode()==='constel' && (_view===null || _view==='constel')){ setView('constel'); }
       // 2) комментарии (не кэшируются)
       await loadComments();
       if(BOOK.length){ renderChapter(); renderTOC(); refreshPanel(); updateCount(); }
@@ -4504,7 +4546,7 @@ body.guest-only #tabbar{ display:none !important; }
       if(panelOpen()) renderPanel();
       if(!maybeWelcome()){ /* космос уже поднят выше; приветствия нет → ничего не делаем */ }
       setTimeout(function(){ try{ showBookLogBanner(); }catch(_){} }, 1400);
-    } finally { authInFlight=null; }
+    } finally { authInFlight=null; try{ if(window.__SIGNUP_FLOW) hideSignupLoader(); }catch(_){} }
   }
   async function saveMyName(v){
     if(!SB||!USER) return;
@@ -7739,7 +7781,7 @@ body.guest-only #tabbar{ display:none !important; }
       (application?'<div class="kbm-sec kbm-sec-app kbm-sec-lead"><div class="kbm-sec-lbl kbm-sec-lbl-app">'+kbmSecIc('apply')+' Как применить в продукте</div><div class="kbm-sec-body">'+kbmGloss(escapeHtml(application))+'</div></div>':'')
       +critBlock
       +(hasDeep
-        ?'<details class="kbm-deep"><summary class="kbm-deep-sum"><span class="kbm-deep-caret">▸</span><span class="kbm-deep-lbl">Разобрать глубже</span><span class="kbm-deep-hint">механизм · пример · связи</span></summary><div class="kbm-deep-body">'+deepInner+'</div></details>'
+        ?'<details class="kbm-deep" open><summary class="kbm-deep-sum"><span class="kbm-deep-caret">▸</span><span class="kbm-deep-lbl">Разобрать глубже</span><span class="kbm-deep-hint">механизм · пример · связи</span></summary><div class="kbm-deep-body">'+deepInner+'</div></details>'
         :deepInner);
     var claimEl=document.getElementById('kbmDetClaim'); if(claimEl && claim){ claimEl.innerHTML=kbmGloss(escapeHtml(claim)); }
     var sectionsEl=document.getElementById('kbmDetSections');
@@ -8231,7 +8273,7 @@ body.guest-only #tabbar{ display:none !important; }
             + menuRow('Админка', '', 'admin')
             + '</div>';
     }
-    rows += '<div class="menu-version">Версия 2026-06-25 05:50 · 76ef295</div>';
+    rows += '<div class="menu-version">Версия 2026-06-25 10:36 · f063930</div>';
     body.innerHTML = '<div class="menu-v-head"><h2 class="menu-v-title">Меню</h2></div><div class="menu-v-list">'+rows+'</div>';
     Array.prototype.forEach.call(body.querySelectorAll('[data-menu-act]'), function(b){
       b.onclick = function(){ menuAct(b.getAttribute('data-menu-act')); };
@@ -8349,9 +8391,9 @@ body.guest-only #tabbar{ display:none !important; }
     var now=new Date();
     var active=links.filter(function(x){ return x.status==='active' && new Date(x.expires_at)>now; });
     var redeemed=links.filter(function(x){ return x.status==='redeemed'; });
-    var h='<div class="inv-bal"><div class="inv-bal-n">'+avail+'</div><div class="inv-bal-l">\u0441\u0432\u043e\u0431\u043e\u0434\u043d\u044b\u0445 \u043f\u0440\u0438\u0433\u043b\u0430\u0448\u0435\u043d\u0438\u0439 \u0438\u0437 '+bal+'</div></div>';
+    var h='<div class="inv-intro">\u041f\u0440\u0438\u0433\u043b\u0430\u0448\u0435\u043d\u0438\u044f \u2014 \u0447\u0442\u043e\u0431\u044b \u043f\u043e\u0437\u0432\u0430\u0442\u044c \u0442\u0435\u0445, \u043a\u043e\u043c\u0443 \u0431\u0430\u0437\u0430 \u043f\u0440\u0438\u0433\u043e\u0434\u0438\u0442\u0441\u044f. \u0417\u0430\u043f\u0430\u0441 \u043e\u0433\u0440\u0430\u043d\u0438\u0447\u0435\u043d, \u043d\u043e\u0432\u044b\u0435 \u043e\u0442\u043a\u0440\u044b\u0432\u0430\u044e\u0442\u0441\u044f \u0437\u0430 \u0430\u043a\u0442\u0438\u0432\u043d\u043e\u0441\u0442\u044c.</div><div class="inv-bal"><div class="inv-bal-n">'+avail+'</div><div class="inv-bal-l">\u0441\u0432\u043e\u0431\u043e\u0434\u043d\u044b\u0445 \u043f\u0440\u0438\u0433\u043b\u0430\u0448\u0435\u043d\u0438\u0439 \u0438\u0437 '+bal+'</div></div>';
     var pc=Math.max(0,Math.min(100,Math.round((prog.have/(prog.need||5))*100)));
-    h+='<div class="inv-prog"><div class="inv-prog-l">\u0414\u043e \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0435\u0433\u043e \u043f\u0440\u0438\u0433\u043b\u0430\u0448\u0435\u043d\u0438\u044f: '+prog.have+' \u0438\u0437 '+prog.need+' \u0440\u0435\u0430\u043a\u0446\u0438\u0439</div><div class="inv-prog-bar"><span style="width:'+pc+'%"></span></div></div>';
+    h+='<div class="inv-prog"><div class="inv-prog-l">\u0414\u043e \u043d\u043e\u0432\u043e\u0433\u043e \u043f\u0440\u0438\u0433\u043b\u0430\u0448\u0435\u043d\u0438\u044f: '+prog.have+' \u0438\u0437 '+prog.need+' \u043e\u0442\u043c\u0435\u0447\u0435\u043d\u043d\u044b\u0445 \u043a\u0430\u0440\u0442\u043e\u0447\u0435\u043a</div><div class="inv-prog-bar"><span style="width:'+pc+'%"></span></div></div>';h+='<div class="inv-how"><div class="inv-how-t">\u041a\u0430\u043a \u043f\u043e\u043b\u0443\u0447\u0438\u0442\u044c \u0435\u0449\u0451</div><div class="inv-how-b">\u041e\u0442\u043a\u0440\u044b\u0432\u0430\u0439\u0442\u0435 \u043a\u0430\u0440\u0442\u043e\u0447\u043a\u0438 \u0438 \u043e\u0442\u043c\u0435\u0447\u0430\u0439\u0442\u0435 \u0438\u0445 \u2014 \u00ab\u043f\u0440\u0438\u043c\u0435\u043d\u0438\u043c\u043e\u00bb, \u00ab\u043d\u0443\u0436\u043d\u043e \u0433\u043b\u0443\u0431\u0436\u0435\u00bb, \u00ab\u0441\u043f\u043e\u0440\u043d\u043e\u00bb. \u041a\u0430\u0436\u0434\u044b\u0435 5 \u043e\u0442\u043c\u0435\u0447\u0435\u043d\u043d\u044b\u0445 \u043a\u0430\u0440\u0442\u043e\u0447\u0435\u043a \u043e\u0442\u043a\u0440\u044b\u0432\u0430\u044e\u0442 \u043d\u043e\u0432\u043e\u0435 \u043f\u0440\u0438\u0433\u043b\u0430\u0448\u0435\u043d\u0438\u0435.</div></div>';
     h+='<button class="inv-gen'+(avail<=0?' inv-gen-off':'')+'" data-inv-gen="1"'+(avail<=0?' disabled':'')+'>\u0421\u043e\u0437\u0434\u0430\u0442\u044c \u0441\u0441\u044b\u043b\u043a\u0443-\u043f\u0440\u0438\u0433\u043b\u0430\u0448\u0435\u043d\u0438\u0435</button>';
     if(active.length){
       h+='<div class="inv-sec">\u0410\u043a\u0442\u0438\u0432\u043d\u044b\u0435 \u0441\u0441\u044b\u043b\u043a\u0438</div>';
@@ -8404,7 +8446,7 @@ body.guest-only #tabbar{ display:none !important; }
       +'</div>';
     h+='<div class="comm-mandala">'+communityMandala(info)+'</div>';
     var prog=info.next_invite_progress||{have:0,need:5};
-    h+='<div class="inv-prog"><div class="inv-prog-l">\u0414\u043e \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0435\u0433\u043e \u043f\u0440\u0438\u0433\u043b\u0430\u0448\u0435\u043d\u0438\u044f: '+prog.have+' \u0438\u0437 '+prog.need+'</div><div class="inv-prog-bar"><span style="width:'+Math.round((prog.have/(prog.need||5))*100)+'%"></span></div></div>';
+    h+='<div class="inv-prog"><div class="inv-prog-l">\u0414\u043e \u043d\u043e\u0432\u043e\u0433\u043e \u043f\u0440\u0438\u0433\u043b\u0430\u0448\u0435\u043d\u0438\u044f: '+prog.have+' \u0438\u0437 '+prog.need+'</div><div class="inv-prog-bar"><span style="width:'+Math.round((prog.have/(prog.need||5))*100)+'%"></span></div></div>';
     h+='<div class="inv-note">\u0421\u0432\u044f\u0437\u0438 \u043f\u0440\u0438\u0433\u043b\u0430\u0448\u0435\u043d\u0438\u0439 \u2014 \u043a\u0442\u043e \u043a\u043e\u0433\u043e \u043f\u043e\u0437\u0432\u0430\u043b. \u0411\u0435\u0437 \u0438\u043c\u0451\u043d.</div>';
     wrap.innerHTML=h;
   }
@@ -10909,7 +10951,10 @@ body.guest-only #tabbar{ display:none !important; }
   document.getElementById('authSwitch').onclick=function(){ setAuthMode(authMode==='signin'?'signup':'signin'); };
   document.getElementById('authEmail').addEventListener('keydown', function(e){ if(e.key==='Enter') doAuth(); });
   document.getElementById('authPass').addEventListener('keydown', function(e){ if(e.key==='Enter') doAuth(); });
-  try{ window.addEventListener('hashchange', function(){ if(typeof joinHashCheck==='function') joinHashCheck(); }); }catch(_e){}   // FR-10: #/join во время сессии
+  try{ window.addEventListener('hashchange', function(){
+    if(typeof joinHashCheck==='function') joinHashCheck();
+    try{ if(/^#\/c\//.test(location.hash||'')){ if(typeof KBM!=='undefined') KBM._dlOpened=null; if(typeof kbmCheckDeepLink==='function') kbmCheckDeepLink(); } }catch(_c){}
+  }); }catch(_e){}   // FR-10 #/join + дип-ссылки карточек во время сессии
   document.getElementById('btnPwd').onclick=function(){
     document.getElementById('pwdNew').value=''; document.getElementById('pwdMsg').textContent='';
     showModal('pwdModal'); setTimeout(function(){ document.getElementById('pwdNew').focus(); },50);
