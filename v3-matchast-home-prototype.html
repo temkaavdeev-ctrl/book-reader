@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Матчаст — прототип (дом «Решить»)</title>
+<style>
+:root{
+  /* ds-foundation токены */
+  --ink:#1C1A17; --ink2:#4B463F; --meta:#6E6862; --border:#D9D3C8; --surf2:#EFEBE2; --bg:#F5F2EC; --card:#FFFFFF;
+  --gold:#A4702E; --gold-d:#8A5A22; --gold-l:#C79152; --on-gold:#FFF8EE;
+  --solid:#3E7D52; --mixed:#B8801F; --contested:#B0452F; --info:#6B5CA5; --tension:#C2546A;
+  --d-econ:#C79152; --d-cog:#D8B23E; --d-ux:#C2546A; --d-soc:#6B5CA5; --d-org:#3E8E8E; --d-mot:#B0452F; --d-neu:#8A5CC2; --d-evo:#4E9A6B; --d-none:#6E6862;
+  --r-sm:12px; --r-md:16px; --r-pill:999px;
+  --e1:0 1px 2px rgba(28,26,23,.06); --e2:0 2px 8px rgba(28,26,23,.08); --e3:0 8px 32px rgba(28,26,23,.16);
+  --xxs:4px; --xs:8px; --sm:12px; --md:16px; --lg:24px; --xl:32px; --xl2:48px;
+  --fast:140ms; --base:200ms; --slow:280ms; --ease:cubic-bezier(.2,0,0,1); --decel:cubic-bezier(0,0,0,1);
+  --navh:64px;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-size:16px; line-height:26px; font-weight:400;
+  -webkit-font-smoothing:antialiased; font-variant-numeric:tabular-nums;
+}
+.app{max-width:680px; margin:0 auto; min-height:100vh; position:relative; padding-bottom:calc(var(--navh) + env(safe-area-inset-bottom) + 8px);}
+
+/* header — свой слой, всегда с фоном (B01) */
+.hdr{position:sticky; top:0; z-index:20; background:rgba(245,242,236,.92); backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;
+  padding:14px var(--lg); }
+.hdr-ttl{font-size:22px; line-height:28px; font-weight:700; letter-spacing:-.01em;}
+.hdr-ter{display:inline-flex; align-items:center; gap:6px; font-size:13px; line-height:18px; color:var(--ink2);
+  background:var(--surf2); border:1px solid var(--border); border-radius:var(--r-pill); padding:5px 11px; white-space:nowrap;}
+.hdr-ter b{font-weight:700; color:var(--gold-d)}
+.hdr-ter .spark{width:12px;height:12px;color:var(--gold)}
+
+main{padding:var(--lg) var(--lg) var(--xl);}
+.block{margin-top:var(--xl);}
+.block:first-child{margin-top:var(--lg);}
+.block-h{display:flex; align-items:baseline; justify-content:space-between; gap:var(--sm); margin-bottom:var(--sm);}
+.block-t{font-size:11px; line-height:15px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--meta);}
+.block-sub{font-size:13px; line-height:18px; color:var(--meta); font-weight:400; text-transform:none; letter-spacing:0;}
+.block-all{font-size:13px; line-height:18px; color:var(--gold-d); text-decoration:none; white-space:nowrap; font-weight:600;}
+.block-all:hover{text-decoration:underline}
+
+/* Продолжить */
+.cont{display:flex; align-items:center; gap:var(--md); background:var(--card); border:1px solid var(--border);
+  border-radius:var(--r-sm); padding:var(--md); box-shadow:var(--e1); cursor:pointer; transition:background var(--fast) var(--ease);}
+.cont:active{background:var(--surf2)}
+.cont-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);flex:none}
+.cont-tx{flex:1; min-width:0}
+.cont-tx .l{font-size:16px;line-height:22px;font-weight:600}
+.cont-tx .s{font-size:13px;line-height:18px;color:var(--meta)}
+.chev{color:var(--meta); flex:none}
+
+/* Несущие — featured cards */
+.feat{display:grid; gap:var(--sm);}
+.feat-card{position:relative; background:var(--card); border:1px solid var(--border); border-radius:var(--r-md);
+  padding:var(--md) var(--md) var(--md); box-shadow:var(--e2); cursor:pointer; transition:transform var(--fast) var(--ease);}
+.feat-card:active{transform:scale(.99)}
+.feat-tag{position:absolute; top:-9px; left:var(--md); background:var(--gold); color:var(--on-gold);
+  font-size:11px; line-height:15px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; padding:2px 9px; border-radius:var(--r-pill);}
+.feat-ttl{font-size:17px; line-height:24px; font-weight:600; margin:2px 0 2px;}
+.feat-by{font-size:14px; line-height:20px; color:var(--ink2);}
+.feat-foot{margin-top:10px; display:flex; align-items:center; gap:var(--sm);}
+
+/* robustness chip — единый язык */
+.rob{display:inline-flex; align-items:center; gap:6px; font-size:13px; line-height:18px; color:var(--ink2);}
+.rob .d{width:9px;height:9px;border-radius:50%;flex:none}
+.rob.solid .d{background:var(--solid)} .rob.mixed .d{background:var(--mixed)} .rob.contested .d{background:var(--contested)}
+
+/* Темы — плитки */
+.themes{display:grid; grid-template-columns:1fr 1fr; gap:var(--sm);}
+@media (max-width:520px){.themes{grid-template-columns:1fr}}
+.tile{background:var(--card); border:1px solid var(--border); border-radius:var(--r-sm); padding:var(--md);
+  box-shadow:var(--e1); cursor:pointer; transition:background var(--fast) var(--ease); display:flex; flex-direction:column;}
+.tile:active{background:var(--surf2)}
+.tile-h{display:flex; align-items:center; gap:8px; margin-bottom:6px;}
+.tile-dot{width:10px;height:10px;border-radius:3px;flex:none}
+.tile-name{font-size:16px;line-height:22px;font-weight:600;flex:1;min-width:0}
+.tile-cnt{font-size:13px;line-height:18px;color:var(--meta);flex:none}
+.tile-ex{font-size:13px;line-height:19px;color:var(--ink2);}
+.tile-ex span{color:var(--meta)}
+.tile-hook{margin-top:8px; font-size:12px;line-height:16px;color:var(--tension); display:inline-flex; align-items:center; gap:5px;}
+
+/* Ситуации — горизонтальная лента */
+.lane{display:flex; gap:var(--sm); overflow-x:auto; margin:0 calc(-1 * var(--lg)); padding:2px var(--lg) var(--xs); -webkit-overflow-scrolling:touch;}
+.lane::-webkit-scrollbar{display:none}
+.sit{flex:0 0 240px; background:var(--card); border:1px solid var(--border); border-radius:var(--r-sm);
+  padding:var(--md); box-shadow:var(--e1); cursor:pointer; transition:background var(--fast) var(--ease);}
+.sit:active{background:var(--surf2)}
+.sit-stage{font-size:11px;line-height:15px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--d-org);}
+.sit-ttl{font-size:16px;line-height:21px;font-weight:600;margin:5px 0 4px;}
+.sit-tz{font-size:13px;line-height:18px;color:var(--ink2);}
+.sit-meta{margin-top:9px; display:flex; align-items:center; gap:10px; font-size:12px;line-height:16px;color:var(--meta);}
+.grows{display:inline-flex;align-items:center;gap:4px;color:var(--mixed);font-size:11px;font-weight:600;letter-spacing:.03em;text-transform:uppercase}
+
+/* Находки — finding cards (пунктир = гипотеза) */
+.finds{display:grid; gap:var(--sm);}
+.find{background:var(--card); border:1px dashed var(--info); border-radius:var(--r-sm); padding:var(--md);
+  cursor:pointer; transition:background var(--fast) var(--ease);}
+.find:active{background:var(--surf2)}
+.find-h{display:flex; align-items:center; justify-content:space-between; gap:var(--sm); margin-bottom:5px;}
+.badge{font-size:11px;line-height:15px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--info);
+  background:rgba(107,92,165,.10); padding:2px 8px; border-radius:var(--r-pill);}
+.find-w{font-size:12px;line-height:16px;color:var(--meta);white-space:nowrap}
+.find-ttl{font-size:16px;line-height:22px;font-weight:600}
+.find-tz{font-size:13px;line-height:19px;color:var(--ink2);margin-top:3px}
+
+/* Серендип */
+.serend{display:flex; gap:var(--sm);}
+.btn{flex:1; display:inline-flex; align-items:center; justify-content:center; gap:8px; height:48px; border-radius:var(--r-sm);
+  font-size:15px; font-weight:600; cursor:pointer; border:1px solid var(--border); background:var(--card); color:var(--ink);
+  transition:background var(--fast) var(--ease); text-align:center;}
+.btn:active{transform:scale(.99)}
+.btn.sec:active{background:var(--surf2)}
+.btn svg{width:20px;height:20px;color:var(--gold-d)}
+
+/* bottom nav — три двери + меню, отдельный слой (B01) */
+.nav{position:fixed; left:0; right:0; bottom:0; z-index:30; background:rgba(245,242,236,.96); backdrop-filter:blur(10px);
+  border-top:1px solid var(--border); display:flex; padding-bottom:env(safe-area-inset-bottom);}
+.nav-in{max-width:680px; margin:0 auto; width:100%; display:flex;}
+.nav-i{flex:1; min-height:var(--navh); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
+  background:none; border:0; cursor:pointer; color:var(--meta); padding:6px 2px;}
+.nav-i svg{width:24px;height:24px}
+.nav-i .lab{font-size:11px;line-height:14px;font-weight:600;letter-spacing:.03em;text-transform:uppercase}
+.nav-i.on{color:var(--gold-d)}
+
+/* card overlay — sheet (e3) */
+.scrim{position:fixed; inset:0; z-index:40; background:rgba(14,13,12,.40); opacity:0; pointer-events:none; transition:opacity var(--base) var(--ease);}
+.scrim.show{opacity:1; pointer-events:auto}
+.sheet{position:fixed; left:0; right:0; bottom:0; z-index:41; max-width:680px; margin:0 auto; max-height:92vh; overflow:auto;
+  background:var(--bg); border-radius:var(--r-md) var(--r-md) 0 0; box-shadow:var(--e3);
+  transform:translateY(101%); transition:transform var(--slow) var(--decel);}
+.sheet.show{transform:translateY(0)}
+.sheet-grip{width:36px;height:4px;border-radius:2px;background:var(--border);margin:10px auto 2px}
+.sheet-bar{position:sticky; top:0; background:var(--bg); display:flex; align-items:center; justify-content:space-between; padding:6px var(--lg) 10px; border-bottom:1px solid var(--border);}
+.sheet-bar .ic{display:flex;gap:4px}
+.iconbtn{width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;border:0;background:none;cursor:pointer;color:var(--ink2);border-radius:var(--r-pill)}
+.iconbtn:active{background:var(--surf2)}
+.card-body{padding:var(--md) var(--lg) var(--xl2);}
+.card-ttl{font-size:28px;line-height:34px;font-weight:700;letter-spacing:-.01em;margin:6px 0 10px}
+.card-lead{font-size:16px;line-height:26px;color:var(--ink)}
+.sec{margin-top:var(--xl)}
+.sec-lead{margin-top:var(--lg); background:var(--surf2); border:1px solid var(--border); border-radius:var(--r-sm); padding:var(--md)}
+.sec-lbl{display:flex;align-items:center;gap:8px;font-size:11px;line-height:15px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--meta);margin-bottom:7px}
+.sec-lbl svg{width:16px;height:16px;color:var(--gold-d)}
+.sec-bd{font-size:16px;line-height:26px;color:var(--ink)}
+.deep{margin-top:var(--xl); border-top:1px solid var(--border); padding-top:var(--md)}
+.deep-h{font-size:17px;line-height:24px;font-weight:600;margin-bottom:2px}
+.deep-note{font-size:13px;line-height:18px;color:var(--meta);margin-bottom:var(--sm)}
+.next{margin-top:var(--xl); background:rgba(164,112,46,.06); border:1px solid var(--gold-l); border-radius:var(--r-sm); padding:var(--md)}
+.next .l{font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--gold-d);margin-bottom:8px}
+.next a{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;color:var(--ink);text-decoration:none;font-size:15px;font-weight:600;border-bottom:1px solid var(--border)}
+.next a:last-child{border-bottom:0}
+.next a span{color:var(--meta);font-weight:400}
+.fmt-note{margin-top:var(--lg);font-size:12px;line-height:17px;color:var(--meta);font-style:normal}
+
+/* door placeholder (Исследовать/Расти в этом прототипе) */
+.door-ph{padding:var(--xl2) var(--lg); text-align:center; color:var(--meta)}
+.door-ph svg{width:44px;height:44px;color:var(--gold-l);margin-bottom:var(--md)}
+.door-ph h2{font-size:22px;line-height:28px;font-weight:700;color:var(--ink);margin:0 0 8px}
+.door-ph p{font-size:15px;line-height:23px;max-width:340px;margin:0 auto}
+
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="hdr">
+    <div class="hdr-ttl" id="hdrTtl">Матчасть</div>
+    <div class="hdr-ter" title="Территория понимания">
+      <svg class="spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.3 6.2L20.5 11l-6.2 2.3L12 19.5 9.7 13.3 3.5 11l6.2-1.8z"/></svg>
+      <span><b>47</b> / 517 зажжено</span>
+    </div>
+  </header>
+
+  <main id="viewSolve">
+    <!-- 1. Продолжить -->
+    <section class="block" id="contBlock">
+      <div class="block-h"><div class="block-t">Продолжить</div></div>
+      <div class="cont" data-card="payoff">
+        <div class="cont-dot"></div>
+        <div class="cont-tx"><div class="l">Боль оплаты</div><div class="s">вы остановились здесь · ещё 2 недавних</div></div>
+        <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </div>
+    </section>
+
+    <!-- 2. Несущие -->
+    <section class="block">
+      <div class="block-h">
+        <div><div class="block-t">Начни с костяка</div><div class="block-sub">28 идей, на которых держится всё</div></div>
+        <a class="block-all" href="#" onclick="return false">все 28 →</a>
+      </div>
+      <div class="feat" id="featWrap"></div>
+    </section>
+
+    <!-- 3. Темы -->
+    <section class="block">
+      <div class="block-h"><div><div class="block-t">Темы</div><div class="block-sub">куда копнуть</div></div></div>
+      <div class="themes" id="themesWrap"></div>
+    </section>
+
+    <!-- 4. Под твою задачу -->
+    <section class="block">
+      <div class="block-h"><div><div class="block-t">Под твою задачу</div><div class="block-sub">что ты сейчас строишь</div></div></div>
+      <div class="lane" id="sitWrap"></div>
+    </section>
+
+    <!-- 5. Свежее / спорное -->
+    <section class="block">
+      <div class="block-h"><div><div class="block-t">Свежее / спорное</div><div class="block-sub">находки и честный разбор</div></div></div>
+      <div class="finds" id="findWrap"></div>
+    </section>
+
+    <!-- 6. Серендип -->
+    <section class="block">
+      <div class="block-h"><div class="block-t">Не знаешь, с чего?</div></div>
+      <div class="serend">
+        <button class="btn sec" data-card="random">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h6l10 10v6h-6L4 10z"/><path d="M14 4h6v6"/></svg>
+          Случайный концепт</button>
+        <button class="btn sec" onclick="goDoor('explore')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 1.5L13 16l-1.5-4.5z"/></svg>
+          Открыть карту</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- двери Исследовать / Расти (в прототипе — заглушки, чтобы каркас был живым) -->
+  <div id="viewExplore" style="display:none">
+    <div class="door-ph">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 1.5L13 16l-1.5-4.5z"/></svg>
+      <h2>Исследовать — карта</h2>
+      <p>Тот же граф со стороны «небо». В этом прототипе показан дом «Решить»; карта-Созвездие подключается следующим экраном.</p>
+    </div>
+  </div>
+  <div id="viewGrow" style="display:none">
+    <div class="door-ph">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v-8"/><path d="M12 12c0-4 3-6 7-6 0 4-3 6-7 6z"/><path d="M12 14c0-3-2-5-6-5 0 3 2 5 6 5z"/></svg>
+      <h2>Расти — маршруты</h2>
+      <p>Темы как истории: остановка за остановкой. В этом прототипе показан дом «Решить»; маршруты подключаются следующим экраном.</p>
+    </div>
+  </div>
+
+  <!-- bottom nav -->
+  <nav class="nav"><div class="nav-in">
+    <button class="nav-i" data-door="explore" onclick="goDoor('explore')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 1.5L13 16l-1.5-4.5z"/></svg>
+      <span class="lab">Исследовать</span></button>
+    <button class="nav-i on" data-door="solve" onclick="goDoor('solve')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5A2.5 2.5 0 0 0 6.5 8H20"/></svg>
+      <span class="lab">Решить</span></button>
+    <button class="nav-i" data-door="grow" onclick="goDoor('grow')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v-8"/><path d="M12 12c0-4 3-6 7-6 0 4-3 6-7 6z"/><path d="M12 14c0-3-2-5-6-5 0 3 2 5 6 5z"/></svg>
+      <span class="lab">Расти</span></button>
+    <button class="nav-i" data-door="menu" onclick="goDoor('menu')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <span class="lab">Меню</span></button>
+  </div></nav>
+</div>
+
+<!-- card sheet -->
+<div class="scrim" id="scrim" onclick="closeCard()"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true">
+  <div class="sheet-grip"></div>
+  <div class="sheet-bar">
+    <button class="iconbtn" onclick="closeCard()" aria-label="Назад">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+    <div class="ic">
+      <button class="iconbtn" aria-label="В избранное"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.6-7-9.6A3.9 3.9 0 0 1 12 7a3.9 3.9 0 0 1 7 3.4c0 5-7 9.6-7 9.6z"/></svg></button>
+      <button class="iconbtn" aria-label="Поделиться"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M12 15V4M8 8l4-4 4 4"/></svg></button>
+    </div>
+  </div>
+  <div class="card-body" id="cardBody"></div>
+</div>
+
+<script>
+const DATA = {
+  featured:[
+    {slug:'cognitive-reappraisal', title:'Когнитивная переоценка',
+     by:'как переосмыслить стресс перед трудным разговором', rob:'solid',
+     sut:'Намеренно переосмыслить смысл стимула до того, как поднимется эмоция, — это меняет саму эмоцию, а не маскирует её выражение.',
+     apply:'Перед разговором с CEO: «это шанс повлиять на приоритеты, а не угроза». При жёсткой критике продукта: «это данные о задаче, а не оценка меня».',
+     mech:'Префронтальная переоценка перехватывает аффект до пика лимбического ответа: смысл переписывается раньше, чем тело успевает ответить.',
+     example:'PM перед защитой бюджета переописывает встречу из «оборона» в «совместный поиск приоритетов» — и тон разговора меняется.'},
+    {slug:'conversational-implicature', title:'Импликатура и максимы Грайса',
+     by:'почему «более 80% довольны» читается как «20% — нет»', rob:'solid',
+     sut:'Слушатель достраивает смысл сверх буквального, предполагая, что говорящий кооперативен: соблюдает максимы количества, качества, релевантности и ясности.',
+     apply:'Скаляры в микрокопи: «более 80% довольны» намекает на «20% — нет»; «тысячи клиентов» — на «не миллионы». Решай, что важнее: точность или впечатление.',
+     mech:'Смысл выводится из соблюдения/нарушения максим: сказал меньше ожидаемого — слушатель достраивает причину умолчания.',
+     example:'«Обычно отвечаем за час» намекает, что иногда дольше, — и человек сам калибрует ожидание.'}
+  ],
+  themes:[
+    {d:'Поведенческая экономика', c:95, col:'--d-econ', s:['Боль оплаты','Вредное трение (Sludge)','Асимметрия доверия']},
+    {d:'Организационные системы', c:58, col:'--d-org', s:['JTBD (милкшейк)','Ловушка фич','Product-Market Fit']},
+    {d:'UX / HCI', c:56, col:'--d-ux', s:['Закон Миллера','Калибровка доверия','Долг доверия']},
+    {d:'Когнитивная психология', c:55, col:'--d-cog', s:['Система 1 и Система 2','Остаточное внимание','Оперантное обусловливание']},
+    {d:'Социальная психология', c:53, col:'--d-soc', s:['Реактивное сопротивление','Доверие к источнику','Миметическое желание']},
+    {d:'Мотивация / идентичность', c:20, col:'--d-mot', s:['Модель Фогга (B=MAP)','Петля привычки','Переменное вознаграждение']}
+  ],
+  situations:[
+    {title:'Первый результат', tz:'довести новичка до первого «ага» быстро', stage:'Онбординг', f:3, t:3},
+    {title:'Предпросмотр результата', tz:'показать ценность до того, как человек вложился', stage:'Активация', f:2, t:2},
+    {title:'Восстановление после сбоя', tz:'что делать, когда продукт подвёл', stage:'Удержание', f:3, t:2}
+  ],
+  findings:[
+    {type:'Граница', w:'вес 0.12', title:'«Наблюдаемость» диффузии — не всегда плюс', tz:'где «видно, как пользуются другие» начинает мешать, а не помогать'},
+    {type:'Мост', w:'вес 0.10', title:'«Обоснование усилий» — частный случай диссонанса?', tz:'гипотеза о скрытом общем корне двух идей'}
+  ]
+};
+
+function icMech(){return '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="16" r="4.5"/><path d="M16 5v3M16 24v3M5 16h3M24 16h3M8.2 8.2l2.1 2.1M21.7 21.7l2.1 2.1M23.8 8.2l-2.1 2.1M10.3 21.7l-2.1 2.1"/></svg>';}
+function icApply(){return '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 6h13a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z"/><path d="M10.5 15.5l3 3 6-7"/></svg>';}
+function icEx(){return '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16h14"/><path d="M17 10l6 6-6 6"/></svg>';}
+
+function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+// render home
+(function render(){
+  document.getElementById('featWrap').innerHTML = DATA.featured.map((f,i)=>
+    '<div class="feat-card" data-card="'+f.slug+'">'+(i===0?'<div class="feat-tag">Начни отсюда</div>':'')+
+    '<div class="feat-ttl">'+esc(f.title)+'</div><div class="feat-by">'+esc(f.by)+'</div>'+
+    '<div class="feat-foot"><span class="rob '+f.rob+'"><span class="d"></span>устойчивое</span></div></div>').join('');
+
+  document.getElementById('themesWrap').innerHTML = DATA.themes.map(t=>
+    '<div class="tile" data-theme="'+esc(t.d)+'"><div class="tile-h"><span class="tile-dot" style="background:var('+t.col+')"></span>'+
+    '<span class="tile-name">'+esc(t.d)+'</span><span class="tile-cnt">'+t.c+'</span></div>'+
+    '<div class="tile-ex"><span>например: </span>'+t.s.map(esc).join(' · ')+'</div>'+
+    '<div class="tile-hook"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 19L19 5M9 5h10v10"/></svg>линии напряжения внутри</div></div>').join('');
+
+  document.getElementById('sitWrap').innerHTML = DATA.situations.map(s=>
+    '<div class="sit" data-card="sit:'+esc(s.title)+'"><div class="sit-stage">'+esc(s.stage)+'</div>'+
+    '<div class="sit-ttl">'+esc(s.title)+'</div><div class="sit-tz">'+esc(s.tz)+'</div>'+
+    '<div class="sit-meta"><span>'+s.f+' сил · '+s.t+' инстр.</span><span class="grows">растёт</span></div></div>').join('');
+
+  document.getElementById('findWrap').innerHTML = DATA.findings.map(f=>
+    '<div class="find" data-card="find:'+esc(f.title)+'"><div class="find-h"><span class="badge">'+esc(f.type)+'</span><span class="find-w">'+esc(f.w)+'</span></div>'+
+    '<div class="find-ttl">'+esc(f.title)+'</div><div class="find-tz">'+esc(f.tz)+'</div></div>').join('');
+})();
+
+// navigation
+function goDoor(d){
+  document.querySelectorAll('.nav-i').forEach(b=>b.classList.toggle('on', b.dataset.door===d));
+  const map={solve:'viewSolve',explore:'viewExplore',grow:'viewGrow'};
+  ['viewSolve','viewExplore','viewGrow'].forEach(id=>{const el=document.getElementById(id); if(el) el.style.display='none';});
+  const ttl={solve:'Матчасть',explore:'Исследовать',grow:'Расти',menu:'Меню'};
+  document.getElementById('hdrTtl').textContent = ttl[d]||'Матчасть';
+  if(d==='menu'){ goDoor('solve'); return; }
+  const el=document.getElementById(map[d]); if(el) el.style.display='';
+  window.scrollTo(0,0);
+}
+
+// card sheet
+const SAMPLE = DATA.featured[0];
+function openCard(key){
+  let f = DATA.featured.find(x=>x.slug===key);
+  let fmtNote='';
+  let title, lead, apply, mech, example;
+  if(f){ title=f.title; lead=f.sut; apply=f.apply; mech=f.mech; example=f.example; }
+  else {
+    // ситуация/находка/тема/случайный — показываем формат на реальном образце
+    if(key==='random') title='Случайный концепт';
+    else if(key && key.indexOf(':')>0) title=key.split(':').slice(1).join(':');
+    else title='Концепт';
+    lead=SAMPLE.sut; apply=SAMPLE.apply; mech=SAMPLE.mech; example=SAMPLE.example;
+    fmtNote='<div class="fmt-note">Это образец формата карточки. Содержание ниже взято из реального концепта «'+esc(SAMPLE.title)+'» — в полной версии здесь будет содержание открытого концепта.</div>';
+  }
+  document.getElementById('cardBody').innerHTML =
+    '<div class="card-ttl">'+esc(title)+'</div>'+
+    '<div class="rob solid" style="margin-bottom:14px"><span class="d"></span>устойчивое · подтверждено несколькими источниками</div>'+
+    '<div class="card-lead">'+esc(lead)+'</div>'+
+    '<div class="sec-lead"><div class="sec-lbl">'+icApply()+' Как применить в продукте</div><div class="sec-bd">'+esc(apply)+'</div></div>'+
+    '<div class="deep"><div class="deep-h">Разобрать глубже</div><div class="deep-note">механизм · пример · связи</div>'+
+      '<div class="sec"><div class="sec-lbl">'+icMech()+' Механизм</div><div class="sec-bd">'+esc(mech)+'</div></div>'+
+      '<div class="sec"><div class="sec-lbl">'+icEx()+' Пример</div><div class="sec-bd">'+esc(example)+'</div></div>'+
+    '</div>'+
+    '<div class="next"><div class="l">Куда дальше</div>'+
+      '<a href="#" onclick="return false">Боль оплаты <span>рядом в теме →</span></a>'+
+      '<a href="#" onclick="return false">Реактивное сопротивление <span>линия напряжения →</span></a>'+
+    '</div>'+ fmtNote;
+  document.getElementById('scrim').classList.add('show');
+  document.getElementById('sheet').classList.add('show');
+  document.getElementById('sheet').scrollTop=0;
+}
+function closeCard(){
+  document.getElementById('scrim').classList.remove('show');
+  document.getElementById('sheet').classList.remove('show');
+}
+document.addEventListener('click', e=>{
+  const t=e.target.closest('[data-card]'); if(t){ openCard(t.dataset.card); }
+  const th=e.target.closest('[data-theme]'); if(th){ openCard('theme:'+th.dataset.theme); }
+});
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeCard(); });
+</script>
+</body>
+</html>
