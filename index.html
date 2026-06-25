@@ -2630,6 +2630,29 @@ body.guest-only #tabbar{ display:none !important; }
 .tsk-p2{ color:var(--accent); border-color:var(--accent-soft); background:var(--accent-tint); }
 .tsk-p3{ color:var(--muted); border-color:var(--line); background:transparent; }
 .dsp-card.tsk-done{ opacity:.5; }
+
+/* Раздел «Доступ к MCP» (читатель, в светлом меню) */
+.mcp-wrap{ padding:4px 2px 24px; }
+.mcp-intro{ font-size:14px; line-height:1.5; color:var(--read); padding:6px 2px 4px; }
+.mcp-tok{ margin:2px 0 8px; padding:12px 14px; border:1px solid var(--accent-soft); border-radius:12px; background:var(--accent-tint); overflow:auto; }
+.mcp-tok-val{ font-family:var(--font-mono,ui-monospace,monospace); font-size:13px; color:var(--accent-2); word-break:break-all; line-height:1.4; }
+.mcp-tok-acts{ display:flex; gap:8px; margin-bottom:8px; }
+.mcp-warn{ font-size:12.5px; line-height:1.45; color:var(--muted); padding:0 2px 4px; }
+.mcp-steps{ margin:4px 0 6px; padding-left:22px; }
+.mcp-steps li{ font-size:13.5px; line-height:1.6; color:var(--ink); margin-bottom:8px; }
+.mcp-url{ display:inline-block; font-family:var(--font-mono,ui-monospace,monospace); font-size:12px; color:var(--read); word-break:break-all; background:var(--card); border:1px solid var(--line); border-radius:8px; padding:4px 8px; margin:4px 0; }
+.mcp-mini{ font-size:12px; font-family:inherit; color:var(--accent-2); background:none; border:none; cursor:pointer; padding:2px 4px; text-decoration:underline; }
+.mcp-use{ font-size:13.5px; color:var(--read); padding:2px 2px 4px; }
+.mcp-ex{ margin:2px 0 6px; padding-left:20px; }
+.mcp-ex li{ font-size:13.5px; line-height:1.6; color:var(--ink); margin-bottom:4px; }
+.mcp-ex i{ color:var(--accent-2); font-style:italic; }
+
+/* Диспетчерская: вкладка «Токены» */
+.mcptok-new{ display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap; align-items:center; }
+.dsp-inp{ flex:1 1 180px; min-width:140px; height:36px; padding:0 12px; border:1px solid var(--line); border-radius:9px; background:var(--card); color:var(--ink); font-family:inherit; font-size:14px; box-sizing:border-box; }
+.dsp-inp:focus{ outline:none; border-color:var(--accent); }
+.mt-new{ margin:0 0 12px; padding:11px 13px; border:1px solid var(--accent-soft); border-radius:11px; background:var(--accent-tint); font-size:13px; color:var(--read); line-height:1.5; word-break:break-all; }
+.mt-new-tok{ font-family:var(--font-mono,ui-monospace,monospace); color:var(--accent-2); }
 </style>
 </head>
 <body>
@@ -2792,6 +2815,7 @@ body.guest-only #tabbar{ display:none !important; }
   <div class="dsp-tabs" id="dspTabs">
     <button data-dt="bus" class="on">Шина<span class="dsp-badge" id="dbgBus"></span></button>
     <button data-dt="tasks">Таски<span class="dsp-badge" id="dbgTasks"></span></button>
+    <button data-dt="mcptok">Токены</button>
     <button data-dt="flow">Поток</button>
     <button data-dt="review">Ревью<span class="dsp-badge" id="dbgRev"></span></button>
     <button data-dt="pub">Публикация<span class="dsp-badge" id="dbgPub"></span></button>
@@ -3476,7 +3500,7 @@ body.guest-only #tabbar{ display:none !important; }
     // Sync mobile selector label
     var lbl=document.getElementById('dspTabSelLbl'); if(lbl) lbl.textContent=DSP_TAB_LBL[name]||name;
     dspCloseTabSel();
-    var fn={bus:renderBus,tasks:renderTasks,flow:renderFlow,review:renderReview,pub:renderPub,ctx:renderCtx,dec:renderDec,src:renderSrc,health:renderHealth,briefs:renderBriefs,kb:renderKB}[name];
+    var fn={bus:renderBus,tasks:renderTasks,mcptok:renderMcpTokens,flow:renderFlow,review:renderReview,pub:renderPub,ctx:renderCtx,dec:renderDec,src:renderSrc,health:renderHealth,briefs:renderBriefs,kb:renderKB}[name];
     if(fn) fn();
   }
   function dspBuildTabSel(){
@@ -3601,6 +3625,52 @@ body.guest-only #tabbar{ display:none !important; }
     if(r.error){ alert('Не удалось поднять приоритет: '+r.error.message); return; }
     if(typeof toast==='function') toast('Приоритет '+ref+' → '+next.toUpperCase());
     dspBadges(); renderTasks();
+  }
+  // ── Вкладка «Токены»: персональные MCP-токены (выпуск/список/отзыв) ──
+  async function renderMcpTokens(){
+    var body=document.getElementById('dspBody');
+    body.innerHTML='<div class="mcptok-new">'
+      +'<input id="mtLabel" class="dsp-inp" placeholder="Метка (кому/зачем)">'
+      +'<select class="dsp-sel" id="mtRole"><option value="reader">reader</option><option value="editor">editor</option></select>'
+      +'<button class="dsp-btn" data-act="mcptok-issue">Выпустить</button>'
+      +'</div><div id="mtNew"></div><div id="dspList"><div class="dsp-load">Загрузка…</div></div>';
+    mcpTokRefreshList();
+  }
+  async function mcpTokRefreshList(){
+    var r=await SB.rpc('mcp_token_list'), list=document.getElementById('dspList');
+    if(!list) return;
+    if(r.error){ list.innerHTML=dspErr('Нет доступа к токенам: '+r.error.message); return; }
+    var rows=r.data||[];
+    if(!rows.length){ list.innerHTML='<div class="dsp-empty">Токенов пока нет.</div>'; return; }
+    list.innerHTML=rows.map(function(t){
+      return '<div class="dsp-card'+(t.enabled?'':' tsk-done')+'">'
+        +'<div class="dsp-row1">'
+        +'<span class="dsp-chip ghost">'+dspEsc(t.role)+'</span>'
+        +'<span class="dsp-chip '+(t.enabled?'k-task':'done')+'">'+(t.enabled?'активен':'отозван')+'</span>'
+        +'<span class="dsp-chip ghost">…'+dspEsc(t.token_tail||'')+'</span>'
+        +'<span class="dsp-age">'+(t.last_used_at?('исп. '+dspAgo(t.last_used_at)):'не исп.')+'</span></div>'
+        +'<div class="dsp-subj">'+dspEsc(t.label||'(без метки)')+'</div>'
+        +(t.enabled?'<div class="dsp-acts"><button class="dsp-btn" data-act="mcptok-rev" data-id="'+dspEsc(t.id)+'">Отозвать</button></div>':'')
+        +'</div>';
+    }).join('');
+  }
+  async function mcpTokIssue(){
+    var li=document.getElementById('mtLabel'), ro=document.getElementById('mtRole');
+    var lbl=(li&&li.value||'').trim(), role=(ro&&ro.value)||'reader';
+    if(!lbl){ if(typeof toast==='function') toast('Укажите метку'); return; }
+    try{
+      var r=await SB.rpc('mcp_token_issue',{p_label:lbl, p_role:role});
+      if(r.error){ if(typeof toast==='function') toast('Ошибка: '+r.error.message); return; }
+      var d=(r.data&&r.data[0])||{};
+      var nb=document.getElementById('mtNew');
+      if(nb && d.token){ nb.innerHTML='<div class="mt-new">Новый токен (покажется один раз): <code class="mt-new-tok">'+dspEsc(d.token)+'</code> <button class="dsp-btn ghost" data-act="mcptok-copy" data-tok="'+dspEsc(d.token)+'">Копировать</button></div>'; }
+      if(li) li.value='';
+    }catch(e){ if(typeof toast==='function') toast('Не вышло'); }
+    mcpTokRefreshList();
+  }
+  async function mcpTokRevoke(id){
+    try{ await SB.rpc('mcp_token_revoke',{p_id:id}); if(typeof toast==='function') toast('Токен отозван'); }catch(e){}
+    mcpTokRefreshList();
   }
   async function renderPub(){
     var body=document.getElementById('dspBody');
@@ -4288,7 +4358,7 @@ body.guest-only #tabbar{ display:none !important; }
     el.innerHTML='<div class="landing-stars" id="landingStars" aria-hidden="true"></div>'
       +'<div class="landing-card">'
       +'<div class="landing-title">Система знаний о продукте</div>'
-      +'<div class="landing-sub">Научные теории, факты, подходы и фреймворки. И звёзды.</div>'
+      +'<div class="landing-sub">Научные теории, факты, подходы и фреймворки.</div>'
       +'<ul class="landing-list">'
       +'<li>Концепты влияния и решений: как работает, границы, связи</li>'
       +'<li>Подходы и фреймворки для продуктовой работы</li>'
@@ -6363,7 +6433,7 @@ body.guest-only #tabbar{ display:none !important; }
       ? ((favMechs.length&&favTools.length)
           ? '<div class="kbm-fav-sec"><div class="kbm-fav-sec-h">Механизмы</div><div class="kbm-concept-list">'+favMechs.map(kbmConceptRow).join('')+'</div></div><div class="kbm-fav-sec"><div class="kbm-fav-sec-h">Инструменты</div><div class="kbm-concept-list">'+favTools.map(kbmConceptRow).join('')+'</div></div>'
           : '<div class="kbm-concept-list">'+liked.map(kbmConceptRow).join('')+'</div>')
-      : '<div class="kbm-fav-empty"><div class="kbm-fav-empty-mark">\u2661</div><div class="kbm-fav-empty-tx">Здесь соберётся то, что отозвалось. Открой любой концепт и отметь \u2665 — он останется тут, как горсть любимых звёзд.</div></div>');
+      : '<div class="kbm-fav-empty"><div class="kbm-fav-empty-mark">\u2661</div><div class="kbm-fav-empty-tx">Здесь собираются отмеченные концепты. Откройте любой и нажмите \u2665 — он сохранится сюда.</div></div>');
     if(!body._wiredFav){ body._wiredFav=true;
       body.addEventListener('click',function(ev){
         var lk=ev.target.closest('[data-kbm-like]'); if(lk){ ev.stopPropagation(); kbmLikeToggle(lk.getAttribute('data-kbm-like')); kbmRenderFavorites(); return; }
@@ -6494,7 +6564,7 @@ body.guest-only #tabbar{ display:none !important; }
     var coreHtml = core.length ? '<div class="kbm-concept-list">'+core.map(kbmConceptRow).join('')+'</div>'
       : '<div class="kbm-goal-empty">Несущие концепты для этой цели ещё не отмечены.</div>';
     body.innerHTML='<button class="kbm-region-back" data-region-back="1">← Все темы</button>'
-      +'<div class="kbm-goal-intro">Тема «'+escapeHtml(region)+'». Начни с ситуации — конкретного момента работы. Костяк ниже — несущие идеи, на которых эта тема держится.</div>'
+      +'<div class="kbm-goal-intro">Тема «'+escapeHtml(region)+'». Ситуация — конкретный момент работы. Ниже — несущие идеи, на которых держится тема.</div>'
       +'<div class="kbm-goal-sec"><div class="kbm-goal-sec-lbl"><span class="kbm-goal-sec-ic">▦</span> Ситуации — с чего начать</div><div class="kbm-scen-list">'+sitHtml+'</div></div>'
       +'<div class="kbm-goal-sec"><div class="kbm-goal-sec-lbl"><span class="kbm-goal-sec-ic">★</span> Костяк цели</div>'+coreHtml+'</div>'
       +'<button class="kbm-goal-all" data-goal-all="'+escapeHtml(region)+'">Показать все '+allCount+' концептов цели →</button>';
@@ -6540,7 +6610,7 @@ body.guest-only #tabbar{ display:none !important; }
     var cnt=document.getElementById('kbmCount'); if(cnt) cnt.textContent=kbmPlural(scen.length,'ситуация','ситуации','ситуаций');
     var edgeMap=kbmScenEdgeMap();
     body.innerHTML='<button class="kbm-region-back" data-region-back="1">← Вся карта</button>'
-      +'<div class="kbm-scen-intro">Экраны и моменты продуктовой работы. Открой ситуацию — увидишь, какие силы в игре, каких ловушек избегать и чем работать.</div>'
+      +'<div class="kbm-scen-intro">Экраны и моменты продуктовой работы. Откройте ситуацию — какие силы в игре, каких ловушек избегать и чем работать.</div>'
       +'<div class="kbm-scen-list">'+scen.map(function(s){
         var e=edgeMap[s.slug]||{forces:[],traps:[],tools:[],adjacent:[]};
         var claim=(s.claim||'').slice(0,110)+((s.claim||'').length>110?'…':'');
@@ -7107,7 +7177,7 @@ body.guest-only #tabbar{ display:none !important; }
     nodes.sort(function(a,b){ return b.score-a.score; });
     nodes=nodes.slice(0,7);
     if(!nodes.length && !forces.length){
-      return '<div class="kbm-mini"><div class="kbm-mini-empty">Одинокая звезда — пока без связей в карте.</div></div>';
+      return '<div class="kbm-mini"><div class="kbm-mini-empty">Пока без связей в карте.</div></div>';
     }
     var W=300,H=190,cx=W/2,cy=H/2,R=52,RAD=Math.PI/180;
     function place(list, baseDeg, spreadDeg){
@@ -7178,7 +7248,7 @@ body.guest-only #tabbar{ display:none !important; }
   }
   function kbmMiniPeekHint(slug){
     var nd=KBM.bySlug[slug]||{};
-    return 'Окрестность концепта · <b>слева</b> — на чём стоит, <b>справа</b> — к чему ведёт. Коснись звезды — связь и переход; <b>щипок</b> — зум, <b>тащи</b> — двигать.';
+    return 'Окрестность концепта · <b>слева</b> — на чём стоит, <b>справа</b> — к чему ведёт. Касание звезды — связь и переход; <b>щипок</b> — зум, <b>перетаскивание</b> — двигать.';
   }
   // FR-05: пинч-зум + пан мини-навигатора. Содержимое в #kbmMiniVp; тап по узлу остаётся переходом (порог 6px).
   function kbmMiniWire(svg){
@@ -7377,7 +7447,11 @@ body.guest-only #tabbar{ display:none !important; }
   function kbmSecIc(n){
     var p={
       apply:'<path d="M7 6 h13 a2 2 0 0 1 2 2 v13 a2 2 0 0 1-2 2 H7 a2 2 0 0 1-2-2 V8 a2 2 0 0 1 2-2 Z"/><path d="M10.5 15.5 l3 3 l6-7"/>',
-      rob:'<circle cx="14" cy="14" r="8"/><path d="M19.8 19.8 l6 6"/>'
+      rob:'<circle cx="14" cy="14" r="8"/><path d="M19.8 19.8 l6 6"/>',
+      mech:'<circle cx="16" cy="16" r="4.5"/><path d="M16 5v3M16 24v3M5 16h3M24 16h3M8.2 8.2l2.1 2.1M21.7 21.7l2.1 2.1M23.8 8.2l-2.1 2.1M10.3 21.7l-2.1 2.1"/>',
+      ana:'<circle cx="13" cy="16" r="6.5"/><circle cx="19" cy="16" r="6.5"/>',
+      hist:'<path d="M16 9c-2-1.4-5-1.4-8 0v13c3-1.4 6-1.4 8 0c2-1.4 5-1.4 8 0V9c-3-1.4-6-1.4-8 0z"/><path d="M16 9v13"/>',
+      ex:'<path d="M7 16h14"/><path d="M17 10l6 6-6 6"/>'
     }[n]||'';
     return '<svg class="kbm-sec-ic" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>';
   }
@@ -7628,9 +7702,9 @@ body.guest-only #tabbar{ display:none !important; }
     // Примечание: «Связанные концепты» (kbm-related strip) в карточке НЕ рендерятся — связи показывает мини-карта
     // (kbmMiniMap). Прежний билдер relCardsHtml был мёртвым кодом (никогда не вставлялся, даже до распила) — убран.
     // НАРРАТИВ (директива Артёма #4): claim(крючок) → КАК РАБОТАЕТ (понимание) → В ПРОДУКТЕ (ход+пример) → ГРАНИЦЫ → СВЯЗИ. Понимание раньше применения — карточка читается как история, без мешанины.
-    var theoryInner=sec('Механизм','⚙',mechanism,'kbm-sec-mech')
-      +sec('Аналогия','◎',analogy,'kbm-sec-ana')
-      +sec('История','📖',story,'kbm-sec-hist')
+    var theoryInner=sec('Механизм',kbmSecIc('mech'),mechanism,'kbm-sec-mech')
+      +sec('Аналогия',kbmSecIc('ana'),analogy,'kbm-sec-ana')
+      +sec('История',kbmSecIc('hist'),story,'kbm-sec-hist')
       +(note?'<div class="kbm-sec kbm-sec-note"><div class="kbm-sec-lbl">'+kbmSecIc('rob')+' Об устойчивости</div><div class="kbm-sec-body">'+escapeHtml(note)+'</div></div>':'');
     var conjHtml=(function(){
       var cs=(KBM.conjByNode&&KBM.conjByNode[slug])||[];
@@ -7655,7 +7729,7 @@ body.guest-only #tabbar{ display:none !important; }
     var deepInner=theoryInner
       +'<div id="atomEntry" class="atom-entry"></div>'
       +wedgeX
-      +sec('Пример','→',ex,'kbm-sec-ex')
+      +sec('Пример',kbmSecIc('ex'),ex,'kbm-sec-ex')
       +practiceX+unknownX
       +depthHtml
       +conjHtml
@@ -8131,6 +8205,7 @@ body.guest-only #tabbar{ display:none !important; }
       rows += '<div class="menu-v-sec">\u0421\u043e\u043e\u0431\u0449\u0435\u0441\u0442\u0432\u043e</div><div class="menu-group">'
             + menuRow('\u041f\u0440\u0438\u0433\u043b\u0430\u0448\u0435\u043d\u0438\u044f', '\u0412\u0430\u0448\u0438 \u0438\u043d\u0432\u0430\u0439\u0442\u044b \u0438 \u0431\u0430\u043b\u0430\u043d\u0441', 'invites')
             + menuRow('\u0421\u043e\u043e\u0431\u0449\u0435\u0441\u0442\u0432\u043e', '\u0413\u0440\u0430\u0444 \u043f\u0440\u0438\u0433\u043b\u0430\u0448\u0435\u043d\u0438\u0439', 'community')
+            + menuRow('\u0414\u043e\u0441\u0442\u0443\u043f \u043a MCP', '\u0411\u0430\u0437\u0430 \u0437\u043d\u0430\u043d\u0438\u0439 \u0432 Claude \u0447\u0435\u0440\u0435\u0437 \u0432\u0430\u0448 \u0442\u043e\u043a\u0435\u043d', 'mcp')
             + '</div>';
     }
     // Настройки — тема на всё приложение (light/dark/auto), завязана на общий механизм applyTheme/state.theme
@@ -8156,7 +8231,7 @@ body.guest-only #tabbar{ display:none !important; }
             + menuRow('Админка', '', 'admin')
             + '</div>';
     }
-    rows += '<div class="menu-version">Версия 2026-06-25 04:30 · 21ad42f</div>';
+    rows += '<div class="menu-version">Версия 2026-06-25 05:50 · 76ef295</div>';
     body.innerHTML = '<div class="menu-v-head"><h2 class="menu-v-title">Меню</h2></div><div class="menu-v-list">'+rows+'</div>';
     Array.prototype.forEach.call(body.querySelectorAll('[data-menu-act]'), function(b){
       b.onclick = function(){ menuAct(b.getAttribute('data-menu-act')); };
@@ -8191,6 +8266,7 @@ body.guest-only #tabbar{ display:none !important; }
     else if(act==='login'){ try{ showGate('login'); }catch(e){} }
     else if(act==='invites'){ if(typeof renderInvites==='function') renderInvites(); }
     else if(act==='community'){ if(typeof renderCommunity==='function') renderCommunity(); }
+    else if(act==='mcp'){ if(typeof renderMcpAccess==='function') renderMcpAccess(); }
     else if(act==='signout'){ try{ if(SB&&SB.auth) SB.auth.signOut(); }catch(e){} }
   }
   // ===== FR-10: Инвайты + Сообщество (стадии 2-3) =====
@@ -8288,7 +8364,7 @@ body.guest-only #tabbar{ display:none !important; }
       });
     }
     if(redeemed.length){ h+='<div class="inv-sec">\u041f\u0440\u0438\u043d\u044f\u043b\u0438 \u043f\u0440\u0438\u0433\u043b\u0430\u0448\u0435\u043d\u0438\u0435</div><div class="inv-redeemed">'+redeemed.length+' \u0443\u0436\u0435 \u0432\u043d\u0443\u0442\u0440\u0438</div>'; }
-    h+='<div class="inv-note">\u041f\u0440\u0438\u0433\u043b\u0430\u0448\u0435\u043d\u0438\u044f \u2014 \u043f\u0440\u043e \u043f\u0440\u0438\u043d\u0430\u0434\u043b\u0435\u0436\u043d\u043e\u0441\u0442\u044c, \u043d\u0435 \u043f\u0440\u043e \u0433\u043e\u043d\u043a\u0443. \u0421\u0441\u044b\u043b\u043a\u0430 \u0436\u0438\u0432\u0451\u0442 37 \u0447\u0430\u0441\u043e\u0432; \u043d\u0435\u0438\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u043d\u043d\u0443\u044e \u043c\u043e\u0436\u043d\u043e \u043e\u0442\u043e\u0437\u0432\u0430\u0442\u044c.</div>';
+    h+='<div class="inv-note">\u0421\u0441\u044b\u043b\u043a\u0430 \u0434\u0435\u0439\u0441\u0442\u0432\u0443\u0435\u0442 37 \u0447\u0430\u0441\u043e\u0432. \u041d\u0435\u0438\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u043d\u043d\u0443\u044e \u043c\u043e\u0436\u043d\u043e \u043e\u0442\u043e\u0437\u0432\u0430\u0442\u044c.</div>';
     wrap.innerHTML=h;
     if(!wrap._wired){ wrap._wired=true;
       wrap.addEventListener('click', function(e){
@@ -8329,14 +8405,14 @@ body.guest-only #tabbar{ display:none !important; }
     h+='<div class="comm-mandala">'+communityMandala(info)+'</div>';
     var prog=info.next_invite_progress||{have:0,need:5};
     h+='<div class="inv-prog"><div class="inv-prog-l">\u0414\u043e \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0435\u0433\u043e \u043f\u0440\u0438\u0433\u043b\u0430\u0448\u0435\u043d\u0438\u044f: '+prog.have+' \u0438\u0437 '+prog.need+'</div><div class="inv-prog-bar"><span style="width:'+Math.round((prog.have/(prog.need||5))*100)+'%"></span></div></div>';
-    h+='<div class="inv-note">\u041c\u0430\u043d\u0434\u0430\u043b\u0430 \u2014 \u0440\u0435\u0430\u043b\u044c\u043d\u044b\u0435 \u0441\u0432\u044f\u0437\u0438 \u043f\u0440\u0438\u0433\u043b\u0430\u0448\u0435\u043d\u0438\u0439, \u0430\u043d\u043e\u043d\u0438\u043c\u043d\u043e. \u041a\u0430\u0440\u0442\u0430 \u043f\u0440\u0438\u043d\u0430\u0434\u043b\u0435\u0436\u043d\u043e\u0441\u0442\u0438, \u043d\u0435 \u0440\u0435\u0439\u0442\u0438\u043d\u0433.</div>';
+    h+='<div class="inv-note">\u0421\u0432\u044f\u0437\u0438 \u043f\u0440\u0438\u0433\u043b\u0430\u0448\u0435\u043d\u0438\u0439 \u2014 \u043a\u0442\u043e \u043a\u043e\u0433\u043e \u043f\u043e\u0437\u0432\u0430\u043b. \u0411\u0435\u0437 \u0438\u043c\u0451\u043d.</div>';
     wrap.innerHTML=h;
   }
   function communityMandala(info){
     var edges=(info&&info.edges)||[];
     var ids={}, order=[];
     edges.forEach(function(e){ [e.from,e.to].forEach(function(id){ if(id && !ids[id]){ ids[id]=true; order.push(id); } }); });
-    if(!order.length){ return '<div class="comm-empty">\u041f\u043e\u043a\u0430 \u0442\u0438\u0445\u043e. \u041f\u0440\u0438\u0433\u043b\u0430\u0441\u0438\u0442\u0435 \u043f\u0435\u0440\u0432\u043e\u0433\u043e \u2014 \u0438 \u0437\u0434\u0435\u0441\u044c \u0437\u0430\u0436\u0436\u0451\u0442\u0441\u044f \u043f\u0435\u0440\u0432\u0430\u044f \u0441\u0432\u044f\u0437\u044c.</div>'; }
+    if(!order.length){ return '<div class="comm-empty">\u041f\u043e\u043a\u0430 \u043d\u0438\u043a\u043e\u0433\u043e. \u041f\u0440\u0438\u0433\u043b\u0430\u0441\u0438\u0442\u0435 \u043f\u0435\u0440\u0432\u043e\u0433\u043e \u2014 \u0437\u0434\u0435\u0441\u044c \u043f\u043e\u044f\u0432\u0438\u0442\u0441\u044f \u0441\u0432\u044f\u0437\u044c.</div>'; }
     var W=300,H=300,cx=150,cy=150,R=112;
     var pos={}; order.forEach(function(id,i){ var a=(i/order.length)*Math.PI*2 - Math.PI/2; pos[id]={x:cx+Math.cos(a)*R, y:cy+Math.sin(a)*R}; });
     var svg='<svg viewBox="0 0 '+W+' '+H+'" class="comm-svg" aria-label="\u0413\u0440\u0430\u0444 \u0441\u043e\u043e\u0431\u0449\u0435\u0441\u0442\u0432\u0430">';
@@ -8346,6 +8422,51 @@ body.guest-only #tabbar{ display:none !important; }
     return svg;
   }
 
+  // ── Раздел «Доступ к MCP»: персональный токен + инструкция подключения ──
+  var MCP_URL = 'https://wsnqmjzmtjpezkzlzhra.supabase.co/functions/v1/kbmcp';
+  async function renderMcpAccess(){
+    var body=document.getElementById('menuViewBody'); if(!body) return;
+    body.innerHTML='<div class="menu-v-head"><button class="inv-back" data-inv-back="1">\u2039 \u041c\u0435\u043d\u044e</button><h2 class="menu-v-title">\u0414\u043e\u0441\u0442\u0443\u043f \u043a MCP</h2></div><div class="mcp-wrap"><div class="inv-load">\u0417\u0430\u0433\u0440\u0443\u0437\u043a\u0430\u2026</div></div>';
+    wireInvBack(body);
+    var info=null;
+    try{ var r=await SB.rpc('mcp_my_token'); if(!r.error && r.data && r.data.length) info=r.data[0]; }catch(e){}
+    var wrap=body.querySelector('.mcp-wrap'); if(!wrap) return;
+    if(!info){ wrap.innerHTML='<div class="kbm-empty">\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u043f\u043e\u043b\u0443\u0447\u0438\u0442\u044c \u0442\u043e\u043a\u0435\u043d. \u041f\u043e\u043f\u0440\u043e\u0431\u0443\u0439\u0442\u0435 \u043f\u043e\u0437\u0436\u0435.</div>'; return; }
+    var tok=info.token||'';
+    var h=''
+      +'<div class="mcp-intro">\u0412\u0430\u0448 \u043f\u0435\u0440\u0441\u043e\u043d\u0430\u043b\u044c\u043d\u044b\u0439 \u043a\u043b\u044e\u0447 \u043e\u0442\u043a\u0440\u044b\u0432\u0430\u0435\u0442 \u0431\u0430\u0437\u0443 \u0437\u043d\u0430\u043d\u0438\u0439 \u00ab\u0423\u043f\u0440\u0430\u0432\u043b\u044f\u044f \u043f\u043e\u0432\u0435\u0434\u0435\u043d\u0438\u0435\u043c\u00bb \u043f\u0440\u044f\u043c\u043e \u0432 Claude \u2014 \u0447\u0435\u0440\u0435\u0437 MCP-\u043a\u043e\u043d\u043d\u0435\u043a\u0442\u043e\u0440. \u0421\u043f\u0440\u0430\u0448\u0438\u0432\u0430\u0439\u0442\u0435 \u043a\u043e\u043d\u0446\u0435\u043f\u0442\u044b, \u0438\u0449\u0438\u0442\u0435 \u043f\u0430\u0442\u0442\u0435\u0440\u043d\u044b, \u043f\u043e\u043b\u0443\u0447\u0430\u0439\u0442\u0435 \u043a\u0430\u0440\u0442\u043e\u0447\u043a\u0438 \u2014 \u043d\u0435 \u043e\u0442\u043a\u0440\u044b\u0432\u0430\u044f \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435.</div>'
+      +'<div class="inv-sec">\u0412\u0430\u0448 \u0442\u043e\u043a\u0435\u043d</div>'
+      +'<div class="mcp-tok"><code class="mcp-tok-val">'+escapeHtml(tok)+'</code></div>'
+      +'<div class="mcp-tok-acts"><button class="inv-copy" data-mcp-copy="'+escapeHtml(tok)+'">\u041a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c</button>'
+      +'<button class="inv-rev" data-mcp-rotate="1">\u041f\u0435\u0440\u0435\u0432\u044b\u043f\u0443\u0441\u0442\u0438\u0442\u044c</button></div>'
+      +'<div class="mcp-warn">\u0422\u043e\u043a\u0435\u043d \u043b\u0438\u0447\u043d\u044b\u0439 \u2014 \u043d\u0435 \u0434\u0435\u043b\u0438\u0442\u0435\u0441\u044c \u0438\u043c. \u0415\u0441\u043b\u0438 \u043e\u043d \u043f\u043e\u043f\u0430\u043b \u043d\u0435 \u0432 \u0442\u0435 \u0440\u0443\u043a\u0438 \u2014 \u043d\u0430\u0436\u043c\u0438\u0442\u0435 \u00ab\u041f\u0435\u0440\u0435\u0432\u044b\u043f\u0443\u0441\u0442\u0438\u0442\u044c\u00bb.</div>'
+      +'<div class="inv-sec">\u041a\u0430\u043a \u043f\u043e\u0434\u043a\u043b\u044e\u0447\u0438\u0442\u044c</div>'
+      +'<ol class="mcp-steps">'
+      +'<li>\u041e\u0442\u043a\u0440\u043e\u0439\u0442\u0435 Claude \u2192 <b>\u041d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438</b> \u2192 <b>\u041a\u043e\u043d\u043d\u0435\u043a\u0442\u043e\u0440\u044b</b> \u2192 \u00ab\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c\u00bb (\u0443\u0434\u0430\u043b\u0451\u043d\u043d\u044b\u0439/custom).</li>'
+      +'<li>URL \u043a\u043e\u043d\u043d\u0435\u043a\u0442\u043e\u0440\u0430:<br><code class="mcp-url">'+escapeHtml(MCP_URL)+'</code> <button class="mcp-mini" data-mcp-copy="'+escapeHtml(MCP_URL)+'">\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c</button></li>'
+      +'<li>\u0410\u0432\u0442\u043e\u0440\u0438\u0437\u0430\u0446\u0438\u044f \u2014 <b>API-\u043a\u043b\u044e\u0447</b>: \u0432\u0441\u0442\u0430\u0432\u044c\u0442\u0435 \u0432\u0430\u0448 \u0442\u043e\u043a\u0435\u043d.</li>'
+      +'<li>\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u0435 \u2014 \u0438 Claude \u0443\u0432\u0438\u0434\u0438\u0442 \u0431\u0430\u0437\u0443 \u0437\u043d\u0430\u043d\u0438\u0439.</li>'
+      +'</ol>'
+      +'<div class="inv-sec">\u041a\u0430\u043a \u043f\u0440\u0438\u043c\u0435\u043d\u044f\u0442\u044c</div>'
+      +'<div class="mcp-use">\u041f\u0440\u043e\u0441\u0442\u043e \u043f\u043e\u043f\u0440\u043e\u0441\u0438\u0442\u0435 Claude, \u043d\u0430\u043f\u0440\u0438\u043c\u0435\u0440:</div>'
+      +'<ul class="mcp-ex">'
+      +'<li>\u00ab\u043d\u0430\u0439\u0434\u0438 \u043a\u043e\u043d\u0446\u0435\u043f\u0442\u044b \u043f\u0440\u043e <i>\u0443\u0434\u0435\u0440\u0436\u0430\u043d\u0438\u0435</i>\u00bb</li>'
+      +'<li>\u00ab\u043f\u043e\u043a\u0430\u0436\u0438 \u043a\u0430\u0440\u0442\u043e\u0447\u043a\u0443 <i>jtbd</i>\u00bb</li>'
+      +'<li>\u00ab\u0447\u0442\u043e \u0441\u0432\u044f\u0437\u0430\u043d\u043e \u0441 <i>\u0441\u0435\u0442\u0435\u0432\u044b\u043c\u0438 \u044d\u0444\u0444\u0435\u043a\u0442\u0430\u043c\u0438</i>?\u00bb</li>'
+      +'<li>\u00ab\u0434\u0430\u0439 \u0440\u0430\u0437\u0431\u043e\u0440 \u043a\u043e\u043d\u0446\u0435\u043f\u0442\u0430 \u0441 \u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a\u0430\u043c\u0438\u00bb</li>'
+      +'</ul>'
+      +'<div class="inv-note">\u041a\u0430\u0440\u0442\u043e\u0447\u043a\u0438 \u043f\u0440\u0438\u0445\u043e\u0434\u044f\u0442 \u0441\u043e \u0441\u0441\u044b\u043b\u043a\u043e\u0439 \u043d\u0430 \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u2014 \u043c\u043e\u0436\u043d\u043e \u043e\u0442\u043a\u0440\u044b\u0442\u044c \u0438 \u0438\u0437\u0443\u0447\u0438\u0442\u044c \u0433\u043b\u0443\u0431\u0436\u0435. \u0414\u043e\u0441\u0442\u0443\u043f \u2014 \u043d\u0430 \u0447\u0442\u0435\u043d\u0438\u0435 \u0431\u0430\u0437\u044b.</div>';
+    wrap.innerHTML=h;
+    wrap.addEventListener('click', function(e){
+      var c=e.target.closest('[data-mcp-copy]'); if(c){ inviteCopy(c.getAttribute('data-mcp-copy')); return; }
+      var rr=e.target.closest('[data-mcp-rotate]'); if(rr){ mcpRotate(); return; }
+    });
+  }
+  async function mcpRotate(){
+    if(typeof confirm==='function' && !confirm('\u041f\u0435\u0440\u0435\u0432\u044b\u043f\u0443\u0441\u0442\u0438\u0442\u044c \u0442\u043e\u043a\u0435\u043d? \u0421\u0442\u0430\u0440\u044b\u0439 \u043f\u0435\u0440\u0435\u0441\u0442\u0430\u043d\u0435\u0442 \u0440\u0430\u0431\u043e\u0442\u0430\u0442\u044c \u0441\u0440\u0430\u0437\u0443.')) return;
+    try{ await SB.rpc('mcp_my_token_rotate'); if(typeof toast==='function') toast('\u0422\u043e\u043a\u0435\u043d \u043f\u0435\u0440\u0435\u0432\u044b\u043f\u0443\u0449\u0435\u043d'); }catch(e){ if(typeof toast==='function') toast('\u041d\u0435 \u0432\u044b\u0448\u043b\u043e, \u043f\u043e\u043f\u0440\u043e\u0431\u0443\u0439\u0442\u0435 \u043f\u043e\u0437\u0436\u0435'); }
+    renderMcpAccess();
+  }
   // Роутинг #/join во время сессии (на загрузке его ловит onAuth). Безопасно: только без юзера.
   function joinHashCheck(){
     try{ if(typeof USER!=='undefined' && USER) return; var m=(location.hash||'').match(/^#\/join\/([^/?&#]+)/); if(m) showJoin(decodeURIComponent(m[1])); }catch(e){}
@@ -9217,7 +9338,7 @@ body.guest-only #tabbar{ display:none !important; }
     var hue=(typeof cnHue==='function')?cnHue(disc):40;
     var t=document.getElementById('cnBloomTitle'), su=document.getElementById('cnBloomSub');
     if(t) t.textContent='«'+label+'» зажглась целиком';
-    if(su) su.textContent='Ты прошёл все звёзды этой области неба.';
+    if(su) su.textContent='Все концепты этой области открыты.';
     bl.style.setProperty('--bloom-hue', hue);
     bl.style.display='flex';
     bl.classList.remove('cn-bloom-on'); void bl.offsetWidth; bl.classList.add('cn-bloom-on');
@@ -9417,12 +9538,12 @@ body.guest-only #tabbar{ display:none !important; }
     list.forEach(function(q){ if(q.recommended && !rec) rec=q; else rest.push(q); });
     if(!rec){ rec=list[0]; rest=list.slice(1); }
     var active=questActiveList();
-    var html='<div class="q-intro">Маршрут — собранный путь по созвездию: одна тема, остановка за остановкой. Веди, не торопись — любую звезду можно открыть и отдельно.</div>';
+    var html='<div class="q-intro">Маршрут — путь по теме: остановка за остановкой. Любой концепт можно открыть и отдельно.</div>';
     if(active.length){
       html+='<div class="q-sec">В пути</div>';
       active.forEach(function(q){ html+=questCardHtml(q,false)+'<button class="q-list-abandon" data-q-abandon="'+escapeHtml(q.key)+'">Оставить маршрут</button>'; });
     }
-    html+='<div class="q-sec">'+(active.length?'Начать новый':'Начни отсюда')+'</div>';
+    html+='<div class="q-sec">'+(active.length?'Начать новый':'Начать маршрут')+'</div>';
     if(!questIsActive(rec.key) || questIsDone(rec)) html+=questCardHtml(rec,true);
     var more='';
     rest.forEach(function(q){ if(!questIsActive(q.key) || questIsDone(q)) more+=questCardHtml(q,false); });
@@ -9457,7 +9578,7 @@ body.guest-only #tabbar{ display:none !important; }
     else { cta='<button class="q-cta" data-q-accept="'+escapeHtml(q.key)+'">Начать маршрут</button>'; }
     var progLine = prog>0 ? ('<div class="q-d-prog">Пройдено '+prog+' из '+tot+((!active&&!done)?' · уже знакомо из прогулок':'')+'</div>') : '';
     var abandon = (active && !done) ? '<button class="q-abandon" data-q-abandon="'+escapeHtml(q.key)+'">Оставить маршрут</button>' : '';
-    var ctaHint=(!active && !done) ? '<div class="q-d-hint">Начни — и созвездие поведёт остановка за остановкой, отмечая пройденное. Или открой любую звезду ниже отдельно.</div>' : '';
+    var ctaHint=(!active && !done) ? '<div class="q-d-hint">Начните — маршрут проведёт по остановкам и отметит пройденное. Любой концепт можно открыть отдельно.</div>' : '';
     body.innerHTML='<button class="q-back" data-q-back="1">‹ Все маршруты</button>'
       + '<div class="q-d-ttl">'+escapeHtml(q.title||q.key)+(done?' <span class="q-badge q-badge-done">пройден</span>':'')+'</div>'
       + (q.promise?'<div class="q-d-prom">'+escapeHtml(q.promise)+'</div>':'')
@@ -11230,7 +11351,7 @@ body.guest-only #tabbar{ display:none !important; }
 
   var dspChan=null, dspRtTimer=null, dspEditing=false;
   var fireBusy=false;
-  var DSP_TAB_LBL={bus:'Шина',tasks:'Таски',flow:'Поток',review:'Ревью',pub:'Публикация',ctx:'Контекст',dec:'Решения',src:'Научбаза',kb:'Граф',health:'Здоровье',briefs:'Брифы'};
+  var DSP_TAB_LBL={bus:'Шина',tasks:'Таски',mcptok:'Токены',flow:'Поток',review:'Ревью',pub:'Публикация',ctx:'Контекст',dec:'Решения',src:'Научбаза',kb:'Граф',health:'Здоровье',briefs:'Брифы'};
   var dspTaskF={status:'active'};
 
 
@@ -11291,6 +11412,9 @@ body.guest-only #tabbar{ display:none !important; }
         var act=x.getAttribute('data-act'), id=x.getAttribute('data-id');
         if(act==='bus-done') busDone(id);
         else if(act==='task-up') taskBump(x.getAttribute('data-ref'), x.getAttribute('data-pri'));
+        else if(act==='mcptok-issue') mcpTokIssue();
+        else if(act==='mcptok-rev') mcpTokRevoke(id);
+        else if(act==='mcptok-copy'){ if(typeof inviteCopy==='function') inviteCopy(x.getAttribute('data-tok')); }
         else if(act==='bus-reply') busReply(id, x.getAttribute('data-src'));
         else if(act==='pub-pub') pubPublish(id, x.getAttribute('data-suspect')==='1');
         else if(act==='pub-rej'){ pubCloseMore(id); pubReject(id); }
