@@ -4305,6 +4305,107 @@ body.guest-only #tabbar{ display:none !important; }
       new Promise(function(_,reject){ setTimeout(function(){ reject(new Error((label||'Запрос')+' — превышено время ожидания')); }, ms||12000); })
     ]);
   }
+  // ---------- офлайн-кэш данных (IndexedDB) ----------
+  // Кэширует результаты контентных RPC (созвездия/карточки/атомы/находки),
+  // чтобы админ мог читать массив без сети. Книги кэшируются отдельно (saveContentCache).
+  var _idbP=null;
+  function idbDB(){
+    if(_idbP) return _idbP;
+    _idbP=new Promise(function(res,rej){
+      try{
+        if(typeof indexedDB==='undefined'){ rej(new Error('no idb')); return; }
+        var rq=indexedDB.open('constel_cache',1);
+        rq.onupgradeneeded=function(){ var db=rq.result; if(!db.objectStoreNames.contains('rpc')) db.createObjectStore('rpc'); };
+        rq.onsuccess=function(){ res(rq.result); };
+        rq.onerror=function(){ rej(rq.error); };
+      }catch(e){ rej(e); }
+    });
+    return _idbP;
+  }
+  function idbGet(store,key){ return idbDB().then(function(db){ return new Promise(function(res){ try{ var t=db.transaction(store,'readonly').objectStore(store).get(key); t.onsuccess=function(){res(t.result);}; t.onerror=function(){res(undefined);}; }catch(e){ res(undefined);} }); }).catch(function(){ return undefined; }); }
+  function idbSet(store,key,val){ return idbDB().then(function(db){ return new Promise(function(res){ try{ var t=db.transaction(store,'readwrite').objectStore(store).put(val,key); t.onsuccess=function(){res(true);}; t.onerror=function(){res(false);}; }catch(e){ res(false);} }); }).catch(function(){ return false; }); }
+
+  // Контентные read-RPC, которые безопасно кэшировать (не мутации, не приватка).
+  var _RPC_CACHEABLE={kb_graph:1,kb_public_graph:1,kb_node_bundle:1,kb_public_bundle:1,kb_atom_body:1,kb_findings:1,kb_roots:1,kb_chapter_memberships:1,kb_for_chapter:1,kb_find_similar:1};
+  function installRpcCache(){
+    if(!SB || SB.__rpcCached) return;
+    var orig=SB.rpc.bind(SB);
+    SB.rpc=function(fn,args){
+      if(!_RPC_CACHEABLE[fn]) return orig(fn,args);
+      var key=fn+'|'+(args?JSON.stringify(args):'');
+      var offline=(typeof navigator!=='undefined' && navigator.onLine===false);
+      if(offline){
+        return idbGet('rpc',key).then(function(v){ return (v!==undefined&&v!==null)?{data:v,error:null,__cached:true}:orig(fn,args); });
+      }
+      return Promise.resolve(orig(fn,args)).then(function(res){
+        if(res && !res.error && res.data!=null){ idbSet('rpc',key,res.data); }
+        return res;
+      }, function(err){
+        return idbGet('rpc',key).then(function(v){ return (v!==undefined&&v!==null)?{data:v,error:null,__cached:true}:Promise.reject(err); });
+      });
+    };
+    SB.__rpcCached=true;
+  }
+
+  // Админ: прогреть весь массив для офлайна (все карточки + атомы + книги).
+  async function warmOfflineCache(progress){
+    progress=progress||function(){};
+    if(!SB) return {ok:false,msg:'Нет соединения с базой'};
+    if(typeof navigator!=='undefined' && navigator.onLine===false) return {ok:false,msg:'Нужна сеть, чтобы сохранить офлайн-копию'};
+    var member=(typeof isMember!=='undefined' && isMember);
+    var slugs=[];
+    try{
+      var g=await SB.rpc(member?'kb_graph':'kb_public_graph');
+      var nodes=(g&&g.data&&(g.data.nodes||g.data))||[];
+      if(nodes&&nodes.forEach) nodes.forEach(function(n){ var s=n&&(n.slug||n.id); if(s) slugs.push(s); });
+    }catch(e){}
+    try{ await SB.rpc('kb_findings'); }catch(e){}
+    try{ await SB.rpc('kb_roots'); }catch(e){}
+    try{ await SB.rpc('kb_chapter_memberships'); }catch(e){}
+    var total=slugs.length, done=0, idx=0;
+    async function worker(){
+      while(idx<slugs.length){
+        var s=slugs[idx++];
+        try{ await SB.rpc(member?'kb_node_bundle':'kb_public_bundle',{p_slug:s}); }catch(e){}
+        try{ await SB.rpc('kb_atom_body',{p_slug:s}); }catch(e){}
+        done++; if(done%5===0||done===total) progress(done,total,'карточки');
+      }
+    }
+    var ws=[]; for(var w=0;w<5;w++) ws.push(worker());
+    await Promise.all(ws);
+    // книги: прогреть контент каждой книги в localStorage-кэш
+    try{
+      var savedBook=(typeof state!=='undefined'&&state.book)||null;
+      if(typeof BOOKS!=='undefined' && BOOKS.length){
+        for(var b=0;b<BOOKS.length;b++){ state.book=BOOKS[b].id; await loadContent(); progress(total,total,'книга «'+(BOOKS[b].title||BOOKS[b].id)+'»'); }
+        state.book=savedBook; await loadContent();
+      }
+    }catch(e){}
+    try{ lsSet('bp_offline_meta', JSON.stringify({at:Date.now(), nodes:total})); }catch(e){}
+    return {ok:true, nodes:total};
+  }
+
+  function updateOfflineBtnLabel(){
+    try{ var m=JSON.parse(lsGet('bp_offline_meta')||'null'); var st=document.getElementById('offSaveMsg');
+      if(m&&m.at&&st&&!st.textContent){ st.textContent='Сохранено офлайн: '+m.nodes+' карточек · '+new Date(m.at).toLocaleDateString(); } }catch(e){}
+  }
+  function ensureOfflineBtn(){
+    if(document.getElementById('offSaveBtn')){ updateOfflineBtnLabel(); return; }
+    var anchor=document.getElementById('contentMsg'); if(!anchor||!anchor.parentNode) return;
+    var wrap=document.createElement('div'); wrap.style.marginTop='14px';
+    var b=document.createElement('button'); b.id='offSaveBtn'; b.className='btn'; b.type='button'; b.textContent='Сохранить всё офлайн';
+    b.style.cssText='cursor:pointer';
+    var st=document.createElement('div'); st.id='offSaveMsg'; st.style.cssText='font-size:13px;color:var(--muted);margin-top:6px';
+    wrap.appendChild(b); wrap.appendChild(st); anchor.parentNode.insertBefore(wrap, anchor);
+    b.onclick=async function(){
+      b.disabled=true; var o=b.textContent; b.textContent='Сохраняю…'; st.textContent='Загружаю созвездия…';
+      var r=await warmOfflineCache(function(d,t,what){ st.textContent='Сохранено '+d+'/'+t+(what?(' · '+what):''); });
+      b.disabled=false; b.textContent=o;
+      st.textContent=r.ok?('Готово — '+r.nodes+' карточек доступны офлайн'):(r.msg||'Не удалось сохранить');
+    };
+    updateOfflineBtnLabel();
+  }
+
   // ---------- Supabase ----------
   function initSB(){
     try{
@@ -4315,6 +4416,7 @@ body.guest-only #tabbar{ display:none !important; }
       var url=String(rawUrl).trim().replace(/\s+/g,'').replace(/\/+$/,'');  // снять любые пробелы/переносы и хвостовой /
       var key=String(rawKey).replace(/\s+/g,'');
       SB = window.supabase.createClient(url, key);
+      try{ installRpcCache(); }catch(_){}
       return SB;
     }catch(e){ return null; }
   }
@@ -8273,7 +8375,7 @@ body.guest-only #tabbar{ display:none !important; }
             + menuRow('Админка', '', 'admin')
             + '</div>';
     }
-    rows += '<div class="menu-version">Версия 2026-06-25 10:36 · f063930</div>';
+    rows += '<div class="menu-version">Версия 2026-06-26 13:49 · 0512c6e</div>';
     body.innerHTML = '<div class="menu-v-head"><h2 class="menu-v-title">Меню</h2></div><div class="menu-v-list">'+rows+'</div>';
     Array.prototype.forEach.call(body.querySelectorAll('[data-menu-act]'), function(b){
       b.onclick = function(){ menuAct(b.getAttribute('data-menu-act')); };
@@ -11363,6 +11465,17 @@ body.guest-only #tabbar{ display:none !important; }
     if('serviceWorker' in navigator && location.protocol!=='file:' && location.origin!=='null'){ try{ var _swReg=navigator.serviceWorker.register('sw.js'); if(_swReg&&_swReg.catch) _swReg.catch(function(){}); }catch(_){} }
     window.addEventListener('offline', function(){ toast('Офлайн — читаешь сохранённое'); rtSetStatus(false); ONLINE_IDS={}; try{ renderPresence(); }catch(_){} });
     window.addEventListener('online',  function(){ toast('Снова в сети'); rtRetry=0; if(USER){ setupRealtime(); startReaderPresence(); } });
+
+    // офлайн-индикатор (плашка) + админская кнопка «Сохранить всё офлайн»
+    (function(){
+      var b=document.createElement('div'); b.id='offBadge';
+      b.style.cssText='position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 72px);z-index:60;background:#1C1A17;color:#F5E0B4;font-size:12px;font-weight:600;padding:6px 12px;border-radius:999px;box-shadow:0 4px 16px rgba(0,0,0,.25);display:none';
+      b.textContent='Офлайн — сохранённая копия';
+      document.body.appendChild(b);
+      function upd(){ b.style.display=(typeof navigator!=='undefined'&&navigator.onLine===false)?'block':'none'; }
+      window.addEventListener('online',upd); window.addEventListener('offline',upd); upd();
+    })();
+    (function(){ var bm=document.getElementById('btnAdmin'); if(bm){ var prev=bm.onclick; bm.onclick=function(){ if(prev) prev.call(this); try{ ensureOfflineBtn(); }catch(_){} }; } })();
 
     if(!SB){ showGate('config'); hideSplash(); return; }
     // мгновенно показать книгу из кэша (если есть) — чтобы возврат в приложение не мигал экраном входа
