@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Карточка концепта — Матчасть</title>
+<style>
+:root{
+ --bg:#FBFAF7; --ink:#17150F; --ink2:#56504A; --meta:#8B847B; --line:#ECE7DD; --card:#fff;
+ --gold:#B06A1F; --gold-br:#C98A3A;
+ --solid:#2F7D4F; --mixed:#B8801F; --contested:#C2452F; --info:#6B5CA5; --tension:#C2546A;
+ --r:20px; --rs:14px; --pill:999px;
+ --sh:0 2px 12px rgba(20,17,12,.05),0 1px 2px rgba(20,17,12,.04);
+}
+*{box-sizing:border-box} html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;font-size:16px;line-height:24px;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+.wrap{max-width:680px;margin:0 auto;min-height:100vh;padding:0 20px calc(86px + env(safe-area-inset-bottom))}
+.bar{position:sticky;top:0;z-index:20;background:rgba(251,250,247,.92);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:space-between;padding:8px 0 10px;border-bottom:1px solid var(--line)}
+.ib{width:42px;height:42px;display:inline-flex;align-items:center;justify-content:center;border:0;background:none;color:var(--ink2);border-radius:var(--pill);cursor:pointer}
+.ib:active{background:var(--line)}
+.ib.on{color:var(--contested)}
+.top{padding:18px 0 4px}
+.meta-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.type{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--gold);background:rgba(176,106,31,.09);padding:4px 10px;border-radius:var(--pill)}
+.rob{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--ink2);background:#fff;border:1px solid var(--line);border-radius:var(--pill);padding:4px 11px;cursor:help}
+.rob .d{width:9px;height:9px;border-radius:50%}.rob.solid .d{background:var(--solid)}.rob.mixed .d{background:var(--mixed)}.rob.contested .d{background:var(--contested)}
+h1.t{font-size:30px;line-height:36px;font-weight:800;letter-spacing:-.02em;margin:2px 0 0}
+.lead{font-size:17px;line-height:27px;margin-top:16px}
+.apply{margin-top:20px;background:#fff;border:1px solid var(--line);border-radius:var(--rs);padding:16px 18px;box-shadow:var(--sh)}
+.apply .lb{font-size:13px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px}
+.apply .bd{font-size:16px;line-height:25px}
+.react{margin-top:22px;border-top:1px solid var(--line);padding-top:16px}
+.react .q{font-size:14px;color:var(--meta);margin-bottom:10px}
+.chips{display:flex;gap:9px;flex-wrap:wrap}
+.rc{font-size:14px;font-weight:600;color:var(--ink2);background:#fff;border:1px solid var(--line);border-radius:var(--pill);padding:9px 15px;cursor:pointer}
+.rc:active{transform:scale(.97)}.rc.sel{background:var(--gold);color:#fff;border-color:var(--gold)}
+.disc{margin-top:24px;width:100%;display:flex;align-items:center;justify-content:space-between;background:none;border:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:16px 0;cursor:pointer;font-size:18px;font-weight:700;color:var(--ink)}
+.disc .cv{transition:transform .2s}.disc.open .cv{transform:rotate(180deg)}
+.layer2{display:none}.layer2.open{display:block}
+.sec{margin-top:26px}
+.sec .l{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--meta);margin-bottom:7px}
+.sec .b{font-size:16px;line-height:25px;white-space:pre-line}
+.sec.honest{background:#211C16;color:#EFE6D7;border-radius:var(--rs);padding:18px;margin-top:24px}
+.sec.honest .l{color:var(--gold-br)}
+.sec.src .b{font-size:13px;line-height:20px;color:var(--meta)}
+.links{margin-top:30px;border-top:1px solid var(--line);padding-top:18px}
+.links h2{font-size:18px;font-weight:700;margin:0 0 12px}
+.lk{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 0;border-bottom:1px solid var(--line);cursor:pointer;text-decoration:none;color:var(--ink)}
+.lk:last-child{border-bottom:0}
+.lk .n{font-size:15px;font-weight:600}
+.lk .r{font-size:12px;color:var(--meta);white-space:nowrap}
+.lk .r.tension{color:var(--tension);font-weight:600}
+.foot{margin-top:28px;font-size:13px;color:var(--meta);border-top:1px solid var(--line);padding-top:14px}
+.cta{position:fixed;left:0;right:0;bottom:0;z-index:30;background:linear-gradient(transparent,rgba(251,250,247,.9) 24%,#FBFAF7 50%);padding:18px 20px calc(18px + env(safe-area-inset-bottom))}
+.cta-in{max-width:680px;margin:0 auto}
+.cta button{width:100%;height:52px;border-radius:var(--rs);border:0;background:var(--gold);color:#fff;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.cta button:active{transform:scale(.99)}
+.toast{position:fixed;left:50%;transform:translateX(-50%) translateY(20px);bottom:96px;z-index:50;background:#17150F;color:#F4EEE2;font-size:14px;font-weight:600;padding:10px 16px;border-radius:var(--pill);box-shadow:0 8px 28px rgba(0,0,0,.25);opacity:0;transition:opacity .2s,transform .2s;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.skel{padding:30px 0}.skel div{background:linear-gradient(90deg,#EFEBE2,#F6F3ED,#EFEBE2);background-size:200% 100%;animation:sh 1.2s infinite;border-radius:8px;margin-bottom:12px}
+@keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap" id="wrap"></div>
+<div class="cta"><div class="cta-in"><button id="ctaBtn">Дальше</button></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+// СИД: реальный публичный bundle (cognitive-load-theory), компактно — мгновенный/офлайн рендер.
+var SEED={
+ slug:"cognitive-load-theory", kind:"theory",
+ title:"Теория когнитивной нагрузки (Cognitive Load Theory)",
+ robustness:"solid",
+ robustness_note:"Рабочая память ограничена; дизайн, превышающий её ёмкость, ухудшает обучение и решения. Три вида нагрузки: intrinsic, extraneous, germane.",
+ tags:[{axis:"discipline",label:"Когнитивная психология"},{axis:"discipline",label:"UX / HCI"},{axis:"importance",label:"Несущий концепт"}],
+ body:{
+  "суть":"Рабочая память — бутылочное горлышко мышления: вмещает ~4 независимых чанка и не масштабируется ни опытом, ни усилием воли. Дизайн продукта определяет, сколько этой ёмкости уходит впустую, а сколько остаётся на саму задачу.",
+  "применение":"Снижай постороннюю нагрузку системно: связанные элементы — рядом (принцип близости); прогрессивное раскрытие (показывай нужное на шаге); чанкинг («1234 5678» вместо «12345678»); пошаговый онбординг; убирай декор из форм оплаты и регистрации.",
+  "механизм":"Нагрузка складывается из трёх источников: внутренняя (сложность самой задачи), посторонняя (создаётся дизайном — главная зона PM) и релевантная (построение схем). Сумма ≤ ёмкость рабочей памяти (~4 чанка). Когда внутренняя + посторонняя переполняют — релевантная вытесняется: навык не закрепляется.",
+  "аналогия":"Рабочая память — небольшой стол: на нём помещается четыре документа. Задача уже занимает часть. Лишние бумаги (посторонняя нагрузка) не оставляют места для выводов. Стол не больше — но убери лишнее, и дело пойдёт.",
+  "история":"Джон Свэллер сформулировал CLT в 1988 (на базе модели рабочей памяти Бэддли–Хитча и «7±2» Миллера). В 2001 Коуэн уточнил ёмкость до ~4 чанков. С 2010-х теория переносится из педагогики в UX и продукт.",
+  "пример":"Checkout, где поле промокода между адресом и картой, а сумма видна только вверху: пользователь скроллит, удерживая три блока разом. Упрощённые потоки (1-Click, вынос промокода) снижают постороннюю нагрузку → ниже доля брошенных корзин.",
+  "контртеория":"Роберт Бьорк описал «желательные трудности»: некоторое усилие при обучении улучшает долгосрочную память. CLT и Бьорк не противоречат, но указывают в разные стороны — снижать нужно ПОСТОРОННЮЮ нагрузку, а релевантную иногда стоит сознательно повышать. Перенос «меньше нагрузки → лучше решения» на реальные продукты — умеренный, требует валидации.",
+  "условия-применимости":"Точнее всего: аудитория-новички, задача с многими взаимозависимыми элементами, момент первого знакомства или напряжённого решения (платёж, регистрация). Хуже работает: пользователь-эксперт с готовыми схемами (те же упрощения мешают — expertise reversal); линейная малоэлементная задача.",
+  "числа-и-пороги":"Ёмкость рабочей памяти ~4 независимых чанка (Cowan 2001). Классическая оценка Миллера 7±2 (1956) — для простых изолированных единиц, завышена для сложного взаимосвязанного материала.",
+  "частые-ошибки":"Путают «сложная задача» и «сложный интерфейс». «Наши пользователи умные, разберутся» — у экспертов рабочая память такая же. Тултип поверх сложного интерфейса не снижает нагрузку, а добавляет слой. Минимализм ≠ низкая нагрузка: разнесённые связанные элементы дают split-attention.",
+  "причинная-цепочка":"Взаимозависимость элементов → внутренняя нагрузка; дизайн-помехи → посторонняя; сумма у предела (~4 чанка) → релевантной не остаётся → схемы не строятся / в продукте: ошибки растут, решения замедляются, конверсия падает → снизить постороннюю → освободить память.",
+  "источники":"Sweller 1988 Cognitive Science 12(2); Cowan 2001 Behavioral and Brain Sciences 24(1); Paas, Renkl, Sweller 2003 Educational Psychologist 38(1); van Merriënboer & Sweller 2005."
+ },
+ edges:[
+  {other:"system-1-2",other_title:"Система 1 и Система 2",relation:"prerequisite",direction:"in"},
+  {other:"miller-law",other_title:"Закон Миллера (Miller's Law)",relation:"involves-force",direction:"out"},
+  {other:"scarcity-mindset",other_title:"Психология дефицита (Scarcity)",relation:"competes-with",direction:"out"},
+  {other:"task-switching-cost",other_title:"Стоимость переключения задач",relation:"adjacent-to",direction:"in"},
+  {other:"worked-example-effect",other_title:"Эффект проработанного примера",relation:"instance-of",direction:"in"},
+  {other:"attention-residue",other_title:"Остаточное внимание",relation:"same-family",direction:"in"}
+ ],
+ status:"канон", updated:"2026-06"
+};
+
+var ROB={solid:{c:"solid",t:"Подтверждено",tip:"Воспроизведено в нескольких независимых исследованиях."},mixed:{c:"mixed",t:"Неоднозначно",tip:"Данные смешанные или зависят от условий."},contested:{c:"contested",t:"Спорно",tip:"Есть серьёзные контр-доказательства."}};
+var KIND={theory:"Теория",effect:"Эффект",phenomenon:"Феномен",frame:"Рамка",method:"Метод",scenario:"Ситуация",term:"Термин"};
+// relation → человекочитаемый ярлык + флаг напряжения
+var REL={
+ "contradicts":["спорит с этой идеей",1],"competes-with":["конкурирует за объяснение",1],
+ "prerequisite":["нужно понять заранее",0],"mechanism-of":["объясняет механизм",0],"instance-of":["частный случай",0],
+ "same-family":["рядом в теме",0],"adjacent-to":["рядом в теме",0],"involves-force":["сила внутри",0],
+ "mechanism":["механизм",0]
+};
+var SEC=[
+ ["механизм","Механизм"],["аналогия","Аналогия"],["история","История"],
+ ["__rob","Об устойчивости"],["пример","Пример"],["условия-применимости","Когда применимо"],
+ ["числа-и-пороги","Числа и пороги"],["частые-ошибки","Частые ошибки"],["причинная-цепочка","Причинная цепочка"]
+];
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('on');},1800);}
+
+var CUR=null;
+function render(d){
+ CUR=d; var b=d.body||{}; var r=ROB[d.robustness]||ROB.mixed;
+ var typeLabel=(function(){ var imp=(d.tags||[]).filter(function(x){return x.axis==='importance';})[0]; return imp?imp.label:(KIND[d.kind]||'Концепт'); })();
+ var H='<div class="bar">'+
+   '<button class="ib" id="back" aria-label="Назад"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>'+
+   '<div style="display:flex;gap:2px">'+
+   '<button class="ib" id="fav" aria-label="В избранное"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.6-7-9.6A3.9 3.9 0 0 1 12 7a3.9 3.9 0 0 1 7 3.4c0 5-7 9.6-7 9.6z"/></svg></button>'+
+   '<button class="ib" id="share" aria-label="Поделиться"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M12 15V4M8 8l4-4 4 4"/></svg></button>'+
+   '</div></div>';
+ H+='<div class="top"><div class="meta-row"><span class="type">'+esc(typeLabel)+'</span>'+
+   '<span class="rob '+r.c+'" title="'+esc(r.tip)+'"><span class="d"></span>'+esc(r.t)+'</span></div>'+
+   '<h1 class="t">'+esc(d.title)+'</h1></div>';
+ // СЛОЙ 1
+ if(b['суть']) H+='<div class="lead">'+esc(b['суть'])+'</div>';
+ if(b['применение']) H+='<div class="apply"><div class="lb">Как применить в продукте</div><div class="bd">'+esc(b['применение'])+'</div></div>';
+ // реакция
+ H+='<div class="react"><div class="q">Как вам карточка?</div><div class="chips">'+
+   '<button class="rc" data-react="Применимо">Применимо</button>'+
+   '<button class="rc" data-react="Спорно">Спорно</button>'+
+   '<button class="rc" data-react="Нужно глубже">Нужно глубже</button></div></div>';
+ // disclosure + СЛОЙ 2
+ var honest=b['как-на-самом-деле']||b['механизм-заблуждения'];
+ var hasL2=SEC.some(function(s){return s[0]==='__rob'?d.robustness_note:b[s[0]];})||honest||b['источники']||b['контртеория'];
+ if(hasL2){
+  H+='<button class="disc" id="disc">Разобрать глубже <svg class="cv" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>';
+  H+='<div class="layer2" id="layer2">';
+  SEC.forEach(function(s){
+   var val=s[0]==='__rob'?d.robustness_note:b[s[0]];
+   if(val) H+='<div class="sec"><div class="l">'+esc(s[1])+'</div><div class="b">'+esc(val)+'</div></div>';
+  });
+  if(b['контртеория']) H+='<div class="sec"><div class="l">Контртеория</div><div class="b">'+esc(b['контртеория'])+'</div></div>';
+  if(honest) H+='<div class="sec honest"><div class="l">А как на самом деле</div><div class="b">'+esc(honest)+'</div></div>';
+  if(b['источники']) H+='<div class="sec src"><div class="l">Источники</div><div class="b">'+esc(b['источники'])+'</div></div>';
+  H+='</div>';
+ }
+ // СВЯЗИ
+ var edges=(d.edges||[]);
+ if(edges.length){
+  H+='<div class="links"><h2>Связи</h2>';
+  edges.slice(0,8).forEach(function(e){ var rl=REL[e.relation]||[e.relation,0];
+   H+='<a class="lk" data-go="'+esc(e.other)+'"><span class="n">'+esc(e.other_title||e.other)+'</span><span class="r'+(rl[1]?' tension':'')+'">'+esc(rl[0])+' →</span></a>'; });
+  H+='</div>';
+ }
+ // подвал
+ H+='<div class="foot">Обновлено '+esc(d.updated||'—')+' · статус: '+esc(d.status||'—')+'</div>';
+ document.getElementById('wrap').innerHTML=H;
+
+ // обработчики
+ document.getElementById('back').onclick=function(){ if(history.length>1) history.back(); else toast('Назад'); };
+ document.getElementById('fav').onclick=function(e){ e.currentTarget.classList.toggle('on'); toast('Добавлено в избранное'); };
+ document.getElementById('share').onclick=function(){ toast('Ссылка скопирована'); };
+ var disc=document.getElementById('disc');
+ if(disc) disc.onclick=function(){ disc.classList.toggle('open'); document.getElementById('layer2').classList.toggle('open'); };
+ Array.prototype.forEach.call(document.querySelectorAll('.rc'),function(c){ c.onclick=function(){ Array.prototype.forEach.call(document.querySelectorAll('.rc'),function(x){x.classList.remove('sel');}); c.classList.add('sel'); toast('Записал · спасибо'); }; });
+ Array.prototype.forEach.call(document.querySelectorAll('[data-go]'),function(a){ a.onclick=function(){ go(a.getAttribute('data-go')); }; });
+ // CTA «Дальше» → первая курированная связь (приоритет напряжению)
+ var nxt=edges.slice().sort(function(a,bb){return ((REL[bb.relation]||[0,0])[1])-((REL[a.relation]||[0,0])[1]);})[0];
+ var ctaBtn=document.getElementById('ctaBtn');
+ ctaBtn.onclick=function(){ if(nxt) go(nxt.other); else toast('Это пока крайняя в цепочке'); };
+ window.scrollTo(0,0);
+}
+
+function go(slug){
+ if(!window.__SB){ toast('Полная карточка — при наличии сети'); return; }
+ document.getElementById('wrap').innerHTML='<div class="skel"><div style="height:42px;width:60%"></div><div style="height:120px"></div><div style="height:90px"></div></div>';
+ var guest=!window.__MEMBER;
+ window.__SB.rpc(guest?'kb_public_bundle':'kb_node_bundle',{p_slug:slug}).then(function(r){
+  if(r&&!r.error&&r.data){ var d=r.data; d.updated=d.updated||'—'; d.status=d.status||(d.content_status||'канон'); render(d); }
+  else toast('Не удалось загрузить карточку');
+ }).catch(function(){ document.getElementById('wrap').innerHTML='<div class="foot">Не удалось загрузить карточку. <a href="#" onclick="location.reload();return false">Повторить</a></div>'; });
+}
+
+// первичный рендер из сида
+render(SEED);
+
+// живой режим: слаг из ?slug=, конфиг рядом, supabase-js
+(function boot(){
+ var slug=(new URLSearchParams(location.search)).get('slug');
+ function go2(){
+  try{
+   if(!(window.SUPABASE_URL && window.SUPABASE_ANON_KEY && window.supabase && window.supabase.createClient)) return;
+   var SB=window.supabase.createClient(String(window.SUPABASE_URL).trim(), String(window.SUPABASE_ANON_KEY).trim());
+   window.__SB=SB;
+   SB.auth.getSession().then(function(s){ window.__MEMBER=!!(s&&s.data&&s.data.session); if(slug) go(slug); else { var gst=!window.__MEMBER; SB.rpc(gst?'kb_public_bundle':'kb_node_bundle',{p_slug:SEED.slug}).then(function(r){ if(r&&!r.error&&r.data) render(r.data); }).catch(function(){}); } }).catch(function(){ if(slug) go(slug); });
+  }catch(_){}
+ }
+ function load(src,cb){ var s=document.createElement('script'); s.src=src; s.onload=cb; s.onerror=cb; document.head.appendChild(s); }
+ function loadCfg(done){ var ps=['../config.js','./config.js','config.js','/book-reader/config.js']; var i=0; (function nx(){ if(window.SUPABASE_URL||i>=ps.length) return done(); var sc=document.createElement('script'); sc.src=ps[i++]; sc.onload=function(){ setTimeout(function(){ window.SUPABASE_URL?done():nx(); },0); }; sc.onerror=nx; document.head.appendChild(sc); })(); }
+  loadCfg(function(){ load('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2', go2); });
+})();
+</script>
+</body>
+</html>

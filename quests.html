@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Квесты — Расти</title>
+<style>
+:root{
+ --bg:#FBFAF7; --ink:#17150F; --ink2:#56504A; --meta:#8B847B; --line:#ECE7DD; --card:#fff;
+ --gold:#B06A1F; --gold-br:#C98A3A;
+ --solid:#2F7D4F; --mixed:#B8801F; --tw:#C2546A;
+ --pill:999px; --r:20px; --rs:14px;
+ --sh:0 2px 12px rgba(20,17,12,.05),0 1px 2px rgba(20,17,12,.04);
+}
+*{box-sizing:border-box} html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;font-size:16px;line-height:24px;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+.wrap{max-width:680px;margin:0 auto;min-height:100vh;padding:0 20px calc(80px + env(safe-area-inset-bottom))}
+.bar{position:sticky;top:0;z-index:20;background:rgba(251,250,247,.94);backdrop-filter:blur(8px);display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--line)}
+.ib{width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;border:0;background:none;color:var(--ink2);border-radius:var(--pill);cursor:pointer}.ib:active{background:var(--line)}
+.bt{font-size:15px;font-weight:700}
+.head{padding:16px 0 4px}
+.kick{font-size:13px;font-weight:600;color:var(--gold)}
+.h1{font-size:30px;line-height:35px;font-weight:800;letter-spacing:-.02em;margin:3px 0 6px}
+.sub{font-size:15px;line-height:21px;color:var(--ink2)}
+.feat{margin-top:18px;border-radius:var(--r);padding:24px;cursor:pointer;background:linear-gradient(150deg,#241E18,#15110C);color:#F4EEE2;box-shadow:0 18px 46px rgba(20,17,12,.22);position:relative;overflow:hidden}
+.feat::after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(201,138,58,.30),transparent 70%)}
+.feat .fk{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gold-br);position:relative}
+.feat .ic{font-size:30px;margin:8px 0 4px;position:relative}
+.feat .ti{font-size:24px;line-height:29px;font-weight:800;letter-spacing:-.02em;margin:4px 0 8px;position:relative}
+.feat .pr{font-size:15px;line-height:22px;color:#D8D0C3;position:relative}
+.feat .mt{margin-top:16px;display:flex;align-items:center;gap:10px;position:relative}
+.feat .go{font-size:15px;font-weight:700;color:var(--gold-br)}
+.feat .meta{font-size:13px;color:#A89C88}
+.seclbl{font-size:14px;color:var(--meta);font-weight:700;margin:26px 0 8px;text-transform:uppercase;letter-spacing:.04em}
+.rc{display:flex;align-items:center;gap:15px;background:#fff;border:1px solid var(--line);border-radius:var(--rs);padding:16px;box-shadow:var(--sh);cursor:pointer;margin-top:11px}
+.rc:active{transform:scale(.995)}
+.rc .ic{font-size:24px;flex:none;width:30px;text-align:center}
+.rc .m{flex:1;min-width:0}
+.rc .t{font-size:16px;font-weight:700;line-height:21px}
+.rc .p{font-size:13px;line-height:18px;color:var(--ink2);margin-top:2px}
+.rc .meta{font-size:12px;color:var(--meta);margin-top:7px}
+.rc .cv{color:var(--meta);flex:none}
+.prog{height:5px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:8px}.prog i{display:block;height:100%;background:var(--gold-br)}
+/* деталь */
+.coldq{font-size:24px;line-height:31px;font-weight:800;letter-spacing:-.015em;margin:18px 0 12px}
+.dmeta{font-size:14px;color:var(--meta);margin-bottom:18px}
+.ddesc{font-size:16px;line-height:25px;color:var(--ink2)}
+.stops{margin-top:22px}
+.stops .l{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--meta);margin-bottom:8px}
+.stoprow{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.stoprow:last-child{border-bottom:0}
+.stoprow .n{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--gold-br);color:var(--gold);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}
+.stoprow .t{font-size:15px;font-weight:600}
+.start{position:fixed;left:0;right:0;bottom:0;z-index:30;background:linear-gradient(transparent,#FBFAF7 40%);padding:18px 20px calc(18px + env(safe-area-inset-bottom))}
+.start-in{max-width:680px;margin:0 auto}
+.start button{width:100%;height:54px;border-radius:var(--rs);border:0;background:var(--gold);color:#fff;font-size:16px;font-weight:700;cursor:pointer}
+/* player */
+.cold{position:fixed;inset:0;z-index:5;background:radial-gradient(120% 90% at 50% 10%,#241E18,#15110C 60%,#0E0C0A);color:#F4EEE2;display:flex;flex-direction:column;justify-content:center;padding:32px 26px calc(40px + env(safe-area-inset-bottom))}
+.cold .ck{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-br)}
+.cold .cq{font-size:30px;line-height:38px;font-weight:800;letter-spacing:-.02em;margin:14px 0 16px}
+.cold .cm{font-size:14px;color:#A89C88}
+.cold .cb{margin-top:auto;width:100%;height:54px;border-radius:var(--rs);border:0;background:var(--gold);color:#1A1407;font-size:16px;font-weight:700;cursor:pointer}
+.ptop{position:sticky;top:0;z-index:20;background:rgba(251,250,247,.95);backdrop-filter:blur(8px);padding:10px 0}
+.ptop .row{display:flex;align-items:center;gap:10px}
+.ptop .x{width:38px;height:38px;border:0;background:none;color:var(--ink2);border-radius:var(--pill);cursor:pointer;font-size:20px}
+.ptop .pc{flex:1;font-size:13px;font-weight:600;color:var(--meta)}
+.beat{margin:18px 0 6px;font-size:15px;line-height:23px;color:var(--ink2);border-left:3px solid var(--gold-br);padding:4px 0 4px 14px}
+.beat.soon{color:var(--meta);font-style:italic}
+.stopcard{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:var(--sh);margin-top:8px}
+.stopcard .tw{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--tw);margin-bottom:6px}
+.stopcard h2{font-size:23px;line-height:28px;font-weight:800;letter-spacing:-.01em;margin:0 0 10px}
+.stopcard .lead{font-size:16px;line-height:25px}
+.stopcard .ap{margin-top:16px;background:var(--bg);border-radius:12px;padding:14px}.stopcard .ap .l{font-size:12px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.03em;margin-bottom:6px}.stopcard .ap .b{font-size:15px;line-height:23px}
+.deeper{margin-top:14px;font-size:14px;font-weight:600;color:var(--gold);cursor:pointer}
+.predict{background:#211C16;color:#EFE6D7;border-radius:var(--r);padding:22px;margin-top:8px}
+.predict .q{font-size:20px;line-height:27px;font-weight:700;margin-bottom:16px}
+.predict .opts{display:flex;gap:12px}
+.predict .opts button{flex:1;height:50px;border-radius:12px;border:1px solid #4A4030;background:transparent;color:#EFE6D7;font-size:15px;font-weight:700;cursor:pointer}
+.predict .opts button:active{background:#2C261D}
+.pnext{margin-top:20px}
+.pnext button{width:100%;height:52px;border-radius:var(--rs);border:0;background:var(--gold);color:#fff;font-size:16px;font-weight:700;cursor:pointer}
+.fin{text-align:center;padding:40px 0 0}
+.fin .em{font-size:40px}.fin h2{font-size:26px;font-weight:800;margin:10px 0 6px}.fin p{color:var(--ink2)}
+.fin .btns{margin-top:24px;display:grid;gap:12px}
+.fin .btns button{height:52px;border-radius:var(--rs);font-size:15px;font-weight:700;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--ink)}
+.fin .btns button.pri{background:var(--gold);color:#fff;border:0}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:10;background:rgba(251,250,247,.94);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.navin{max-width:720px;margin:0 auto;display:flex}
+.ni{flex:1;min-height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:none;border:0;color:var(--meta);cursor:pointer}
+.ni svg{width:24px;height:24px}.ni .lb{font-size:11px;font-weight:600}.ni.on{color:var(--gold)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap" id="wrap"></div>
+<div id="overlay"></div>
+
+<nav class="nav" id="nav"><div class="navin">
+ <button class="ni" onclick="location.href='explore.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 1.5L13 16l-1.5-4.5z"/></svg><span class="lb">Исследовать</span></button>
+ <button class="ni" onclick="location.href='solve-home.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5A2.5 2.5 0 0 0 6.5 8H20"/></svg><span class="lb">Решить</span></button>
+ <button class="ni on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v-8"/><path d="M12 12c0-4 3-6 7-6 0 4-3 6-7 6z"/><path d="M12 14c0-3-2-5-6-5 0 3 2 5 6 5z"/></svg><span class="lb">Расти</span></button>
+ <button class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span class="lb">Меню</span></button>
+</div></nav>
+
+<script>
+// СИД: реальные 8 квестов
+var QUESTS=[
+ {key:"m1-osnovy",icon:"🧭",rec:true,title:"Основы продуктового мышления",promise:"Из чего складывается продуктовое мышление — от мотивации человека до метрики продукта",desc:"Как JTBD объясняет зачем, MVP — насколько дорого ошибиться, а build trap поджидает тех, кто забыл об обоих.",n:7,slugs:["jtbd","jtbd-christensen","mvp","build-trap","product-market-fit","north-star-metric","engagement"]},
+ {key:"m2-cena",icon:"⚖️",rec:false,title:"Цена и ценность",promise:"Цена — конструкция в голове, а не число на экране",desc:"Как опорная точка, привязка и боль платежа управляют воспринимаемой стоимостью независимо от объективной цены.",n:8,slugs:["reference-point","anchoring","prospect-theory","loss-aversion","loss-aversion-critique","mental-accounting","payment-pain","decoy-effect"]},
+ {key:"m3-vnimanie",icon:"🧠",rec:false,title:"Внимание и состояние",promise:"Внимание — не ресурс: как состояние человека меняет то, что вообще работает",desc:"Почему продукт, идеальный на демо, ломается в реальном контексте.",n:8,slugs:["cognitive-load-theory","miller-law","system-1-2","attention-residue","scarcity-mindset","scarcity-critique","present-bias","flow"]},
+ {key:"m4-privychka",icon:"🔄",rec:false,title:"Привычка и удержание",promise:"Что превращает разовое действие в рутину — и почему та же механика лежит в основе манипуляции",desc:"Петля повторного использования и где продукт сам её ломает.",n:8,slugs:["habit-loop","fogg-behavior-model","operant-conditioning"]},
+ {key:"m5-socialnoe",icon:"🪞",rec:false,title:"Социальное и идентичность",promise:"Решение редко принимается в одиночестве — как другие люди и образ себя управляют выбором",desc:"Когда социальное давление помогает продукту, а когда работает против него.",n:7,slugs:["social-proof","bandwagon-effect","social-identity"]},
+ {key:"m6-doverie",icon:"🔗",rec:false,title:"Доверие и сбои",promise:"Доверие строится годами и рушится за один сбой — как не потерять то, что нажито",desc:"Психологический контракт: как складывается и что его нарушает.",n:8,slugs:["source-credibility","trust-calibration","peak-end-rule"]},
+ {key:"m7-temnye",icon:"🔦",rec:false,title:"Тёмные паттерны (узнавание)",promise:"Некоторые паттерны работают и стоят дорого — как их видеть до того, как они ударят",desc:"Что за тёмным паттерном и какую цену он создаёт.",n:7,slugs:["sludge","partition-pricing","fomo"]},
+ {key:"m8-metriki",icon:"📊",rec:false,title:"Метрики честно",promise:"Когда метрика становится целью, она перестаёт работать как метрика",desc:"Закон Гудхарта на практике и слепые пятна KPI.",n:7,slugs:["north-star-metric","aarrr-funnel","goodharts-law"]}
+];
+// названия остановок (для превью/плеера) + сид первой карточки
+var TITLES={jtbd:"JTBD — Jobs To Be Done","jtbd-christensen":"JTBD по Кристенсену",mvp:"MVP — минимально жизнеспособный продукт","build-trap":"Ловушка фич (Build Trap)","product-market-fit":"Соответствие продукта рынку","north-star-metric":"Метрика Полярной звезды",engagement:"Вовлечённость",
+ "reference-point":"Точка отсчёта",anchoring:"Якорение","prospect-theory":"Теория перспектив","loss-aversion":"Неприятие потерь","loss-aversion-critique":"Критика: где неприятие потерь не работает","mental-accounting":"Ментальный учёт","payment-pain":"Боль оплаты","decoy-effect":"Эффект приманки",
+ "cognitive-load-theory":"Теория когнитивной нагрузки","scarcity-mindset":"Психология дефицита","scarcity-critique":"Критика: пределы дефицита"};
+var SEEDCARD={jtbd:{lead:"Люди «нанимают» продукт, чтобы продвинуться в своей жизненной ситуации. Покупают не дрель, а отверстие — точнее, прогресс, которого отверстие помогает достичь. Задача (job) стабильна, решения меняются.",apply:"Спрашивай не «что добавить», а «какую работу пользователь пытается сделать и что нанимает сейчас». Сегментируй по job-у, не по демографии; ищи, что люди «увольняют», переходя к тебе."}};
+
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function mins(n){ return '~'+Math.max(5,Math.round(n*3))+' мин'; }
+function titleOf(s){ return TITLES[s]||s.replace(/-/g,' '); }
+function isTwist(s){ return /critique|critic|contra/i.test(s); }
+
+var qs=new URLSearchParams(location.search);
+var QKEY=qs.get('quest'), STOP=qs.get('stop')?parseInt(qs.get('stop'),10):null;
+function quest(k){ return QUESTS.filter(function(q){return q.key===k;})[0]; }
+
+function renderHub(){
+ document.getElementById('nav').style.display='';
+ var feat=QUESTS.filter(function(q){return q.rec;})[0]||QUESTS[0];
+ var rest=QUESTS.filter(function(q){return q.key!==feat.key;});
+ var H='<div class="bar"><div class="bt">Квесты</div></div>';
+ H+='<div class="head"><div class="kick">Учись через истории</div><div class="h1">Расти</div><div class="sub">Ведомые маршруты по идеям — каждый отвечает на один вопрос продукта.</div></div>';
+ H+='<div class="feat" data-q="'+feat.key+'"><div class="fk">Начни отсюда</div><div class="ic">'+feat.icon+'</div><div class="ti">'+esc(feat.title)+'</div><div class="pr">'+esc(feat.promise)+'</div><div class="mt"><span class="meta">'+feat.n+' остановок · '+mins(feat.n)+'</span><span class="go" style="margin-left:auto">Открыть →</span></div></div>';
+ H+='<div class="seclbl">Все маршруты</div>';
+ H+=rest.map(function(q){ return '<div class="rc" data-q="'+q.key+'"><div class="ic">'+q.icon+'</div><div class="m"><div class="t">'+esc(q.title)+'</div><div class="p">'+esc(q.promise)+'</div><div class="meta">'+q.n+' остановок · '+mins(q.n)+'</div></div><svg class="cv" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>'; }).join('');
+ document.getElementById('wrap').innerHTML=H;
+ bindQ();
+}
+function renderDetail(q){
+ document.getElementById('nav').style.display='';
+ var H='<div class="bar"><button class="ib" id="back"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><div class="bt">'+q.icon+' '+esc(q.title)+'</div></div>';
+ H+='<div class="head"><div class="kick">Квест</div></div>';
+ H+='<div class="coldq">'+esc(q.promise)+'</div>';
+ H+='<div class="dmeta">'+q.n+' остановок · '+mins(q.n)+'</div>';
+ H+='<div class="ddesc">'+esc(q.desc)+'</div>';
+ H+='<div class="stops"><div class="l">Маршрут</div>';
+ (q.slugs||[]).slice(0,5).forEach(function(s,i){ H+='<div class="stoprow"><span class="n">'+(i+1)+'</span><span class="t">'+esc(titleOf(s))+'</span></div>'; });
+ if((q.slugs||[]).length>5) H+='<div class="stoprow"><span class="n">…</span><span class="t" style="color:var(--meta)">ещё '+(q.slugs.length-5)+'</span></div>';
+ H+='</div>';
+ document.getElementById('wrap').innerHTML=H;
+ document.getElementById('wrap').insertAdjacentHTML('beforeend','');
+ document.getElementById('overlay').innerHTML='<div class="start"><div class="start-in"><button id="startBtn">Начать квест →</button></div></div>';
+ document.getElementById('back').onclick=function(){ location.href='quests.html'; };
+ document.getElementById('startBtn').onclick=function(){ location.href='quests.html?quest='+q.key+'&stop=0'; };
+ bindQ();
+}
+function renderPlayer(q,stop){
+ document.getElementById('nav').style.display='none';
+ document.getElementById('overlay').innerHTML='';
+ var M=q.slugs.length;
+ if(stop===0){ // COLD-OPEN
+  document.getElementById('wrap').innerHTML='';
+  document.getElementById('overlay').innerHTML='<div class="cold"><div class="ck">Квест · '+esc(q.title)+'</div><div class="cq">'+esc(q.promise)+'</div><div class="cm">'+M+' остановок · '+mins(M)+'</div><button class="cb" id="go">Начать →</button></div>';
+  document.getElementById('go').onclick=function(){ location.href='quests.html?quest='+q.key+'&stop=1'; };
+  return;
+ }
+ if(stop>M){ // ФИНАЛ
+  var next=QUESTS[QUESTS.indexOf(q)+1];
+  document.getElementById('wrap').innerHTML='<div class="ptop"><div class="row"><button class="x" onclick="location.href=\'quests.html\'">✕</button><div class="pc">Пройдено</div></div></div>'+
+   '<div class="fin"><div class="em">✦</div><h2>Квест пройден</h2><p>«'+esc(q.title)+'» — '+M+' остановок позади. Звёзды на твоём небе зажглись.</p>'+
+   '<div class="btns">'+(next?'<button class="pri" onclick="location.href=\'quests.html?quest='+next.key+'&stop=0\'">Следующий: '+esc(next.title)+' →</button>':'')+
+   '<button onclick="location.href=\'explore.html\'">Показать на небе</button><button onclick="location.href=\'quests.html\'">Все квесты</button></div></div>';
+  return;
+ }
+ // ОСТАНОВКА
+ var slug=q.slugs[stop-1]; var twist=isTwist(slug);
+ var H='<div class="ptop"><div class="row"><button class="x" onclick="location.href=\'quests.html?quest='+q.key+'\'">✕</button><div class="pc">Остановка '+stop+' из '+M+'</div></div><div class="prog"><i style="width:'+Math.round(stop/M*100)+'%"></i></div></div>';
+ // бит-нарратив (Каллиопа — наполняется)
+ H+='<div class="beat soon">— здесь будет связка-история к следующей идее (голос научпопа, крафт Каллиопы) —</div>';
+ if(twist){
+  H+='<div class="predict" id="predict"><div class="q">Прошлая идея звучит убедительно. Как думаешь — она всегда работает?</div><div class="opts"><button data-p="yes">Да, надёжно</button><button data-p="no">Нет, есть предел</button></div></div>';
+ }
+ H+='<div id="stopwrap"'+(twist?' style="display:none"':'')+'></div>';
+ document.getElementById('wrap').innerHTML=H;
+ var sc=SEEDCARD[slug];
+ function paintCard(title,lead,apply){
+  document.getElementById('stopwrap').innerHTML='<div class="stopcard">'+(twist?'<div class="tw">Поворот</div>':'')+'<h2>'+esc(title)+'</h2>'+(lead?'<div class="lead">'+esc(lead)+'</div>':'')+(apply?'<div class="ap"><div class="l">Как применить</div><div class="b">'+esc(apply)+'</div></div>':'')+'<div class="deeper" onclick="location.href=\'card.html?slug='+esc(slug)+'\'">Разобрать глубже →</div></div>'+
+   '<div class="pnext"><button onclick="location.href=\'quests.html?quest='+q.key+'&stop='+(stop+1)+'\'">'+(stop===M?'Финал квеста →':'Дальше →')+'</button></div>';
+ }
+ paintCard(titleOf(slug), sc?sc.lead:'', sc?sc.apply:'');
+ if(!sc && window.__livecard) window.__livecard(slug, paintCard);
+ if(twist){ Array.prototype.forEach.call(document.querySelectorAll('#predict .opts button'),function(b){ b.onclick=function(){ document.getElementById('predict').querySelector('.q').textContent='Верно подмечено — у каждой сильной идеи есть граница. Вот она:'; document.getElementById('predict').querySelector('.opts').style.display='none'; document.getElementById('stopwrap').style.display=''; }; }); }
+}
+
+function bindQ(){ Array.prototype.forEach.call(document.querySelectorAll('[data-q]'),function(el){ el.onclick=function(){ location.href='quests.html?quest='+el.getAttribute('data-q'); }; }); }
+
+// маршрутизация из сида
+if(QKEY && quest(QKEY)){ if(STOP!==null) renderPlayer(quest(QKEY),STOP); else renderDetail(quest(QKEY)); }
+else renderHub();
+
+// живой режим: квесты из БД + карточки остановок
+(function boot(){
+ function go(){
+  try{
+   if(!(window.SUPABASE_URL && window.SUPABASE_ANON_KEY && window.supabase && window.supabase.createClient)) return;
+   var SB=window.supabase.createClient(String(window.SUPABASE_URL).trim(),String(window.SUPABASE_ANON_KEY).trim());
+   var member=false; SB.auth.getSession().then(function(s){ member=!!(s&&s.data&&s.data.session);
+    window.__livecard=function(slug,paint){ SB.rpc(member?'kb_node_bundle':'kb_public_bundle',{p_slug:slug}).then(function(r){ if(r&&!r.error&&r.data){ var b=r.data; var bs=b.body||b.body_struct||{}; paint(b.title||titleOf(slug), bs['суть']||'', bs['применение']||''); } }).catch(function(){}); };
+    SB.from('quests').select('key,ord,title,icon,promise,description,slugs,recommended,status').eq('status','active').order('ord').then(function(r){ if(r&&!r.error&&r.data&&r.data.length){
+      QUESTS=r.data.map(function(q){return {key:q.key,icon:q.icon||'✦',rec:!!q.recommended,title:q.title,promise:q.promise||'',desc:q.description||'',n:(q.slugs||[]).length,slugs:q.slugs||[]};});
+      if(QKEY && quest(QKEY)){ if(STOP!==null) renderPlayer(quest(QKEY),STOP); else renderDetail(quest(QKEY)); } else renderHub();
+    }}).catch(function(){});
+    // догрузить живую карточку текущей остановки
+    if(QKEY && quest(QKEY) && STOP!==null && STOP>0){ var qq=quest(QKEY); if(STOP<=qq.slugs.length){ var sl=qq.slugs[STOP-1]; if(!SEEDCARD[sl] && !isTwist(sl)){ /* paint после рендера */ setTimeout(function(){ if(window.__livecard && document.getElementById('stopwrap')){ window.__livecard(sl,function(t,l,a){ var sw=document.getElementById('stopwrap'); if(sw && sw.style.display!=='none'){ renderPlayer(qq,STOP);} }); } },50); } } }
+   }).catch(function(){});
+  }catch(_){}
+ }
+ function load(src,cb){ var s=document.createElement('script'); s.src=src; s.onload=cb; s.onerror=cb; document.head.appendChild(s); }
+ function loadCfg(done){ var ps=['../config.js','./config.js','config.js','/book-reader/config.js']; var i=0; (function nx(){ if(window.SUPABASE_URL||i>=ps.length) return done(); var sc=document.createElement('script'); sc.src=ps[i++]; sc.onload=function(){ setTimeout(function(){ window.SUPABASE_URL?done():nx(); },0); }; sc.onerror=nx; document.head.appendChild(sc); })(); }
+  loadCfg(function(){ load('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2', go); });
+})();
+</script>
+</body>
+</html>

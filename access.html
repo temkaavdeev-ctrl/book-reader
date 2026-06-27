@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Управляя поведением — вход</title>
+<style>
+:root{
+ --sky0:#0E0C0A; --sky1:#15110C; --sky2:#1C1812;
+ --ink:#F4EEE2; --ink2:#C2B8A6; --meta:#897F70; --line:#2A241C;
+ --gold:#C98A3A; --gold-br:#E7C07A;
+ --solid:#7FD49B; --mixed:#E7C07A;
+ --pill:999px; --r:18px; --rs:13px;
+}
+*{box-sizing:border-box} html,body{margin:0}
+body{background:var(--sky0);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;font-size:16px;line-height:24px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;min-height:100vh;padding:0 22px calc(40px + env(safe-area-inset-bottom));background:radial-gradient(120% 60% at 50% 0%,#1C1812,#15110C 50%,#0E0C0A)}
+.hero{padding:64px 0 8px;text-align:center}
+.logo{width:54px;height:54px;margin:0 auto 18px;border-radius:15px;background:linear-gradient(150deg,#C98A3A,#8A5520);display:flex;align-items:center;justify-content:center}
+.logo svg{width:30px;height:30px;color:#1A1407}
+.httl{font-size:32px;line-height:38px;font-weight:800;letter-spacing:-.025em}
+.hsub{font-size:16px;line-height:24px;color:var(--ink2);margin-top:10px;max-width:440px;margin-left:auto;margin-right:auto}
+.cta{margin-top:26px;display:flex;flex-direction:column;gap:11px;max-width:360px;margin-left:auto;margin-right:auto}
+.btn{height:52px;border-radius:var(--rs);border:0;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn.pri{background:var(--gold);color:#1A1407}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.sections{margin-top:44px;display:grid;gap:14px}
+.sec{background:rgba(28,24,18,.7);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.sec .n{font-size:12px;font-weight:700;color:var(--gold-br);letter-spacing:.04em}
+.sec h3{font-size:19px;font-weight:700;margin:7px 0 6px;letter-spacing:-.01em}
+.sec p{font-size:15px;line-height:22px;color:var(--ink2);margin:0}
+.example{margin-top:34px}
+.example .lbl{font-size:13px;font-weight:600;color:var(--meta);text-align:center;margin-bottom:12px}
+.card{background:#fff;color:#17150F;border-radius:var(--r);padding:22px;box-shadow:0 18px 50px rgba(0,0,0,.4)}
+.card .chip{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:#56504A;background:#FBFAF7;border:1px solid #ECE7DD;border-radius:var(--pill);padding:4px 11px;margin-bottom:10px}
+.card .chip .d{width:8px;height:8px;border-radius:50%;background:#B8801F}
+.card h2{font-size:22px;line-height:27px;font-weight:800;letter-spacing:-.01em;margin:2px 0 10px}
+.card .lead{font-size:15px;line-height:23px;color:#17150F}
+.card .honest{margin-top:16px;background:#211C16;color:#EFE6D7;border-radius:12px;padding:15px}
+.card .honest .l{font-size:12px;font-weight:700;color:var(--gold-br);text-transform:uppercase;letter-spacing:.03em;margin-bottom:6px}
+.card .honest .b{font-size:14px;line-height:21px}
+.note{margin-top:14px;text-align:center;font-size:13px;line-height:19px;color:var(--meta)}
+/* формы */
+.panel{max-width:380px;margin:36px auto 0;background:rgba(28,24,18,.8);border:1px solid var(--line);border-radius:var(--r);padding:24px}
+.panel h2{font-size:22px;font-weight:800;margin:0 0 4px;letter-spacing:-.01em}
+.panel .ps{font-size:14px;color:var(--ink2);margin-bottom:18px}
+.fld{margin-bottom:13px}
+.fld label{display:block;font-size:13px;font-weight:600;color:var(--ink2);margin-bottom:5px}
+.fld input{width:100%;height:48px;border-radius:11px;border:1px solid var(--line);background:#0E0C0A;color:var(--ink);font-size:16px;padding:0 14px;outline:none}
+.fld input:focus{border-color:var(--gold-br)}
+.err{font-size:13px;color:#E78A78;margin:6px 0 0;min-height:18px}
+.link{font-size:14px;color:var(--gold-br);cursor:pointer;background:none;border:0;padding:0;margin-top:4px}
+.back{position:absolute;top:18px;left:18px;width:42px;height:42px;border:0;background:none;color:var(--ink2);cursor:pointer}
+</style>
+</head>
+<body>
+<button class="back" id="back" style="display:none" aria-label="Назад"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+<div class="wrap" id="wrap"></div>
+
+<script>
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+var qs=new URLSearchParams(location.search);
+var JOIN=qs.get('join');
+
+function landing(){
+ document.getElementById('back').style.display='none';
+ var H='<div class="hero"><div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.3 6.2L20.5 11l-6.2 2.3L12 19.5 9.7 13.3 3.5 11l6.2-1.8z"/></svg></div>'+
+  '<div class="httl">Управляя поведением</div>'+
+  '<div class="hsub">Как люди принимают решения — и как честно применять это в продукте. База знаний для продакт-менеджеров.</div>'+
+  '<div class="cta"><button class="btn pri" id="toLogin">Войти</button><button class="btn ghost" id="reqInvite">Запросить приглашение</button></div></div>';
+ H+='<div class="sections">'+
+  sec('01','База знаний','517 связанных идей из поведенческой экономики, когнитивной и социальной психологии, UX и продуктовых практик — в одном графе.')+
+  sec('02','Инструмент для продакта','Не энциклопедия, а рабочий слой: под каждую ситуацию продукта — какие силы в игре и какие приёмы их используют.')+
+  sec('03','Честный слой для ИИ (MCP)','Те же знания доступны любому ИИ-ассистенту через MCP — с пометками, где идея спорна, а где ещё не доказана.')+
+  sec('04','Принципы','Мы честно помечаем устойчивость каждой идеи и никогда не применяем тёмные паттерны к своим читателям — даже когда разбираем их.')+
+  '</div>';
+ // реальная честная карточка-пример
+ H+='<div class="example"><div class="lbl">Так выглядит честный разбор внутри:</div>'+
+  '<div class="card"><div class="chip"><span class="d"></span>Неоднозначно</div><h2>Модель крючка (Hook Model)</h2>'+
+  '<div class="lead">Привычка к продукту формируется петлёй: триггер → действие → переменное вознаграждение → вложение. Знаменитый рецепт удержания.</div>'+
+  '<div class="honest"><div class="l">А как на самом деле</div><div class="b">Тот же механизм, что строит полезную привычку, строит и вредную зависимость: переменное вознаграждение эксплуатирует дофаминовую систему помимо воли. Автор сам ввёл «матрицу манипуляции» — вопрос не «как зацепить», а «служит ли петля пользователю».</div></div></div>'+
+  '<div class="note">Эту честность видит даже гость — без входа. Для реакций, заметок и полного доступа нужно приглашение.</div></div>';
+ document.getElementById('wrap').innerHTML=H;
+ document.getElementById('toLogin').onclick=login;
+ document.getElementById('reqInvite').onclick=function(){ requestInvite(); };
+}
+function sec(n,t,p){ return '<div class="sec"><div class="n">'+n+'</div><h3>'+esc(t)+'</h3><p>'+esc(p)+'</p></div>'; }
+
+function login(){
+ document.getElementById('back').style.display='';
+ document.getElementById('wrap').innerHTML='<div class="panel"><h2>Вход</h2><div class="ps">Войдите в свой аккаунт.</div>'+
+  '<div class="fld"><label>Email</label><input id="email" type="email" autocomplete="email" placeholder="you@example.com"></div>'+
+  '<div class="fld"><label>Пароль</label><input id="pass" type="password" autocomplete="current-password" placeholder="••••••••"></div>'+
+  '<div class="err" id="err"></div>'+
+  '<button class="btn pri" id="doLogin" style="width:100%;margin-top:6px">Войти</button>'+
+  '<button class="link" id="forgot">Забыли пароль?</button></div>';
+ document.getElementById('back').onclick=landing;
+ document.getElementById('doLogin').onclick=function(){ doAuth('login'); };
+ document.getElementById('forgot').onclick=function(){ document.getElementById('err').textContent='Восстановление: введите email и мы пришлём ссылку (доступно онлайн).'; };
+}
+function requestInvite(){
+ document.getElementById('back').style.display='';
+ document.getElementById('wrap').innerHTML='<div class="panel"><h2>Приглашение</h2><div class="ps">Доступ — по приглашению от участника. Если у вас есть ссылка-приглашение, откройте её — она приведёт сюда с формой регистрации.</div>'+
+  '<p style="color:var(--ink2);font-size:14px;line-height:21px">Пока проект открывается узкому кругу. Честный слой (карточки и разборы) доступен и без входа — просто листайте базу.</p>'+
+  '<button class="btn ghost" id="toLogin2" style="width:100%;margin-top:10px">У меня уже есть аккаунт</button></div>';
+ document.getElementById('back').onclick=landing;
+ document.getElementById('toLogin2').onclick=login;
+}
+function redeem(code){
+ document.getElementById('back').style.display='';
+ document.getElementById('wrap').innerHTML='<div class="panel"><h2>Регистрация по приглашению</h2><div class="ps">Приглашение действует ограниченное время. Заполните, чтобы создать аккаунт.</div>'+
+  '<div class="fld"><label>Имя</label><input id="name" placeholder="Как вас называть"></div>'+
+  '<div class="fld"><label>Email</label><input id="email" type="email" autocomplete="email"></div>'+
+  '<div class="fld"><label>Пароль</label><input id="pass" type="password" autocomplete="new-password"></div>'+
+  '<div class="err" id="err"></div>'+
+  '<button class="btn pri" id="doJoin" style="width:100%;margin-top:6px">Создать аккаунт</button></div>';
+ document.getElementById('back').onclick=landing;
+ document.getElementById('doJoin').onclick=function(){ doAuth('join',code); };
+}
+
+function doAuth(mode,code){
+ var err=document.getElementById('err'); err.textContent='';
+ var email=(document.getElementById('email')||{}).value, pass=(document.getElementById('pass')||{}).value, name=(document.getElementById('name')||{}).value;
+ if(!email||!pass){ err.textContent='Введите email и пароль.'; return; }
+ if(mode==='join' && !name){ err.textContent='Укажите имя.'; return; }
+ if(!window.__SB){ err.textContent='Нет соединения с базой — попробуйте онлайн.'; return; }
+ if(mode==='login'){
+  window.__SB.auth.signInWithPassword({email:email,password:pass}).then(function(r){ if(r.error){ err.textContent=ruErr(r.error.message); } else { location.href='solve-home.html'; } }).catch(function(){ err.textContent='Не удалось войти.'; });
+ } else {
+  window.__SB.auth.signUp({email:email,password:pass}).then(function(r){ if(r.error){ err.textContent=ruErr(r.error.message); return; }
+   window.__SB.rpc('invite_redeem',{p_code:code,p_name:name}).then(function(rr){ if(rr&&rr.error){ err.textContent=ruErr(rr.error.message); } else { location.href='solve-home.html'; } }).catch(function(){ location.href='solve-home.html'; });
+  }).catch(function(){ err.textContent='Не удалось создать аккаунт.'; });
+ }
+}
+function ruErr(m){ m=String(m||''); if(/Invalid login/i.test(m)) return 'Неверный email или пароль.'; if(/already registered/i.test(m)) return 'Этот email уже зарегистрирован — войдите.'; if(/expired|invalid.*code|not found/i.test(m)) return 'Приглашение недействительно или истекло.'; return m; }
+
+// маршрут
+if(JOIN) redeem(JOIN); else landing();
+
+// живой режим: уже залогинен → в приложение; иначе готовим клиент для форм
+(function boot(){
+ function go(){
+  try{
+   if(!(window.SUPABASE_URL && window.SUPABASE_ANON_KEY && window.supabase && window.supabase.createClient)) return;
+   var SB=window.supabase.createClient(String(window.SUPABASE_URL).trim(),String(window.SUPABASE_ANON_KEY).trim()); window.__SB=SB;
+   SB.auth.getSession().then(function(s){ if(s&&s.data&&s.data.session && !JOIN){ location.href='solve-home.html'; } }).catch(function(){});
+  }catch(_){}
+ }
+ function load(src,cb){ var sc=document.createElement('script'); sc.src=src; sc.onload=cb; sc.onerror=cb; document.head.appendChild(sc); }
+ function loadCfg(done){ var ps=['../config.js','./config.js','config.js','/book-reader/config.js']; var i=0; (function nx(){ if(window.SUPABASE_URL||i>=ps.length) return done(); var sc=document.createElement('script'); sc.src=ps[i++]; sc.onload=function(){ setTimeout(function(){ window.SUPABASE_URL?done():nx(); },0); }; sc.onerror=nx; document.head.appendChild(sc); })(); }
+  loadCfg(function(){ load('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2', go); });
+})();
+</script>
+</body>
+</html>
