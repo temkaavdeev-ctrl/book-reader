@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ситуации — Матчасть</title>
+<style>
+:root{
+ --bg:#FBFAF7; --ink:#17150F; --ink2:#56504A; --meta:#8B847B; --line:#ECE7DD; --card:#fff;
+ --gold:#B06A1F; --gold-br:#C98A3A;
+ --solid:#2F7D4F; --mixed:#B8801F; --contested:#C2452F; --inbox:#8B847B; --force:#6B5CA5; --tool:#2F8E8E;
+ --pill:999px; --r:18px; --rs:14px;
+ --sh:0 2px 12px rgba(20,17,12,.05),0 1px 2px rgba(20,17,12,.04);
+}
+*{box-sizing:border-box} html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;font-size:16px;line-height:24px;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+.wrap{max-width:680px;margin:0 auto;min-height:100vh;padding:0 20px calc(80px + env(safe-area-inset-bottom))}
+.bar{position:sticky;top:0;z-index:20;background:rgba(251,250,247,.94);backdrop-filter:blur(8px);display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--line)}
+.ib{width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;border:0;background:none;color:var(--ink2);border-radius:var(--pill);cursor:pointer}.ib:active{background:var(--line)}
+.bt{font-size:15px;font-weight:700}
+.head{padding:16px 0 4px}
+.kick{font-size:13px;font-weight:600;color:var(--gold)}
+.h1{font-size:30px;line-height:35px;font-weight:800;letter-spacing:-.02em;margin:3px 0 6px}
+.sub{font-size:15px;line-height:21px;color:var(--ink2)}
+.stages{display:flex;gap:7px;overflow-x:auto;margin:16px -20px 4px;padding:2px 20px 8px;scrollbar-width:none}.stages::-webkit-scrollbar{display:none}
+.stg{flex:none;font-size:13px;font-weight:600;color:var(--meta);background:#fff;border:1px solid var(--line);border-radius:var(--pill);padding:6px 13px;white-space:nowrap}
+.stg.has{color:var(--ink);border-color:var(--gold-br)}
+.seclbl{font-size:14px;color:var(--meta);font-weight:600;margin:22px 0 4px}
+.sit{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--sh);cursor:pointer;margin-top:12px}
+.sit:active{transform:scale(.995)}
+.sit .st{font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--gold)}
+.sit .ti{font-size:19px;line-height:24px;font-weight:700;margin:5px 0 6px}
+.sit .cl{font-size:15px;line-height:21px;color:var(--ink2)}
+.sit .mt{margin-top:13px;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--meta)}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600}
+.chip .d{width:8px;height:8px;border-radius:50%}.chip.solid .d{background:var(--solid)}.chip.mixed .d{background:var(--mixed)}.chip.contested .d{background:var(--contested)}.chip.inbox .d{background:var(--inbox)}
+.grow{margin-top:20px;font-size:14px;line-height:20px;color:var(--meta);background:#fff;border:1px dashed var(--line);border-radius:12px;padding:14px}
+/* деталь */
+.dtype{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap;margin:16px 0 8px}
+.badge{font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--gold);background:rgba(176,106,31,.09);padding:4px 10px;border-radius:var(--pill)}
+.rob{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--ink2);border:1px solid var(--line);border-radius:var(--pill);padding:3px 10px}
+.rob .d{width:8px;height:8px;border-radius:50%}.rob.solid .d{background:var(--solid)}.rob.mixed .d{background:var(--mixed)}.rob.contested .d{background:var(--contested)}
+.dt{font-size:28px;line-height:33px;font-weight:800;letter-spacing:-.02em;margin:2px 0 14px}
+.lead{font-size:16px;line-height:25px}
+.wedge{margin-top:16px;display:grid;gap:10px}
+.we{border-radius:var(--rs);padding:14px 16px;font-size:15px;line-height:22px}
+.we.seem{background:#fff;border:1px solid var(--line)}
+.we.real{background:#211C16;color:#EFE6D7}
+.we .l{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;margin-bottom:6px}
+.we.seem .l{color:var(--meta)}.we.real .l{color:var(--gold-br)}
+.moves{margin-top:20px;background:#fff;border:1px solid var(--line);border-radius:var(--rs);padding:16px 18px;box-shadow:var(--sh)}
+.moves .l{font-size:13px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px}
+.moves .b{font-size:16px;line-height:25px;white-space:pre-line}
+.grp{margin-top:26px}
+.grp h2{font-size:18px;font-weight:700;margin:0 0 4px}
+.grp .gh{font-size:13px;color:var(--meta);margin-bottom:8px}
+.lk{display:flex;align-items:center;gap:12px;padding:13px 2px;border-bottom:1px solid var(--line);cursor:pointer}
+.lk:last-child{border-bottom:0}.lk:active{background:#fff}
+.lk .d{width:10px;height:10px;border-radius:50%;flex:none}
+.lk .d.solid{background:var(--solid)}.lk .d.mixed{background:var(--mixed)}.lk .d.contested{background:var(--contested)}.lk .d.inbox{background:var(--inbox)}
+.lk .n{flex:1;font-size:16px;font-weight:600;min-width:0}
+.lk .tag{font-size:12px;font-weight:600;color:var(--meta)}
+.lk .tag.force{color:var(--force)}.lk .tag.tool{color:var(--tool)}
+.lk .cv{color:var(--meta)}
+.empty{padding:40px 0;text-align:center;color:var(--meta)}
+.skel div{height:60px;background:linear-gradient(90deg,#EFEBE2,#F6F3ED,#EFEBE2);background-size:200% 100%;animation:sh 1.2s infinite;border-radius:12px;margin-bottom:10px}
+@keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:10;background:rgba(251,250,247,.94);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.navin{max-width:720px;margin:0 auto;display:flex}
+.ni{flex:1;min-height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:none;border:0;color:var(--meta);cursor:pointer}
+.ni svg{width:24px;height:24px}.ni .lb{font-size:11px;font-weight:600}.ni.on{color:var(--gold)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <div class="bar">
+  <button class="ib" id="back" aria-label="Назад"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+  <div class="bt" id="barTitle">Ситуации</div>
+ </div>
+ <div id="body"></div>
+</div>
+
+<nav class="nav"><div class="navin">
+ <button class="ni" onclick="location.href='explore.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 1.5L13 16l-1.5-4.5z"/></svg><span class="lb">Исследовать</span></button>
+ <button class="ni on" onclick="location.href='solve-home.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5A2.5 2.5 0 0 0 6.5 8H20"/></svg><span class="lb">Решить</span></button>
+ <button class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v-8"/><path d="M12 12c0-4 3-6 7-6 0 4-3 6-7 6z"/><path d="M12 14c0-3-2-5-6-5 0 3 2 5 6 5z"/></svg><span class="lb">Расти</span></button>
+ <button class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span class="lb">Меню</span></button>
+</div></nav>
+
+<script>
+var STAGES=["Привлечение","Онбординг","Активация","Привычка","Монетизация","Удержание","Отток"];
+var ROBT={solid:"Подтверждено",mixed:"Неоднозначно",contested:"Спорно",inbox:"В проработке"};
+// СИД: реальная публичная ситуация Service Recovery + её публичные силы
+var SEED_HUB=[
+ {slug:"scenario-recovery",title:"Восстановление после сбоя",stage:"Удержание",rob:"mixed",
+  clin:"Продукт подвёл — упал сервис, зависла оплата. Кажется, доверие потеряно. На деле грамотный recovery может оставить пользователя довольнее, чем до сбоя.",
+  forces:3,tools:1}
+];
+var SEED_DETAIL={
+ "scenario-recovery":{
+  title:"Восстановление после сбоя (Service Recovery)", rob:"mixed", stage:"Удержание",
+  lead:"Продукт подвёл — упал сервис, зависла оплата, пришёл неверный результат. Service recovery — управление тем, что происходит ПОСЛЕ сбоя. Доверие рушится асимметрично: один инцидент перечёркивает несколько удачных опытов. Но парадокс: грамотный recovery может оставить пользователя довольнее, чем до сбоя (Service Recovery Paradox, McCollough & Bharadwaj 1992).",
+  moves:"1. Проектируй failure flows заранее: на сервис-блупринте отметь точки сбоев и заготовь шаблоны коммуникации до инцидента.\n2. Скорость признания важнее полноты: «мы знаем, работаем» за 5 минут ценнее детального разбора через час.\n3. Уведомляй до того, как пользователь заметил — это меняет атрибуцию с «скрывают» на «следят».\n4. Управляй финалом: опыт должен закрыться позитивно — компенсация, подтверждение, следующий шаг.\n5. Никогда не показывай «успешный» экран при реальном фейле.",
+  forces:[
+   {slug:"trust-repair-asymmetry",title:"Асимметрия восстановления доверия",rob:"solid"},
+   {slug:"peak-end-rule",title:"Правило пика и финала",rob:"solid"},
+   {slug:"pratfall-effect",title:"Эффект оплошности (Pratfall)",rob:"mixed"}
+  ],
+  tools:[], adjacent:[]
+ }
+};
+
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+var REL_FORCE={"involves-force":1}, REL_TOOL={"uses-tool":1}, REL_ADJ={"adjacent-to":1,"mechanism-of":1,"same-family":1};
+
+var qs=new URLSearchParams(location.search);
+var SLUG=qs.get('slug');
+
+function robChip(r){ return '<span class="rob '+r+'"><span class="d"></span>'+(ROBT[r]||'')+'</span>'; }
+function rowsHtml(list,tag){
+ return list.map(function(n){ return '<div class="lk" data-go="'+esc(n.slug)+'"><span class="d '+(n.rob||'mixed')+'"></span><span class="n">'+esc(n.title)+'</span>'+(tag?'<span class="tag '+tag+'">'+(tag==='force'?'сила':'инструмент')+'</span>':'')+'<svg class="cv" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>'; }).join('');
+}
+
+function renderHub(list){
+ document.getElementById('barTitle').textContent='Ситуации';
+ var have={}; list.forEach(function(s){ if(s.stage) have[s.stage]=1; });
+ var H='<div class="head"><div class="kick">База знаний</div><div class="h1">Под твою задачу</div><div class="sub">Ситуации продукта — по тому, что ты сейчас строишь.</div></div>';
+ H+='<div class="stages">'+STAGES.map(function(s){return '<span class="stg'+(have[s]?' has':'')+'">'+s+'</span>';}).join('')+'</div>';
+ H+='<div class="seclbl">Готовые ситуации · '+list.length+'</div>';
+ H+=list.map(function(s){
+  return '<div class="sit" data-go="'+esc(s.slug)+'"><div class="st">'+(s.stage||'Ситуация')+'</div><div class="ti">'+esc(s.title)+'</div><div class="cl">'+esc(s.clin)+'</div>'+
+   '<div class="mt"><span class="chip '+s.rob+'"><span class="d"></span>'+(ROBT[s.rob]||'')+'</span><span>·</span><span>'+(s.forces||0)+' сил · '+(s.tools||0)+' инстр.</span></div></div>';
+ }).join('') || '<div class="empty">Ситуации скоро появятся.</div>';
+ H+='<div class="grow">Каркас из 7 стадий жизненного цикла наполняется — situations растут вглубь, а не вширь. Сейчас открыта '+list.length+', остальные дозревают.</div>';
+ document.getElementById('body').innerHTML=H;
+ bind();
+}
+
+function renderDetail(d){
+ document.getElementById('barTitle').textContent=d.stage||'Ситуация';
+ var H='<div class="dtype"><span class="badge">Ситуация'+(d.stage?' · '+d.stage:'')+'</span>'+robChip(d.rob||'mixed')+'</div>';
+ H+='<div class="dt">'+esc(d.title)+'</div>';
+ if(d.seem||d.real){
+  H+='<div class="wedge">'+(d.seem?'<div class="we seem"><div class="l">Кажется</div>'+esc(d.seem)+'</div>':'')+(d.real?'<div class="we real"><div class="l">На деле</div>'+esc(d.real)+'</div>':'')+'</div>';
+ } else if(d.lead){ H+='<div class="lead">'+esc(d.lead)+'</div>'; }
+ if(d.moves) H+='<div class="moves"><div class="l">Что делать</div><div class="b">'+esc(d.moves)+'</div></div>';
+ if(d.forces&&d.forces.length){ H+='<div class="grp"><h2>Силы в игре</h2><div class="gh">психологические механизмы, которые здесь работают</div>'+rowsHtml(d.forces,'force')+'</div>'; }
+ if(d.tools&&d.tools.length){ H+='<div class="grp"><h2>Инструменты</h2><div class="gh">приёмы и методы под эту ситуацию</div>'+rowsHtml(d.tools,'tool')+'</div>'; }
+ if(d.adjacent&&d.adjacent.length){ H+='<div class="grp"><h2>Рядом</h2><div class="gh">смежные ситуации и идеи</div>'+rowsHtml(d.adjacent,'')+'</div>'; }
+ document.getElementById('body').innerHTML=H;
+ bind();
+}
+
+function bind(){
+ Array.prototype.forEach.call(document.querySelectorAll('[data-go]'),function(el){ el.onclick=function(){
+  var s=el.getAttribute('data-go');
+  if(/^scenario-/.test(s)){ location.href='situations.html?slug='+encodeURIComponent(s); }
+  else { location.href='card.html?slug='+encodeURIComponent(s); }
+ }; });
+}
+document.getElementById('back').onclick=function(){ if(SLUG){ location.href='situations.html'; } else if(history.length>1) history.back(); else location.href='solve-home.html'; };
+
+// первичный рендер из сида
+if(SLUG && SEED_DETAIL[SLUG]) renderDetail(SEED_DETAIL[SLUG]);
+else if(SLUG) document.getElementById('body').innerHTML='<div class="skel"><div style="height:36px;width:60%"></div><div></div><div></div></div>';
+else renderHub(SEED_HUB);
+
+// живой режим
+(function boot(){
+ function classify(b){
+  var bs=b.body_struct||b.body||{}; var edges=b.edges||[];
+  var d={title:b.title, rob:b.robustness||'mixed',
+    seem:bs['механизм-заблуждения'], real:bs['как-на-самом-деле'],
+    lead:bs['суть'], moves:bs['применение'], forces:[],tools:[],adjacent:[]};
+  edges.forEach(function(e){ var it={slug:e.other,title:e.other_title||e.other,rob:e.other_robustness||'mixed'};
+   if(REL_FORCE[e.relation]) d.forces.push(it); else if(REL_TOOL[e.relation]) d.tools.push(it); else if(REL_ADJ[e.relation]) d.adjacent.push(it); });
+  return d;
+ }
+ function go(){
+  try{
+   if(!(window.SUPABASE_URL && window.SUPABASE_ANON_KEY && window.supabase && window.supabase.createClient)) return;
+   var SB=window.supabase.createClient(String(window.SUPABASE_URL).trim(),String(window.SUPABASE_ANON_KEY).trim());
+   SB.auth.getSession().then(function(s){ var member=!!(s&&s.data&&s.data.session);
+    if(SLUG){
+     SB.rpc(member?'kb_node_bundle':'kb_public_bundle',{p_slug:SLUG}).then(function(r){ if(r&&!r.error&&r.data){ var d=classify(r.data); d.stage=(SEED_DETAIL[SLUG]||{}).stage; renderDetail(d); } }).catch(function(){});
+    } else {
+     SB.rpc(member?'kb_graph':'kb_public_graph').then(function(r){ if(r&&!r.error&&r.data&&r.data.nodes){
+       var sits=r.data.nodes.filter(function(n){return n.kind==='scenario';}).map(function(n){
+         return {slug:n.slug,title:n.title,stage:null,rob:n.robustness||'mixed',clin:(n.claim||'').slice(0,120),forces:0,tools:0};
+       });
+       if(sits.length) renderHub(sits);
+     }}).catch(function(){});
+    }
+   }).catch(function(){});
+  }catch(_){}
+ }
+ function load(src,cb){ var s=document.createElement('script'); s.src=src; s.onload=cb; s.onerror=cb; document.head.appendChild(s); }
+ load('../config.js', function(){ load('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2', go); });
+})();
+</script>
+</body>
+</html>
