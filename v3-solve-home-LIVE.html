@@ -240,7 +240,7 @@ document.addEventListener('click',function(e){
  var el=e.target.closest('[data-k]'); if(!el) return; var k=el.getAttribute('data-k');
  if(k==='hero' && CUR.hero){ openSeedCard(CUR.hero.title, CUR.hero.rob, CUR.hero.card); return; }
  if(k[0]==='f' && k[1]!=='d'){ var fi=+k.slice(1); var f=CUR.featured&&CUR.featured[fi]; if(f) openSeedCard(f.title,f.rob,f.card); return; }
- if(k[0]==='t'){ var ti=+k.slice(1); var t=CUR.themes&&CUR.themes[ti]; if(t) liveCard((t.samples&&t.samples[0])||t.discipline); return; }
+ if(k[0]==='t'){ var ti=+k.slice(1); var t=CUR.themes&&CUR.themes[ti]; if(t){ var DKEY={"Поведенческая экономика":"be","Когнитивная психология":"cog","UX / HCI":"ux","UX/HCI":"ux","Социальная психология":"soc","Организационные системы":"org","Орг-системы":"org","Мотивация/идентичность":"mot","Продуктовые практики":"prod","Нейронаука/тело":"neu"}; var tk=DKEY[t.discipline]; location.href='concepts-browse.html'+(tk?('?theme='+tk):''); } return; }
  if(k[0]==='s' && k!=='s'){ var si=+k.slice(1); var s=CUR.situations&&CUR.situations[si]; if(s) liveCard(s.slug||s.title); return; }
  if(k[0]==='f'&&k[1]==='d'){ var di=+k.slice(2); var fd=CUR.findings&&CUR.findings[di]; if(fd) openSeedCard(fd.title, 'mixed', {lead:fd.teaser, apply:'Это пока гипотеза — помечаем, насколько подтверждена. Уверенность: '+(fd.conf||10)+'%.'}); return; }
  if(k==='rnd'){ var all=(CUR.featured||[]).concat(CUR.hero?[CUR.hero]:[]); var p=all[Math.floor(Math.random()*all.length)]; if(p) openSeedCard(p.title,p.rob,p.card); return; }
