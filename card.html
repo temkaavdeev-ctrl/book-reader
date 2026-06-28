@@ -50,6 +50,17 @@ h1.t{font-size:30px;line-height:36px;font-weight:800;letter-spacing:-.02em;margi
 .lk .n{font-size:15px;font-weight:600}
 .lk .r{font-size:12px;color:var(--meta);white-space:nowrap}
 .lk .r.tension{color:var(--tension);font-weight:600}
+.mini{margin-top:10px}
+.mini svg{width:100%;height:auto;display:block;overflow:visible}
+.mini .mlbl{font-size:11px;font-weight:600;fill:var(--ink2)}
+.mini .medge{stroke:#D8CFBE;stroke-width:1.4}
+.mini .medge.tension{stroke:var(--tension);stroke-dasharray:2 4}
+.mini .mn{cursor:pointer}
+.mini .cap{font-size:10px;fill:var(--meta);font-weight:600}
+.morelinks{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chip2{font-size:13px;font-weight:600;color:var(--ink2);background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 12px;cursor:pointer;text-decoration:none}
+.chip2.tension{color:var(--tension);border-color:#E8C9CF}
+.minihint{font-size:12px;line-height:17px;color:var(--meta);margin-top:12px}
 .foot{margin-top:28px;font-size:13px;color:var(--meta);border-top:1px solid var(--line);padding-top:14px}
 .cta{position:fixed;left:0;right:0;bottom:0;z-index:30;background:linear-gradient(transparent,rgba(251,250,247,.9) 24%,#FBFAF7 50%);padding:18px 20px calc(18px + env(safe-area-inset-bottom))}
 .cta-in{max-width:680px;margin:0 auto}
@@ -116,6 +127,17 @@ var SEC=[
 ];
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
 function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('on');},1800);}
+function miniGraph(centerTitle, edges){
+ var n=Math.min(edges.length,6); if(!n) return '';
+ var cx=160,cy=120,rx=112,ry=80;
+ var nodes=[]; for(var i=0;i<n;i++){ var a=-Math.PI/2 + i*(2*Math.PI/n); nodes.push({x:cx+rx*Math.cos(a), y:cy+ry*Math.sin(a), e:edges[i], a:a}); }
+ var E=''; nodes.forEach(function(nd){ var t=(REL[nd.e.relation]||[0,0])[1]; E+='<line class="medge'+(t?' tension':'')+'" x1="'+cx+'" y1="'+cy+'" x2="'+nd.x.toFixed(1)+'" y2="'+nd.y.toFixed(1)+'"/>'; });
+ var N=''; nodes.forEach(function(nd){ var t=(REL[nd.e.relation]||[0,0])[1]; var below=nd.y<=cy+6; var ly=below?nd.y+20:nd.y-12;
+   var lab=(nd.e.other_title||nd.e.other); lab=lab.length>13?lab.slice(0,12)+'…':lab;
+   N+='<g class="mn" data-go="'+esc(nd.e.other)+'"><circle cx="'+nd.x.toFixed(1)+'" cy="'+nd.y.toFixed(1)+'" r="8" fill="'+(t?'#C2546A':'#C98A3A')+'"/><text class="mlbl" x="'+nd.x.toFixed(1)+'" y="'+ly.toFixed(1)+'" text-anchor="middle">'+esc(lab)+'</text></g>'; });
+ var C='<circle cx="'+cx+'" cy="'+cy+'" r="19" fill="#17150F"/><text x="'+cx+'" y="'+(cy+5)+'" text-anchor="middle" font-size="15" fill="#E7C07A">✦</text><text class="cap" x="'+cx+'" y="'+(cy+34)+'" text-anchor="middle">эта идея</text>';
+ return '<div class="mini"><svg viewBox="0 0 320 240" preserveAspectRatio="xMidYMid meet">'+E+N+C+'</svg></div>';
+}
 
 var CUR=null;
 function render(d){
@@ -153,12 +175,13 @@ function render(d){
   if(b['источники']) H+='<div class="sec src"><div class="l">Источники</div><div class="b">'+esc(b['источники'])+'</div></div>';
   H+='</div>';
  }
- // СВЯЗИ
- var edges=(d.edges||[]);
+ // СВЯЗИ — мини-граф
+ var edges=(d.edges||[]).slice().sort(function(a,bb){ return ((REL[bb.relation]||[0,0])[1]) - ((REL[a.relation]||[0,0])[1]); });
  if(edges.length){
-  H+='<div class="links"><h2>Связи</h2>';
-  edges.slice(0,8).forEach(function(e){ var rl=REL[e.relation]||[e.relation,0];
-   H+='<a class="lk" data-go="'+esc(e.other)+'"><span class="n">'+esc(e.other_title||e.other)+'</span><span class="r'+(rl[1]?' tension':'')+'">'+esc(rl[0])+' →</span></a>'; });
+  H+='<div class="links"><h2>Связи</h2>'+miniGraph(d.title, edges);
+  var extra=edges.slice(6);
+  if(extra.length){ H+='<div class="morelinks">'+extra.map(function(e){var rl=REL[e.relation]||[e.relation,0];return '<a class="chip2'+(rl[1]?' tension':'')+'" data-go="'+esc(e.other)+'">'+esc(e.other_title||e.other)+'</a>';}).join('')+'</div>'; }
+  H+='<div class="minihint">Красным — спорные и конкурирующие связи. Нажмите узел, чтобы перейти.</div>';
   H+='</div>';
  }
  // подвал
@@ -206,8 +229,9 @@ render(SEED);
  }
  function load(src,cb){ var s=document.createElement('script'); s.src=src; s.onload=cb; s.onerror=cb; document.head.appendChild(s); }
  function loadCfg(done){ var ps=['../config.js','./config.js','config.js','/book-reader/config.js']; var i=0; (function nx(){ if(window.SUPABASE_URL||i>=ps.length) return done(); var sc=document.createElement('script'); sc.src=ps[i++]; sc.onload=function(){ setTimeout(function(){ window.SUPABASE_URL?done():nx(); },0); }; sc.onerror=nx; document.head.appendChild(sc); })(); }
-  loadCfg(function(){ load('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2', go2); });
+  loadCfg(function(){ load('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.108.2', go2); });
 })();
 </script>
+<script>if('serviceWorker' in navigator){try{navigator.serviceWorker.register('sw.js').catch(function(){});}catch(e){}}</script>
 </body>
 </html>

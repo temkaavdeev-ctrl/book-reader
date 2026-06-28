@@ -129,6 +129,19 @@ function hash(s){var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i)
 var W=1000,H=1000, VISITED={}, MEMBER=false, TOTAL=517;
 var NODES=[], EDGES=[], POS={};
 
+// ===== route-on-sky (путь квеста на небе) =====
+var ROUTE=null;
+var _eq=new URLSearchParams(location.search); var QKEY=_eq.get('quest'); var QPATH=_eq.get('path');
+var SEED_QUEST={'m1-osnovy':{title:'Основы продуктового мышления',slugs:['jtbd','mvp','build-trap','product-market-fit','north-star-metric']}};
+function routeSet(){ var m={}; if(ROUTE&&ROUTE.slugs) ROUTE.slugs.forEach(function(s,i){ m[s]=i+1; }); return m; }
+function setRoute(title,slugs){ ROUTE={title:title||'Маршрут',slugs:(slugs||[]).slice()}; render(); fitRoute(); }
+function exitRoute(){ ROUTE=null; render(); }
+function fitRoute(){ if(!ROUTE) return; var xs=[],ys=[]; ROUTE.slugs.forEach(function(s){ var p=POS[s]; if(p){xs.push(p[0]);ys.push(p[1]);} }); if(!xs.length) return;
+ var minX=Math.min.apply(null,xs),maxX=Math.max.apply(null,xs),minY=Math.min.apply(null,ys),maxY=Math.max.apply(null,ys);
+ var cx=(minX+maxX)/2, cy=(minY+maxY)/2, w=Math.max(140,maxX-minX), h=Math.max(140,maxY-minY);
+ T.k=Math.max(0.6,Math.min(2.2, 600/Math.max(w,h))); T.x=500-cx*T.k; T.y=500-cy*T.k; applyT();
+}
+
 function layout(nodes){
  // кластеры по дисциплинам на эллипсе
  var byD={}; nodes.forEach(function(n){ (byD[n.d]=byD[n.d]||[]).push(n); });
@@ -146,15 +159,27 @@ function draw(){
  var vp=document.getElementById('vp'); var ns='http://www.w3.org/2000/svg';
  var frag=document.createDocumentFragment();
  var LBL=pickLabels();
+ var RS = ROUTE ? routeSet() : null;
  // рёбра
  EDGES.forEach(function(e){ var a=POS[e[0]],b=POS[e[1]]; if(!a||!b) return;
   var ln=document.createElementNS(ns,'line'); ln.setAttribute('x1',a[0]);ln.setAttribute('y1',a[1]);ln.setAttribute('x2',b[0]);ln.setAttribute('y2',b[1]);
-  ln.setAttribute('class','edge'+(e[2]?' tension':'')); ln.setAttribute('stroke-width',e[2]?1.1:0.8); frag.appendChild(ln); });
+  ln.setAttribute('class','edge'+(e[2]?' tension':'')); ln.setAttribute('stroke-width',e[2]?1.1:0.8); if(RS) ln.setAttribute('stroke-opacity','0.08'); frag.appendChild(ln); });
+ // путь маршрута (по порядку остановок)
+ if(RS){ var pts=ROUTE.slugs.map(function(s){return POS[s];}).filter(Boolean);
+  for(var ri=0;ri<pts.length-1;ri++){ var pl=document.createElementNS(ns,'line'); pl.setAttribute('x1',pts[ri][0]);pl.setAttribute('y1',pts[ri][1]);pl.setAttribute('x2',pts[ri+1][0]);pl.setAttribute('y2',pts[ri+1][1]); pl.setAttribute('stroke',cssv('--gold-br')); pl.setAttribute('stroke-width','2.4'); pl.setAttribute('stroke-opacity','0.85'); pl.setAttribute('stroke-linecap','round'); pl.setAttribute('stroke-dasharray','1 7'); frag.appendChild(pl); } }
  // узлы
  NODES.forEach(function(n,i){ var p=POS[n.s]; if(!p) return; var lit=MEMBER?!!VISITED[n.s]:false;
   var col=cssv(DCOLVAR[n.d]||'--def'); var r=nodeR(n.g);
   var g=document.createElementNS(ns,'g'); g.setAttribute('class','node-hit'); g.setAttribute('data-slug',n.s); g.style.opacity='0';
-  g.style.animation='none'; setTimeout((function(gg,d){return function(){gg.style.transition='opacity .5s';gg.style.opacity='1';};})(g,i),Math.min(900,i*8));
+  g.style.animation='none'; setTimeout((function(gg){return function(){gg.style.transition='opacity .5s';gg.style.opacity='1';};})(g),Math.min(900,i*8));
+  if(RS){ var stop=RS[n.s];
+   if(stop){ var hlr=document.createElementNS(ns,'circle'); hlr.setAttribute('cx',p[0]);hlr.setAttribute('cy',p[1]);hlr.setAttribute('r',r+9);hlr.setAttribute('fill',cssv('--gold'));hlr.setAttribute('opacity','0.22'); g.appendChild(hlr);
+    var cr=document.createElementNS(ns,'circle'); cr.setAttribute('cx',p[0]);cr.setAttribute('cy',p[1]);cr.setAttribute('r',Math.max(r,9)+1); cr.setAttribute('fill',cssv('--gold-br')); cr.setAttribute('stroke','#1A1407'); cr.setAttribute('stroke-width','1.5'); g.appendChild(cr);
+    var num=document.createElementNS(ns,'text'); num.setAttribute('x',p[0]);num.setAttribute('y',p[1]+4);num.setAttribute('text-anchor','middle');num.setAttribute('font-size','12');num.setAttribute('font-weight','800');num.setAttribute('fill','#1A1407');num.textContent=stop; g.appendChild(num);
+    var tr=document.createElementNS(ns,'text'); tr.setAttribute('x',p[0]);tr.setAttribute('y',p[1]+Math.max(r,9)+18);tr.setAttribute('class','lbl');tr.setAttribute('fill',cssv('--gold-br'));tr.textContent=n.t.length>22?n.t.slice(0,21)+'…':n.t; g.appendChild(tr);
+   } else { var cd=document.createElementNS(ns,'circle'); cd.setAttribute('cx',p[0]);cd.setAttribute('cy',p[1]);cd.setAttribute('r',r); cd.setAttribute('fill',col); cd.setAttribute('opacity','0.14'); g.appendChild(cd); }
+   frag.appendChild(g); return;
+  }
   if(lit){ var hl=document.createElementNS(ns,'circle'); hl.setAttribute('cx',p[0]);hl.setAttribute('cy',p[1]);hl.setAttribute('r',r+7);hl.setAttribute('fill',cssv('--gold'));hl.setAttribute('opacity','0.18'); g.appendChild(hl); }
   var c=document.createElementNS(ns,'circle'); c.setAttribute('cx',p[0]);c.setAttribute('cy',p[1]);c.setAttribute('r',r);
   if(MEMBER && !lit){ c.setAttribute('fill','#2A241C'); c.setAttribute('stroke',col); c.setAttribute('stroke-opacity','0.5'); c.setAttribute('stroke-width','1.4'); c.setAttribute('opacity','0.5'); }
@@ -177,11 +202,15 @@ function pickLabels(){
 function render(){ layout(NODES); draw(); updateTerr(); updateHint(); }
 function updateTerr(){
  var lit=Object.keys(VISITED).filter(function(s){return VISITED[s];}).length;
- document.getElementById('terrTxt').innerHTML = MEMBER ? ('зажёг <b>'+lit+'</b> из '+TOTAL) : (TOTAL+' идей · '+Object.keys(groupDisc()).length+' областей');
+ var el=document.getElementById('terr');
+ if(ROUTE){ document.getElementById('terrTxt').innerHTML='✕&nbsp; Маршрут: '+ROUTE.title; el.style.cursor='pointer'; el.onclick=exitRoute; }
+ else { document.getElementById('terrTxt').innerHTML = MEMBER ? ('зажёг <b>'+lit+'</b> из '+TOTAL) : (TOTAL+' идей · '+Object.keys(groupDisc()).length+' областей'); el.onclick=null; el.style.cursor=''; }
 }
 function groupDisc(){ var g={}; NODES.forEach(function(n){g[n.d]=1;}); return g; }
 function updateHint(){
- var h=document.getElementById('hint'); var lit=Object.keys(VISITED).filter(function(s){return VISITED[s];}).length;
+ var h=document.getElementById('hint');
+ if(ROUTE){ var k=ROUTE.slugs.length; h.textContent='Путь квеста: '+k+' остановок по порядку. Нажмите звезду, чтобы открыть.'; h.classList.add('on'); setTimeout(function(){h.classList.remove('on');},2800); return; }
+ var lit=Object.keys(VISITED).filter(function(s){return VISITED[s];}).length;
  if(MEMBER && lit===0){ h.textContent='Карта пока в тумане. Откройте любую идею — звезда зажжётся.'; h.classList.add('on'); }
  else if(!MEMBER){ h.textContent=''; h.classList.remove('on'); }
  else h.classList.remove('on');
@@ -234,6 +263,9 @@ map.addEventListener('touchend',function(){ _pd=0; });
 NODES=SEEDN.map(function(a){return {s:a[0],t:a[1],d:a[2],r:a[3],g:a[4],c:''};});
 EDGES=SEEDE.map(function(e){return [e[0],e[1],0];});
 TOTAL=517; render(); applyT();
+// маршрут из URL (сид-демо без сети)
+if(QPATH){ setRoute('Маршрут', QPATH.split(',')); }
+else if(QKEY && SEED_QUEST[QKEY]){ setRoute(SEED_QUEST[QKEY].title, SEED_QUEST[QKEY].slugs); }
 
 // живой режим: полный граф + туман
 (function boot(){
@@ -253,13 +285,15 @@ TOTAL=517; render(); applyT();
       EDGES=(r.data.edges||[]).map(function(e){return [e.src,e.dst, TENSION[e.relation]?1:0];});
       render(); applyT();
     }}).catch(function(){});
+    if(QKEY){ SB.from('quests').select('title,slugs').eq('key',QKEY).maybeSingle().then(function(r){ if(r&&!r.error&&r.data){ setRoute(r.data.title||'Маршрут', r.data.slugs||[]); } }).catch(function(){}); }
    }).catch(function(){});
   }catch(_){}
  }
  function load(src,cb){ var s=document.createElement('script'); s.src=src; s.onload=cb; s.onerror=cb; document.head.appendChild(s); }
  function loadCfg(done){ var ps=['../config.js','./config.js','config.js','/book-reader/config.js']; var i=0; (function nx(){ if(window.SUPABASE_URL||i>=ps.length) return done(); var sc=document.createElement('script'); sc.src=ps[i++]; sc.onload=function(){ setTimeout(function(){ window.SUPABASE_URL?done():nx(); },0); }; sc.onerror=nx; document.head.appendChild(sc); })(); }
-  loadCfg(function(){ load('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2', go); });
+  loadCfg(function(){ load('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.108.2', go); });
 })();
 </script>
+<script>if('serviceWorker' in navigator){try{navigator.serviceWorker.register('sw.js').catch(function(){});}catch(e){}}</script>
 </body>
 </html>
