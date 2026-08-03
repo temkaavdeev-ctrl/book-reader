@@ -159,7 +159,34 @@ a:focus-visible,button:focus-visible,[onclick]:focus-visible,.ni:focus-visible,.
 .thseg button.on{background:var(--card);color:var(--ink)}
 .thseg button:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
 </style>
-<style>/*mc:desktop*/@media(min-width:1020px){.nav{top:0;bottom:0;left:0;right:auto;width:92px;border-top:0;border-right:1px solid var(--line);padding-bottom:0}.navin{flex-direction:column;justify-content:center;gap:8px;height:100%;max-width:none}.ni{flex:0 0 auto;padding:13px 0;margin:0 10px;border-radius:12px}.ni.on{background:rgba(151,89,26,.08)}body{padding-left:92px}.wrap{max-width:760px}.cta{left:92px}.topbar{left:92px}}@media(hover:hover){.ni{transition:color .15s,background .15s}.ni:hover{color:var(--gold)}a{transition:opacity .12s}}</style>
+<style>
+/*mc:desktop v2 — десктопный слой (>=960px): левый рельс, ритм страницы, предметные ховеры.
+  Мобилка (<960px) не трогается. Заменяет прежний mc:desktop, который конфликтовал с MCDESK v1
+  (рельс 92px против 236px) и на всех страницах зажимал .wrap до 760px — из-за чего, например,
+  двухколоночная карточка концепта схлопывалась в 350px колонку чтения.*/
+@media(min-width:960px){
+ /* ── левый рельс: пункты сверху, а не по центру пустого экрана ── */
+ nav.nav .navin{justify-content:flex-start;padding:18px 12px 24px;gap:2px;overflow-y:auto}
+ nav.nav .navin::before{content:"Матчасть";display:block;flex:none;margin-bottom:8px;padding:4px 14px 15px;border-bottom:1px solid var(--line);font-size:15px;font-weight:800;letter-spacing:-.01em;color:var(--ink)}
+ nav.nav .ni{align-items:center;padding:11px 14px;border-radius:11px}
+ nav.nav .ni .lb{font-size:14.5px;letter-spacing:-.005em}
+ nav.nav .ni.on .lb{font-weight:700}
+ /* ── колонка контента: заголовок не липнет к верхней кромке окна ── */
+ .wrap{max-width:min(var(--dsk-wrap,760px),calc(100% - 48px));padding-top:36px}
+ /* фиксированные слои начинаются за рельсом, а не под ним */
+ body:has(nav.nav) .cta,body:has(nav.nav) .topbar,body:has(nav.nav) .start,body:has(nav.nav) .sheet{left:236px}
+}
+@media(min-width:960px) and (hover:hover){
+ /* было: любая ссылка и кнопка выцветали до .85 — вместо этого предметные состояния */
+ a:hover,button:hover,.ni:hover,.mrow:hover,.row:hover,.res:hover,.tbtn:hover,.fc:hover,.opt:hover,[data-k]:hover,[data-slug]:hover,[data-cont]:hover,[data-route]:hover,[data-q]:hover{opacity:1}
+ nav.nav .ni{transition:background .15s,color .15s}
+ nav.nav .ni:hover{background:rgba(176,106,31,.07);color:var(--gold)}
+ .rc,.chrow.live,.scd,.sit,.cont,.fc,.tile{transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease}
+ .rc:hover,.chrow.live:hover,.scd:hover,.sit:hover,.cont:hover,.fc:hover,.tile:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(20,17,12,.11);border-color:var(--gold-br)}
+ .hcta a:hover,.pnext button:hover,.start button:hover,.hacts .pri:hover,.fin .btns button.pri:hover,.cta button:hover{filter:brightness(1.08)}
+}
+@media(prefers-reduced-motion:reduce){nav.nav .ni,.rc,.chrow.live,.scd,.sit,.cont,.fc,.tile{transition:none}}
+</style>
 </head>
 <body>
 <script>/*mc:hashroute*/(function(){try{var m=(location.hash||"").match(/^#\/c\/([^?&#]+)/);if(m&&m[1]){location.replace("card.html?slug="+encodeURIComponent(decodeURIComponent(m[1])));}}catch(e){}})();</script>

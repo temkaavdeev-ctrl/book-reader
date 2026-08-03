@@ -99,7 +99,34 @@ a:focus-visible,button:focus-visible,[onclick]:focus-visible,.ni:focus-visible,.
 }
 @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}
 </style>
-<style>/*mc:desktop*/@media(min-width:1020px){.nav{top:0;bottom:0;left:0;right:auto;width:92px;border-top:0;border-right:1px solid var(--line);padding-bottom:0}.navin{flex-direction:column;justify-content:center;gap:8px;height:100%;max-width:none}.ni{flex:0 0 auto;padding:13px 0;margin:0 10px;border-radius:12px}.ni.on{background:rgba(151,89,26,.08)}body{padding-left:92px}.wrap{max-width:760px}.cta{left:92px}.topbar{left:92px}}@media(hover:hover){.ni{transition:color .15s,background .15s}.ni:hover{color:var(--gold)}a{transition:opacity .12s}}</style>
+<style>
+/*mc:desktop v2 — десктопный слой (>=960px): левый рельс, ритм страницы, предметные ховеры.
+  Мобилка (<960px) не трогается. Заменяет прежний mc:desktop, который конфликтовал с MCDESK v1
+  (рельс 92px против 236px) и на всех страницах зажимал .wrap до 760px — из-за чего, например,
+  двухколоночная карточка концепта схлопывалась в 350px колонку чтения.*/
+@media(min-width:960px){
+ /* ── левый рельс: пункты сверху, а не по центру пустого экрана ── */
+ nav.nav .navin{justify-content:flex-start;padding:18px 12px 24px;gap:2px;overflow-y:auto}
+ nav.nav .navin::before{content:"Матчасть";display:block;flex:none;margin-bottom:8px;padding:4px 14px 15px;border-bottom:1px solid var(--line);font-size:15px;font-weight:800;letter-spacing:-.01em;color:var(--ink)}
+ nav.nav .ni{align-items:center;padding:11px 14px;border-radius:11px}
+ nav.nav .ni .lb{font-size:14.5px;letter-spacing:-.005em}
+ nav.nav .ni.on .lb{font-weight:700}
+ /* ── колонка контента: заголовок не липнет к верхней кромке окна ── */
+ .wrap{max-width:min(var(--dsk-wrap,760px),calc(100% - 48px));padding-top:36px}
+ /* фиксированные слои начинаются за рельсом, а не под ним */
+ body:has(nav.nav) .cta,body:has(nav.nav) .topbar,body:has(nav.nav) .start,body:has(nav.nav) .sheet{left:236px}
+}
+@media(min-width:960px) and (hover:hover){
+ /* было: любая ссылка и кнопка выцветали до .85 — вместо этого предметные состояния */
+ a:hover,button:hover,.ni:hover,.mrow:hover,.row:hover,.res:hover,.tbtn:hover,.fc:hover,.opt:hover,[data-k]:hover,[data-slug]:hover,[data-cont]:hover,[data-route]:hover,[data-q]:hover{opacity:1}
+ nav.nav .ni{transition:background .15s,color .15s}
+ nav.nav .ni:hover{background:rgba(176,106,31,.07);color:var(--gold)}
+ .rc,.chrow.live,.scd,.sit,.cont,.fc,.tile{transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease}
+ .rc:hover,.chrow.live:hover,.scd:hover,.sit:hover,.cont:hover,.fc:hover,.tile:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(20,17,12,.11);border-color:var(--gold-br)}
+ .hcta a:hover,.pnext button:hover,.start button:hover,.hacts .pri:hover,.fin .btns button.pri:hover,.cta button:hover{filter:brightness(1.08)}
+}
+@media(prefers-reduced-motion:reduce){nav.nav .ni,.rc,.chrow.live,.scd,.sit,.cont,.fc,.tile{transition:none}}
+</style>
 </head>
 <body>
 <script>/*mc:hashroute*/(function(){try{var m=(location.hash||"").match(/^#\/c\/([^?&#]+)/);if(m&&m[1]){location.replace("card.html?slug="+encodeURIComponent(decodeURIComponent(m[1])));}}catch(e){}})();</script>
@@ -211,6 +238,13 @@ var SEED_ROUTES=[
 /* состояние */
 var VW=0,VH=0, DPR=Math.max(1,Math.min(3,window.devicePixelRatio||1));
 var cam={k:1,ox:0,oy:0}, FITK=1, DRIFTX=0, DRIFTY=0, MAXDEG=18;
+/* На десктопе слева стоит рельс навигации (236px) и накрывает край карты — подписи
+   узлов уезжали под него. Холст остаётся во весь вьюпорт (значит вся математика по
+   clientX/clientY цела), а камера центрируется по ВИДИМОЙ части. */
+var RAILW=0;
+function railW(){try{return (window.innerWidth>=960 && document.querySelector('nav.nav'))?236:0;}catch(e){return 0;}}
+function VWU(){return Math.max(240,VW-RAILW);}   /* видимая ширина */
+function VCX(){return RAILW+VWU()/2;}            /* центр видимой части */
 var VISITED={}, MEMBER=false, TOTAL=0, NODES=[], BYID={}, EDGES=[], ADJ={};
 // синхронно: токен сессии в localStorage → участник сразу (без гостевого мелькания бейджа)
 try{ for(var _i=0;_i<localStorage.length;_i++){ var _k=localStorage.key(_i); if(_k&&_k.indexOf('sb-')===0&&_k.indexOf('-auth-token')>0){ var _v=localStorage.getItem(_k); if(_v&&_v.length>20){ MEMBER=true; break; } } } }catch(e){}
@@ -271,9 +305,9 @@ function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a
 function s2w(sx,sy){return [(sx-cam.ox-DRIFTX)/cam.k,(sy-cam.oy-DRIFTY)/cam.k];}
 function wx2s(x){return x*cam.k+cam.ox+DRIFTX;}
 function wy2s(y){return y*cam.k+cam.oy+DRIFTY;}
-function resize(){VW=window.innerWidth;VH=window.innerHeight;cvs.width=VW*DPR;cvs.height=VH*DPR;cvs.style.width=VW+'px';cvs.style.height=VH+'px';ctx.setTransform(DPR,0,0,DPR,0,0);buildStarfield();}
+function resize(){VW=window.innerWidth;VH=window.innerHeight;RAILW=railW();cvs.width=VW*DPR;cvs.height=VH*DPR;cvs.style.width=VW+'px';cvs.style.height=VH+'px';ctx.setTransform(DPR,0,0,DPR,0,0);buildStarfield();}
 function worldBounds(){var x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;NODES.forEach(function(n){if(n.x==null)return;if(n.x<x0)x0=n.x;if(n.y<y0)y0=n.y;if(n.x>x1)x1=n.x;if(n.y>y1)y1=n.y;});if(x0>x1){x0=0;y0=0;x1=WORLD;y1=WORLD;}return [x0,y0,x1,y1];}
-function fitView(animate){var b=worldBounds(),w=Math.max(1,b[2]-b[0]),h=Math.max(1,b[3]-b[1]);var padX=Math.min(60,VW*0.06),padTop=96,padBot=106;var usableH=Math.max(120,VH-padTop-padBot);var k=Math.min((VW-padX*2)/w,usableH/h);var cx=(b[0]+b[2])/2,cy=(b[1]+b[3])/2;FITK=k;var tgt={k:k,ox:VW/2-cx*k,oy:(padTop+usableH/2)-cy*k};if(animate)animateCam(tgt,520);else{cam.k=tgt.k;cam.ox=tgt.ox;cam.oy=tgt.oy;}}
+function fitView(animate){var b=worldBounds(),w=Math.max(1,b[2]-b[0]),h=Math.max(1,b[3]-b[1]);var padX=RAILW?Math.min(110,VWU()*0.09):Math.min(60,VWU()*0.06),padTop=96,padBot=106;var usableH=Math.max(120,VH-padTop-padBot);var k=Math.min((VWU()-padX*2)/w,usableH/h);var cx=(b[0]+b[2])/2,cy=(b[1]+b[3])/2;FITK=k;var tgt={k:k,ox:VCX()-cx*k,oy:(padTop+usableH/2)-cy*k};if(animate)animateCam(tgt,520);else{cam.k=tgt.k;cam.ox=tgt.ox;cam.oy=tgt.oy;}}
 function setAppearThresholds(){var arr=NODES.slice().sort(function(a,b){return (b.g||0)-(a.g||0);});for(var i=0;i<arr.length;i++){var q=arr.length>1?i/(arr.length-1):0;arr[i].appearK=FITK*(0.82+1.9*q*q);}}
 function setIgnite(){var maxD=1;NODES.forEach(function(n){if(n.x==null)return;var d=Math.hypot(n.x-CX,n.y-CY);if(d>maxD)maxD=d;});NODES.forEach(function(n){var dN=n.x==null?0.5:Math.hypot(n.x-CX,n.y-CY)/maxD;n.ig=0.62*dN+0.38*(1-Math.min(1,(n.g||1)/MAXDEG));});}
 
@@ -403,7 +437,7 @@ function frame(now){
 var camAnim=null;
 function animateCam(tgt,dur){camAnim={from:{k:cam.k,ox:cam.ox,oy:cam.oy},to:tgt,t0:performance.now(),dur:dur||520};}
 function stepCam(now){var p=Math.min(1,(now-camAnim.t0)/camAnim.dur);var e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;var f=camAnim.from,t=camAnim.to;cam.k=f.k+(t.k-f.k)*e;cam.ox=f.ox+(t.ox-f.ox)*e;cam.oy=f.oy+(t.oy-f.oy)*e;if(p>=1)camAnim=null;updateResetBtn();}
-function entranceIntro(){var fk=FITK,fox=cam.ox,foy=cam.oy;var cw=s2w(VW/2,VH/2);cam.k=fk*0.8;cam.ox=VW/2-cw[0]*cam.k;cam.oy=VH/2-cw[1]*cam.k;animateCam({k:fk,ox:fox,oy:foy},1100);}
+function entranceIntro(){var fk=FITK,fox=cam.ox,foy=cam.oy;var cw=s2w(VCX(),VH/2);cam.k=fk*0.8;cam.ox=VCX()-cw[0]*cam.k;cam.oy=VH/2-cw[1]*cam.k;animateCam({k:fk,ox:fox,oy:foy},1100);}
 
 function clampK(k){return Math.max(FITK*0.85,Math.min(FITK*6,k));}
 function killMomentum(){vel.x=0;vel.y=0;zoomTo=null;camAnim=null;}
@@ -419,7 +453,7 @@ cvs.addEventListener('touchmove',function(e){if(e.touches.length===2){e.preventD
 cvs.addEventListener('touchend',function(e){if(pinch&&(!e.touches||e.touches.length<2))pinch=0;});
 
 function tapAt(sx,sy){var best=null,bestD=1e9;NODES.forEach(function(n){if(n.x==null)return;var a=nodeAlpha(n);if(a<0.3)return;var dx=wx2s(n.x)-sx,dy=wy2s(n.y)-sy,d=Math.hypot(dx,dy);var hit=Math.max(coreRadius(n.g)+12,16);if(d<hit&&d<bestD){bestD=d;best=n;}});if(best)selectNode(best,true);else deselect();}
-function flyTo(n){var k=Math.max(cam.k,FITK*1.7);var tx=VW/2-n.x*k-DRIFTX;var ty=VH*0.36-n.y*k-DRIFTY;animateCam({k:k,ox:tx,oy:ty},560);}
+function flyTo(n){var k=Math.max(cam.k,FITK*1.7);var tx=VCX()-n.x*k-DRIFTX;var ty=VH*0.36-n.y*k-DRIFTY;animateCam({k:k,ox:tx,oy:ty},560);}
 function selectNode(n,openSheetFlag){if(!n)return;SELECTED=n;focusSet=neighborsOf(n.s);focusActive=true;if(n.x!=null)flyTo(n);if(openSheetFlag)openPreview(n.s);}
 function deselect(){focusActive=false;SELECTED=null;}
 
@@ -430,7 +464,7 @@ document.getElementById('resetBtn').onclick=function(){if(ROUTE){exitRoute();ret
 function routeSet(){var m={};if(ROUTE&&ROUTE.slugs)ROUTE.slugs.forEach(function(s,i){m[s]=i+1;});return m;}
 function setRoute(title,slugs){ROUTE={title:title||'Путь',slugs:(slugs||[]).slice()};RSET=routeSet();deselect();fitRoute();updateTerr();updateHint();updateResetBtn();}
 function exitRoute(){ROUTE=null;RSET=null;fitView(true);updateTerr();updateHint();updateResetBtn();}
-function fitRoute(){if(!ROUTE)return;var xs=[],ys=[];ROUTE.slugs.forEach(function(s){var n=BYID[s];if(n&&n.x!=null){xs.push(n.x);ys.push(n.y);}});if(!xs.length)return;var minX=Math.min.apply(null,xs),maxX=Math.max.apply(null,xs),minY=Math.min.apply(null,ys),maxY=Math.max.apply(null,ys);var w=Math.max(140,maxX-minX),h=Math.max(140,maxY-minY),cx=(minX+maxX)/2,cy=(minY+maxY)/2;var padX=Math.min(60,VW*0.10),padTop=110,padBot=120;var usableH=Math.max(120,VH-padTop-padBot);var k=Math.min((VW-padX*2)/w,usableH/h);k=Math.max(FITK*0.85,Math.min(FITK*4.5,k));animateCam({k:k,ox:VW/2-cx*k,oy:(padTop+usableH/2)-cy*k},560);}
+function fitRoute(){if(!ROUTE)return;var xs=[],ys=[];ROUTE.slugs.forEach(function(s){var n=BYID[s];if(n&&n.x!=null){xs.push(n.x);ys.push(n.y);}});if(!xs.length)return;var minX=Math.min.apply(null,xs),maxX=Math.max.apply(null,xs),minY=Math.min.apply(null,ys),maxY=Math.max.apply(null,ys);var w=Math.max(140,maxX-minX),h=Math.max(140,maxY-minY),cx=(minX+maxX)/2,cy=(minY+maxY)/2;var padX=Math.min(60,VWU()*0.10),padTop=110,padBot=120;var usableH=Math.max(120,VH-padTop-padBot);var k=Math.min((VWU()-padX*2)/w,usableH/h);k=Math.max(FITK*0.85,Math.min(FITK*4.5,k));animateCam({k:k,ox:VCX()-cx*k,oy:(padTop+usableH/2)-cy*k},560);}
 
 /* ===== шторки ===== */
 function openSheet(id){document.getElementById('scrim').classList.add('on');document.getElementById(id).classList.add('on');}
