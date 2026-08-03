@@ -1,9 +1,11 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" style="background:#0E0C0A">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Управляя поведением — вход</title>
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0E0C0A"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<title>Вход · Матчасть</title>
 <style>
 :root{
  --sky0:#0E0C0A; --sky1:#15110C; --sky2:#1C1812;
@@ -19,11 +21,20 @@ body{background:var(--sky0);color:var(--ink);font-family:-apple-system,BlinkMacS
 .logo{width:54px;height:54px;margin:0 auto 18px;border-radius:15px;background:linear-gradient(150deg,#C98A3A,#8A5520);display:flex;align-items:center;justify-content:center}
 .logo svg{width:30px;height:30px;color:#1A1407}
 .httl{font-size:32px;line-height:38px;font-weight:800;letter-spacing:-.025em}
+.brand{font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--gold-br);margin-bottom:12px}
+.httl.inv{font-size:30px;line-height:36px}
 .hsub{font-size:16px;line-height:24px;color:var(--ink2);margin-top:10px;max-width:440px;margin-left:auto;margin-right:auto}
 .cta{margin-top:26px;display:flex;flex-direction:column;gap:11px;max-width:360px;margin-left:auto;margin-right:auto}
 .btn{height:52px;border-radius:var(--rs);border:0;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
 .btn.pri{background:var(--gold);color:#1A1407}
 .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+/* 6b31d280: явный путь получить приглашение (гость) */
+.ways{margin-top:14px;display:flex;flex-direction:column;gap:11px}
+.way{display:flex;gap:12px;background:rgba(28,24,18,.6);border:1px solid var(--line);border-radius:14px;padding:14px}
+.way .wn{flex:none;width:24px;height:24px;border-radius:50%;background:var(--gold);color:#1A1407;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.way .wt{font-size:15px;font-weight:700;color:var(--ink)}
+.way .wd{font-size:13.5px;line-height:19px;color:var(--ink2);margin-top:3px}
+.way .wcta{display:inline-block;margin-top:9px;font-size:14px;font-weight:700;color:var(--gold-br);text-decoration:none;padding:14px 10px;margin-left:-10px;margin-bottom:-14px}
 .sections{margin-top:44px;display:grid;gap:14px}
 .sec{background:rgba(28,24,18,.7);border:1px solid var(--line);border-radius:var(--r);padding:20px}
 .sec .n{font-size:12px;font-weight:700;color:var(--gold-br);letter-spacing:.04em}
@@ -49,73 +60,107 @@ body{background:var(--sky0);color:var(--ink);font-family:-apple-system,BlinkMacS
 .fld input{width:100%;height:48px;border-radius:11px;border:1px solid var(--line);background:#0E0C0A;color:var(--ink);font-size:16px;padding:0 14px;outline:none}
 .fld input:focus{border-color:var(--gold-br)}
 .err{font-size:13px;color:#E78A78;margin:6px 0 0;min-height:18px}
-.link{font-size:14px;color:var(--gold-br);cursor:pointer;background:none;border:0;padding:0;margin-top:4px}
+.link{font-size:14px;color:var(--gold-br);cursor:pointer;background:none;border:0;padding:14px 10px;margin:-10px -10px -10px -10px;min-height:44px}
 .back{position:absolute;top:18px;left:18px;width:42px;height:42px;border:0;background:none;color:var(--ink2);cursor:pointer}
+/*TAP-FEEDBACK*/button:active,a:active,[onclick]:active,.ni:active,[data-k]:active,[data-route]:active,[data-slug]:active,[data-cont]:active,[data-q]:active,.row:active,.rt-row:active,.lg-row:active,.fc:active,.stoprow:active,.opt:active,.pill:active,.tab:active,.deeper:active{opacity:.6;transition:opacity .06s}
+/*MCUX v1 — единый UX: нативные переходы между страницами, ховеры, тап-фидбек, reduced-motion*/
+@view-transition{navigation:auto}
+.nav{view-transition-name:mcnav}
+button:active,a:active,[onclick]:active,.ni:active,.mrow:active,.row:active,.res:active,.tbtn:active,.fc:active,.opt:active,.pill:active{opacity:.6;transition:opacity .06s}
+@media(hover:hover){a:hover,button:hover,.ni:hover,.mrow:hover,.row:hover,.res:hover,.tbtn:hover,.fc:hover,.opt:hover,[data-k]:hover,[data-slug]:hover,[data-cont]:hover,[data-route]:hover,[data-q]:hover{opacity:.85;transition:opacity .12s ease;cursor:pointer}}
+@media(hover:none){button:active,a:active,[onclick]:active,.ni:active,.mrow:active,.row:active,.res:active,.tbtn:active,.fc:active,.opt:active,.lp:active,.rc:active,.cont:active,.hero:active,.scd:active,.tl:active,.fd:active,.lk:active,.deeper:active,[data-k]:active,[data-slug]:active,[data-cont]:active,[data-route]:active,[data-q]:active{opacity:.72;transform:scale(.97);transition:transform .06s ease,opacity .06s}}
+a:focus-visible,button:focus-visible,[onclick]:focus-visible,.ni:focus-visible,.mrow:focus-visible,.row:focus-visible,.res:focus-visible,.tbtn:focus-visible,.fc:focus-visible,.opt:focus-visible,.lp:focus-visible,.rc:focus-visible,[data-k]:focus-visible,[data-slug]:focus-visible,[data-cont]:focus-visible,[data-route]:focus-visible{outline:2px solid var(--gold,#B06A1F);outline-offset:2px;border-radius:6px}
+.mcstate{padding:46px 20px;text-align:center;color:var(--meta,#8B847B)}
+.mcstate .ic{font-size:30px;line-height:1;margin-bottom:12px;opacity:.75}
+.mcstate .msg{font-size:14.5px;line-height:20px;max-width:300px;margin:0 auto}
+.mcstate .retry{margin-top:16px;display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:700;color:var(--gold,#B06A1F);background:none;border:1px solid var(--line,#ECE7DD);border-radius:999px;padding:9px 18px;cursor:pointer}
+.mcsk{background:linear-gradient(90deg,#EFEBE2,#F6F3ED,#EFEBE2);background-size:200% 100%;animation:mcsh 1.2s infinite;border-radius:12px}
+@keyframes mcsh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+/*MCDESK v1 — десктоп (>=960px): нижний таб-бар -> левый сайдбар, контент смещается вправо; мобилка не трогается*/
+@media(min-width:960px){
+ body:has(nav.nav){padding-left:236px}
+ nav.nav{top:0;bottom:0;right:auto;width:236px;border-top:0;border-right:1px solid var(--line);padding:0}
+ nav.nav .navin{flex-direction:column;align-items:stretch;height:100vh;max-width:none;margin:0;padding:22px 14px;gap:3px}
+ nav.nav .ni{flex:0 0 auto;flex-direction:row;justify-content:flex-start;gap:14px;min-height:0;height:auto;padding:12px 14px;border-radius:12px}
+ nav.nav .ni svg{width:22px;height:22px}
+ nav.nav .ni .lb{font-size:15px;font-weight:600}
+ nav.nav .ni.on{background:rgba(176,106,31,.09)}
+ @media(hover:hover){nav.nav .ni:hover{background:rgba(176,106,31,.06);opacity:1}}
+ body:has(nav.nav) .topbar{left:236px}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}
 </style>
 </head>
 <body>
+<script>/*mc:hashroute*/(function(){try{var m=(location.hash||"").match(/^#\/c\/([^?&#]+)/);if(m&&m[1]){location.replace("card.html?slug="+encodeURIComponent(decodeURIComponent(m[1])));}}catch(e){}})();</script>
 <button class="back" id="back" style="display:none" aria-label="Назад"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
 <div class="wrap" id="wrap"></div>
 
 <script>
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
 var qs=new URLSearchParams(location.search);
-var JOIN=qs.get('join');
+var CODE=qs.get('invite')||qs.get('join'); // инвайт-код: ?invite= (v3) или ?join= (совместимость)
 
-function landing(){
- document.getElementById('back').style.display='none';
- var H='<div class="hero"><div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.3 6.2L20.5 11l-6.2 2.3L12 19.5 9.7 13.3 3.5 11l6.2-1.8z"/></svg></div>'+
-  '<div class="httl">Управляя поведением</div>'+
-  '<div class="hsub">Как люди принимают решения — и как честно применять это в продукте. База знаний для продакт-менеджеров.</div>'+
-  '<div class="cta"><button class="btn pri" id="toLogin">Войти</button><button class="btn ghost" id="reqInvite">Запросить приглашение</button></div></div>';
- H+='<div class="sections">'+
-  sec('01','База знаний','517 связанных идей из поведенческой экономики, когнитивной и социальной психологии, UX и продуктовых практик — в одном графе.')+
-  sec('02','Инструмент для продакта','Не энциклопедия, а рабочий слой: под каждую ситуацию продукта — какие силы в игре и какие приёмы их используют.')+
-  sec('03','Честный слой для ИИ (MCP)','Те же знания доступны любому ИИ-ассистенту через MCP — с пометками, где идея спорна, а где ещё не доказана.')+
-  sec('04','Принципы','Мы честно помечаем устойчивость каждой идеи и никогда не применяем тёмные паттерны к своим читателям — даже когда разбираем их.')+
-  '</div>';
- // реальная честная карточка-пример
- H+='<div class="example"><div class="lbl">Так выглядит честный разбор внутри:</div>'+
-  '<div class="card"><div class="chip"><span class="d"></span>Неоднозначно</div><h2>Модель крючка (Hook Model)</h2>'+
-  '<div class="lead">Привычка к продукту формируется петлёй: триггер → действие → переменное вознаграждение → вложение. Знаменитый рецепт удержания.</div>'+
-  '<div class="honest"><div class="l">А как на самом деле</div><div class="b">Тот же механизм, что строит полезную привычку, строит и вредную зависимость: переменное вознаграждение эксплуатирует дофаминовую систему помимо воли. Автор сам ввёл «матрицу манипуляции» — вопрос не «как зацепить», а «служит ли петля пользователю».</div></div></div>'+
-  '<div class="note">Эту честность видит даже гость — без входа. Для реакций, заметок и полного доступа нужно приглашение.</div></div>';
- document.getElementById('wrap').innerHTML=H;
- document.getElementById('toLogin').onclick=login;
- document.getElementById('reqInvite').onclick=function(){ requestInvite(); };
+// Access v3 (screen-access v3, bb487471): ветвление ПО СОСТОЯНИЮ ИНВАЙТА. Копия — Каллиопа.
+// «вкус» — один честный разбор (NPS «Спорно»), не витрина.
+function tasteCard(lbl){
+ return '<div class="example"><div class="lbl">'+esc(lbl||'Например, NPS — и почему его надёжность под вопросом:')+'</div>'+
+  '<div class="card"><div class="chip"><span class="d"></span>Спорно</div><h2>NPS (Net Promoter Score)</h2>'+
+  '<div class="lead">Метрика лояльности через один вопрос: «насколько вероятно порекомендуете» (0–10), промоутеры минус критики.</div>'+
+  '<div class="honest"><div class="l">А как на самом деле</div><div class="b">Связь NPS с реальным ростом слабая и плохо воспроизводится в независимых исследованиях — исходный claim оспорен. Полезно как грубый сигнал, опасно как жёсткий KPI.</div></div></div></div>';
 }
-function sec(n,t,p){ return '<div class="sec"><div class="n">'+n+'</div><h3>'+esc(t)+'</h3><p>'+esc(p)+'</p></div>'; }
+function loadingState(){ document.getElementById('back').style.display='none'; document.getElementById('wrap').innerHTML='<div class="hero"><div class="hsub" style="text-align:center;padding:48px 0">Секунду…</div></div>'; }
+
+// СОСТОЯНИЕ A — валидный инвайт (дефолт инвайт-онли): кто пригласил + принять → регистрация.
+function stateA(info, code){
+ document.getElementById('back').style.display='none';
+ var who=(info&&(info.inviter_name||info.inviter||info.name))||'';
+ var head=who?(esc(who)+' пригласил вас'):'Вас пригласили';
+ document.getElementById('wrap').innerHTML='<div class="hero"><div class="brand">Честно о поведении</div>'+
+  '<h1 class="httl inv">'+head+'</h1>'+
+  '<div class="hsub">База о том, как люди принимают решения — и как проектировать для них. У каждой идеи помечено, насколько она подтверждена. Для тех, кто делает продукты.</div></div>'+
+  tasteCard('Загляните — например, NPS, и почему его надёжность под вопросом:')+
+  '<div class="panel"><div class="fld"><label for="name">Имя</label><input id="name" placeholder="Как вас зовут"></div>'+
+  '<div class="fld"><label for="email">Email</label><input id="email" type="email" autocomplete="email" placeholder="Ваш email"></div>'+
+  '<div class="fld"><label for="pass">Пароль</label><input id="pass" type="password" autocomplete="new-password" placeholder="Пароль, от 6 символов"></div>'+
+  '<div class="err" id="err" role="alert"></div>'+
+  '<button class="btn pri" id="doJoin" style="width:100%;margin-top:6px">Принять приглашение</button>'+
+  '<button class="link" id="toLogin">Уже есть аккаунт? Войти</button></div>';
+ document.getElementById('doJoin').onclick=function(){ doAuth('join',code); };
+ document.getElementById('toLogin').onclick=login;
+}
+// Тупик — инвайт истёк/погашен.
+function deadEnd(info){
+ document.getElementById('back').style.display='none';
+ // Имя не склоняем («у Артём» ломало падеж) — форма без имени (bus 180fe5e8 п.3)
+ var ask='Попросите новое у того, кто вас пригласил, или напишите автору';
+ document.getElementById('wrap').innerHTML='<div class="hero"><div class="brand">Честно о поведении</div><h1 class="httl">Приглашение больше не действует</h1>'+
+  '<div class="hsub">'+ask+': <a class="wcta" style="display:inline-block;padding:12px 8px;margin:-12px -8px" href="https://t.me/artavdeev" target="_blank" rel="noopener">tg @artavdeev</a>.</div>'+
+  '<button class="link" id="toLogin" style="margin-top:16px">Уже есть аккаунт? Войти</button></div>';
+ document.getElementById('toLogin').onclick=login;
+}
+// СОСТОЯНИЕ B — холодный гость (нет/невалидный инвайт): тон снижен, без 4 продающих секций.
+function stateB(badCode){ // badCode=true: пришли с битым/неопознанным инвайтом — объясняем, а не молчим (п.10 4fde418b)
+ document.getElementById('back').style.display='none';
+ document.getElementById('wrap').innerHTML=(badCode?'<div class="panel" style="border-color:#E4C9A6;background:#FBF3E4"><div class="ps" style="margin:0">Ссылка-приглашение не распознана или истекла. Попросите новую у того, кто вас пригласил.</div></div>':'')+'<div class="hero"><div class="brand">Честно о поведении</div>'+
+  '<div class="hsub" style="margin-top:14px">База о том, как люди принимают решения — и как проектировать для них. У каждой идеи помечено, насколько она подтверждена.</div></div>'+
+  tasteCard()+
+  '<div class="panel"><h2>Доступ по приглашению.</h2><div class="ps">Нужно приглашение от того, кто уже внутри. Нет — напишите автору: <a class="wcta" href="https://t.me/artavdeev" target="_blank" rel="noopener">tg @artavdeev</a>.</div>'+
+  '<button class="link" id="toLogin" style="margin-top:4px">Уже есть аккаунт? Войти</button></div>';
+ document.getElementById('toLogin').onclick=login;
+}
 
 function login(){
  document.getElementById('back').style.display='';
  document.getElementById('wrap').innerHTML='<div class="panel"><h2>Вход</h2><div class="ps">Войдите в свой аккаунт.</div>'+
-  '<div class="fld"><label>Email</label><input id="email" type="email" autocomplete="email" placeholder="you@example.com"></div>'+
-  '<div class="fld"><label>Пароль</label><input id="pass" type="password" autocomplete="current-password" placeholder="••••••••"></div>'+
-  '<div class="err" id="err"></div>'+
+  '<div class="fld"><label for="email">Email</label><input id="email" type="email" autocomplete="email" placeholder="you@example.com"></div>'+
+  '<div class="fld"><label for="pass">Пароль</label><input id="pass" type="password" autocomplete="current-password" placeholder="••••••••"></div>'+
+  '<div class="err" id="err" role="alert"></div>'+
   '<button class="btn pri" id="doLogin" style="width:100%;margin-top:6px">Войти</button>'+
   '<button class="link" id="forgot">Забыли пароль?</button></div>';
- document.getElementById('back').onclick=landing;
+ document.getElementById('back').onclick=route;
  document.getElementById('doLogin').onclick=function(){ doAuth('login'); };
- document.getElementById('forgot').onclick=function(){ document.getElementById('err').textContent='Восстановление: введите email и мы пришлём ссылку (доступно онлайн).'; };
-}
-function requestInvite(){
- document.getElementById('back').style.display='';
- document.getElementById('wrap').innerHTML='<div class="panel"><h2>Приглашение</h2><div class="ps">Доступ — по приглашению от участника. Если у вас есть ссылка-приглашение, откройте её — она приведёт сюда с формой регистрации.</div>'+
-  '<p style="color:var(--ink2);font-size:14px;line-height:21px">Пока проект открывается узкому кругу. Честный слой (карточки и разборы) доступен и без входа — просто листайте базу.</p>'+
-  '<button class="btn ghost" id="toLogin2" style="width:100%;margin-top:10px">У меня уже есть аккаунт</button></div>';
- document.getElementById('back').onclick=landing;
- document.getElementById('toLogin2').onclick=login;
-}
-function redeem(code){
- document.getElementById('back').style.display='';
- document.getElementById('wrap').innerHTML='<div class="panel"><h2>Регистрация по приглашению</h2><div class="ps">Приглашение действует ограниченное время. Заполните, чтобы создать аккаунт.</div>'+
-  '<div class="fld"><label>Имя</label><input id="name" placeholder="Как вас называть"></div>'+
-  '<div class="fld"><label>Email</label><input id="email" type="email" autocomplete="email"></div>'+
-  '<div class="fld"><label>Пароль</label><input id="pass" type="password" autocomplete="new-password"></div>'+
-  '<div class="err" id="err"></div>'+
-  '<button class="btn pri" id="doJoin" style="width:100%;margin-top:6px">Создать аккаунт</button></div>';
- document.getElementById('back').onclick=landing;
- document.getElementById('doJoin').onclick=function(){ doAuth('join',code); };
+ document.getElementById('forgot').onclick=function(){ var em=(document.getElementById('email')||{}).value; var e=document.getElementById('err'); if(!em){ e.textContent='Введите email выше — пришлём ссылку для сброса.'; return; } if(!window.__SB){ e.textContent='Нет соединения — попробуйте онлайн.'; return; } window.__SB.auth.resetPasswordForEmail(em).then(function(r){ if(r&&r.error){ e.textContent=ruErr(r.error.message); return; } e.style.color='var(--gold-br)'; e.textContent='Ссылка для сброса отправлена на '+em+'.'; }).catch(function(){ e.textContent='Не удалось отправить. Попробуйте позже.'; }); };
 }
 
 function doAuth(mode,code){
@@ -128,14 +173,28 @@ function doAuth(mode,code){
   window.__SB.auth.signInWithPassword({email:email,password:pass}).then(function(r){ if(r.error){ err.textContent=ruErr(r.error.message); } else { location.href='solve-home.html'; } }).catch(function(){ err.textContent='Не удалось войти.'; });
  } else {
   window.__SB.auth.signUp({email:email,password:pass}).then(function(r){ if(r.error){ err.textContent=ruErr(r.error.message); return; }
-   window.__SB.rpc('invite_redeem',{p_code:code,p_name:name}).then(function(rr){ if(rr&&rr.error){ err.textContent=ruErr(rr.error.message); } else { location.href='solve-home.html'; } }).catch(function(){ location.href='solve-home.html'; });
+   // Пост-регистрация: новый член попадает в S1 Пути (нулевой момент, ≤3 мин) — не в Справочник (bus 180fe5e8 п.1)
+   window.__SB.rpc('invite_redeem',{p_code:code,p_name:name}).then(function(rr){ if(rr&&rr.error){ err.textContent=ruErr(rr.error.message); } else { location.href='path.html'; } }).catch(function(){ location.href='path.html'; });
   }).catch(function(){ err.textContent='Не удалось создать аккаунт.'; });
  }
 }
 function ruErr(m){ m=String(m||''); if(/Invalid login/i.test(m)) return 'Неверный email или пароль.'; if(/already registered/i.test(m)) return 'Этот email уже зарегистрирован — войдите.'; if(/expired|invalid.*code|not found/i.test(m)) return 'Приглашение недействительно или истекло.'; return m; }
 
 // маршрут
-if(JOIN) redeem(JOIN); else landing();
+// синхронно: токен сессии в localStorage → уже залогинен, сразу в приложение (не показываем форму входа)
+function mcLikelyMember(){ try{ for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(k&&k.indexOf('sb-')===0&&k.indexOf('-auth-token')>0){ var v=localStorage.getItem(k); if(v&&v.length>20) return true; } } }catch(e){} return false; }
+// Ветвление по инвайту (invite_info — async, финализируется в boot после SB).
+function branchInvite(SB){ SB.rpc('invite_info',{p_code:CODE}).then(function(r){ var info=(r&&!r.error&&r.data)||null;
+  if(info&&info.valid){ stateA(info,CODE); }
+  else if(info&&(info.reason==='expired'||info.reason==='redeemed'||info.expired||info.redeemed)){ deadEnd(info); }
+  else { stateB(true); } // notfound/невалид → холодный гость + объяснение (не молча)
+ }).catch(function(){ stateB(!!CODE); }); }
+function route(){
+ if(!CODE && mcLikelyMember()){ location.replace('solve-home.html'); return; }
+ if(CODE){ loadingState(); return; } // финал по invite_info в boot
+ stateB();
+}
+route();
 
 // живой режим: уже залогинен → в приложение; иначе готовим клиент для форм
 (function boot(){
@@ -143,14 +202,22 @@ if(JOIN) redeem(JOIN); else landing();
   try{
    if(!(window.SUPABASE_URL && window.SUPABASE_ANON_KEY && window.supabase && window.supabase.createClient)) return;
    var SB=window.supabase.createClient(String(window.SUPABASE_URL).trim(),String(window.SUPABASE_ANON_KEY).trim()); window.__SB=SB;
-   SB.auth.getSession().then(function(s){ if(s&&s.data&&s.data.session && !JOIN){ location.href='solve-home.html'; } }).catch(function(){});
+   SB.auth.getSession().then(function(s){ var sess=s&&s.data&&s.data.session;
+     if(sess && !CODE){ location.href='solve-home.html'; return; }
+     if(CODE){ branchInvite(SB); }
+   }).catch(function(){ if(CODE) branchInvite(SB); });
   }catch(_){}
  }
  function load(src,cb){ var sc=document.createElement('script'); sc.src=src; sc.onload=cb; sc.onerror=cb; document.head.appendChild(sc); }
- function loadCfg(done){ var ps=['../config.js','./config.js','config.js','/book-reader/config.js']; var i=0; (function nx(){ if(window.SUPABASE_URL||i>=ps.length) return done(); var sc=document.createElement('script'); sc.src=ps[i++]; sc.onload=function(){ setTimeout(function(){ window.SUPABASE_URL?done():nx(); },0); }; sc.onerror=nx; document.head.appendChild(sc); })(); }
-  loadCfg(function(){ load('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.108.2', go); });
+ function loadCfg(done){ var ps=['./config.js','../config.js','/book-reader/config.js']; var i=0; (function nx(){ if(window.SUPABASE_URL||i>=ps.length) return done(); var sc=document.createElement('script'); sc.src=ps[i++]; sc.onload=function(){ setTimeout(function(){ window.SUPABASE_URL?done():nx(); },0); }; sc.onerror=nx; document.head.appendChild(sc); })(); }
+ // входная дверь нового юзера: config/vendor не догрузились → не вечное «Секунду…», а честная ошибка с ретраем (cold-audit)
+ function cfgFail(){ try{ var b=document.getElementById('back'); if(b) b.style.display='none'; }catch(e){}
+  document.getElementById('wrap').innerHTML='<div class="mcstate"><div class="ic">⚠</div><div class="msg">Не удалось подключиться. Если не загружается — отключите VPN.</div><button class="retry" onclick="location.reload()">↻ Повторить</button></div>'; }
+  loadCfg(function(){ if(!window.SUPABASE_URL){ if(CODE) cfgFail(); return; }
+   load('vendor/supabase.min.js', function(){ if(!(window.supabase&&window.supabase.createClient)){ if(CODE) cfgFail(); return; } go(); }); });
 })();
 </script>
-<script>if('serviceWorker' in navigator){try{navigator.serviceWorker.register('sw.js').catch(function(){});}catch(e){}}</script>
+<script>(function(){if(!('serviceWorker' in navigator))return;var reg=null,shown=false;function anim(){var st=document.createElement('style');st.textContent='@keyframes __spin{to{transform:rotate(360deg)}}';document.head.appendChild(st);var o=document.createElement('div');o.id='__updanim';o.style.cssText='position:fixed;inset:0;z-index:100000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:rgba(20,17,12,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;transition:opacity .3s';o.innerHTML='<div style="width:44px;height:44px;border-radius:50%;border:3px solid rgba(255,255,255,.25);border-top-color:#C98A3A;animation:__spin .8s linear infinite"></div><div style="color:#F4EEE2;font:600 15px/1.3 -apple-system,system-ui,sans-serif">Обновляем…</div>';(document.body||document.documentElement).appendChild(o);requestAnimationFrame(function(){o.style.opacity='1';});}function doUpdate(){var bb=document.getElementById('__updbar');if(bb)bb.style.opacity='0';anim();try{if(reg&&reg.waiting)reg.waiting.postMessage({type:'SKIP_WAITING'});}catch(e){}var done=false,fin=function(){if(done)return;done=true;location.reload();};try{navigator.serviceWorker.addEventListener('controllerchange',fin);}catch(e){}setTimeout(fin,1600);}function showUpd(){if(shown)return;shown=true;try{if(sessionStorage.getItem('mc:updshown'))return;sessionStorage.setItem('mc:updshown','1');}catch(e){}var b=document.createElement('div');b.id='__updbar';b.style.cssText='position:fixed;left:50%;transform:translateX(-50%) translateY(8px);bottom:calc(16px + env(safe-area-inset-bottom));z-index:99999;display:flex;align-items:center;gap:12px;background:#17150F;color:#F4EEE2;font:600 14px/1.3 -apple-system,BlinkMacSystemFont,system-ui,sans-serif;padding:10px 12px 10px 16px;border-radius:14px;box-shadow:0 10px 34px rgba(0,0,0,.34);max-width:calc(100vw - 26px);opacity:0;transition:opacity .25s,transform .25s';var s=document.createElement('span');s.textContent='Доступна новая версия';var btn=document.createElement('button');btn.textContent='Обновить';btn.style.cssText='border:0;background:#C98A3A;color:#1A1407;font:inherit;font-weight:700;padding:8px 15px;border-radius:10px;cursor:pointer;flex:none';btn.onclick=doUpdate;b.appendChild(s);b.appendChild(btn);(document.body||document.documentElement).appendChild(b);requestAnimationFrame(function(){b.style.opacity='1';b.style.transform='translateX(-50%) translateY(0)';});}try{navigator.serviceWorker.register('sw.js').then(function(r){reg=r;}).catch(function(){});}catch(e){}try{navigator.serviceWorker.addEventListener('message',function(e){if(e.data&&e.data.type==='NEW_VERSION')showUpd();});}catch(e){}try{navigator.serviceWorker.ready.then(function(r){reg=r;if(r.waiting)showUpd();r.addEventListener('updatefound',function(){var nw=r.installing;if(nw)nw.addEventListener('statechange',function(){if(nw.state==='installed'&&navigator.serviceWorker.controller)showUpd();});});});}catch(e){}})();</script>
+<script>try{document.addEventListener("touchstart",function(){},{passive:true});}catch(e){}</script>
 </body>
 </html>

@@ -1,214 +1,24 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" style="background:#FBFAF7">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Ещё не доказано — Матчасть</title>
-<style>
-:root{
- --bg:#FBFAF7; --ink:#17150F; --ink2:#56504A; --meta:#8B847B; --line:#ECE7DD; --card:#fff;
- --gold:#B06A1F; --gold-br:#C98A3A; --info:#6B5CA5; --supp:#2F7D4F; --ref:#C2452F;
- --pill:999px; --r:16px;
- --sh:0 2px 12px rgba(20,17,12,.05),0 1px 2px rgba(20,17,12,.04);
-}
-*{box-sizing:border-box} html,body{margin:0}
-body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;font-size:16px;line-height:24px;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
-.wrap{max-width:680px;margin:0 auto;min-height:100vh;padding:0 20px calc(80px + env(safe-area-inset-bottom))}
-.bar{position:sticky;top:0;z-index:20;background:rgba(251,250,247,.94);backdrop-filter:blur(8px);display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--line)}
-.ib{width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;border:0;background:none;color:var(--ink2);border-radius:var(--pill);cursor:pointer}.ib:active{background:var(--line)}
-.bt{font-size:15px;font-weight:700}
-.head{padding:16px 0 4px}
-.kick{font-size:13px;font-weight:600;color:var(--gold)}
-.h1{font-size:30px;line-height:35px;font-weight:800;letter-spacing:-.02em;margin:3px 0 6px}
-.sub{font-size:15px;line-height:21px;color:var(--ink2)}
-.banner{margin:16px 0 4px;background:#fff;border:1px dashed #C7BDA8;border-radius:14px;padding:14px 16px;font-size:14px;line-height:20px;color:var(--ink2)}
-.banner b{color:var(--ink)}
-.seclbl{font-size:14px;color:var(--meta);font-weight:700;margin:26px 0 6px;text-transform:uppercase;letter-spacing:.04em}
-.fc{background:#fff;border:1px dashed #C7BDA8;border-radius:var(--r);padding:16px 18px;box-shadow:var(--sh);cursor:pointer;margin-top:12px}
-.fc.law{border-style:solid;border-color:var(--line)}
-.fc:active{transform:scale(.995)}
-.fc.dim{opacity:.6}
-.fch{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
-.bdg{font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--info);background:rgba(107,92,165,.1);padding:3px 9px;border-radius:var(--pill)}
-.bdg.law{color:var(--gold);background:rgba(176,106,31,.1)}
-.fct{font-size:17px;line-height:23px;font-weight:700}
-.fcd{font-size:14px;line-height:20px;color:var(--ink2);margin-top:5px}
-.conf{margin-top:13px;display:flex;align-items:center;gap:9px}
-.bar{width:76px;height:5px;border-radius:3px;background:var(--line);overflow:hidden;flex:none}.bar i{display:block;height:100%;background:var(--gold-br)}
-.conf span{font-size:12px;font-weight:600;color:var(--meta)}
-/* деталь */
-.dtype{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:16px 0 12px}
-.dt{font-size:24px;line-height:30px;font-weight:800;letter-spacing:-.015em;margin:0 0 12px}
-.endp{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 18px}
-.ep{font-size:13px;font-weight:600;color:var(--ink2);background:#fff;border:1px solid var(--line);border-radius:var(--pill);padding:6px 12px;cursor:pointer}
-.state{font-size:16px;line-height:25px;white-space:pre-line}
-.sec{margin-top:22px}
-.sec .l{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--meta);margin-bottom:6px}
-.sec .b{font-size:15px;line-height:23px;white-space:pre-line}
-.ev{margin-top:12px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px}
-.ev .dir{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;margin-bottom:6px}
-.ev.supports .dir{color:var(--supp)}.ev.refutes .dir{color:var(--ref)}
-.ev .basis{font-size:14px;line-height:21px;color:var(--ink2)}
-.ev .src{font-size:12px;line-height:18px;color:var(--meta);margin-top:8px;word-break:break-word}
-.honest{margin-top:20px;background:#211C16;color:#EFE6D7;border-radius:12px;padding:14px 16px;font-size:14px;line-height:21px}
-.honest .l{font-size:12px;font-weight:700;color:var(--gold-br);text-transform:uppercase;letter-spacing:.03em;margin-bottom:6px}
-.empty{padding:40px 0;text-align:center;color:var(--meta)}
-.skel div{height:64px;background:linear-gradient(90deg,#EFEBE2,#F6F3ED,#EFEBE2);background-size:200% 100%;animation:sh 1.2s infinite;border-radius:12px;margin-bottom:10px}
-@keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
-.nav{position:fixed;left:0;right:0;bottom:0;z-index:10;background:rgba(251,250,247,.94);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
-.navin{max-width:720px;margin:0 auto;display:flex}
-.ni{flex:1;min-height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:none;border:0;color:var(--meta);cursor:pointer}
-.ni svg{width:24px;height:24px}.ni .lb{font-size:11px;font-weight:600}.ni.on{color:var(--gold)}
-@media(prefers-reduced-motion:reduce){*{animation:none!important}}
-</style>
-</head>
-<body>
-<div class="wrap">
- <div class="bar">
-  <button class="ib" id="back" aria-label="Назад"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
-  <div class="bt" id="barTitle">Ещё не доказано</div>
- </div>
- <div id="body"></div>
-</div>
-
-<nav class="nav"><div class="navin">
- <button class="ni" onclick="location.href='explore.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 1.5L13 16l-1.5-4.5z"/></svg><span class="lb">Исследовать</span></button>
- <button class="ni on" onclick="location.href='solve-home.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5A2.5 2.5 0 0 0 6.5 8H20"/></svg><span class="lb">Решить</span></button>
- <button class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v-8"/><path d="M12 12c0-4 3-6 7-6 0 4-3 6-7 6z"/><path d="M12 14c0-3-2-5-6-5 0 3 2 5 6 5z"/></svg><span class="lb">Расти</span></button>
- <button class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span class="lb">Меню</span></button>
-</div></nav>
-
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#FBFAF7"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<title>Находки · Матчасть</title>
 <script>
-var KIND={gap:"Разрыв",bridge:"Мост","cross-cutting":"Сквозная","law-instance":"Частный случай"};
-// СИД: реальные находки (компактно) — рендер без сети; live=kb_findings()
-var SEED={
- conjectures:[
-  {slug:"boundary-doi-observability-social-comparison",kind:"gap",weight:0.12,
-   title:"Когда «видно, как пользуются другие» тормозит, а не ускоряет",
-   statement:"Теория диффузии инноваций учит: наблюдаемость всегда ускоряет принятие. Но если раннее меньшинство воспринимается большинством как «чужие» или заклеймённая группа, видимость их выбора запускает обратное движение — наблюдаемость ТОРМОЗИТ переход к большинству. Правило меняет знак.",
-   testable:"Сравнить диффузию в категориях, где ранние последователи — образец, и где они стигматизированы. Предсказание: при равной наблюдаемости стигматизированная категория показывает значимо более медленный переход к раннему большинству.",
-   falsifier:"Если при контроле на факторы Роджерса наблюдаемость не коррелирует отрицательно со скоростью перехода даже при стигме ранних последователей — теория социального сравнения не модерирует наблюдаемость, и поправка не нужна.",
-   honest:"Вывод из структуры графа (изолированность узла) и логики Роджерса и Фестингера. Эмпирически не подтверждён — гипотеза, не факт.",
-   endpoints:[],
-   evidence:[{dir:"supports",basis:"Классический кейс Роджерса (лос-Молинос, Перу): кипячёная вода ассоциировалась с болезнью — наблюдаемость «больные кипятят воду» тормозила принятие. Прямого RCT нет — поддержано механистически и качественно.",src:"Rogers E.M. (2003). Diffusion of Innovations (5th ed.). Free Press. (Los Molinos case)"}]},
-  {slug:"bridge-payment-pain-sunk-cost",kind:"bridge",weight:0.08,
-   title:"«Боль оплаты» и «невозвратные затраты» — один корень?",
-   statement:"Боль платежа и ловушка невозвратных затрат стоят на общем фундаменте — неприятии потерь и ментальном учёте. Гипотеза: приём, снижающий боль платежа, должен ослаблять и власть невозвратных затрат.",
-   testable:"Интервенция, снижающая боль платежа (дробление цены, предоплата, обезличивание траты), измеримо снижает приверженность невозвратным издержкам у тех же испытуемых. Один механизм — два явления.",
-   falsifier:"Опровергнуто, если снижение боли платежа НЕ влияет на приверженность невозвратным издержкам (диссоциация) или если они опираются на разные нейромеханизмы.",
-   honest:"Связь предположена из структуры графа; внешнее свидетельство уточняет её, но не доказывает «одну основу».",
-   endpoints:[{slug:"payment-pain",title:"Боль оплаты"},{slug:"sunk-cost-fallacy",title:"Невозвратные затраты"}],
-   evidence:[{dir:"supports",basis:"Prelec & Loewenstein (1998, «The Red and the Black»): модель двойной записи — текущие издержки (боль платежа) учитываются проспективно, прошлые (sunk cost) ретроспективны. Оба питаются от неприятия потерь, но временной модус различен → простая «одна основа» неточна, нужна уточнённая формулировка.",src:"Prelec D., Loewenstein G. (1998). Marketing Science, 17(1), 4–28. doi:10.1287/mksc.17.1.4"}]},
-  {slug:"gap-social-comparison-social-proof",kind:"gap",weight:0.02,
-   title:"Социальное сравнение — скрытый механизм социального доказательства?",
-   statement:"Социальное доказательство — один из самых связанных узлов графа (32 связи), теория социального сравнения тоже крупная, но между ними нет ни одного ребра. Напрашивается: социальное сравнение должно быть механизмом социального доказательства — ведь через сравнение себя с группой человек видит норму и подтягивает поведение.",
-   testable:"Манипуляция социальным доказательством при (а) обычном самосознании и (б) блокировке социального сравнения. Если сравнение — несущий механизм, в условии (б) эффект значимо падает или исчезает.",
-   falsifier:"Если социальное доказательство даёт полный эффект при заблокированном сравнении — сравнение не несущий механизм, и пробел оправдан.",
-   honest:"Вывод из структуры графа (два сильных узла + ноль связей + теоретически ожидаемая связь). Вес мал.",
-   endpoints:[{slug:"social-comparison-theory",title:"Социальное сравнение"},{slug:"social-proof",title:"Социальное доказательство"}],
-   evidence:[]},
-  {slug:"crosscut-tensionless-core",kind:"cross-cutting",weight:0.08,
-   title:"Семь несущих идей без единой оговорки — пробел честности",
-   statement:"Семь несущих концептов (обрамление, социальная идентичность, ментальный учёт, точка отсчёта, якорение, пик-конец, доверие к источнику) плотно связаны, но ни у одного нет ни одной связи-оговорки о научном споре. Они приняты как безусловная данность, хотя у каждого есть реальная граница применимости. Граф показывает их бесспорнее, чем они есть.",
-   testable:"У каждого из семи существует опубликованное условие границы (когда эффект не воспроизводится / обращается). Заполнение этих границ повысит честность графа без потери связности.",
-   falsifier:"Если для какого-то из семи в литературе действительно нет задокументированной границы — отсутствие оговорки оправдано.",
-   honest:"Наблюдение о структуре графа подтверждает только нашу несогласованность, не тезис о мире.",
-   endpoints:[],
-   evidence:[{dir:"supports",basis:"Проверка: у всех семи есть документированные пределы — якорение слабеет при «визуальном событии» (PNAS 2023); обрамление — ~55% воспроизводимость (Open Science Collaboration 2015); пик-конец оспаривается для длительных позитивных переживаний.",src:"PNAS 2023 doi:10.1073/pnas.2303883120; Open Science Collaboration 2015, Science 349(6251)"}]}
- ],
- laws:[
-  {slug:"risk-sensitivity-asymmetry",weight:0.34,title:"Эволюционная асимметрия риск-чувствительности",
-   statement:"Организм, для которого потеря ресурса исторически грозила смертью, а приобретение редко давало симметричную выгоду, эволюционно настроен переоценивать потери. Это порождает семейство эффектов как поверхностные выражения одной древней настройки.",
-   testable:"Предсказывает, что неприятие потерь, эффект страуса, психология дефицита, эффект владения, статус-кво и неприятие долга разделяют общий механизм и реагируют на одни модуляторы (близость угрозы, обратимость, ресурсная неопределённость).",
-   falsifier:"Опровергнут, если эти эффекты диссоциируют экспериментально, ИЛИ если у видов без ресурсной смертности обнаружится та же асимметрия.",
-   honest:"Порождающий закон: предсказывает связи там, где их в графе ещё нет. Вес выше прочих, но всё ещё гипотеза.", endpoints:[], evidence:[]},
-  {slug:"repetition-inverts-sign",weight:0.15,title:"Повторение инвертирует знак гедонического эффекта",
-   statement:"Для аффективных/гедонических сил однократное воздействие и хроническое повторение дают противоположный знак: новизна даёт плюс при первом разе, адаптация ослабляет и часто инвертирует его при повторении. Это НЕ универсальный закон: филогенетически универсальный ответ — монотонное затухание, смена знака специфична для гедонического слоя.",
-   testable:"В гедоническом кластере для пары «сила новизны / сила адаптации» над одним поведением исход определяется частотой: есть точка перегиба, где знак инвертируется.",
-   falsifier:"Опровергнут, если гедонические силы показывают монотонный, не инвертирующий ответ на повтор.",
-   honest:"Закон сужен после частично сработавшего фальсификатора (монотонный ответ у систем без гедонистики реален).", endpoints:[], evidence:[]}
- ]
-};
-
-function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
-function confInfo(w){ var p=Math.round((w||0)*100); var lab = w<=0?'только гипотеза' : p<8?'едва намечено' : p<15?'слабо подтверждено' : p<40?'мало данных' : 'есть данные'; return {p:Math.max(3,p),lab:lab}; }
-function shortTitle(f){ if(f.title) return f.title; var s=(f.statement||'').replace(/^(Мост|Граница|Пробел|Сквозн[а-я]+ срез|Закон|Сквозной срез)[^.]*\.\s*/i,''); var m=s.split(/(?<=[.!?])\s/)[0]||s; return m.length>92?m.slice(0,90)+'…':m; }
-
-var qs=new URLSearchParams(location.search); var SLUG=qs.get('slug');
-function cardHtml(f,isLaw){
- var c=confInfo(f.weight); var t=esc(shortTitle(f));
- return '<div class="fc'+(isLaw?' law':'')+(f.weight<=0?' dim':'')+'" data-go="'+esc(f.slug)+'">'+
-  '<div class="fch"><span class="bdg'+(isLaw?' law':'')+'">'+(isLaw?'Закон':(KIND[f.kind]||'Гипотеза'))+'</span></div>'+
-  '<div class="fct">'+t+'</div>'+
-  '<div class="conf"><span class="bar"><i style="width:'+c.p+'%"></i></span><span>'+c.lab+'</span></div></div>';
-}
-function renderHub(data){
- document.getElementById('barTitle').textContent='Ещё не доказано';
- var cj=(data.conjectures||[]).slice().sort(function(a,b){return (b.weight||0)-(a.weight||0);});
- var lw=(data.laws||[]).slice().sort(function(a,b){return (b.weight||0)-(a.weight||0);});
- var H='<div class="head"><div class="kick">Исследовательский край</div><div class="h1">Ещё не доказано</div><div class="sub">Гипотезы на грани знания — мы честно помечаем, насколько они подтверждены.</div></div>';
- H+='<div class="banner"><b>Это фронтир, не факты.</b> Пунктир = гипотеза. Полоса показывает, сколько за ней реальных данных — у многих она почти пустая, и это честно.</div>';
- H+='<div class="seclbl">Гипотезы · '+cj.length+'</div>';
- H+=cj.map(function(f){return cardHtml(f,false);}).join('')||'<div class="empty">Пока пусто.</div>';
- if(lw.length){ H+='<div class="seclbl">Порождающие законы · '+lw.length+'</div>'; H+=lw.map(function(f){return cardHtml(f,true);}).join(''); }
- document.getElementById('body').innerHTML=H; bind();
-}
-function renderDetail(f,isLaw){
- document.getElementById('barTitle').textContent=isLaw?'Закон':(KIND[f.kind]||'Гипотеза');
- var c=confInfo(f.weight);
- var H='<div class="dtype"><span class="bdg'+(isLaw?' law':'')+'">'+(isLaw?'Закон':(KIND[f.kind]||'Гипотеза'))+'</span><span class="conf" style="margin:0"><span class="bar"><i style="width:'+c.p+'%"></i></span><span>'+c.lab+'</span></span></div>';
- H+='<div class="dt">'+esc(shortTitle(f))+'</div>';
- if(f.endpoints&&f.endpoints.length){ H+='<div class="endp">'+f.endpoints.map(function(e){return '<span class="ep" data-go="'+esc(e.slug)+'">'+esc(e.title)+'</span>';}).join('')+'</div>'; }
- H+='<div class="state">'+esc(f.statement)+'</div>';
- if(f.testable) H+='<div class="sec"><div class="l">Что проверяемо</div><div class="b">'+esc(f.testable)+'</div></div>';
- if(f.falsifier) H+='<div class="sec"><div class="l">Чем опровергается</div><div class="b">'+esc(f.falsifier)+'</div></div>';
- if(f.evidence&&f.evidence.length){
-  H+='<div class="sec"><div class="l">Свидетельства</div>';
-  f.evidence.forEach(function(ev){ H+='<div class="ev '+(ev.dir==='refutes'?'refutes':'supports')+'"><div class="dir">'+(ev.dir==='refutes'?'опровергает':'подтверждает')+'</div><div class="basis">'+esc(ev.basis)+'</div>'+(ev.src?'<div class="src">'+esc(ev.src)+'</div>':'')+'</div>'; });
-  H+='</div>';
- }
- if(f.honest) H+='<div class="honest"><div class="l">Оговорка честности</div>'+esc(f.honest)+'</div>';
- document.getElementById('body').innerHTML=H; bind();
-}
-function bind(){
- Array.prototype.forEach.call(document.querySelectorAll('[data-go]'),function(el){ el.onclick=function(){
-  var s=el.getAttribute('data-go');
-  if(el.classList.contains('ep')){ location.href='card.html?slug='+encodeURIComponent(s); }
-  else { location.href='findings.html?slug='+encodeURIComponent(s); }
- }; });
-}
-document.getElementById('back').onclick=function(){ if(SLUG) location.href='findings.html'; else if(history.length>1) history.back(); else location.href='solve-home.html'; };
-
-// первичный рендер из сида
-function findInSeed(slug){ var a=(SEED.conjectures||[]).filter(function(x){return x.slug===slug;})[0]; if(a) return [a,false]; var l=(SEED.laws||[]).filter(function(x){return x.slug===slug;})[0]; if(l) return [l,true]; return null; }
-if(SLUG){ var s=findInSeed(SLUG); if(s) renderDetail(s[0],s[1]); else document.getElementById('body').innerHTML='<div class="skel"><div style="height:34px;width:55%"></div><div></div><div></div></div>'; }
-else renderHub(SEED);
-
-// живой режим: kb_findings()
-(function boot(){
- function normC(c){ var bs={}; (c.nodes||[]).forEach(function(){}); 
-  var honest=''; var st=c.statement||''; var m=st.match(/ОГОВОРКА[^:]*:\s*([\s\S]*)$/i); if(m){ honest=m[1].trim(); st=st.slice(0,m.index).trim(); }
-  return {slug:c.slug,kind:c.kind,weight:c.weight,statement:st,honest:honest,testable:c.testable_content,falsifier:c.falsifier,
-   endpoints:(c.nodes||[]).filter(function(n){return n.title;}).map(function(n){return {slug:n.slug,title:n.title};}),
-   evidence:(c.evidence||[]).map(function(e){return {dir:e.direction,basis:(e.basis||'').slice(0,420),src:e.source_ref};})}; }
- function normL(l){ var st=l.statement||''; var honest=''; var m=st.match(/ОГОВОРКА[^:]*:\s*([\s\S]*)$/i); if(m){honest=m[1].trim();st=st.slice(0,m.index).trim();}
-  return {slug:l.slug,title:l.title,weight:l.weight,statement:st,honest:honest,testable:l.generative_prediction,falsifier:l.falsifier,endpoints:[],evidence:[]}; }
- function go(){
-  try{
-   if(!(window.SUPABASE_URL && window.SUPABASE_ANON_KEY && window.supabase && window.supabase.createClient)) return;
-   var SB=window.supabase.createClient(String(window.SUPABASE_URL).trim(),String(window.SUPABASE_ANON_KEY).trim());
-   SB.rpc('kb_findings').then(function(r){ if(!r||r.error||!r.data) return; var d=r.data;
-    var data={conjectures:(d.conjectures||[]).map(normC), laws:(d.laws||[]).map(normL)};
-    if(SLUG){ var hit=data.conjectures.filter(function(x){return x.slug===SLUG;})[0]; if(hit) return renderDetail(hit,false); var lw=data.laws.filter(function(x){return x.slug===SLUG;})[0]; if(lw) return renderDetail(lw,true); }
-    else renderHub(data);
-   }).catch(function(){});
-  }catch(_){}
- }
- function load(src,cb){ var s=document.createElement('script'); s.src=src; s.onload=cb; s.onerror=cb; document.head.appendChild(s); }
- function loadCfg(done){ var ps=['../config.js','./config.js','config.js','/book-reader/config.js']; var i=0; (function nx(){ if(window.SUPABASE_URL||i>=ps.length) return done(); var sc=document.createElement('script'); sc.src=ps[i++]; sc.onload=function(){ setTimeout(function(){ window.SUPABASE_URL?done():nx(); },0); }; sc.onerror=nx; document.head.appendChild(sc); })(); }
-  loadCfg(function(){ load('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.108.2', go); });
+// findings.html ретайрнут — консолидирован в единый экран frontier.html «Находки / Ещё не доказано» (задача 564e4bdb).
+(function(){
+ var p=new URLSearchParams(location.search);
+ var slug=p.get('slug')||p.get('focus')||'';
+ location.replace('frontier.html'+(slug?('?focus='+encodeURIComponent(slug)):''));
 })();
 </script>
-<script>if('serviceWorker' in navigator){try{navigator.serviceWorker.register('sw.js').catch(function(){});}catch(e){}}</script>
+<meta http-equiv="refresh" content="0; url=frontier.html">
+</head>
+<body style="margin:0;background:#FBFAF7;color:#8B847B;font-family:-apple-system,system-ui,sans-serif">
+<script>/*mc:hashroute*/(function(){try{var m=(location.hash||"").match(/^#\/c\/([^?&#]+)/);if(m&&m[1]){location.replace("card.html?slug="+encodeURIComponent(decodeURIComponent(m[1])));}}catch(e){}})();</script>
+<p style="padding:24px">Раздел переехал в «Находки / Ещё не доказано». <a href="frontier.html" style="color:#B06A1F">Открыть →</a></p>
+<script>try{document.addEventListener("touchstart",function(){},{passive:true});}catch(e){}</script>
 </body>
 </html>

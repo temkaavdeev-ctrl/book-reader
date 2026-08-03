@@ -1,14 +1,16 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" style="background:#FBFAF7">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Карточка концепта — Матчасть</title>
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#FBFAF7"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<title>Карточка · Матчасть</title>
 <style>
 :root{
- --bg:#FBFAF7; --ink:#17150F; --ink2:#56504A; --meta:#8B847B; --line:#ECE7DD; --card:#fff;
- --gold:#B06A1F; --gold-br:#C98A3A;
- --solid:#2F7D4F; --mixed:#B8801F; --contested:#C2452F; --info:#6B5CA5; --tension:#C2546A;
+ --bg:#FBFAF7; --ink:#17150F; --ink2:#56504A; --meta:#6E675E; --line:#ECE7DD; --card:#fff;
+ --gold:#97591A; --gold-br:#C98A3A;
+ --solid:#2F7D4F; --mixed:#B8801F; --contested:#C2452F; --info:#6B5CA5; --tension:#BF4C63;
  --r:20px; --rs:14px; --pill:999px;
  --sh:0 2px 12px rgba(20,17,12,.05),0 1px 2px rgba(20,17,12,.04);
 }
@@ -18,13 +20,19 @@ body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSys
 .bar{position:sticky;top:0;z-index:20;background:rgba(251,250,247,.92);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:space-between;padding:8px 0 10px;border-bottom:1px solid var(--line)}
 .ib{width:42px;height:42px;display:inline-flex;align-items:center;justify-content:center;border:0;background:none;color:var(--ink2);border-radius:var(--pill);cursor:pointer}
 .ib:active{background:var(--line)}
-.ib.on{color:var(--contested)}
+.ib.on{color:var(--gold)}
+.ib.on svg{fill:currentColor;stroke:currentColor}
 .top{padding:18px 0 4px}
 .meta-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
-.type{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--gold);background:rgba(176,106,31,.09);padding:4px 10px;border-radius:var(--pill)}
-.rob{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--ink2);background:#fff;border:1px solid var(--line);border-radius:var(--pill);padding:4px 11px;cursor:help}
+.type{display:inline-flex;align-items:center;font-size:12.5px;font-weight:650;letter-spacing:.01em;color:var(--gold);background:rgba(176,106,31,.08);border:1px solid transparent;padding:4px 11px;border-radius:var(--pill)}
+.draftb{display:inline-flex;align-items:center;font-size:12.5px;font-weight:650;letter-spacing:.01em;color:#866729;background:#F4EEDF;border:1px solid #E4D6B4;padding:4px 11px;border-radius:var(--pill)}
+/* грейд проработки (kb_node_grade): нейтральный, НЕ ось надёжности */
+.gchip{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:650;color:var(--meta);background:var(--bg);border:1px solid var(--line);border-radius:var(--pill);padding:4px 11px;cursor:help}
+.gchip i{font-style:normal;font-size:11px;font-weight:650;letter-spacing:.02em;color:#A08A5E}
+.gchip.lo{border-style:dashed}
+.rob{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:650;color:var(--ink2);background:#fff;border:1px solid var(--line);border-radius:var(--pill);padding:4px 11px;cursor:help}
 .rob .d{width:9px;height:9px;border-radius:50%}.rob.solid .d{background:var(--solid)}.rob.mixed .d{background:var(--mixed)}.rob.contested .d{background:var(--contested)}
-h1.t{font-size:30px;line-height:36px;font-weight:800;letter-spacing:-.02em;margin:2px 0 0}
+h1.t{font-size:30px;line-height:36px;font-weight:800;letter-spacing:-.02em;margin:2px 0 0;text-wrap:balance}
 .lead{font-size:17px;line-height:27px;margin-top:16px}
 .apply{margin-top:20px;background:#fff;border:1px solid var(--line);border-radius:var(--rs);padding:16px 18px;box-shadow:var(--sh)}
 .apply .lb{font-size:13px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px}
@@ -42,7 +50,13 @@ h1.t{font-size:30px;line-height:36px;font-weight:800;letter-spacing:-.02em;margi
 .sec .b{font-size:16px;line-height:25px;white-space:pre-line}
 .sec.honest{background:#211C16;color:#EFE6D7;border-radius:var(--rs);padding:18px;margin-top:24px}
 .sec.honest .l{color:var(--gold-br)}
+.sec.honest .honestmore{display:inline-block;margin-top:14px;color:var(--gold-br);font-weight:700;font-size:14px;text-decoration:none}.sec.honest .honestmore:active{opacity:.6}
+.diaglink{display:block;margin-top:14px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 15px;font-size:14px;line-height:20px;font-weight:600;color:var(--gold);text-decoration:none;box-shadow:var(--sh)}.diaglink:active{opacity:.7}
 .sec.src .b{font-size:13px;line-height:20px;color:var(--meta)}
+.sec.src .b a{color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(176,106,31,.35)}
+.sec.src .b a:active{opacity:.6}
+.foot a{color:var(--gold);font-weight:600;text-decoration:none}
+.foot a:active{opacity:.6}
 .links{margin-top:30px;border-top:1px solid var(--line);padding-top:18px}
 .links h2{font-size:18px;font-weight:700;margin:0 0 12px}
 .lk{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 0;border-bottom:1px solid var(--line);cursor:pointer;text-decoration:none;color:var(--ink)}
@@ -53,7 +67,7 @@ h1.t{font-size:30px;line-height:36px;font-weight:800;letter-spacing:-.02em;margi
 .mini{margin-top:10px}
 .mini svg{width:100%;height:auto;display:block;overflow:visible}
 .mini .mlbl{font-size:11px;font-weight:600;fill:var(--ink2)}
-.mini .medge{stroke:#D8CFBE;stroke-width:1.4}
+.mini .medge{stroke:#D8CFBE;stroke-width:1.3;stroke-linecap:round;fill:none}
 .mini .medge.tension{stroke:var(--tension);stroke-dasharray:2 4}
 .mini .mn{cursor:pointer}
 .mini .cap{font-size:10px;fill:var(--meta);font-weight:600}
@@ -62,6 +76,17 @@ h1.t{font-size:30px;line-height:36px;font-weight:800;letter-spacing:-.02em;margi
 .chip2.tension{color:var(--tension);border-color:#E8C9CF}
 .minihint{font-size:12px;line-height:17px;color:var(--meta);margin-top:12px}
 .foot{margin-top:28px;font-size:13px;color:var(--meta);border-top:1px solid var(--line);padding-top:14px}
+.invite{margin-top:26px;background:linear-gradient(160deg,#241E18,#15110C);border-radius:var(--rs);padding:20px}
+.gbrand{font-size:12.5px;line-height:18px;color:var(--meta);padding:8px 2px 0;display:flex;gap:6px;flex-wrap:wrap;align-items:baseline}
+.gbrand a{color:var(--gold);text-decoration:none;font-weight:700;white-space:nowrap}
+.gbrand a:active{opacity:.6}
+.invite .il{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--gold-br)}
+.invite .ib2{font-size:15px;line-height:22px;margin-top:8px;color:#D9CFBE}
+.invite .ia{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.invite .ia a{text-decoration:none;font-size:14px;font-weight:700;padding:11px 16px;border-radius:11px}
+.invite .ip{background:var(--gold);color:#fff}
+.invite .is{background:transparent;color:#EFE6D7;border:1px solid #4a4334}
+.invite .ia a:active{opacity:.6}
 .cta{position:fixed;left:0;right:0;bottom:0;z-index:30;background:linear-gradient(transparent,rgba(251,250,247,.9) 24%,#FBFAF7 50%);padding:18px 20px calc(18px + env(safe-area-inset-bottom))}
 .cta-in{max-width:680px;margin:0 auto}
 .cta button{width:100%;height:52px;border-radius:var(--rs);border:0;background:var(--gold);color:#fff;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
@@ -71,15 +96,66 @@ h1.t{font-size:30px;line-height:36px;font-weight:800;letter-spacing:-.02em;margi
 .skel{padding:30px 0}.skel div{background:linear-gradient(90deg,#EFEBE2,#F6F3ED,#EFEBE2);background-size:200% 100%;animation:sh 1.2s infinite;border-radius:8px;margin-bottom:12px}
 @keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+/*TAP-FEEDBACK*/button:active,a:active,[onclick]:active,.ni:active,[data-k]:active,[data-route]:active,[data-slug]:active,[data-cont]:active,[data-q]:active,.row:active,.rt-row:active,.lg-row:active,.fc:active,.stoprow:active,.opt:active,.pill:active,.tab:active,.deeper:active{opacity:.6;transition:opacity .06s}
+/*MCUX v1 — единый UX: нативные переходы между страницами, ховеры, тап-фидбек, reduced-motion*/
+@view-transition{navigation:auto}
+.nav{view-transition-name:mcnav}
+button:active,a:active,[onclick]:active,.ni:active,.mrow:active,.row:active,.res:active,.tbtn:active,.fc:active,.opt:active,.pill:active{opacity:.6;transition:opacity .06s}
+@media(hover:hover){a:hover,button:hover,.ni:hover,.mrow:hover,.row:hover,.res:hover,.tbtn:hover,.fc:hover,.opt:hover,[data-k]:hover,[data-slug]:hover,[data-cont]:hover,[data-route]:hover,[data-q]:hover{opacity:.85;transition:opacity .12s ease;cursor:pointer}}
+@media(hover:none){button:active,a:active,[onclick]:active,.ni:active,.mrow:active,.row:active,.res:active,.tbtn:active,.fc:active,.opt:active,.lp:active,.rc:active,.cont:active,.hero:active,.scd:active,.tl:active,.fd:active,.lk:active,.deeper:active,[data-k]:active,[data-slug]:active,[data-cont]:active,[data-route]:active,[data-q]:active{opacity:.72;transform:scale(.97);transition:transform .06s ease,opacity .06s}}
+a:focus-visible,button:focus-visible,[onclick]:focus-visible,.ni:focus-visible,.mrow:focus-visible,.row:focus-visible,.res:focus-visible,.tbtn:focus-visible,.fc:focus-visible,.opt:focus-visible,.lp:focus-visible,.rc:focus-visible,[data-k]:focus-visible,[data-slug]:focus-visible,[data-cont]:focus-visible,[data-route]:focus-visible,[data-go]:focus-visible{outline:2px solid var(--gold,#97591A);outline-offset:2px;border-radius:6px}
+.mcstate{padding:46px 20px;text-align:center;color:var(--meta,#6E675E)}
+.mcstate .ic{font-size:30px;line-height:1;margin-bottom:12px;opacity:.75}
+.mcstate .msg{font-size:14.5px;line-height:20px;max-width:300px;margin:0 auto}
+.mcstate .deadact{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:6px}
+.mcstate .deadact .retry{margin-top:10px;text-decoration:none}
+.mcstate .retry{margin-top:16px;display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:700;color:var(--gold,#97591A);background:none;border:1px solid var(--line,#ECE7DD);border-radius:999px;padding:9px 18px;cursor:pointer}
+.mcsk{background:linear-gradient(90deg,#EFEBE2,#F6F3ED,#EFEBE2);background-size:200% 100%;animation:mcsh 1.2s infinite;border-radius:12px}
+@keyframes mcsh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+/*MCDESK v1 — десктоп (>=960px): нижний таб-бар -> левый сайдбар, контент смещается вправо; мобилка не трогается*/
+@media(min-width:960px){
+ body:has(nav.nav){padding-left:236px}
+ nav.nav{top:0;bottom:0;right:auto;width:236px;border-top:0;border-right:1px solid var(--line);padding:0}
+ nav.nav .navin{flex-direction:column;align-items:stretch;height:100vh;max-width:none;margin:0;padding:22px 14px;gap:3px}
+ nav.nav .ni{flex:0 0 auto;flex-direction:row;justify-content:flex-start;gap:14px;min-height:0;height:auto;padding:12px 14px;border-radius:12px}
+ nav.nav .ni svg{width:22px;height:22px}
+ nav.nav .ni .lb{font-size:15px;font-weight:600}
+ nav.nav .ni.on{background:rgba(176,106,31,.09)}
+ @media(hover:hover){nav.nav .ni:hover{background:rgba(176,106,31,.06);opacity:1}}
+ body:has(nav.nav) .topbar{left:236px}
+ body:has(nav.nav) .cta{left:236px}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}
+/*MCNAV — единый навбар для детальных страниц*/
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(251,250,247,.94);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.navin{max-width:720px;margin:0 auto;display:flex}
+.ni{flex:1;min-height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:none;border:0;color:var(--meta);cursor:pointer}
+.ni svg{width:24px;height:24px}.ni .lb{font-size:11px;font-weight:600}.ni.on{color:var(--gold)}
+@media(max-width:959px){.nav{display:none}}
+/*карточка — 2-колоночный лейаут на десктопе: чтение слева, связи-аside справа*/
+@media(min-width:960px){
+ .wrap{max-width:1060px}
+ .cardgrid{display:grid;grid-template-columns:minmax(0,1fr) 324px;gap:46px;align-items:start}
+ .card-aside{position:sticky;top:72px}
+ .card-aside .links{margin-top:0;border-top:0;padding-top:0}
+ .card-aside .links h2{font-size:15px;text-transform:uppercase;letter-spacing:.04em;color:var(--meta)}
+ .card-aside .foot{margin-top:20px}
+ h1.t{font-size:34px;line-height:41px}
+ .lead{font-size:18px;line-height:29px}
+}
 </style>
+<style>/*mc:desktop*/@media(min-width:1020px){.nav{top:0;bottom:0;left:0;right:auto;width:92px;border-top:0;border-right:1px solid var(--line);padding-bottom:0}.navin{flex-direction:column;justify-content:center;gap:8px;height:100%;max-width:none}.ni{flex:0 0 auto;padding:13px 0;margin:0 10px;border-radius:12px}.ni.on{background:rgba(151,89,26,.08)}body{padding-left:92px}.wrap{max-width:760px}.cta{left:92px}.topbar{left:92px}}@media(hover:hover){.ni{transition:color .15s,background .15s}.ni:hover{color:var(--gold)}a{transition:opacity .12s}}</style>
 </head>
 <body>
+<script>/*mc:hashroute*/(function(){try{var m=(location.hash||"").match(/^#\/c\/([^?&#]+)/);if(m&&m[1]){location.replace("card.html?slug="+encodeURIComponent(decodeURIComponent(m[1])));}}catch(e){}})();</script>
 <div class="wrap" id="wrap"></div>
 <div class="cta"><div class="cta-in"><button id="ctaBtn">Дальше</button></div></div>
 <div class="toast" id="toast"></div>
 
 <script>
 // СИД: реальный публичный bundle (cognitive-load-theory), компактно — мгновенный/офлайн рендер.
+// синхронно: токен сессии в localStorage → участник сразу (без гостевого приглашения-мелькания на карточке)
+try{ for(var _mi=0;_mi<localStorage.length;_mi++){ var _mk=localStorage.key(_mi); if(_mk&&_mk.indexOf('sb-')===0&&_mk.indexOf('-auth-token')>0){ var _mv=localStorage.getItem(_mk); if(_mv&&_mv.length>20){ window.__MEMBER=true; break; } } } }catch(e){}
 var SEED={
  slug:"cognitive-load-theory", kind:"theory",
  title:"Теория когнитивной нагрузки (Cognitive Load Theory)",
@@ -93,7 +169,7 @@ var SEED={
   "аналогия":"Рабочая память — небольшой стол: на нём помещается четыре документа. Задача уже занимает часть. Лишние бумаги (посторонняя нагрузка) не оставляют места для выводов. Стол не больше — но убери лишнее, и дело пойдёт.",
   "история":"Джон Свэллер сформулировал CLT в 1988 (на базе модели рабочей памяти Бэддли–Хитча и «7±2» Миллера). В 2001 Коуэн уточнил ёмкость до ~4 чанков. С 2010-х теория переносится из педагогики в UX и продукт.",
   "пример":"Checkout, где поле промокода между адресом и картой, а сумма видна только вверху: пользователь скроллит, удерживая три блока разом. Упрощённые потоки (1-Click, вынос промокода) снижают постороннюю нагрузку → ниже доля брошенных корзин.",
-  "контртеория":"Роберт Бьорк описал «желательные трудности»: некоторое усилие при обучении улучшает долгосрочную память. CLT и Бьорк не противоречат, но указывают в разные стороны — снижать нужно ПОСТОРОННЮЮ нагрузку, а релевантную иногда стоит сознательно повышать. Перенос «меньше нагрузки → лучше решения» на реальные продукты — умеренный, требует валидации.",
+  "контртеория":"Роберт Бьорк описал «желательные трудности»: некоторое усилие при обучении улучшает долгосрочную память. CLT и Бьорк не противоречат, но указывают в разные стороны — снижать нужно «постороннюю» нагрузку, а релевантную иногда стоит сознательно повышать. Перенос «меньше нагрузки → лучше решения» на реальные продукты — умеренный, требует валидации.",
   "условия-применимости":"Точнее всего: аудитория-новички, задача с многими взаимозависимыми элементами, момент первого знакомства или напряжённого решения (платёж, регистрация). Хуже работает: пользователь-эксперт с готовыми схемами (те же упрощения мешают — expertise reversal); линейная малоэлементная задача.",
   "числа-и-пороги":"Ёмкость рабочей памяти ~4 независимых чанка (Cowan 2001). Классическая оценка Миллера 7±2 (1956) — для простых изолированных единиц, завышена для сложного взаимосвязанного материала.",
   "частые-ошибки":"Путают «сложная задача» и «сложный интерфейс». «Наши пользователи умные, разберутся» — у экспертов рабочая память такая же. Тултип поверх сложного интерфейса не снижает нагрузку, а добавляет слой. Минимализм ≠ низкая нагрузка: разнесённые связанные элементы дают split-attention.",
@@ -111,7 +187,7 @@ var SEED={
  status:"канон", updated:"2026-06"
 };
 
-var ROB={solid:{c:"solid",t:"Подтверждено",tip:"Воспроизведено в нескольких независимых исследованиях."},mixed:{c:"mixed",t:"Неоднозначно",tip:"Данные смешанные или зависят от условий."},contested:{c:"contested",t:"Спорно",tip:"Есть серьёзные контр-доказательства."}};
+var ROB={solid:{c:"solid",t:"Проверено",tip:"Устойчиво воспроизводится в исследованиях."},mixed:{c:"mixed",t:"Есть нюансы",tip:"Работает, но с важными оговорками."},contested:{c:"contested",t:"Спорно",tip:"Есть серьёзные контр-доказательства."}};
 var KIND={theory:"Теория",effect:"Эффект",phenomenon:"Феномен",frame:"Рамка",method:"Метод",scenario:"Ситуация",term:"Термин"};
 // relation → человекочитаемый ярлык + флаг напряжения
 var REL={
@@ -126,95 +202,227 @@ var SEC=[
  ["числа-и-пороги","Числа и пороги"],["частые-ошибки","Частые ошибки"],["причинная-цепочка","Причинная цепочка"]
 ];
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+// обрезка тизера по ГРАНИЦЕ СЛОВА (не посреди слова): подрезаем до max, откатываем к последнему пробелу, добавляем «…»
+function wordClip(s,max){ s=String(s==null?"":s).trim(); if(s.length<=max) return s; var cut=s.slice(0,max); var sp=cut.lastIndexOf(' '); if(sp>Math.floor(max*0.6)) cut=cut.slice(0,sp); cut=cut.replace(/[\s.,;:!?—–-]+$/,''); cut=cut.replace(/(?:\s+(?:в|во|на|и|а|но|с|со|к|ко|о|об|обо|у|не|ни|по|из|изо|за|для|что|как|от|до|при|под|над|без|же|ли|бы|то))+$/i,''); return cut+'…'; }
+function plural(n,a,b,c){var m=Math.abs(+n||0)%100,d=m%10;if(m>10&&m<20)return c;if(d>1&&d<5)return b;if(d===1)return a;return c;}
 function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('on');},1800);}
+function track(k,p){ try{ if(window.__SB){ var _pr=window.__SB.rpc('reader_event',{p_kind:k,p_payload:p||{}}); if(_pr&&_pr.catch) _pr.catch(function(){}); } }catch(e){} }
+// Слой-1: откуда пришёл на узел — вход-от-задачи (situations) vs обзор (home/browse) vs квест/поиск/карта.
+// ?from= перекрывает; иначе выводим из referrer. Питает feedback-loop до живых юзеров (task 53d63abc).
+function entrySrc(){ try{ var q=(new URLSearchParams(location.search)).get('from'); if(q) return String(q).slice(0,20);
+  var r=document.referrer||''; if(!r) return 'direct';
+  if(/situations\.html/.test(r)) return 'task';
+  if(/quests\.html/.test(r)) return 'quest';
+  if(/search\.html/.test(r)) return 'search';
+  if(/explore\.html/.test(r)) return 'map';
+  if(/(solve-home\.html|\/index|matchast-home)/.test(r)) return 'home';
+  if(/(concepts-browse|honest\.html)/.test(r)) return 'browse';
+  return 'other';
+ }catch(e){ return 'direct'; } }
 function miniGraph(centerTitle, edges){
  var n=Math.min(edges.length,6); if(!n) return '';
- var cx=160,cy=120,rx=112,ry=80;
+ var cx=160,cy=120,rx=112,ry=78;
  var nodes=[]; for(var i=0;i<n;i++){ var a=-Math.PI/2 + i*(2*Math.PI/n); nodes.push({x:cx+rx*Math.cos(a), y:cy+ry*Math.sin(a), e:edges[i], a:a}); }
- var E=''; nodes.forEach(function(nd){ var t=(REL[nd.e.relation]||[0,0])[1]; E+='<line class="medge'+(t?' tension':'')+'" x1="'+cx+'" y1="'+cy+'" x2="'+nd.x.toFixed(1)+'" y2="'+nd.y.toFixed(1)+'"/>'; });
- var N=''; nodes.forEach(function(nd){ var t=(REL[nd.e.relation]||[0,0])[1]; var below=nd.y<=cy+6; var ly=below?nd.y+20:nd.y-12;
-   var lab=(nd.e.other_title||nd.e.other); lab=lab.length>13?lab.slice(0,12)+'…':lab;
-   N+='<g class="mn" data-go="'+esc(nd.e.other)+'"><circle cx="'+nd.x.toFixed(1)+'" cy="'+nd.y.toFixed(1)+'" r="8" fill="'+(t?'#C2546A':'#C98A3A')+'"/><text class="mlbl" x="'+nd.x.toFixed(1)+'" y="'+ly.toFixed(1)+'" text-anchor="middle">'+esc(lab)+'</text></g>'; });
- var C='<circle cx="'+cx+'" cy="'+cy+'" r="19" fill="#17150F"/><text x="'+cx+'" y="'+(cy+5)+'" text-anchor="middle" font-size="15" fill="#E7C07A">✦</text><text class="cap" x="'+cx+'" y="'+(cy+34)+'" text-anchor="middle">эта идея</text>';
- return '<div class="mini"><svg viewBox="0 0 320 240" preserveAspectRatio="xMidYMid meet">'+E+N+C+'</svg></div>';
+ var defs='<defs>'+
+   '<radialGradient id="mgg"><stop offset="0" stop-color="#C98A3A" stop-opacity=".42"/><stop offset="55%" stop-color="#C98A3A" stop-opacity=".13"/><stop offset="100%" stop-color="#C98A3A" stop-opacity="0"/></radialGradient>'+
+   '<radialGradient id="mgr"><stop offset="0" stop-color="#C2546A" stop-opacity=".42"/><stop offset="55%" stop-color="#C2546A" stop-opacity=".13"/><stop offset="100%" stop-color="#C2546A" stop-opacity="0"/></radialGradient>'+
+   '<radialGradient id="mgs"><stop offset="0" stop-color="#C98A3A" stop-opacity=".32"/><stop offset="60%" stop-color="#C98A3A" stop-opacity=".07"/><stop offset="100%" stop-color="#C98A3A" stop-opacity="0"/></radialGradient>'+
+   '</defs>';
+ var E=''; nodes.forEach(function(nd){ var t=(REL[nd.e.relation]||[0,0])[1];
+   var dx=nd.x-cx, dy=nd.y-cy, L=Math.sqrt(dx*dx+dy*dy)||1, px=-dy/L, py=dx/L, off=11;
+   var mx=(cx+nd.x)/2+px*off, my=(cy+nd.y)/2+py*off;
+   E+='<path class="medge'+(t?' tension':'')+'" d="M'+cx+' '+cy+' Q'+mx.toFixed(1)+' '+my.toFixed(1)+' '+nd.x.toFixed(1)+' '+nd.y.toFixed(1)+'"/>'; });
+ var N=''; nodes.forEach(function(nd){ var t=(REL[nd.e.relation]||[0,0])[1]; var upper=nd.y<=cy; var ly=upper?nd.y+24:nd.y-22;
+   var lab=(nd.e.other_title||nd.e.other); lab=lab.length>13?wordClip(lab,12):lab;
+   var col=t?'#C2546A':'#C98A3A', gl=t?'url(#mgr)':'url(#mgg)'; var X=nd.x.toFixed(1), Y=nd.y.toFixed(1);
+   N+='<g class="mn" data-go="'+esc(nd.e.other)+'" role="link" tabindex="0" aria-label="'+esc(nd.e.other_title||nd.e.other)+'">'+
+      '<circle cx="'+X+'" cy="'+Y+'" r="17" fill="'+gl+'"/>'+
+      '<circle cx="'+X+'" cy="'+Y+'" r="6.5" fill="'+col+'"/>'+
+      '<circle cx="'+(nd.x-1.8).toFixed(1)+'" cy="'+(nd.y-1.8).toFixed(1)+'" r="1.9" fill="#FFF7EC" opacity=".55"/>'+
+      '<text class="mlbl" x="'+X+'" y="'+ly.toFixed(1)+'" text-anchor="middle">'+esc(lab)+'</text></g>'; });
+ var C='<circle cx="'+cx+'" cy="'+cy+'" r="34" fill="url(#mgs)"/>'+
+   '<circle cx="'+cx+'" cy="'+cy+'" r="18" fill="#17150F"/>'+
+   '<circle cx="'+(cx-2)+'" cy="'+(cy-2)+'" r="5.5" fill="#241F16"/>'+
+   '<text x="'+cx+'" y="'+(cy+5)+'" text-anchor="middle" font-size="15" fill="#E7C07A">✦</text>'+
+   '<text class="cap" x="'+cx+'" y="'+(cy+36)+'" text-anchor="middle">эта идея</text>';
+ return '<div class="mini"><svg viewBox="0 0 320 240" preserveAspectRatio="xMidYMid meet">'+defs+E+C+N+'</svg></div>';
 }
 
 var CUR=null;
+// Грейд проработки узла (kb_node_grade, e12a44cc; апрув Прометея 8bdc3c9b). Правила Дедала:
+// НЕ медицинский evidence-grade (нейтральный чип, не приговор); basis всегда виден (label-only = «по ручной метке»,
+// не по репликации); badge («источники в очереди…») показываем; нет в grades.json (не graded/не public) → не рисуем.
+// Ось проработки НЕ смешивать с бейджем надёжности — отдельный серый чип. Данные пекутся на build (grades.json).
+function gradeChip(){
+ try{
+  var g=window.__GRADES && window.__GRADES[(new URLSearchParams(location.search)).get('slug')];
+  if(!g||!g.g) return '';
+  var basis=g.b==='L'?'по ручной метке, источники не проверены':('источников проверено '+(g.v||0)+' из '+(g.t||0));
+  var tip='Проработка узла: '+g.g+' — '+basis+(g.bd?(' · '+g.bd):'')+'. Внутренняя оценка полноты проработки, не научный вердикт — надёжность смотрите в соседней пометке.';
+  return '<span class="gchip'+(g.b==='L'?' lo':'')+'" title="'+esc(tip)+'">проработка '+esc(g.g)+(g.b==='L'?' <i>метка</i>':'')+'</span>';
+ }catch(e){ return ''; }
+}
+(function(){ // грейды пекутся при стейдже; late-дорисовка слота после загрузки. file:// — skip (CORS-шум, грейдов там нет)
+ if(location.protocol==='file:') return;
+ fetch('grades.json').then(function(r){ return r.ok?r.json():null; }).then(function(j){
+  if(!j) return; window.__GRADES=j;
+  var s=document.getElementById('gslot'); if(s) s.innerHTML=gradeChip();
+ }).catch(function(){});
+})();
 function render(d){
- CUR=d; var b=d.body||{}; var r=ROB[d.robustness]||ROB.mixed;
- var typeLabel=(function(){ var imp=(d.tags||[]).filter(function(x){return x.axis==='importance';})[0]; return imp?imp.label:(KIND[d.kind]||'Концепт'); })();
+ try{ var _c=document.querySelector('.cta'); if(_c) _c.style.display=''; }catch(e){}
+ CUR=d; try{ if(d.title) document.title=d.title+' · Матчасть'; }catch(e){} try{ if(d.slug) localStorage.setItem('mc:last',JSON.stringify({slug:d.slug,title:d.title||d.slug,ts:Date.now()})); }catch(e){} var b=d.body||{}; var r=ROB[d.robustness]||ROB.mixed;
+ // Канон карточки (05834a40): node_class=tool/instrument → честный ярлык «Инструмент · практика» (не «научность»).
+ var typeLabel=(function(){ var imp=(d.tags||[]).filter(function(x){return x.axis==='importance';})[0]; if(imp) return imp.label;
+  if(d.node_class==='tool'||d.node_class==='instrument'||d.node_layer==='instrument') return 'Инструмент · практика';
+  return KIND[d.kind]||'Концепт'; })();
  var H='<div class="bar">'+
    '<button class="ib" id="back" aria-label="Назад"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>'+
    '<div style="display:flex;gap:2px">'+
-   '<button class="ib" id="fav" aria-label="В избранное"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.6-7-9.6A3.9 3.9 0 0 1 12 7a3.9 3.9 0 0 1 7 3.4c0 5-7 9.6-7 9.6z"/></svg></button>'+
+   '<button class="ib" id="fav" aria-label="В избранное"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 6.3L21 10l-4.8 4 .8 6.7L12 17.6 6 20.7l.8-6.7L2 10l6.4-.7z"/></svg></button>'+
    '<button class="ib" id="share" aria-label="Поделиться"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M12 15V4M8 8l4-4 4 4"/></svg></button>'+
    '</div></div>';
+ // Гость с шаринг-ссылки — самый горячий лид: тихая бренд-рамка сверху, «как получить» вместо тупика (bus 180fe5e8 п.2; строки — черновик, финал за Каллиопой)
+ if(!window.__MEMBER){
+  H+='<div class="gbrand"><span>Честно о поведении — разборы методов с пометкой надёжности.</span><a href="access.html">Доступ по приглашению →</a></div>';
+ }
+ H+='<div class="cardgrid"><div class="card-main">';
+ var isDraft=!!(d.content_status && d.content_status!=='ready');
  H+='<div class="top"><div class="meta-row"><span class="type">'+esc(typeLabel)+'</span>'+
-   '<span class="rob '+r.c+'" title="'+esc(r.tip)+'"><span class="d"></span>'+esc(r.t)+'</span></div>'+
+   '<span class="rob '+r.c+'" title="'+esc(r.tip)+'"><span class="d"></span>'+esc(r.t)+'</span>'+
+   (isDraft?'<span class="draftb" title="Карточка ещё дорабатывается — контент может измениться">дорабатывается</span>':'')+
+   '<span id="gslot">'+gradeChip()+'</span></div>'+
    '<h1 class="t">'+esc(d.title)+'</h1></div>';
  // СЛОЙ 1
  if(b['суть']) H+='<div class="lead">'+esc(b['суть'])+'</div>';
  if(b['применение']) H+='<div class="apply"><div class="lb">Как применить в продукте</div><div class="bd">'+esc(b['применение'])+'</div></div>';
+ // Честный блок: приоритет как-на-самом-деле > механизм-заблуждения > контртеория (последняя — фолбэк ТЕКСТА,
+ // иначе у карточек только с контртеорией (напр. loss-aversion) честный слой не показывался вообще).
+ var honest=b['как-на-самом-деле']||b['механизм-заблуждения'];
+ var honestFromCounter=false;
+ if(!honest && b['контртеория']){ honest=b['контртеория']; honestFromCounter=true; }
+ var showCounter=b['контртеория'] && !honestFromCounter;   // не дублируем контртеорию, если она ушла в честный блок
+ // ЧЕСТНОСТЬ = HARD LIMIT: видимый честный сигнал ЖИВЁТ НА СЛОЕ-1, выше раскрытия «Разобрать глубже».
+ // Гость видит ров сразу, без доп.тапа. Полный текст остаётся ниже, в layer2 — только если тизер обрезан.
+ var honestTrunc=!!honest && honest.length>240;
+ if(honest) H+='<div class="sec honest l1honest"><div class="l">А как на самом деле</div><div class="b">'+esc(wordClip(honest,240))+'</div>'+(honestTrunc?'<a href="#layer2" class="honestmore" id="honestJump">Разобрать глубже →</a>':'<a href="honest.html" class="honestmore">Ещё честные разборы →</a>')+'</div>';
+ // мост в Диагностику убран из прода (реш. Артёма)
  // реакция
  H+='<div class="react"><div class="q">Как вам карточка?</div><div class="chips">'+
    '<button class="rc" data-react="Применимо">Применимо</button>'+
    '<button class="rc" data-react="Спорно">Спорно</button>'+
    '<button class="rc" data-react="Нужно глубже">Нужно глубже</button></div></div>';
  // disclosure + СЛОЙ 2
- var honest=b['как-на-самом-деле']||b['механизм-заблуждения'];
- var hasL2=SEC.some(function(s){return s[0]==='__rob'?d.robustness_note:b[s[0]];})||honest||b['источники']||b['контртеория'];
+ var l2sec=SEC.filter(function(s){return s[0]==='__rob'?d.robustness_note:b[s[0]];}).length+(showCounter?1:0)+(honestTrunc?1:0)+(b['источники']?1:0);
+ var hasL2=l2sec>0;
  if(hasL2){
-  H+='<button class="disc" id="disc">Разобрать глубже <svg class="cv" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>';
+  H+='<button class="disc" id="disc" aria-expanded="false" aria-controls="layer2">Разобрать глубже · ещё '+l2sec+' '+plural(l2sec,'раздел','раздела','разделов')+' <svg class="cv" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>';
   H+='<div class="layer2" id="layer2">';
   SEC.forEach(function(s){
    var val=s[0]==='__rob'?d.robustness_note:b[s[0]];
    if(val) H+='<div class="sec"><div class="l">'+esc(s[1])+'</div><div class="b">'+esc(val)+'</div></div>';
   });
-  if(b['контртеория']) H+='<div class="sec"><div class="l">Контртеория</div><div class="b">'+esc(b['контртеория'])+'</div></div>';
-  if(honest) H+='<div class="sec honest"><div class="l">А как на самом деле</div><div class="b">'+esc(honest)+'</div></div>';
-  if(b['источники']) H+='<div class="sec src"><div class="l">Источники</div><div class="b">'+esc(b['источники'])+'</div></div>';
+  if(showCounter) H+='<div class="sec"><div class="l">Контртеория</div><div class="b">'+esc(b['контртеория'])+'</div></div>';
+  if(honestTrunc) H+='<div class="sec honest"><div class="l">А как на самом деле · полностью</div><div class="b">'+esc(honest)+'</div><a href="honest.html" class="honestmore">Ещё честные разборы →</a></div>';
+  if(b['источники']) H+='<div class="sec src"><div class="l">Источники</div><div class="b">'+linkSources(b['источники'])+'</div></div>';
   H+='</div>';
  }
+ H+='</div><aside class="card-aside">';
  // СВЯЗИ — мини-граф
  var edges=(d.edges||[]).slice().sort(function(a,bb){ return ((REL[bb.relation]||[0,0])[1]) - ((REL[a.relation]||[0,0])[1]); });
  if(edges.length){
   H+='<div class="links"><h2>Связи</h2>'+miniGraph(d.title, edges);
   var extra=edges.slice(6);
-  if(extra.length){ H+='<div class="morelinks">'+extra.map(function(e){var rl=REL[e.relation]||[e.relation,0];return '<a class="chip2'+(rl[1]?' tension':'')+'" data-go="'+esc(e.other)+'">'+esc(e.other_title||e.other)+'</a>';}).join('')+'</div>'; }
+  if(extra.length){ H+='<div class="morelinks">'+extra.map(function(e){var rl=REL[e.relation]||[e.relation,0];return '<a class="chip2'+(rl[1]?' tension':'')+'" href="card.html?slug='+encodeURIComponent(e.other)+'" data-go="'+esc(e.other)+'">'+esc(e.other_title||e.other)+'</a>';}).join('')+'</div>'; }
   H+='<div class="minihint">Красным — спорные и конкурирующие связи. Нажмите узел, чтобы перейти.</div>';
   H+='</div>';
  }
  // подвал
- H+='<div class="foot">Обновлено '+esc(d.updated||'—')+' · статус: '+esc(d.status||'—')+'</div>';
+ H+='<div class="foot"><a href="explore.html?focus='+encodeURIComponent(d.slug||'')+'">Показать на карте →</a> · Обновлено '+esc(d.updated||'—')+' · статус: '+esc(d.status||'—')+'</div>';
+ H+='</aside></div>';
+ // deep-link посадочная: аноним (в т.ч. пришедший по card_url из ассистента) — лёгкое приглашение, не стена
+ if(!window.__MEMBER){
+  H+='<div class="invite"><div class="il">Матчасть — честно о поведении</div>'+
+     '<div class="ib2">Как люди принимают решения и как это применить в продукте — с пометкой надёжности и ссылками на источники, без желтухи.</div>'+
+     '<div class="ia"><a class="ip" href="access.html">Доступ по приглашению — как получить</a><a class="is" href="explore.html">Исследовать карту</a></div></div>';
+ }
  document.getElementById('wrap').innerHTML=H;
+ try{ var _w=document.querySelector('.wrap'); if(_w) _w.style.opacity=isDraft?'0.9':''; }catch(e){}
 
  // обработчики
- document.getElementById('back').onclick=function(){ if(history.length>1) history.back(); else toast('Назад'); };
- document.getElementById('fav').onclick=function(e){ e.currentTarget.classList.toggle('on'); toast('Добавлено в избранное'); };
- document.getElementById('share').onclick=function(){ toast('Ссылка скопирована'); };
+ document.getElementById('back').onclick=function(){ if(history.length>1) history.back(); else location.href='explore.html'; };
+ var favEl=document.getElementById('fav');
+ // оптимистично из локали, затем авторитетно из БД (для залогиненных)
+ if(favHas(d.slug)) favEl.classList.add('on');
+ svState(d.slug).then(function(st){ favEl.classList.toggle('on', !!st.saved); applyReaction(st.reaction); });
+ favEl.onclick=function(e){ var btn=e.currentTarget; svToggle(d.slug,d.title,'card').then(function(on){ btn.classList.toggle('on', on); toast(on?'Сохранено':'Убрано из сохранённого'); }).catch(function(err){ toast((err&&err.message)||'Не удалось сохранить'); }); };
+ document.getElementById('share').onclick=function(){ var url=location.href, ttl=(d.title||'Матчасть'); if(navigator.share){ navigator.share({title:ttl,url:url}).catch(function(){}); return; } try{ navigator.clipboard.writeText(url).then(function(){ toast('Ссылка скопирована'); },function(){ toast('Ссылка: '+url); }); }catch(e){ toast('Ссылка: '+url); } };
  var disc=document.getElementById('disc');
- if(disc) disc.onclick=function(){ disc.classList.toggle('open'); document.getElementById('layer2').classList.toggle('open'); };
- Array.prototype.forEach.call(document.querySelectorAll('.rc'),function(c){ c.onclick=function(){ Array.prototype.forEach.call(document.querySelectorAll('.rc'),function(x){x.classList.remove('sel');}); c.classList.add('sel'); toast('Записал · спасибо'); }; });
- Array.prototype.forEach.call(document.querySelectorAll('[data-go]'),function(a){ a.onclick=function(){ go(a.getAttribute('data-go')); }; });
+ function openLayer2(){ var l2=document.getElementById('layer2'); if(disc){ disc.classList.add('open'); disc.setAttribute('aria-expanded','true'); } if(l2) l2.classList.add('open'); }
+ if(disc) disc.onclick=function(){ disc.classList.toggle('open'); document.getElementById('layer2').classList.toggle('open'); disc.setAttribute('aria-expanded', disc.classList.contains('open')?'true':'false'); };
+ var honestJump=document.getElementById('honestJump');
+ if(honestJump) honestJump.onclick=function(e){ if(e&&e.preventDefault) e.preventDefault(); openLayer2(); var l2=document.getElementById('layer2'); if(l2&&l2.scrollIntoView) l2.scrollIntoView({behavior:'smooth',block:'start'}); };
+ function applyReaction(rv){ if(!rv) return; Array.prototype.forEach.call(document.querySelectorAll('.rc'),function(x){ x.classList.toggle('sel', x.getAttribute('data-react')===rv); }); }
+ Array.prototype.forEach.call(document.querySelectorAll('.rc'),function(c){ c.onclick=function(){
+   if(!window.__MEMBER){ toast('Реакции — после входа'); return; }
+   Array.prototype.forEach.call(document.querySelectorAll('.rc'),function(x){x.classList.remove('sel');}); c.classList.add('sel');
+   var rv=c.getAttribute('data-react');
+   if(window.__SB){ window.__SB.rpc('card_react',{p_slug:d.slug,p_reaction:rv}).then(function(r){ toast((r&&r.error)?'Не удалось сохранить':'Сохранено'); }).catch(function(){ toast('Не удалось сохранить'); }); }
+   else toast('Сохранено');
+ }; });
+ Array.prototype.forEach.call(document.querySelectorAll('[data-go]'),function(a){ a.onclick=function(e){ if(e&&e.preventDefault) e.preventDefault(); go(a.getAttribute('data-go')); }; a.onkeydown=function(e){ if(e.key==='Enter'||e.key===' '||e.key==='Spacebar'){ e.preventDefault(); go(a.getAttribute('data-go')); } }; });
  // CTA «Дальше» → первая курированная связь (приоритет напряжению)
  var nxt=edges.slice().sort(function(a,bb){return ((REL[bb.relation]||[0,0])[1])-((REL[a.relation]||[0,0])[1]);})[0];
  var ctaBtn=document.getElementById('ctaBtn');
+ if(nxt&&(nxt.other_title||nxt.other)){ ctaBtn.textContent='Дальше: '+wordClip(nxt.other_title||nxt.other,28); ctaBtn.style.whiteSpace='nowrap'; ctaBtn.style.overflow='hidden'; ctaBtn.style.textOverflow='ellipsis'; }
  ctaBtn.onclick=function(){ if(nxt) go(nxt.other); else toast('Это пока крайняя в цепочке'); };
  window.scrollTo(0,0);
 }
 
+function deadEnd(kind,slug){ // п.9 (4fde418b): recovery вместо тупика — sticky прячем, даём выходы
+ var c=document.querySelector('.cta'); if(c) c.style.display='none';
+ document.getElementById('wrap').innerHTML='<div class="mcstate"><div class="ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4L2.8 19.5h18.4z"/><path d="M12 10v4M12 17h.01"/></svg></div><div class="msg">'+(kind==='empty'?'Такой карточки нет — возможно, ссылка устарела или в ней опечатка.':'Не удалось загрузить карточку.')+'</div><div class="deadact">'+(kind==='error'?'<button class="retry" onclick="go(\''+slug+'\')">↻ Повторить</button>':'')+'<a class="retry" href="solve-home.html">К Матчасти</a><a class="retry" href="search.html">Найти через поиск</a></div></div>';
+}
 function go(slug){
- if(!window.__SB){ toast('Полная карточка — при наличии сети'); return; }
- document.getElementById('wrap').innerHTML='<div class="skel"><div style="height:42px;width:60%"></div><div style="height:120px"></div><div style="height:90px"></div></div>';
+ // stale-while-revalidate: показать кешированную карточку мгновенно, обновить в фоне
+ var cached=null; try{ cached=JSON.parse(localStorage.getItem('mc:card:'+slug)||'null'); }catch(e){}
+ if(cached&&cached.slug){ render(cached); } else { document.getElementById('wrap').innerHTML='<div class="skel"><div style="height:42px;width:60%"></div><div style="height:120px"></div><div style="height:90px"></div></div>'; }
+ if(!window.__SB){ if(!cached) toast('Полная карточка — при наличии сети'); return; }
  var guest=!window.__MEMBER;
  window.__SB.rpc(guest?'kb_public_bundle':'kb_node_bundle',{p_slug:slug}).then(function(r){
-  if(r&&!r.error&&r.data){ var d=r.data; d.updated=d.updated||'—'; d.status=d.status||(d.content_status||'канон'); render(d); }
-  else toast('Не удалось загрузить карточку');
- }).catch(function(){ document.getElementById('wrap').innerHTML='<div class="foot">Не удалось загрузить карточку. <a href="#" onclick="location.reload();return false">Повторить</a></div>'; });
+  if(r&&!r.error&&r.data){ var d=r.data; d.updated=d.updated||'—'; d.status=d.status||(d.content_status||'канон'); try{ localStorage.setItem('mc:card:'+slug, JSON.stringify(d)); }catch(e){} render(d); track('card_view',{slug:slug, guest:guest, src:entrySrc()}); if(!guest){ try{ window.__SB.rpc('mark_visited',{p_slug:slug}).catch(function(){}); }catch(e){} try{ var _vis=JSON.parse(localStorage.getItem('mc:visited')||'{}'); if(!_vis[slug]){ _vis[slug]=1; localStorage.setItem('mc:visited',JSON.stringify(_vis)); toast('★ +1 · зажжено на вашей Карте'); } }catch(e){} } }
+  else { track('card_deadend',{slug:slug, guest:guest, reason:'empty', src:entrySrc()}); if(!cached) deadEnd('empty',slug); }
+ }).catch(function(){ track('card_deadend',{slug:slug, guest:guest, reason:'error', src:entrySrc()}); if(!cached) deadEnd('error',slug); });
 }
 
-// первичный рендер из сида
-render(SEED);
+// избранное: localStorage 'mc:fav' = [{slug,title,ts}]
+function favGet(){ try{ return JSON.parse(localStorage.getItem('mc:fav')||'[]')||[]; }catch(e){ return []; } }
+function favHas(s){ var l=favGet(); for(var i=0;i<l.length;i++){ if(l[i]&&l[i].slug===s) return true; } return false; }
+function favToggle(s,t){ var l=favGet(),i=-1; for(var k=0;k<l.length;k++){ if(l[k]&&l[k].slug===s){i=k;break;} } if(i>=0) l.splice(i,1); else l.unshift({slug:s,title:t||s,ts:Date.now()}); try{ localStorage.setItem('mc:fav',JSON.stringify(l)); }catch(e){} return i<0; }
+// DB-aware слой: залогин → RPC (источник истины), аноним → localStorage
+function svToggle(slug,title,kind){
+ if(window.__MEMBER && window.__SB){ return window.__SB.rpc('save_toggle',{p_slug:slug,p_title:title||slug,p_kind:kind||'card'}).then(function(r){ if(r&&r.error) throw r.error; return !!r.data; }); }
+ return Promise.resolve(favToggle(slug,title));
+}
+function svState(slug){
+ if(window.__MEMBER && window.__SB){ return window.__SB.rpc('card_user_state',{p_slug:slug}).then(function(r){ var d=(r&&!r.error&&r.data)||{}; return {saved:!!d.saved, reaction:d.reaction||null}; }).catch(function(){ return {saved:false,reaction:null}; }); }
+ return Promise.resolve({saved:favHas(slug), reaction:null});
+}
+// merge-on-login: один раз слить localStorage-избранное → БД (только отсутствующее, чтобы не «перетогглить»), затем очистить локаль
+function mergeFavs(SB, done){
+ var local=favGet(); if(!local.length){ if(done)done(); return; }
+ SB.rpc('saves_list',{p_kind:'card'}).then(function(r){
+  var have={}; ((r&&!r.error&&r.data)||[]).forEach(function(x){ have[x.slug]=1; });
+  var pend=local.filter(function(x){ return x&&x.slug&&!have[x.slug]; });
+  var i=0; (function nx(){ if(i>=pend.length){ try{localStorage.removeItem('mc:fav');}catch(e){} if(done)done(); return; }
+   var it=pend[i++]; SB.rpc('save_toggle',{p_slug:it.slug,p_title:it.title||it.slug,p_kind:'card'}).then(nx,nx); })();
+ },function(){ if(done)done(); });
+}
+// источники: разбить по ';' ИЛИ переносу строки (premortem и др. используют '\n'), линковать DOI/URL, иначе — поиск
+function linkSources(txt){ return String(txt||'').split(/;|\n/).map(function(part){ var c=part.trim(); if(!c) return ''; var u=null; var mU=c.match(/https?:\/\/[^\s)]+/); var mD=c.match(/\b10\.\d{4,9}\/[^\s,;]+/); if(mU) u=mU[0]; else if(mD) u='https://doi.org/'+mD[0]; else u='https://scholar.google.com/scholar?q='+encodeURIComponent(c); return '<a href="'+esc(u)+'" target="_blank" rel="noopener">'+esc(c)+'</a>'; }).filter(Boolean).join('; '); }
+
+// первичный рендер: сид только если слаг совпадает с сидом или отсутствует — иначе скелетон (без вспышки чужой карточки)
+(function(){ var _s=(new URLSearchParams(location.search)).get('slug'); if(!_s||_s===SEED.slug){ render(SEED); return; } var _c=null; try{ _c=JSON.parse(localStorage.getItem('mc:card:'+_s)||'null'); }catch(e){} if(_c&&_c.slug){ render(_c); } else { document.getElementById('wrap').innerHTML='<div class="skel"><div style="height:42px;width:60%"></div><div style="height:120px"></div><div style="height:90px"></div></div>'; } })();
 
 // живой режим: слаг из ?slug=, конфиг рядом, supabase-js
 (function boot(){
@@ -224,14 +432,26 @@ render(SEED);
    if(!(window.SUPABASE_URL && window.SUPABASE_ANON_KEY && window.supabase && window.supabase.createClient)) return;
    var SB=window.supabase.createClient(String(window.SUPABASE_URL).trim(), String(window.SUPABASE_ANON_KEY).trim());
    window.__SB=SB;
-   SB.auth.getSession().then(function(s){ window.__MEMBER=!!(s&&s.data&&s.data.session); if(slug) go(slug); else { var gst=!window.__MEMBER; SB.rpc(gst?'kb_public_bundle':'kb_node_bundle',{p_slug:SEED.slug}).then(function(r){ if(r&&!r.error&&r.data) render(r.data); }).catch(function(){}); } }).catch(function(){ if(slug) go(slug); });
+   SB.auth.getSession().then(function(s){ window.__MEMBER=!!(s&&s.data&&s.data.session);
+     var after=function(){ if(slug) go(slug); else { var gst=!window.__MEMBER; SB.rpc(gst?'kb_public_bundle':'kb_node_bundle',{p_slug:SEED.slug}).then(function(r){ if(r&&!r.error&&r.data) render(r.data); }).catch(function(){}); } };
+     if(window.__MEMBER) mergeFavs(SB, after); else after();
+   }).catch(function(){ if(slug) go(slug); });
   }catch(_){}
  }
  function load(src,cb){ var s=document.createElement('script'); s.src=src; s.onload=cb; s.onerror=cb; document.head.appendChild(s); }
- function loadCfg(done){ var ps=['../config.js','./config.js','config.js','/book-reader/config.js']; var i=0; (function nx(){ if(window.SUPABASE_URL||i>=ps.length) return done(); var sc=document.createElement('script'); sc.src=ps[i++]; sc.onload=function(){ setTimeout(function(){ window.SUPABASE_URL?done():nx(); },0); }; sc.onerror=nx; document.head.appendChild(sc); })(); }
-  loadCfg(function(){ load('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.108.2', go2); });
+ function loadCfg(done){ var ps=['./config.js','../config.js','/book-reader/config.js']; var i=0; (function nx(){ if(window.SUPABASE_URL||i>=ps.length) return done(); var sc=document.createElement('script'); sc.src=ps[i++]; sc.onload=function(){ setTimeout(function(){ window.SUPABASE_URL?done():nx(); },0); }; sc.onerror=nx; document.head.appendChild(sc); })(); }
+  // config/vendor не догрузились и карточка не из сида/кеша → deadEnd вместо вечного скелетона (cold-audit)
+  function cfgFail2(){ if(!slug||slug===SEED.slug) return; var _c=null; try{ _c=JSON.parse(localStorage.getItem('mc:card:'+slug)||'null'); }catch(e){} if(!(_c&&_c.slug)) deadEnd('error',slug); }
+  loadCfg(function(){ if(!window.SUPABASE_URL){ cfgFail2(); return; } load('vendor/supabase.min.js', function(){ if(!(window.supabase&&window.supabase.createClient)){ cfgFail2(); return; } go2(); }); });
 })();
 </script>
-<script>if('serviceWorker' in navigator){try{navigator.serviceWorker.register('sw.js').catch(function(){});}catch(e){}}</script>
+<script>(function(){if(!('serviceWorker' in navigator))return;var reg=null,shown=false;function anim(){var st=document.createElement('style');st.textContent='@keyframes __spin{to{transform:rotate(360deg)}}';document.head.appendChild(st);var o=document.createElement('div');o.id='__updanim';o.style.cssText='position:fixed;inset:0;z-index:100000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:rgba(20,17,12,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;transition:opacity .3s';o.innerHTML='<div style="width:44px;height:44px;border-radius:50%;border:3px solid rgba(255,255,255,.25);border-top-color:#C98A3A;animation:__spin .8s linear infinite"></div><div style="color:#F4EEE2;font:600 15px/1.3 -apple-system,system-ui,sans-serif">Обновляем…</div>';(document.body||document.documentElement).appendChild(o);requestAnimationFrame(function(){o.style.opacity='1';});}function doUpdate(){var bb=document.getElementById('__updbar');if(bb)bb.style.opacity='0';anim();try{if(reg&&reg.waiting)reg.waiting.postMessage({type:'SKIP_WAITING'});}catch(e){}var done=false,fin=function(){if(done)return;done=true;location.reload();};try{navigator.serviceWorker.addEventListener('controllerchange',fin);}catch(e){}setTimeout(fin,1600);}function showUpd(){if(shown)return;shown=true;try{if(sessionStorage.getItem('mc:updshown'))return;sessionStorage.setItem('mc:updshown','1');}catch(e){}var b=document.createElement('div');b.id='__updbar';b.style.cssText='position:fixed;left:50%;transform:translateX(-50%) translateY(8px);bottom:calc(16px + env(safe-area-inset-bottom));z-index:99999;display:flex;align-items:center;gap:12px;background:#17150F;color:#F4EEE2;font:600 14px/1.3 -apple-system,BlinkMacSystemFont,system-ui,sans-serif;padding:10px 12px 10px 16px;border-radius:14px;box-shadow:0 10px 34px rgba(0,0,0,.34);max-width:calc(100vw - 26px);opacity:0;transition:opacity .25s,transform .25s';var s=document.createElement('span');s.textContent='Доступна новая версия';var btn=document.createElement('button');btn.textContent='Обновить';btn.style.cssText='border:0;background:#C98A3A;color:#fff;font:inherit;font-weight:700;padding:8px 15px;border-radius:10px;cursor:pointer;flex:none';btn.onclick=doUpdate;b.appendChild(s);b.appendChild(btn);(document.body||document.documentElement).appendChild(b);requestAnimationFrame(function(){b.style.opacity='1';b.style.transform='translateX(-50%) translateY(0)';});}try{navigator.serviceWorker.register('sw.js').then(function(r){reg=r;}).catch(function(){});}catch(e){}try{navigator.serviceWorker.addEventListener('message',function(e){if(e.data&&e.data.type==='NEW_VERSION')showUpd();});}catch(e){}try{navigator.serviceWorker.ready.then(function(r){reg=r;if(r.waiting)showUpd();r.addEventListener('updatefound',function(){var nw=r.installing;if(nw)nw.addEventListener('statechange',function(){if(nw.state==='installed'&&navigator.serviceWorker.controller)showUpd();});});});}catch(e){}})();</script>
+<script>try{document.addEventListener("touchstart",function(){},{passive:true});}catch(e){}</script>
+<nav class="nav"><div class="navin">
+ <button class="ni" onclick="location.href='path.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="18" r="2.2"/><path d="M8.3 15.7C11 13 13 11 15.7 8.3"/><path d="M17.5 3l1.1 2.4L21 6.5l-2.4 1.1L17.5 10l-1.1-2.4L14 6.5l2.4-1.1z"/></svg><span class="lb">Путь</span></button>
+ <button class="ni on" onclick="location.href='solve-home.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5A2.5 2.5 0 0 0 6.5 8H20"/></svg><span class="lb">Справочник</span></button>
+ <button class="ni" onclick="location.href='explore.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 1.5L13 16l-1.5-4.5z"/></svg><span class="lb">Карта</span></button>
+ <button class="ni" onclick="location.href='personal.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span class="lb">Моё</span></button>
+</div></nav>
 </body>
 </html>

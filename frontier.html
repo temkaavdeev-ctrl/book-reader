@@ -1,0 +1,189 @@
+<!doctype html><html lang="ru" style="background:#FBFAF7"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="light"><meta name="theme-color" content="#FBFAF7"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><title>Находки · Матчасть</title><style>
+:root{--bg:#FBFAF7;--ink:#1A1714;--ink2:#6E665A;--ink3:#6E665A;--gold:#83671F;--line:#ECE7DF;--card:#fff}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 -apple-system,BlinkMacSystemFont,system-ui,sans-serif;padding-bottom:92px}
+.wrap{max-width:680px;margin:0 auto;padding:0 18px}
+.top{padding:22px 0 4px}
+.kick{font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--gold)}
+h1{font-size:33px;line-height:1.08;font-weight:800;letter-spacing:-.022em;margin:6px 0 8px}
+.lede{color:var(--ink2);font-size:15.5px;margin:0}
+.live{font-size:13px;color:var(--ink3);margin-top:11px;display:flex;gap:16px;flex-wrap:wrap}
+.live b{color:var(--ink);font-weight:700}
+.hero{margin:18px 0 6px;background:linear-gradient(158deg,#241E18,#15110C);border-radius:20px;padding:22px 20px;color:#F0E9DC;overflow:hidden}
+.hk{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#E6C56B}
+.hero h2{font-size:21px;line-height:1.32;font-weight:700;letter-spacing:-.005em;margin:11px 0 8px;color:#fff}
+.hero .src{font-size:12.5px;color:#B3A893;margin:0}
+.traj{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;border:1px solid;margin-top:13px}
+.tn{color:#8FC3F0;border-color:#36506B;background:#1b2a39}.tu{color:#9BD8B4;border-color:#2f5b43;background:#16271d}.te{color:#D9CDB2;border-color:#4a4334;background:#241f16}
+.side{margin:15px 0 0;border-top:1px solid #3a3329;padding-top:13px}
+.sq{font-size:13.5px;color:#D9CFBE;margin-bottom:9px}
+.btns{display:flex;gap:9px}
+.sb{flex:1;border:1px solid #4a4334;background:#221d15;color:#EDE4D4;font-size:14px;font-weight:700;padding:11px;border-radius:11px;cursor:pointer}
+.sb:active{transform:scale(.98)}
+.rev{display:none;margin-top:14px}.rev.on{display:block;animation:f .4s ease}
+@keyframes f{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.tug .lab{display:flex;justify-content:space-between;font-size:11px;color:#9A9180;margin-bottom:5px;font-weight:600}
+.bar{height:8px;border-radius:999px;position:relative;background:linear-gradient(90deg,#caa7a0,#3a332b 52%,#9ec3ad)}
+.pin{position:absolute;top:-3px;width:14px;height:14px;border-radius:50%;background:#15110C;border:2px solid #E6C56B;transform:translateX(-50%)}
+.wk{font-size:12px;color:#9A9180;margin-top:6px}
+.fals{font-size:13px;color:#C9BFAE;margin-top:12px;padding:10px 12px;background:#1d1810;border-radius:11px;border-left:2px solid #6b4f2a}
+.fals b{color:#E0B868;font-weight:700}
+.appr{font-size:12.5px;color:#B3A893;margin-top:10px}.appr b{color:#dCcFae;font-weight:700}
+.sec{margin:28px 0 3px;font-size:21px;font-weight:800;letter-spacing:-.01em}
+.sub{font-size:13px;color:var(--ink3);font-weight:600;margin:2px 0 13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
+.ct{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:10px}
+.prov{font-size:11px;font-weight:700;color:#7C5D1E;background:#f6efde;border:1px solid #ecdcb4;padding:3px 9px;border-radius:999px}
+.tj{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px}
+.jn{color:#23577e;background:#e4f0fa}.ju{color:#2f6e4a;background:#e2f3e9}.je{color:#7e7250;background:#f3eede}
+.metaline{font-size:12px;color:var(--ink3);line-height:1.45;margin-bottom:9px}
+.hook{font-size:19px;font-weight:700;line-height:1.26;letter-spacing:-.012em;color:var(--ink);margin:0 0 5px}
+.claim{font-size:14px;font-weight:400;line-height:1.45;color:var(--ink2);margin:0 0 4px}
+.hhook{font-size:24px;font-weight:800;line-height:1.18;letter-spacing:-.016em;color:#fff;margin:10px 0 6px}
+.hclaim{font-size:14.5px;font-weight:400;line-height:1.45;color:#C9BFAE;margin:0 0 2px}
+.meta{font-size:12.5px;color:var(--ink3)}.meta b{color:var(--ink2);font-weight:700}
+.cbtns{display:flex;gap:8px;margin-top:12px}
+.cb{flex:1;border:1px solid var(--line);background:#faf7f2;color:var(--ink);font-size:13.5px;font-weight:700;padding:9px;border-radius:10px;cursor:pointer}
+.cb:active{transform:scale(.98)}
+.crev{display:none;margin-top:12px;border-top:1px solid var(--line);padding-top:12px}.crev.on{display:block;animation:f .35s ease}
+.cbar{height:7px;border-radius:999px;position:relative;background:linear-gradient(90deg,#e2bdb4,#ece7df 52%,#bfe0cd)}
+.cpin{position:absolute;top:-3.5px;width:13px;height:13px;border-radius:50%;background:#fff;border:2px solid var(--ink);transform:translateX(-50%)}
+.cl{display:flex;justify-content:space-between;font-size:11px;color:var(--ink3);margin-bottom:5px;font-weight:600}
+.cfals{font-size:13px;color:var(--ink2);margin-top:10px;padding:9px 11px;background:#faf6ee;border-radius:10px;border-left:2px solid #d8c08a}
+.cfals b{color:#8a6a2a;font-weight:700}
+.dive{margin-top:12px;display:flex;gap:7px;flex-wrap:wrap}
+.chip{font-size:12px;font-weight:600;color:var(--ink);background:#f3efe7;border:1px solid var(--line);padding:6px 11px;border-radius:999px;cursor:pointer}
+.chip.q{color:#7a4a1a;background:#f8efdd;border-color:#ecdcb4}
+.grave{background:#f4f1ec;border:1px dashed #d6d0c5;border-radius:16px;padding:22px;text-align:center;color:var(--ink3);margin-bottom:12px}
+.grave p{margin:0;font-size:13.5px;line-height:1.55}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(251,250,247,.94);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.navin{max-width:720px;margin:0 auto;display:flex}
+.ni{flex:1;min-height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:none;border:0;color:var(--ink3);cursor:pointer;text-decoration:none;font:inherit}
+.ni svg{width:25px;height:25px}.ni .lb{font-size:11px;font-weight:600}.ni.on{color:var(--gold)}
+/*TAP-FEEDBACK*/button:active,a:active,[onclick]:active,.ni:active,[data-k]:active,[data-route]:active,[data-slug]:active,[data-cont]:active,[data-q]:active,.row:active,.rt-row:active,.lg-row:active,.fc:active,.stoprow:active,.opt:active,.pill:active,.tab:active,.deeper:active{opacity:.6;transition:opacity .06s}
+/*MCUX v1 — единый UX: нативные переходы между страницами, ховеры, тап-фидбек, reduced-motion*/
+@view-transition{navigation:auto}
+.nav{view-transition-name:mcnav}
+button:active,a:active,[onclick]:active,.ni:active,.mrow:active,.row:active,.res:active,.tbtn:active,.fc:active,.opt:active,.pill:active{opacity:.6;transition:opacity .06s}
+@media(hover:hover){a:hover,button:hover,.ni:hover,.mrow:hover,.row:hover,.res:hover,.tbtn:hover,.fc:hover,.opt:hover,[data-k]:hover,[data-slug]:hover,[data-cont]:hover,[data-route]:hover,[data-q]:hover{opacity:.85;transition:opacity .12s ease;cursor:pointer}}
+@media(hover:none){button:active,a:active,[onclick]:active,.ni:active,.mrow:active,.row:active,.res:active,.tbtn:active,.fc:active,.opt:active,.lp:active,.rc:active,.cont:active,.hero:active,.scd:active,.tl:active,.fd:active,.lk:active,.deeper:active,[data-k]:active,[data-slug]:active,[data-cont]:active,[data-route]:active,[data-q]:active{opacity:.72;transform:scale(.97);transition:transform .06s ease,opacity .06s}}
+a:focus-visible,button:focus-visible,[onclick]:focus-visible,.ni:focus-visible,.mrow:focus-visible,.row:focus-visible,.res:focus-visible,.tbtn:focus-visible,.fc:focus-visible,.opt:focus-visible,.lp:focus-visible,.rc:focus-visible,[data-k]:focus-visible,[data-slug]:focus-visible,[data-cont]:focus-visible,[data-route]:focus-visible{outline:2px solid var(--gold,#B06A1F);outline-offset:2px;border-radius:6px}
+.mcstate{padding:46px 20px;text-align:center;color:var(--meta,#8B847B)}
+.mcstate .ic{font-size:30px;line-height:1;margin-bottom:12px;opacity:.75}
+.mcstate .msg{font-size:14.5px;line-height:20px;max-width:300px;margin:0 auto}
+.mcstate .retry{margin-top:16px;display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:700;color:var(--gold,#B06A1F);background:none;border:1px solid var(--line,#ECE7DD);border-radius:999px;padding:9px 18px;cursor:pointer}
+.mcsk{background:linear-gradient(90deg,#EFEBE2,#F6F3ED,#EFEBE2);background-size:200% 100%;animation:mcsh 1.2s infinite;border-radius:12px}
+@keyframes mcsh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+/*MCDESK v1 — десктоп (>=960px): нижний таб-бар -> левый сайдбар, контент смещается вправо; мобилка не трогается*/
+@media(min-width:960px){
+ body:has(nav.nav){padding-left:236px}
+ nav.nav{top:0;bottom:0;right:auto;width:236px;border-top:0;border-right:1px solid var(--line);padding:0}
+ nav.nav .navin{flex-direction:column;align-items:stretch;height:100vh;max-width:none;margin:0;padding:22px 14px;gap:3px}
+ nav.nav .ni{flex:0 0 auto;flex-direction:row;justify-content:flex-start;gap:14px;min-height:0;height:auto;padding:12px 14px;border-radius:12px}
+ nav.nav .ni svg{width:22px;height:22px}
+ nav.nav .ni .lb{font-size:15px;font-weight:600}
+ nav.nav .ni.on{background:rgba(176,106,31,.09)}
+ @media(hover:hover){nav.nav .ni:hover{background:rgba(176,106,31,.06);opacity:1}}
+ body:has(nav.nav) .topbar{left:236px}
+ .wrap:has(.cardgrid2){max-width:940px}
+ .cardgrid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+ .cardgrid2 .card{margin-bottom:0}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}
+</style><style>/*mc:desktop*/@media(min-width:1020px){.nav{top:0;bottom:0;left:0;right:auto;width:92px;border-top:0;border-right:1px solid var(--line);padding-bottom:0}.navin{flex-direction:column;justify-content:center;gap:8px;height:100%;max-width:none}.ni{flex:0 0 auto;padding:13px 0;margin:0 10px;border-radius:12px}.ni.on{background:rgba(151,89,26,.08)}body{padding-left:92px}.wrap{max-width:760px}.cta{left:92px}.topbar{left:92px}}@media(hover:hover){.ni{transition:color .15s,background .15s}.ni:hover{color:var(--gold)}a{transition:opacity .12s}}</style>
+</head><body>
+<script>/*mc:hashroute*/(function(){try{var m=(location.hash||"").match(/^#\/c\/([^?&#]+)/);if(m&&m[1]){location.replace("card.html?slug="+encodeURIComponent(decodeURIComponent(m[1])));}}catch(e){}})();</script>
+<div class="wrap">
+ <div class="top">
+  <div class="kick">Находки · ещё не доказано</div>
+  <h1>Что знаем и что проверяем</h1>
+  <p class="lede">Край, где знание ещё не устоялось. Каждая идея здесь — открытый вопрос: указано, что его проверит и что опровергнет. Опору набирают внешние исследования и срабатывание фальсификатора — не мнение и не голос читателя. Вы делаете ставку до того, как данные склонятся.</p>
+  <div class="live" id="live"></div>
+ </div>
+ <div id="app"></div>
+</div>
+<nav class="nav"><div class="navin">
+ <button class="ni" onclick="location.href='path.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="18" r="2.2"/><path d="M8.3 15.7C11 13 13 11 15.7 8.3"/><path d="M17.5 3l1.1 2.4L21 6.5l-2.4 1.1L17.5 10l-1.1-2.4L14 6.5l2.4-1.1z"/></svg><span class="lb">Путь</span></button>
+ <button class="ni on" onclick="location.href='solve-home.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5A2.5 2.5 0 0 0 6.5 8H20"/></svg><span class="lb">Справочник</span></button>
+ <button class="ni" onclick="location.href='explore.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 1.5L13 16l-1.5-4.5z"/></svg><span class="lb">Карта</span></button>
+ <button class="ni" onclick="location.href='personal.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span class="lb">Моё</span></button>
+</div></nav>
+<script>
+var D=[
+{s:"status",new:1,hook:"Статус сильнее очков",prov:"стык дисциплин · статусная экономика",claim:"Видимый статус среди уважаемых равных — за интеллектуальную заслугу — может двигать вклад в продукт сильнее, чем очки и награды.",age:"сегодня",w:0.42,
+ test:"Рандомизированно: вклад даёт (A) видимый равным статус за заслугу vs (B) очки и стрики vs (C) ничего. Метрика — качество вклада по оценке равных.",
+ fals:"статус окажется не лучше очков по качеству вклада — либо погонит количество в ущерб качеству.",dive:["статусные сигналы","внутренняя мотивация","социальное доказательство"]},
+{s:"oblique",new:1,hook:"Ограничение против застоя",prov:"приём из музыки · «Косые стратегии» Брайана Ино",claim:"Случайная подсказка-ограничение может выводить застрявшую команду к более новым решениям, чем свободный брейншторм.",age:"сегодня",w:0.30,
+ test:"Команда на застрявшем решении: рука A — случайные рефрейм-подсказки vs B — свободный брейншторм. Слепая оценка новизны и применимости.",
+ fals:"подсказки дадут не больше новизны, чем брейншторм — либо выигрыш объяснится их числом, а не случайностью.",dive:["функциональная закреплённость","рефрейминг"]},
+{s:"ritual",new:1,hook:"Синхрон переносит крепче",prov:"из антропологии ритуала · перенос обучения",claim:"Совместное обучение в фиксированное время может давать более прочный перенос в практику, чем то же содержание в записи.",age:"сегодня",w:0.35,
+ test:"Когорта A — еженедельный синхронный разбор в малой группе vs B — то же содержание в записи. Метрика — изменение реального решения на работе.",
+ fals:"запись сравняется с синхроном по переносу при равном времени на задачу — тогда синхронность ничего не добавляет.",dive:["перенос обучения","синхронность"]},
+{s:"doi",new:0,hook:"Наблюдаемость умеет тормозить",prov:"граница известной теории · диффузия инноваций",claim:"Высокая «наблюдаемость» обычно ускоряет распространение продукта — но может тормозить его, если ранние пользователи воспринимаются как чужая группа.",age:"8 дней",w:0.12,
+ test:"Сравнение распространения по категориям: где ранние пользователи — образец vs где они воспринимаются как чужие.",
+ fals:"при «чужой» ранней группе высокая наблюдаемость всё равно ускоряет принятие.",dive:["диффузия инноваций","социальное доказательство"]},
+{s:"escal",new:0,hook:"Три искажения, один корень",prov:"гипотеза общего корня",claim:"Неприятие потерь, склонность к подтверждению и сверхуверенность могут расти из одного корня — защиты образа «я».",age:"9 дней",w:0.04,
+ test:"Факторный тест: что гасит упорство в провальном решении — снижение фрейма потерь, эпистемический де-байас или самоутверждение.",
+ fals:"самоутверждение при низкой включённости не трогает ни одно из трёх — корень не общий.",dive:["эскалация обязательств","неприятие потерь"]},
+{s:"pay",new:0,hook:"Платёж и невозврат — родня?",prov:"гипотеза общего механизма",claim:"Боль платежа и ловушка невозвратных затрат могут опираться на один механизм: тогда приём, снижающий боль платежа, снижал бы и упорство в провальном.",age:"11 дней",w:0.08,
+ test:"Интервенция, снижающая боль платежа (дробление, предоплата), измеримо снижает приверженность невозвратным издержкам.",
+ fals:"снижение боли платежа не влияет на упорство — значит механизмы разные.",dive:["боль платежа","невозвратные затраты"]},
+{s:"core",new:0,hook:"У несущих не найден предел",prov:"пробел честности в графе",claim:"У семи «несущих» идей пока не отмечено ни одного спорного места. Вероятно, граница есть, но не найдена — а не идея непогрешима.",age:"11 дней",w:0.08,
+ test:"Для каждой из семи — найти в литературе опубликованную границу: где эффект не воспроизводится или обращается.",
+ fals:"хотя бы у одной границы в литературе действительно нет — тогда её отсутствие у нас честно.",dive:["обрамление","якорение"]}
+];
+function pct(w){return Math.max(6,Math.min(94,Math.round(w*100)))}
+function plural(n,a,b,c){var m=Math.abs(+n||0)%100,d=m%10;if(m>10&&m<20)return c;if(d>1&&d<5)return b;if(d===1)return a;return c;}
+function wlab(w){return w>=0.35?"заметная поддержка для открытого вопроса":w>=0.15?"поддержка есть, но тонкая":"пока почти нет поддержки"}
+// 3 состояния эпистемики (канон Афины): открытый вопрос / опровергнуто (weight<0) / закон (c.law)
+function st(c){ if(c.law) return {t:"закон",cls:"tu",jcls:"ju"}; if(c.w<0) return {t:"опровергнуто",cls:"te",jcls:"je"}; return {t:"открытый вопрос",cls:"tn",jcls:"jn"}; }
+var nw=D.filter(function(c){return c.new}).length;
+var nopen=D.filter(function(c){return st(c).t==="открытый вопрос"}).length;
+var nref=D.filter(function(c){return st(c).t==="опровергнуто"}).length;
+document.getElementById("live").innerHTML="<span><b>"+nopen+"</b> "+plural(nopen,'открытый вопрос','открытых вопроса','открытых вопросов')+"</span><span><b>"+nw+"</b> добавлено за неделю</span><span><b>"+nref+"</b> опровергнуто</span>";
+var h=D[0];
+var app="";
+app+='<div class="hero"><div class="hk">Новое на фронтире · добавлено '+h.age+'</div>'+
+ '<div class="hhook">'+h.hook+'</div><p class="hclaim">'+h.claim+'</p><p class="src">'+h.prov+'</p>'+
+ '<span class="traj '+st(h).cls+'">'+(h.new?'новое · ':'')+st(h).t+'</span>'+
+ '<div class="side"><div class="sq">Как думаете — подтвердится? Поставьте на исход до того, как данные склонятся.</div>'+
+ '<div class="btns"><button class="sb" onclick="rv(this)">Скорее да</button><button class="sb" onclick="rv(this)">Скорее нет</button></div>'+
+ '<div class="rev"><div class="tug"><div class="lab"><span>нет поддержки</span><span>сильная поддержка</span></div>'+
+ '<div class="bar"><div class="pin" style="left:'+pct(h.w)+'%"></div></div><div class="wk">опору двигают внешние исследования: '+h.w+' — '+wlab(h.w)+'. Не наш вердикт — решит эксперимент и фальсификатор.</div></div>'+
+ '<div class="appr"><b>Что решит вопрос:</b> '+h.test+'</div>'+
+ '<div class="fals"><b>Будет опровергнуто, если:</b> '+h.fals+'</div></div></div></div>';
+
+app+='<div class="sec">Добавлено недавно</div><div class="sub">Новые предположения — открытые вопросы</div>';
+app+='<div class="cardgrid2">';
+D.filter(function(c){return c.new && c!==h}).forEach(function(c){app+=cardHtml(c)});
+app+='</div>';
+
+app+='<div class="sec">Весь фронтир</div><div class="sub">Связи и границы, которые пока держатся</div>';
+app+='<div class="cardgrid2">';
+D.filter(function(c){return !c.new}).forEach(function(c){app+=cardHtml(c)});
+app+='</div>';
+
+app+='<div class="sec">Опровергнуто</div><div class="sub">Идеи, не прошедшие проверку</div>'+
+ '<div class="grave"><p>Пока ни одна не опровергнута. Когда предположение не выдержит проверки, оно останется здесь — будет видно, в чём была идея и что именно её опровергло.</p></div>';
+
+function cardHtml(c){var s=st(c);return '<div class="card" id="fc-'+c.s+'">'+
+ '<div class="ct"><span class="tj '+s.jcls+'">'+s.t+'</span>'+(c.new?'<span class="prov">новое</span>':'')+'</div>'+
+ '<div class="metaline">'+c.prov+' · '+c.age+'</div>'+
+ '<div class="hook">'+c.hook+'</div><div class="claim">'+c.claim+'</div>'+
+ '<div class="cbtns"><button class="cb" onclick="cr(this)">Подтвердится? Скорее да</button><button class="cb" onclick="cr(this)">Скорее нет</button></div>'+
+ '<div class="crev"><div class="cl"><span>нет поддержки</span><span>сильная поддержка</span></div><div class="cbar"><div class="cpin" style="left:'+pct(c.w)+'%"></div></div>'+
+ '<div class="meta" style="margin-top:6px">опору двигают внешние исследования: '+c.w+' — '+wlab(c.w)+'</div>'+
+ '<div class="cfals"><b>Будет опровергнуто, если:</b> '+c.fals+'</div>'+
+ '<div class="dive">'+c.dive.map(function(d){return '<span class="chip">'+d+'</span>'}).join("")+'<span class="chip q">разобрать в главе</span></div></div></div>'}
+
+document.getElementById("app").innerHTML=app;
+// диплинк ?focus=<slug> из Справочника/Находок: подсветить и проскроллить к нужной гипотезе (cold-audit)
+(function(){try{var f=(new URLSearchParams(location.search)).get('focus');if(!f)return;var el=document.getElementById('fc-'+f);if(!el)return;
+ el.style.transition='box-shadow .3s';el.style.boxShadow='0 0 0 2px var(--gold)';setTimeout(function(){el.style.boxShadow='';},2400);
+ setTimeout(function(){try{el.scrollIntoView({behavior:'smooth',block:'center'});}catch(e){el.scrollIntoView();}},60);}catch(e){}})();
+function rv(b){b.parentNode.parentNode.querySelector(".rev").classList.add("on");b.parentNode.querySelectorAll(".sb").forEach(function(x){x.style.opacity=.5});b.style.opacity=1}
+function cr(b){b.closest(".card").querySelector(".crev").classList.add("on");b.parentNode.querySelectorAll(".cb").forEach(function(x){x.style.opacity=.5});b.style.opacity=1}
+</script>
+<script>(function(){if(!('serviceWorker' in navigator))return;var reg=null,shown=false;function anim(){var st=document.createElement('style');st.textContent='@keyframes __spin{to{transform:rotate(360deg)}}';document.head.appendChild(st);var o=document.createElement('div');o.id='__updanim';o.style.cssText='position:fixed;inset:0;z-index:100000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:rgba(20,17,12,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;transition:opacity .3s';o.innerHTML='<div style="width:44px;height:44px;border-radius:50%;border:3px solid rgba(255,255,255,.25);border-top-color:#C98A3A;animation:__spin .8s linear infinite"></div><div style="color:#F4EEE2;font:600 15px/1.3 -apple-system,system-ui,sans-serif">Обновляем…</div>';(document.body||document.documentElement).appendChild(o);requestAnimationFrame(function(){o.style.opacity='1';});}function doUpdate(){var bb=document.getElementById('__updbar');if(bb)bb.style.opacity='0';anim();try{if(reg&&reg.waiting)reg.waiting.postMessage({type:'SKIP_WAITING'});}catch(e){}var done=false,fin=function(){if(done)return;done=true;location.reload();};try{navigator.serviceWorker.addEventListener('controllerchange',fin);}catch(e){}setTimeout(fin,1600);}function showUpd(){if(shown)return;shown=true;try{if(sessionStorage.getItem('mc:updshown'))return;sessionStorage.setItem('mc:updshown','1');}catch(e){}var b=document.createElement('div');b.id='__updbar';b.style.cssText='position:fixed;left:50%;transform:translateX(-50%) translateY(8px);bottom:calc(16px + env(safe-area-inset-bottom));z-index:99999;display:flex;align-items:center;gap:12px;background:#17150F;color:#F4EEE2;font:600 14px/1.3 -apple-system,BlinkMacSystemFont,system-ui,sans-serif;padding:10px 12px 10px 16px;border-radius:14px;box-shadow:0 10px 34px rgba(0,0,0,.34);max-width:calc(100vw - 26px);opacity:0;transition:opacity .25s,transform .25s';var s=document.createElement('span');s.textContent='Доступна новая версия';var btn=document.createElement('button');btn.textContent='Обновить';btn.style.cssText='border:0;background:#C98A3A;color:#fff;font:inherit;font-weight:700;padding:8px 15px;border-radius:10px;cursor:pointer;flex:none';btn.onclick=doUpdate;b.appendChild(s);b.appendChild(btn);(document.body||document.documentElement).appendChild(b);requestAnimationFrame(function(){b.style.opacity='1';b.style.transform='translateX(-50%) translateY(0)';});}try{navigator.serviceWorker.register('sw.js').then(function(r){reg=r;}).catch(function(){});}catch(e){}try{navigator.serviceWorker.addEventListener('message',function(e){if(e.data&&e.data.type==='NEW_VERSION')showUpd();});}catch(e){}try{navigator.serviceWorker.ready.then(function(r){reg=r;if(r.waiting)showUpd();r.addEventListener('updatefound',function(){var nw=r.installing;if(nw)nw.addEventListener('statechange',function(){if(nw.state==='installed'&&navigator.serviceWorker.controller)showUpd();});});});}catch(e){}})();</script>
+<script>try{document.addEventListener("touchstart",function(){},{passive:true});}catch(e){}</script>
+</body></html>

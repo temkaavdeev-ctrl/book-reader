@@ -1,0 +1,1778 @@
+<!doctype html>
+<html lang="ru" style="background:#FBFAF7">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#FBFAF7"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<title>Путь · Матчасть</title>
+<style>
+:root{
+ --bg:#FBFAF7; --ink:#17150F; --ink2:#56504A; --meta:#6E675E; --line:#ECE7DD; --card:#fff;
+ --gold:#97591A; --gold-br:#C98A3A;
+ --solid:#2F7D4F; --mixed:#B8801F; --tw:#B8455C;
+ --pill:999px; --r:20px; --rs:14px;
+ --sh:0 2px 12px rgba(20,17,12,.05),0 1px 2px rgba(20,17,12,.04);
+}
+*{box-sizing:border-box} html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;font-size:16px;line-height:24px;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+.wrap{max-width:680px;margin:0 auto;min-height:100vh;padding:0 20px calc(80px + env(safe-area-inset-bottom))}
+.bar{position:sticky;top:0;z-index:20;background:rgba(251,250,247,.94);backdrop-filter:blur(8px);display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--line)}
+.ib{width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;border:0;background:none;color:var(--ink2);border-radius:var(--pill);cursor:pointer}.ib:active{background:var(--line)}
+.ib.on{color:var(--gold)}.ib.on svg{fill:currentColor;stroke:currentColor}
+.toast{position:fixed;left:50%;transform:translateX(-50%) translateY(20px);bottom:96px;z-index:50;background:#17150F;color:#F4EEE2;font-size:14px;font-weight:600;padding:10px 16px;border-radius:var(--pill);box-shadow:0 8px 28px rgba(0,0,0,.25);opacity:0;transition:opacity .2s,transform .2s;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.bt{font-size:15px;font-weight:700}
+.head{padding:16px 0 4px}
+.kick{font-size:13px;font-weight:600;color:var(--gold)}
+.h1{font-size:30px;line-height:35px;font-weight:800;letter-spacing:-.02em;margin:3px 0 6px}
+.sub{font-size:15px;line-height:21px;color:var(--ink2)}
+.feat{margin-top:18px;border-radius:var(--r);padding:24px;cursor:pointer;background:linear-gradient(150deg,#241E18,#15110C);color:#F4EEE2;box-shadow:0 18px 46px rgba(20,17,12,.22);position:relative;overflow:hidden}
+.feat::after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(201,138,58,.30),transparent 70%)}
+.feat .fk{font-size:12.5px;font-weight:700;letter-spacing:.04em;color:var(--gold-br);position:relative}
+.feat .ic{margin:10px 0 6px;position:relative;color:var(--gold-br)}.feat .ic .qi{display:block}
+.feat .ti{text-wrap:balance;font-size:24px;line-height:29px;font-weight:800;letter-spacing:-.02em;margin:4px 0 8px;position:relative}
+.feat .pr{font-size:15px;line-height:22px;color:#D8D0C3;position:relative}
+.feat .mt{margin-top:16px;display:flex;align-items:center;gap:10px;position:relative}
+.feat .go{font-size:15px;font-weight:700;color:var(--gold-br)}
+.feat .meta{font-size:13px;color:#A89C88}
+.seclbl{font-size:14px;color:var(--meta);font-weight:700;margin:26px 0 8px;text-transform:uppercase;letter-spacing:.04em}
+.rc{display:flex;align-items:center;gap:15px;background:#fff;border:1px solid var(--line);border-radius:var(--rs);padding:16px;box-shadow:var(--sh);cursor:pointer;margin-top:11px}
+.rc:active{transform:scale(.995)}
+.rc .ic{flex:none;width:30px;display:flex;justify-content:center;color:var(--gold-br)}
+.rc .m{flex:1;min-width:0}
+.rc .t{font-size:16px;font-weight:700;line-height:21px}
+.rc .p{font-size:13px;line-height:18px;color:var(--ink2);margin-top:2px}
+.rc .meta{font-size:12px;color:var(--meta);margin-top:7px}
+.rc .cv{color:var(--meta);flex:none}
+.prog{height:5px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:8px}.prog i{display:block;height:100%;background:var(--gold-br)}
+/* деталь */
+.coldq{font-size:24px;line-height:31px;font-weight:800;letter-spacing:-.015em;margin:18px 0 12px}
+.dmeta{font-size:14px;color:var(--meta);margin-bottom:18px}
+.ddesc{font-size:16px;line-height:25px;color:var(--ink2)}
+.stops{margin-top:22px}
+.stops .l{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--meta);margin-bottom:8px}
+.stoprow{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.stoprow:last-child{border-bottom:0}
+.stoprow .n{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--gold-br);color:var(--gold);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}
+.stoprow .sb{display:flex;flex-direction:column;gap:2px;min-width:0;padding-top:2px}
+.stoprow .t{font-size:15px;font-weight:600}
+.stoprow .sd{font-size:13px;line-height:18px;color:var(--meta)}
+.stoprow.sdone .n{background:var(--gold);border-color:var(--gold);color:#fff}
+.stoprow.sdone .t{color:var(--meta)}
+.stoprow.scur .n{outline:3px solid rgba(151,89,26,.18)}
+.start{position:fixed;left:0;right:0;bottom:0;z-index:30;background:linear-gradient(transparent,#FBFAF7 40%);padding:18px 20px calc(18px + env(safe-area-inset-bottom))}
+.start-in{max-width:680px;margin:0 auto}
+.start button{width:100%;height:54px;border-radius:var(--rs);border:0;background:var(--gold);color:#fff;font-size:16px;font-weight:700;cursor:pointer}
+/* player */
+.cold{position:fixed;inset:0;z-index:5;background:radial-gradient(120% 90% at 50% 10%,#241E18,#15110C 60%,#0E0C0A);color:#F4EEE2;display:flex;flex-direction:column;justify-content:center;padding:32px 26px calc(40px + env(safe-area-inset-bottom))}
+.cold .ck{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-br)}
+.cold .cq{text-wrap:balance;font-size:30px;line-height:38px;font-weight:800;letter-spacing:-.02em;margin:14px 0 16px}
+.cold .cm{font-size:14px;color:#A89C88}
+.cold .cb{margin-top:auto;width:100%;height:54px;border-radius:var(--rs);border:0;background:var(--gold);color:#fff;font-size:16px;font-weight:700;cursor:pointer}
+.ptop{position:sticky;top:0;z-index:20;background:rgba(251,250,247,.95);backdrop-filter:blur(8px);padding:10px 0}
+.ptop .row{display:flex;align-items:center;gap:10px}
+.ptop .x{width:44px;height:44px;border:0;background:none;color:var(--ink2);border-radius:var(--pill);cursor:pointer;font-size:20px}
+.ptop .pc{flex:1;font-size:13px;font-weight:600;color:var(--meta)}
+.beat{margin:20px 0 4px;font-size:17.5px;line-height:28px;color:var(--ink);letter-spacing:-.003em}
+.beat p{margin:0 0 18px}.beat p:last-child{margin-bottom:0}
+.beat p:first-child{font-size:20px;line-height:30px;font-weight:500;color:var(--ink);letter-spacing:-.01em}
+.beat.soon{color:var(--meta);font-style:italic;border-left:3px solid var(--gold-br);padding-left:14px}
+.beat.soon p:first-child{font-size:inherit;font-weight:inherit}
+.beat.reveal{margin-top:8px;background:#fff;border:1px solid var(--line);border-left:3px solid var(--tw);border-radius:14px;padding:16px 18px;box-shadow:var(--sh)}
+.beat.reveal p:first-child{font-size:17.5px;line-height:28px;font-weight:400}
+.twtag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#fff;background:var(--tw);padding:4px 11px;border-radius:999px;margin:22px 0 6px}
+.pdots{display:flex;gap:5px;margin-top:9px;flex-wrap:wrap}
+.pdots i{width:7px;height:7px;border-radius:50%;background:var(--line);transition:background .2s}.pdots i.on{background:var(--gold-br)}.pdots i.cur{background:var(--gold);transform:scale(1.35)}
+.stopcard{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:var(--sh);margin-top:8px}
+.stopcard .tw{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--tw);margin-bottom:6px}
+.stopcard h2{font-size:23px;line-height:28px;font-weight:800;letter-spacing:-.01em;margin:0 0 10px}
+.stopcard .lead{font-size:16px;line-height:25px}
+.stopcard .ap{margin-top:16px;background:var(--bg);border-radius:12px;padding:14px}.stopcard .ap .l{font-size:12px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.03em;margin-bottom:6px}.stopcard .ap .b{font-size:15px;line-height:23px}
+.deeper{margin-top:14px;font-size:14px;font-weight:600;color:var(--gold);cursor:pointer}
+/* inline concept-card accordion (Разобрать глубже) */
+.dig{margin-top:18px}
+/* крупная заметная кнопка-CTA (Артём): клиент должен захотеть нажать и узнать подробнее */
+.dig .dt{display:flex;align-items:center;gap:13px;width:100%;text-align:left;background:linear-gradient(135deg,rgba(151,89,26,.10),rgba(201,138,58,.05));border:1.5px solid var(--gold-br);border-radius:16px;padding:15px 17px;cursor:pointer;user-select:none;box-shadow:var(--sh);font:inherit;color:var(--ink)}
+.dig .dt:active{transform:scale(.99);opacity:.85}
+.dig .dt .di{flex:none;width:40px;height:40px;border-radius:12px;background:var(--gold);color:#fff;display:flex;align-items:center;justify-content:center}
+.dig .dt .di svg{width:21px;height:21px}
+.dig .dt .dtx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.dig .dt .dtl{font-size:16px;font-weight:800;color:var(--gold);letter-spacing:-.01em}
+.dig .dt .dts{font-size:13px;line-height:17px;color:var(--meta)}
+.dig .dt .cv{flex:none;width:22px;height:22px;color:var(--gold-br);transition:transform .18s ease}
+.dig.open .dt{border-radius:16px 16px 0 0}
+.dig.open .dt .cv{transform:rotate(90deg)}
+@media(hover:hover){.dig .dt:hover{background:linear-gradient(135deg,rgba(151,89,26,.15),rgba(201,138,58,.08))}}
+.dig .db{overflow:hidden;max-height:0;transition:max-height .28s ease}
+.dig.open .db{max-height:none}
+.dig .dinner{margin-top:0;background:#fff;border:1.5px solid var(--gold-br);border-top:0;border-radius:0 0 16px 16px;padding:16px 18px;box-shadow:var(--sh)}
+.dig .dsec{margin-bottom:14px}.dig .dsec:last-child{margin-bottom:0}
+.dig .dsec .l{font-size:12px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.03em;margin-bottom:5px}
+.dig .dsec .b{font-size:15px;line-height:23px;color:var(--ink)}
+.dig .dsec.honest{background:var(--bg);border-radius:12px;padding:12px 14px}
+.dig .dsec.honest .l{color:var(--tw)}
+.dig .dmore{margin-top:14px;display:inline-block;font-size:13px;font-weight:600;color:var(--gold)}
+.dig .dload{font-size:14px;color:var(--meta);padding:4px 0}
+@media(min-width:1020px){
+ .dirs{display:grid;grid-template-columns:1fr 1fr;gap:0 24px;align-items:start}
+ .hh{padding-top:14px}
+ .ht1{font-size:32px;line-height:38px}
+ .chrow.live{transition:border-color .15s, transform .12s}
+ .chrow.live:hover{border-color:var(--gold-br)}
+ .hcta a{max-width:420px;margin:0 auto}
+}
+@media(prefers-reduced-motion:reduce){.dig .db{transition:none}.dig .dt .cv{transition:none}}
+.predict{background:#211C16;color:#EFE6D7;border-radius:var(--r);padding:22px;margin-top:8px}
+.predict .q{font-size:20px;line-height:27px;font-weight:700;margin-bottom:16px}
+.predict .opts{display:flex;gap:12px;flex-wrap:wrap}
+.predict .opts button{flex:1 1 28%;min-width:92px;min-height:50px;padding:9px 12px;border-radius:12px;border:1px solid #4A4030;background:transparent;color:#EFE6D7;font-size:15px;font-weight:700;line-height:1.25;cursor:pointer}
+.predict .opts button:active{background:#2C261D}
+.fsky{display:flex;gap:12px;justify-content:center;margin:8px 0 14px}
+.fstar{color:#F0CE8A;font-size:20px;opacity:.25;animation:ign .5s ease forwards}
+@keyframes ign{to{opacity:1;text-shadow:0 0 12px rgba(240,206,138,.65)}}
+/* reduced-motion гасил анимацию → звёзды застревали на opacity .25 навсегда: показываем финальное состояние (a11y, cold-audit) */
+@media(prefers-reduced-motion:reduce){.fstar{opacity:1;animation:none;text-shadow:0 0 12px rgba(240,206,138,.65)}}
+.fmoves{text-align:left;background:var(--card);border:1px solid var(--line);border-radius:var(--rs);padding:15px 16px;margin:16px 0 4px}
+.fmoves .l{font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--gold);margin-bottom:9px}
+.fmv{display:flex;gap:10px;font-size:14.5px;line-height:21px;margin-top:7px}
+.fmv .n{flex:none;width:20px;height:20px;border-radius:50%;background:var(--bg);border:1px solid var(--line);font-size:11.5px;font-weight:700;color:var(--meta);display:flex;align-items:center;justify-content:center}
+/* ── дом Пути (v1.1) ── */
+.hh{padding:6px 0 0}
+.hkick{font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--gold)}
+.ht1{font-size:28px;line-height:34px;font-weight:800;letter-spacing:-.02em;margin:8px 0 0;text-wrap:balance}
+.hline{font-size:16px;line-height:25px;color:var(--ink2);margin-top:12px}
+.hwhat{font-size:13.5px;line-height:20px;color:var(--meta);margin-top:10px;padding-left:12px;border-left:2px solid var(--line)}
+.hrecap{margin-top:14px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 15px;font-size:14.5px;line-height:21px;color:var(--ink2)}
+.hoverall{margin-top:18px;font-size:13.5px;font-weight:600;color:var(--meta)}
+.hoverall+.hprog{margin-top:6px}
+.hnext{margin-top:12px;font-size:13.5px;line-height:19px;color:var(--meta);text-align:center}
+.hprog{margin-top:18px;font-size:14px;font-weight:600;color:var(--meta)}
+.hdots{display:flex;gap:7px;margin-top:9px}
+.hdots i{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.hdots i.on{background:var(--gold-br)}
+.hdots i.cur{background:var(--gold);outline:3px solid rgba(151,89,26,.18)}
+.hsky{margin-top:22px;background:linear-gradient(170deg,#1E1913,#12100C);border-radius:18px;padding:18px}
+.hsl{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#8f8574;margin-bottom:10px}
+.hstars{display:flex;gap:14px;flex-wrap:wrap;align-items:center;min-height:28px}
+.hst{width:10px;height:10px;border-radius:50%;background:#3a332a;transition:background .3s}
+.hst.lit{background:#F0CE8A;box-shadow:0 0 10px 2px rgba(240,206,138,.5)}
+.hcta{margin-top:22px}
+.hcta a{display:flex;align-items:center;justify-content:center;height:54px;border-radius:var(--rs);background:var(--gold);color:#fff;font-size:16px;font-weight:700;text-decoration:none}
+.haside{display:block;text-align:center;margin-top:14px;font-size:13.5px;color:var(--meta);text-decoration:none;padding:12px 8px}
+.hrestart{display:block;text-align:center;margin-top:4px;font-size:13.5px;color:var(--meta);background:none;border:0;font:inherit;cursor:pointer;width:100%;padding:10px 8px}
+.hacts{display:flex;flex-direction:column;gap:10px;margin-top:22px}
+.hacts a{display:flex;align-items:center;justify-content:center;height:50px;border-radius:var(--rs);text-decoration:none;font-size:15px;font-weight:700}
+.hacts .pri{background:var(--gold);color:#fff}
+.hacts .sec{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.dirs{margin-top:30px}
+.dir{margin-bottom:22px}
+.dname{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--meta)}
+.dtag{font-size:13px;line-height:19px;color:var(--meta);margin:3px 0 9px}
+.chrow{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:var(--rs);padding:13px 15px;margin-bottom:8px;box-shadow:var(--sh)}
+.chrow.live{cursor:pointer}
+.chrow.writing{background:var(--bg);box-shadow:none;border-style:dashed}
+.chn{flex:none;min-width:26px;height:26px;border-radius:13px;background:var(--bg);border:1px solid var(--line);font-size:12px;font-weight:700;color:var(--meta);display:flex;align-items:center;justify-content:center;padding:0 5px}
+.chrow.done .chn{background:rgba(47,125,79,.12);border-color:transparent;color:#2F7D4F}
+.chb{flex:1;min-width:0}
+.cht{display:block;font-size:15px;font-weight:650}
+.chm{display:block;font-size:12.5px;color:var(--meta);margin-top:1px}
+.chm .chrev{font-style:normal;color:var(--meta)} /* тихо, не оранжевым (bus 38895927 п.2д) */
+.chrow svg.cv{flex:none;color:var(--meta)}
+.chrow.cur{border-color:var(--gold-br);box-shadow:0 0 0 1px var(--gold-br) inset, var(--sh)}
+.chrow.cur .chn{background:var(--gold);border-color:var(--gold);color:#fff}
+.chrow.cur .chm{color:var(--gold)}
+.dir-empty .dname{margin-bottom:6px}
+.chrow.writing.thin{padding:10px 15px}
+.pnext{margin-top:20px}
+.pnext button{width:100%;height:52px;padding:0 18px;border-radius:var(--rs);border:0;background:var(--gold);color:#fff;font-size:16px;font-weight:700;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fin{text-align:center;padding:40px 0 0}
+.fin .em{font-size:40px}.fin h2{font-size:26px;font-weight:800;margin:10px 0 6px}.fin p{color:var(--ink2)}
+.fin .btns{margin-top:24px;display:grid;gap:12px}
+.fin .btns button{height:52px;border-radius:var(--rs);font-size:15px;font-weight:700;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--ink)}
+.fin .btns button.pri{background:var(--gold);color:#fff;border:0}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:10;background:rgba(251,250,247,.94);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.navin{max-width:720px;margin:0 auto;display:flex}
+.ni{flex:1;min-height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:none;border:0;color:var(--meta);cursor:pointer}
+.ni svg{width:24px;height:24px}.ni .lb{font-size:11px;font-weight:600}.ni.on{color:var(--gold)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/*TAP-FEEDBACK*/button:active,a:active,[onclick]:active,.ni:active,[data-k]:active,[data-route]:active,[data-slug]:active,[data-cont]:active,[data-q]:active,.row:active,.rt-row:active,.lg-row:active,.fc:active,.stoprow:active,.opt:active,.pill:active,.tab:active,.deeper:active{opacity:.6;transition:opacity .06s}
+/*MCUX v1 — единый UX: нативные переходы между страницами, ховеры, тап-фидбек, reduced-motion*/
+@view-transition{navigation:auto}
+.nav{view-transition-name:mcnav}
+button:active,a:active,[onclick]:active,.ni:active,.mrow:active,.row:active,.res:active,.tbtn:active,.fc:active,.opt:active,.pill:active{opacity:.6;transition:opacity .06s}
+@media(hover:hover){a:hover,button:hover,.ni:hover,.mrow:hover,.row:hover,.res:hover,.tbtn:hover,.fc:hover,.opt:hover,[data-k]:hover,[data-slug]:hover,[data-cont]:hover,[data-route]:hover,[data-q]:hover{opacity:.85;transition:opacity .12s ease;cursor:pointer}}
+@media(hover:none){button:active,a:active,[onclick]:active,.ni:active,.mrow:active,.row:active,.res:active,.tbtn:active,.fc:active,.opt:active,.lp:active,.rc:active,.cont:active,.hero:active,.scd:active,.tl:active,.fd:active,.lk:active,.deeper:active,[data-k]:active,[data-slug]:active,[data-cont]:active,[data-route]:active,[data-q]:active{opacity:.72;transform:scale(.97);transition:transform .06s ease,opacity .06s}}
+a:focus-visible,button:focus-visible,[onclick]:focus-visible,.ni:focus-visible,.mrow:focus-visible,.row:focus-visible,.res:focus-visible,.tbtn:focus-visible,.fc:focus-visible,.opt:focus-visible,.lp:focus-visible,.rc:focus-visible,[data-k]:focus-visible,[data-slug]:focus-visible,[data-cont]:focus-visible,[data-route]:focus-visible{outline:2px solid var(--gold,#97591A);outline-offset:2px;border-radius:6px}
+.mcstate{padding:46px 20px;text-align:center;color:var(--meta,#6E675E)}
+.mcstate .ic{font-size:30px;line-height:1;margin-bottom:12px;opacity:.75}
+.mcstate .msg{font-size:14.5px;line-height:20px;max-width:300px;margin:0 auto}
+.mcstate .retry{margin-top:16px;display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:700;color:var(--gold,#97591A);background:none;border:1px solid var(--line,#ECE7DD);border-radius:999px;padding:9px 18px;cursor:pointer}
+.mcsk{background:linear-gradient(90deg,#EFEBE2,#F6F3ED,#EFEBE2);background-size:200% 100%;animation:mcsh 1.2s infinite;border-radius:12px}
+@keyframes mcsh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+/*MCDESK v1 — десктоп (>=960px): нижний таб-бар -> левый сайдбар, контент смещается вправо; мобилка не трогается*/
+@media(min-width:960px){
+ body:has(nav.nav){padding-left:236px}
+ nav.nav{top:0;bottom:0;right:auto;width:236px;border-top:0;border-right:1px solid var(--line);padding:0}
+ nav.nav .navin{flex-direction:column;align-items:stretch;height:100vh;max-width:none;margin:0;padding:22px 14px;gap:3px}
+ nav.nav .ni{flex:0 0 auto;flex-direction:row;justify-content:flex-start;gap:14px;min-height:0;height:auto;padding:12px 14px;border-radius:12px}
+ nav.nav .ni svg{width:22px;height:22px}
+ nav.nav .ni .lb{font-size:15px;font-weight:600}
+ nav.nav .ni.on{background:rgba(176,106,31,.09)}
+ @media(hover:hover){nav.nav .ni:hover{background:rgba(176,106,31,.06);opacity:1}}
+ body:has(nav.nav) .topbar{left:236px}
+ body:has(nav.nav) .start{left:236px}
+ .wrap:has(.rcgrid){max-width:940px}
+ .rcgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px;align-items:start}
+ .rcgrid .rc{margin-top:0}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}
+
+/* сим-глаголы квест-v2 (sim_verbs.js) */
+.sim{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;margin:14px 0;box-shadow:0 2px 12px rgba(20,17,12,.05)}
+.sim-k{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--gold);margin-bottom:8px}
+.sim-q{font-size:16px;line-height:23px;font-weight:600;margin-bottom:14px}
+.sim-q b{color:var(--gold)}
+.sim-opts{display:flex;flex-direction:column;gap:9px}
+.sim-btn{border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:15px;font-weight:600;padding:12px 16px;border-radius:12px;cursor:pointer;text-align:left}
+.sim-btn:active{opacity:.7}
+.sim-btn.sim-primary{background:var(--gold);border-color:var(--gold);color:#fff;text-align:center;margin-top:12px;width:100%}
+.sim-btn.sim-ghost{background:none;border-style:dashed;color:var(--meta);font-weight:500;font-size:13.5px;margin-top:10px}
+.sim-body{font-size:14.5px;line-height:21px;color:var(--ink2);margin-top:6px}
+.sim-range{width:100%;accent-color:var(--gold);margin:6px 0 2px}
+.sim-val{font-size:22px;font-weight:800;color:var(--gold);margin:2px 0 4px}
+.sim-scale{position:relative;height:26px;background:var(--bg);border:1px solid var(--line);border-radius:999px;margin:10px 0 8px}
+.sim-dot{position:absolute;top:50%;width:13px;height:13px;border-radius:50%;transform:translate(-50%,-50%);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.sim-dot-base{background:#8B847B}.sim-dot-you{background:var(--gold-br,#C98A3A)}.sim-dot-anchor{background:#C2452F}
+.sim-legend{font-size:12.5px;color:var(--meta);margin:4px 0 8px}
+.sim-legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:3px}
+.lg-base{background:#8B847B}.lg-you{background:var(--gold-br,#C98A3A)}.lg-anchor{background:#C2452F}
+.sim-canvas{display:block;background:var(--bg);border:1px solid var(--line);border-radius:12px;touch-action:none;cursor:crosshair;max-width:100%}
+</style>
+<style>/*mc:desktop*/@media(min-width:1020px){.nav{top:0;bottom:0;left:0;right:auto;width:92px;border-top:0;border-right:1px solid var(--line);padding-bottom:0}.navin{flex-direction:column;justify-content:center;gap:8px;height:100%;max-width:none}.ni{flex:0 0 auto;padding:13px 0;margin:0 10px;border-radius:12px}.ni.on{background:rgba(151,89,26,.08)}body{padding-left:92px}.wrap{max-width:760px}.cta{left:92px}.topbar{left:92px}}@media(hover:hover){.ni{transition:color .15s,background .15s}.ni:hover{color:var(--gold)}a{transition:opacity .12s}}</style>
+</head>
+<body>
+<script>/*mc:hashroute*/(function(){try{var m=(location.hash||"").match(/^#\/c\/([^?&#]+)/);if(m&&m[1]){location.replace("card.html?slug="+encodeURIComponent(decodeURIComponent(m[1])));}}catch(e){}})();</script>
+<script src="sim_verbs.js"></script>
+<div class="wrap" id="wrap"></div>
+<div id="overlay"></div>
+<div class="toast" id="toast"></div>
+
+<nav class="nav" id="nav"><div class="navin">
+ <button class="ni on" onclick="location.href='path.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="18" r="2.2"/><path d="M8.3 15.7C11 13 13 11 15.7 8.3"/><path d="M17.5 3l1.1 2.4L21 6.5l-2.4 1.1L17.5 10l-1.1-2.4L14 6.5l2.4-1.1z"/></svg><span class="lb">Путь</span></button>
+ <button class="ni" onclick="location.href='solve-home.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5A2.5 2.5 0 0 0 6.5 8H20"/></svg><span class="lb">Справочник</span></button>
+ <button class="ni" onclick="location.href='explore.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 1.5L13 16l-1.5-4.5z"/></svg><span class="lb">Карта</span></button>
+ <button class="ni" onclick="location.href='personal.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span class="lb">Моё</span></button>
+</div></nav>
+
+<script>
+/*PSTR-START (истина: v3/path_strings.json — строки правит Каллиопа КАК ДАННЫЕ)*/
+var PSTR={
+ "_meta": "Строки Пути — РЕДАКТИРОВАННЫЙ слой Каллиопы (content/path-strings-calliope.md, Каллиопа-66; релиз-гейт path-build-contract §H пройден). Правится КАК ДАННЫЕ; inject_bits.py вшивает при сборке. Плейсхолдеры {n}/{title}/{k}/{m}/{recap}/{next} подставляет код.",
+ "s1": {
+  "kicker": "Ваш путь",
+  "h1": "Почему люди делают не то, что говорят",
+  "line": "Начнём с главного. Три главы фундамента — и станет видно, куда идти дальше.",
+  "cta": "Начать первую остановку · 3 мин",
+  "aside": "или Справочник — если нужен ответ прямо сейчас",
+  "what": "Путь — одна дорога через все главы: от фундамента к мастерству, по остановке за раз."
+ },
+ "s2": {
+  "kicker": "Глава {n} · {title}",
+  "frame": "Наука о поведении — глава за главой. Вы продолжаете там, где остановились.",
+  "overall": "Глава {n} из {y} · пройдено {d}",
+  "overall0": "Глава {n} из {y}",
+  "next": "Дальше: «{t}» — {teaser}",
+  "next_short": "Дальше: «{t}»",
+  "progress": "Остановка {k} из {m}",
+  "cta": "Продолжить · ~3 мин",
+  "weekly": "Новая глава — в четверг"
+ },
+ "s2b": {
+  "recap": "В прошлый раз: {recap}. Продолжим с остановки {k}?",
+  "restart": "Начать главу заново",
+  "long_pause": "С возвращением. Продолжить с места, освежить главу одним экраном — или выбрать другое созвездие?"
+ },
+ "s3": {
+  "h1": "Фундамент пройден. Куда дальше?"
+ },
+ "s4": {
+  "h1": "Все главы пройдены.",
+  "line": "Новая — в четверг. А пока загляните во Фронтир: гипотезы и споры на краю знания.",
+  "cta_diag": "Проверить свой метод",
+  "cta_frontier": "Во Фронтир"
+ },
+ "chapter_done": {
+  "kicker": "Глава пройдена.",
+  "stars": "Созвездие {name}: +{k} звёзд",
+  "moves": "Примени завтра — три хода:",
+  "diag_bridge": "Проверьте на своём: Диагностика",
+  "next": "Дальше на пути: {next}",
+  "home": "К Пути"
+ },
+ "service": {
+  "load_error": "Не удалось загрузить главу.",
+  "retry": "↻ Повторить",
+  "offline": "Нет сети — глава загрузится, когда связь вернётся.",
+  "stop_missing": "Эта остановка ещё не опубликована — загляните позже.",
+  "stop_error": "Не удалось загрузить остановку.",
+  "chapter_updated": "Глава обновлена",
+  "needs_foundation": "Эта глава опирается на Фундамент — если что-то незнакомо, начните с него.",
+  "writing": "✎ Пишется",
+  "skipped_badge": "Пройдено без проверки"
+ },
+ "intro": {
+  "h1": "Истории стали Путём",
+  "line": "Одна дорога через все главы — от фундамента к мастерству. Ваш прогресс цел: вы на главе {n}.",
+  "cta": "Продолжить"
+ },
+ "guest_gate": "Фундамент открыт целиком — он ваш. Сохранить небо и открыть специализации можно по приглашению: доступ дальше — для участников.",
+ "fund_label": "Фундамент",
+ "next_up": "Дальше на пути",
+ "done_label": "пройдена",
+ "recaps": {
+  "_meta": "1 строка на главу для re-entry >7 дней (финал Каллиопы-66)",
+  "m1-osnovy": "работу продукту даёт задача пользователя, а не список фич",
+  "m2-cena": "цену считывают относительно ориентира — и якорь этот ориентир двигает",
+  "m3-vnimanie": "внимание — узкое место: переключение стоит минут, не секунд",
+  "m4-privychka": "привычка срабатывает раньше решения — рука тянется до «зачем»",
+  "m5-socialnoe": "норму задаёт ближний круг, а не среднее по рынку",
+  "m6-doverie": "доверие держится на невысказанном контракте",
+  "m7-temnye": "граница тёмного паттерна — чьи интересы обслуживает дизайн",
+  "m8-metriki": "метрика, ставшая целью, перестаёт измерять"
+ },
+ "my": {
+  "label": "Мой путь",
+  "hint": "Где вы остановились в книге — продолжайте с этого места.",
+  "start_hint": "Ещё не начинали — первая остановка займёт 3 минуты."
+ },
+ "_draft_note": "Поля s1.what, my.hint, my.start_hint, s2.frame, s2.overall, s2.overall0, s2.next, s2.next_short — ЧЕРНОВИК Гефеста, финал за Каллиопой (пояснения новичку + рамка/ориентация S2 по правкам Артёма, bus 38895927)."
+};
+/*PSTR-END*/
+/*PATHCFG-START (истина: v3/path.json — структура Прометей, строки Каллиопа, правится через PR)*/
+var PATHCFG={
+ "_meta": "Конфиг Пути (path-build-contract §A): структура = Прометей, строки = Каллиопа, правится через PR. status: live | writing; eta — только если дата реальна (§F: «в четверг» рендерится ТОЛЬКО из eta). bits_ref → ключ в bits.json.",
+ "directions": [
+  {
+   "id": "foundation",
+   "name": "Фундамент",
+   "tagline": "Почему люди делают не то, что говорят — зазор между словами и делами, на котором стоит всё остальное.",
+   "chapters": [
+    {
+     "id": "mF-slova-dela",
+     "title": "Слова и дела",
+     "bits_ref": "mF-slova-dela",
+     "rev": 1,
+     "status": "writing",
+     "eta": "2026-07-09"
+    },
+    {
+     "id": "m3-vnimanie",
+     "title": "Внимание и состояние",
+     "bits_ref": "m3-vnimanie",
+     "rev": 2,
+     "status": "live"
+    },
+    {
+     "id": "m1-osnovy",
+     "title": "Основы продуктового мышления",
+     "bits_ref": "m1-osnovy",
+     "rev": 2,
+     "status": "live"
+    }
+   ]
+  },
+  {
+   "id": "discovery",
+   "name": "Найти, что строить",
+   "tagline": "Почему просят одно, а покупают другое, и как проверять спрос до того, как написан код.",
+   "chapters": []
+  },
+  {
+   "id": "price",
+   "name": "Цена и деньги",
+   "tagline": "Почему 990 бывает дороже 1000 и как назначать цену без гадания.",
+   "chapters": [
+    {
+     "id": "m2-cena",
+     "title": "Цена и ценность",
+     "bits_ref": "m2-cena",
+     "rev": 2,
+     "status": "live"
+    }
+   ]
+  },
+  {
+   "id": "habit",
+   "name": "Привычка и удержание",
+   "tagline": "Почему пользователи не возвращаются и как строить привычку без крючков-обманок.",
+   "chapters": [
+    {
+     "id": "m4-privychka",
+     "title": "Привычка и удержание",
+     "bits_ref": "m4-privychka",
+     "rev": 1,
+     "status": "live"
+    }
+   ]
+  },
+  {
+   "id": "trust",
+   "name": "Убеждение и доверие — без обмана",
+   "tagline": "Почему вам не верят на слово и как убеждать, не сжигая доверие.",
+   "chapters": [
+    {
+     "id": "m5-socialnoe",
+     "title": "Социальное и идентичность",
+     "bits_ref": "m5-socialnoe",
+     "rev": 1,
+     "status": "live"
+    },
+    {
+     "id": "m6-doverie",
+     "title": "Доверие и сбои",
+     "bits_ref": "m6-doverie",
+     "rev": 1,
+     "status": "live"
+    },
+    {
+     "id": "m7-temnye",
+     "title": "Тёмные паттерны (узнавание)",
+     "bits_ref": "m7-temnye",
+     "rev": 1,
+     "status": "live"
+    }
+   ]
+  },
+  {
+   "id": "metrics",
+   "name": "Метрики, которым можно верить",
+   "tagline": "Почему дашборд растёт, а продукт нет, и какие числа не лгут.",
+   "chapters": [
+    {
+     "id": "m8-metriki",
+     "title": "Метрики и решения",
+     "bits_ref": "m8-metriki",
+     "rev": 2,
+     "status": "live"
+    }
+   ]
+  },
+  {
+   "id": "mastery",
+   "name": "Мастерство · Анти-карго-культ",
+   "tagline": "RICE, NPS, A/B: что из этого работает, а что ритуал — проверка по вашему случаю.",
+   "chapters": [],
+   "home": false,
+   "_note": "диагностика убрана из прода (реш. Артёма); направление скрыто (home:false) до будущего контента"
+  }
+ ]
+};
+/*PATHCFG-END*/
+// п.4 (4fde418b): line-иконки историй вместо эмодзи (кросс-платформенная управляемость)
+var QIC={
+ 'm1-osnovy':'<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/>',
+ 'm2-cena':'<path d="M12 4v16M6 7h12"/><path d="M6 7l-3 6a3.2 3.2 0 0 0 6 0z"/><path d="M18 7l-3 6a3.2 3.2 0 0 0 6 0z"/><path d="M8 20h8"/>',
+ 'm3-vnimanie':'<path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.6"/>',
+ 'm4-privychka':'<path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 3v4h-4"/>',
+ 'm5-socialnoe':'<circle cx="9" cy="8" r="3.2"/><path d="M3 20a6 6 0 0 1 12 0"/><circle cx="17.5" cy="9" r="2.3"/><path d="M16 14.5A5 5 0 0 1 21 19.5"/>',
+ 'm6-doverie':'<path d="M10 13a5 5 0 0 0 7.5.5l2-2a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7.5-.5l-2 2a5 5 0 0 0 7 7l1-1"/>',
+ 'm7-temnye':'<path d="M7 3h10l-2.5 5v11a1.8 1.8 0 0 1-1.8 2h-1.4a1.8 1.8 0 0 1-1.8-2V8z"/><path d="M12 11v3"/>',
+ 'm8-metriki':'<path d="M4 20v-8M10 20V5M16 20v-6M21 20H3"/>',
+ _:'<path d="M12 4l1.8 6.2L20 12l-6.2 1.8L12 20l-1.8-6.2L4 12l6.2-1.8z"/>'};
+function qic(q,px){ return '<svg class="qi" width="'+(px||26)+'" height="'+(px||26)+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(QIC[q.key]||QIC._)+'</svg>'; }
+// СИД: реальные 8 квестов
+var QUESTS=[
+ {key:"m1-osnovy",icon:"🧭",rec:true,title:"Основы продуктового мышления",promise:"Из чего складывается продуктовое мышление — от мотивации человека до метрики продукта",desc:"Как JTBD объясняет зачем, MVP — насколько дорого ошибиться, а ловушка фич поджидает тех, кто забыл об обоих.",n:6,slugs:["jtbd","jtbd-christensen","mvp","build-trap","product-market-fit","north-star-metric","engagement"]},
+ {key:"m2-cena",icon:"⚖️",rec:false,title:"Цена и ценность",promise:"Цена — конструкция в голове, а не число на экране",desc:"Как опорная точка, привязка и боль платежа управляют воспринимаемой стоимостью независимо от объективной цены.",n:8,slugs:["reference-point","anchoring","prospect-theory","loss-aversion","loss-aversion-critique","mental-accounting","payment-pain","decoy-effect"]},
+ {key:"m3-vnimanie",icon:"🧠",rec:false,title:"Внимание и состояние",promise:"Внимание — не ресурс: как состояние человека меняет то, что вообще работает",desc:"Почему продукт, идеальный на демо, ломается в реальном контексте.",n:8,slugs:["cognitive-load-theory","miller-law","system-1-2","attention-residue","scarcity-mindset","scarcity-critique","present-bias","flow"]},
+ {key:"m4-privychka",icon:"🔄",rec:false,title:"Привычка и удержание",promise:"Что превращает разовое действие в рутину — и почему та же механика лежит в основе манипуляции",desc:"Петля повторного использования и где продукт сам её ломает.",n:8,slugs:["habit-loop","fogg-behavior-model","operant-conditioning"]},
+ {key:"m5-socialnoe",icon:"🪞",rec:false,title:"Социальное и идентичность",promise:"Решение редко принимается в одиночестве — как другие люди и образ себя управляют выбором",desc:"Когда социальное давление помогает продукту, а когда работает против него.",n:7,slugs:["social-proof","bandwagon-effect","social-identity"]},
+ {key:"m6-doverie",icon:"🔗",rec:false,title:"Доверие и сбои",promise:"Доверие строится годами и рушится за один сбой — как не потерять то, что нажито",desc:"Психологический контракт: как складывается и что его нарушает.",n:8,slugs:["source-credibility","trust-calibration","peak-end-rule"]},
+ {key:"m7-temnye",icon:"🔦",rec:false,title:"Тёмные паттерны (узнавание)",promise:"Некоторые паттерны работают и стоят дорого — как их видеть до того, как они ударят",desc:"Что за тёмным паттерном и какую цену он создаёт.",n:7,slugs:["sludge","partition-pricing","fomo"]},
+ {key:"m8-metriki",icon:"📊",rec:false,title:"Метрики честно",promise:"Когда метрика становится целью, она перестаёт работать как метрика",desc:"Закон Гудхарта на практике и слепые пятна KPI.",n:7,slugs:["north-star-metric","aarrr-funnel","goodharts-law"]}
+];
+// названия остановок (для превью/плеера) + сид первой карточки
+var TITLES={jtbd:"JTBD — Jobs To Be Done","jtbd-christensen":"JTBD по Кристенсену",mvp:"MVP — минимально жизнеспособный продукт","build-trap":"Ловушка фич (Build Trap)","product-market-fit":"Соответствие продукта рынку","north-star-metric":"Метрика Полярной звезды",engagement:"Вовлечённость",
+ "reference-point":"Точка отсчёта",anchoring:"Якорение","prospect-theory":"Теория перспектив","loss-aversion":"Неприятие потерь","loss-aversion-critique":"Критика: где неприятие потерь не работает","mental-accounting":"Ментальный учёт","payment-pain":"Боль оплаты","decoy-effect":"Эффект приманки",
+ "cognitive-load-theory":"Теория когнитивной нагрузки","scarcity-mindset":"Психология дефицита","scarcity-critique":"Критика: пределы дефицита"};
+var SEEDCARD={jtbd:{lead:"Люди «нанимают» продукт, чтобы продвинуться в своей жизненной ситуации. Покупают не дрель, а отверстие — точнее, прогресс, которого отверстие помогает достичь. Задача (job) стабильна, решения меняются.",apply:"Спрашивай не «что добавить», а «какую работу пользователь пытается сделать и что нанимает сейчас». Сегментируй по job-у, не по демографии; ищи, что люди «увольняют», переходя к тебе."}};
+
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function plural(n,a,b,c){var m=Math.abs(+n||0)%100,d=m%10;if(m>10&&m<20)return c;if(d>1&&d<5)return b;if(d===1)return a;return c;}
+function stp(n){return n+' '+plural(n,'остановка','остановки','остановок');}
+// синхронно: токен сессии в localStorage → участник сразу (без гостевого мелькания)
+try{ for(var _mi=0;_mi<localStorage.length;_mi++){ var _mk=localStorage.key(_mi); if(_mk&&_mk.indexOf('sb-')===0&&_mk.indexOf('-auth-token')>0){ var _mv=localStorage.getItem(_mk); if(_mv&&_mv.length>20){ window.__MEMBER=true; break; } } } }catch(e){}
+function track(k,p){ try{ if(window.__SB){ var _pr=window.__SB.rpc('reader_event',{p_kind:k,p_payload:p||{}}); if(_pr&&_pr.catch) _pr.catch(function(){}); } }catch(e){} }
+// пройденные квесты (localStorage — гость и член)
+// ── ПРОГРЕСС per-stop (path-build-contract §B): stop_id стабильные, гость=localStorage, член=path_progress ──
+var PROG={}; var PRANK={skipped:1,done:2,verified:3};
+function anonId(){ try{ var k=localStorage.getItem('kb_liker_id')||localStorage.getItem('mc:liker')||''; if(!k){ k='g'+Math.random().toString(36).slice(2,10)+Date.now().toString(36); localStorage.setItem('kb_liker_id',k); } return k; }catch(e){ return null; } }
+function progLoadLocal(){ PROG={}; try{ for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(k&&k.indexOf('mc:path:s:')===0){ var rest=k.slice(10); var ci=rest.indexOf(':'); if(ci>0){ var ch=rest.slice(0,ci), st=rest.slice(ci+1); (PROG[ch]=PROG[ch]||{})[st]=localStorage.getItem(k)||'done'; } } } }catch(e){} }
+function progSet(ch,stop,status){ status=status||'done'; var cur=(PROG[ch]||{})[stop]; if(cur&&PRANK[cur]>=PRANK[status]) return; (PROG[ch]=PROG[ch]||{})[stop]=status;
+ try{ localStorage.setItem('mc:path:s:'+ch+':'+stop,status); localStorage.setItem('mc:path:ts',String(Date.now())); }catch(e){}
+ if(window.__SB&&window.__MEMBER){ try{ window.__SB.rpc('path_progress_set',{p_chapter:ch,p_stop:stop,p_status:status}).catch(function(){}); }catch(e){} } }
+function chapterStops(ch){ return (BITS[ch]||[]).map(function(b){return b.id;}); }
+function chapterDoneCount(ch){ var p=PROG[ch]||{}; return chapterStops(ch).filter(function(id){return p[id];}).length; } // счёт по ЖИВЫМ остановкам (§E)
+function chDone(ch){ var st=chapterStops(ch); return st.length>0 && st.every(function(id){return (PROG[ch]||{})[id];}); }
+function nextStopIdx(ch){ var st=chapterStops(ch); for(var i=0;i<st.length;i++){ if(!(PROG[ch]||{})[st[i]]) return i+1; } return 1; }
+// плоские списки live-глав из PATHCFG (§A: конфиг = данные)
+function liveChapters(){ var out=[]; ((PATHCFG&&PATHCFG.directions)||[]).forEach(function(d){ (d.chapters||[]).forEach(function(c){ if(c.status==='live') out.push({dir:d,ch:c}); }); }); return out; }
+function chapterCfg(id){ var hit=null; ((PATHCFG&&PATHCFG.directions)||[]).forEach(function(d){ (d.chapters||[]).forEach(function(c){ if(c.id===id) hit={dir:d,ch:c}; }); }); return hit; }
+function chapterNum(id){ var l=liveChapters(); for(var i=0;i<l.length;i++){ if(l[i].ch.id===id) return i+1; } return 0; }
+// авто-длительность (§F): слова/180wpm + 1 мин на интерактив, округление вверх, минимум 2
+function estMin(ch){ var bits=BITS[ch]||[]; var w=0,ia=0; bits.forEach(function(b){ (b.p||[]).concat(b.rp||[]).forEach(function(t){ w+=String(t).split(/\s+/).length; }); if(b.interactive) ia++; }); return Math.max(2, Math.ceil(w/180)+ia); }
+// однократная миграция старой модели (mc:quests_done / mc:quest_last, индексная)
+function progMigrate(){ try{ if(localStorage.getItem('mc:path:migrated')) return;
+ var qd=JSON.parse(localStorage.getItem('mc:quests_done')||'[]')||[];
+ qd.forEach(function(ch){ chapterStops(ch).forEach(function(id){ progSet(ch,id,'done'); }); });
+ var ql=JSON.parse(localStorage.getItem('mc:quest_last')||'null');
+ if(ql&&ql.key){ chapterStops(ql.key).slice(0,Math.max(0,(ql.stop||1)-1)).forEach(function(id){ progSet(ql.key,id,'done'); }); }
+ localStorage.setItem('mc:path:migrated','1'); }catch(e){} }
+// member: слить гостевое на сервер (идемпотентно, повышение) и забрать серверное в PROG
+function progSyncMember(SB){ try{
+ var rows=[]; Object.keys(PROG).forEach(function(ch){ Object.keys(PROG[ch]).forEach(function(st){ rows.push({chapter:ch,stop:st,status:PROG[ch][st]}); }); });
+ var fin=function(){ SB.rpc('path_progress_get').then(function(r){ var d=(r&&!r.error&&r.data)||[]; var changed=false;
+   d.forEach(function(x){ var cur=(PROG[x.chapter_id]||{})[x.stop_id]; if(!cur||PRANK[cur]<PRANK[x.status]){ (PROG[x.chapter_id]=PROG[x.chapter_id]||{})[x.stop_id]=x.status; try{ localStorage.setItem('mc:path:s:'+x.chapter_id+':'+x.stop_id,x.status); }catch(e){} changed=true; } });
+   if(changed && !QKEY) renderHome(); }).catch(function(){}); };
+ if(rows.length) SB.rpc('path_merge_guest',{p_rows:rows}).then(fin,fin); else fin();
+}catch(e){} }
+// совместимость: старые хелперы поверх новой модели
+function qdoneHas(k){ return chDone(k); }
+function qdoneAdd(k){ chapterStops(k).forEach(function(id){ progSet(k,id,'done'); }); }
+function titleOf(s){ return TITLES[s]||s.replace(/-/g,' '); }
+function isTwist(s){ return /critique|critic|contra/i.test(s); }
+
+/* ── inline concept-card («Разобрать глубже» разворачивается на месте, без ухода на card.html) ── */
+window.__digCache=window.__digCache||{};
+function digFetch(slug){
+ // возвращает Promise<bundle|null>; кэширует; null → вызывающий откатывается на card.html
+ if(!slug) return Promise.resolve(null);
+ var c=window.__digCache;
+ if(c[slug]!==undefined) return Promise.resolve(c[slug]);
+ var SB=window.__SB;
+ if(!(SB&&SB.rpc)) return Promise.resolve(null); // офлайн / нет Supabase → фолбэк
+ var rpc=window.__MEMBER?'kb_node_bundle':'kb_public_bundle';
+ return SB.rpc(rpc,{p_slug:slug}).then(function(r){
+  if(r&&!r.error&&r.data){ c[slug]=r.data; return r.data; }
+  return null;
+ }).catch(function(){ return null; });
+}
+function digBodyHTML(bundle,slug){
+ var b=bundle&&bundle.body||bundle&&bundle.body_struct||{};
+ var sut=b['суть']||'', app=b['применение']||'', honest=b['как-на-самом-деле']||b['механизм-заблуждения']||'';
+ var h='';
+ if(sut) h+='<div class="dsec"><div class="l">Суть</div><div class="b">'+esc(sut)+'</div></div>';
+ if(app) h+='<div class="dsec"><div class="l">Как применить</div><div class="b">'+esc(app)+'</div></div>';
+ if(honest) h+='<div class="dsec honest"><div class="l">Как на самом деле</div><div class="b">'+esc(honest)+'</div></div>';
+ if(!h) h='<div class="dsec"><div class="b">'+esc(bundle&&bundle.title||titleOf(slug))+'</div></div>';
+ h+='<a class="dmore" href="card.html?slug='+esc(slug)+'">Открыть полностью →</a>';
+ return h;
+}
+// Разворот на месте: ленивая загрузка при первом раскрытии, кэш, фолбэк на card.html при сбое/офлайне.
+function digToggle(el,slug){
+ var wrap=el.closest?el.closest('.dig'):(function(n){while(n&&!(n.className&&/\bdig\b/.test(n.className)))n=n.parentNode;return n;})(el);
+ if(!wrap) return;
+ var body=wrap.querySelector('.db');
+ var open=/\bopen\b/.test(wrap.className);
+ if(open){ wrap.className=wrap.className.replace(/\s*\bopen\b/,''); return; }
+ if(wrap.getAttribute('data-loaded')==='1'){ wrap.className+=' open'; return; }
+ if(wrap.getAttribute('data-loading')==='1') return;
+ wrap.setAttribute('data-loading','1');
+ body.innerHTML='<div class="dload">Загружаем…</div>';
+ wrap.className+=' open';
+ digFetch(slug).then(function(bundle){
+  wrap.removeAttribute('data-loading');
+  if(!bundle){ // фолбэк: без данных ведём на card.html, как раньше
+   try{ track('quest_deeper_fallback',{slug:slug}); }catch(e){}
+   location.href='card.html?slug='+encodeURIComponent(slug); return;
+  }
+  wrap.setAttribute('data-loaded','1');
+  body.innerHTML='<div class="dinner">'+digBodyHTML(bundle,slug)+'</div>';
+  try{ track('quest_deeper_open',{slug:slug}); }catch(e){}
+ });
+}
+
+// Нарратив по битам (проза Каллиопы). Квест с BITS играется по битам; без BITS — старая per-slug модель.
+/*BITS-START (истина: v3/bits.json — правится КАК ДАННЫЕ; вшивается inject_bits.py при сборке)*/
+var BITS={
+ "m1-osnovy": [
+  {
+   "id": "m1-osnovy-stop",
+   "t": "Одна команда, два продукта",
+   "p": [
+    "В августе 2010 года компания Tiny Speck открыла бета-тест онлайн-игры Glitch. Создал её Стюарт Баттерфилд, и это была уже вторая его игра, из которой вырос не тот продукт, что задумывался. Шестью годами раньше его студия делала Game Neverending; игра не пошла, но внутри неё жил инструмент для обмена фотографиями — из него получился Flickr, который Баттерфилд продал Yahoo за 25 миллионов долларов. Теперь он строил Glitch: мир без сражений и убийств, который игроки создавали сообща. Эта же особенность и ограничивала аудиторию. За два года и примерно семнадцать миллионов долларов инвестиций игра так и не набрала массу, и в декабре 2012 года серверы отключили.",
+    "Пока шёл Glitch, команда общалась через внутренний инструмент: каналы по темам, полный поиск по истории, интеграция с кодом. Когда игру закрыли, инструмент остался. Его начали показывать знакомым командам в других компаниях, и отклик оказался сильнее, чем на саму игру. Назвали его Slack, по аббревиатуре Searchable Log of All Conversation and Knowledge. В первый день после объявления в августе 2013 года доступ запросили восемь тысяч человек.",
+    "Тот же Баттерфилд, те же люди. Один продукт строили годами, другой вырос почти как побочный эффект — во второй раз подряд. Что решало?"
+   ],
+   "scene_type": "cold_open"
+  },
+  {
+   "id": "m1-osnovy-jtbd",
+   "t": "Работа, которую нанимают",
+   "p": [
+    "Продукты покупают не потому, что у покупателя подходящий демографический профиль. Их нанимают сделать конкретную работу. Мысль не новая: ещё в 1960 году Теодор Левитт повторял студентам, что человеку нужна не дрель на четверть дюйма, а дырка на четверть дюйма. Клейтон Кристенсен превратил это в рабочий метод, разбираясь, почему сеть быстрого питания не могла поднять продажи молочных коктейлей.",
+    "Фокус-группы собирали, рецептуру меняли, а продажи стояли. Тогда исследователи спросили иначе: в какой ситуации и зачем человек покупает коктейль? Почти половину продаж давало раннее утро, и почти все эти стаканы брали в одиночку, на вынос, садясь за руль. Работа была не про вкус: скоротать сорок минут дороги, занять свободную руку, не проголодаться к одиннадцати. Конкурент здесь не другой коктейль, а банан, бублик и пончик, и каждый проигрывал. Банан кончался слишком быстро, бублик крошился, пончик пачкал руль. Густой коктейль, который тянулся двадцать минут через тонкую соломинку, делал работу лучше всех. А во второй половине дня тот же продукт нанимали на совсем другую работу, порадовать ребёнка: там нужен был коктейль поменьше и пожиже.",
+    "Отсюда видно, с кем продукт конкурирует на самом деле. Вопрос смещается с «кто покупает» на «в каком обстоятельстве и какого прогресса человек хочет». Команда Glitch строила игру под образ аудитории. Slack закрыл конкретную работу: координироваться в распределённой команде, не теряя историю в почте. Конкурентом ему в 2013 году был email: через него работало большинство команд, и его-то и «увольняли»."
+   ],
+   "card": "jtbd"
+  },
+  {
+   "id": "m1-osnovy-mvp",
+   "t": "Цена ошибки",
+   "p": [
+    "Знать работу — половина дела. Прежде чем строить, гипотезу стоит проверить, и проверить раньше, чем потрачена основная часть бюджета.",
+    "В 2008 году Дрю Хьюстон записал трёхминутный ролик: экранную запись сервиса синхронизации файлов, которого ещё не существовало. На видео папка обновлялась сразу на двух компьютерах — файл появлялся на втором через секунду после сохранения на первом. Ролик Хьюстон выложил на Hacker News и набил его отсылками, понятными именно этой аудитории ранних энтузиастов. За ночь список ожидания вырос с пяти тысяч до семидесяти пяти тысяч человек. Работающего продукта не было: был тест одной гипотезы — нужна ли людям такая синхронизация настолько, чтобы оставить почту и ждать.",
+    "Эрик Рис назвал такой ход минимально жизнеспособным продуктом, а Стив Бланк выстроил вокруг него метод развития клиентов: сперва проверить спрос, потом писать код. Суть не в том, чтобы выпустить маленькую версию, а в том, чтобы с наименьшими вложениями проверить самое рискованное допущение. Ролик Хьюстона — это «дымовой тест»: продукта за ним нет, проверяется одна готовность среагировать. И слово «жизнеспособный» тут обязательно: тест должен быть достаточным, чтобы результат читался. Если сырая версия отпугнёт людей, останется неясно, от чего они ушли: от идеи или от исполнения. Один и тот же ноль, два разных диагноза."
+   ],
+   "card": "mvp"
+  },
+  {
+   "id": "m1-osnovy-build-trap",
+   "t": "Что происходит дальше",
+   "p": [
+    "Продукт нашёл работу. Первые пользователи нанимают его охотно. Метрики идут вверх. Команда расширяется, открывает список запросов от клиентов и начинает их выполнять. Что происходит с продуктом через два года?"
+   ],
+   "card": "build-trap",
+   "scene_type": "prediction",
+   "twist": true,
+   "predict": {
+    "q": "Продукт нашёл работу, метрики растут, команда выполняет запросы клиентов. Что с ним через два года?",
+    "a": "Станет лучше — больше функций",
+    "b": "Попадёт в ловушку"
+   },
+   "rp": [
+    "Первый ответ напрашивается: продукт становится лучше — больше функций и покрытия. У исследователей продуктовых команд ответ другой. Так выглядит ловушка, которую Мелисса Перри назвала build trap, а Джон Катлер — «фабрикой фич». Компания находит работу и начинает её закрывать. Клиенты довольны и оставляют запросы. Команда их выполняет. Метрики растут. Через два года продукт превращается в список всего, что когда-либо просили, и перестаёт делать ту единственную работу, ради которой его наняли. Бэклог полон, команда занята, а ценность растворилась в шуме фич."
+   ]
+  },
+  {
+   "id": "m1-osnovy-two-years",
+   "t": "Два года спустя",
+   "p": [
+    "Механизм простой. Выпустить функцию — измеримый выход: карточки двигаются, спринты закрываются, есть что показать. Понять, какого прогресса добился человек, — это результат, и его не положишь в Jira. Пара называется выход и результат (output и outcome), и команды съезжают к выходу не от лени, а потому что его проще измерить. Что измеримо, тем и начинают управлять.",
+    "Антидот один: у каждой функции должен быть ответ на вопрос, какую работу она закрывает, — до того как её начали. Без него бэклог растёт сам по себе."
+   ],
+   "card": "build-trap",
+   "scene_type": "story_beat"
+  },
+  {
+   "id": "m1-osnovy-product-market-fit",
+   "t": "Как узнать, что попал",
+   "p": [
+    "Закрывает ли продукт работу, виднее всего по форме кривой удержания. Когда продукт по-настоящему нужен, доля возвращающихся со временем выходит на плато, а не сползает к нулю. Плато — это ядро: люди, для которых продукт стал необходимостью. Хвост, уходящий в ноль, означает дырявое ведро: сколько ни лей трафик, база не копится. У по-настоящему здорового продукта кривая удержания со временем даже загибается вверх — старые когорты возвращаются чаще, а не реже.",
+    "Марк Андриссен назвал попадание в острую потребность рынка product-market fit и описал его на ощупь: фит чувствуешь, когда продукт будто вырывают из рук — серверы не справляются, приходится срочно нанимать, деньги клиентов приходят быстрее, чем успеваешь обслуживать. Операциональный признак дал Шон Эллис вопросом: «Как вы себя почувствуете, если больше не сможете пользоваться продуктом?» «Очень расстроюсь» отвечают те, кто уже встроил его в жизнь. Ориентир около 40% таких ответов Эллис вывел из наблюдений по сотне с лишним стартапов; в контролируемом исследовании он не проверен, и сегментный разрез тут важнее точной цифры. Почтовый клиент Superhuman начал с общих 22%, нашёл сегмент, где «очень расстроюсь» говорили 58%, переписал дорожную карту под этих людей и стал мерить свой PMF-индекс как обычную метрику роста.",
+    "Когда фит есть, встаёт вопрос постоянного направления. Spotify взял метрикой время прослушивания, Airbnb — число забронированных ночей. Это North Star — измеримый след ценности, её отпечаток в данных. Предел известен заранее: как только метрика становится целью, по которой оценивают команду, число начинают двигать, не двигая пользу. Поэтому North Star годится как ориентир, но не как единственная цель команды."
+   ],
+   "card": "product-market-fit",
+   "inline_card_refs": [
+    "north-star-metric"
+   ]
+  },
+  {
+   "id": "m1-osnovy-engagement",
+   "t": "Вовлечённость растёт",
+   "p": [
+    "Если метрика выбрана верно, за ней потянутся DAU, время в продукте, частота возвратов. Их удобно мерить, они всегда под рукой в аналитике и почти всегда зелёные. Рис называл такие числа метриками тщеславия: они радуют, но не подсказывают, что делать дальше.",
+    "Здесь разворачивается тихая ловушка. Вовлечённость считает количество взаимодействия, а оно растёт по двум разным причинам: оттого что продукт реально полезен, и оттого что он удерживает искусственно — переменными наградами, бесконечной лентой, трудным выходом. На графике оба роста выглядят одинаково. У этой грани есть имя — закон Гудхарта, и у него отдельный разговор впереди, в главе о метриках, целиком.",
+    "По числу причины не различить. Различает поведение: возвращается ли человек по своей воле и закрывает ли задачу. Для многих инструментов ценность — это сэкономленное время: пришёл, решил, ушёл. Низкое время в продукте при высоком удержании — признак здоровья. А где заканчивается полезное удержание и начинается захват внимания, давно спорят под именем «времени, потраченного не зря». Это уже следующая глава."
+   ],
+   "card": "engagement",
+   "scene_type": "payoff",
+   "cliff": "Внимание и состояние",
+   "payoff": {
+    "payoff_moves": [
+     "У каждой фичи в бэклоге — ответ, какую работу она закрывает. Нет ответа — нет фичи.",
+     "Самое рискованное допущение проверяйте дымовым тестом до кода: ролик Хьюстона стоил дешевле спринта.",
+     "Смотрите на форму кривой удержания, не на DAU: плато — ядро, хвост в ноль — дырявое ведро."
+    ]
+   }
+  }
+ ],
+ "m2-cena": [
+  {
+   "id": "m2-cena-stop",
+   "t": "Дегустация в томографе",
+   "p": [
+    "В 2008 году Хильке Плассманн и её коллеги из Калтеха предложили двум десяткам добровольцев дегустировать красные вина прямо в томографе. Перед каждым глотком на экране загоралась цена: пять, десять, тридцать пять, сорок пять или девяносто долларов. Об одном участникам не сказали: пара цен указывала на одно и то же вино. Бутылку за девяносто долларов наливали и под видом десятидолларовой, а за сорок пять — под видом пятидолларовой.",
+    "Под дорогим ярлыком вино нравилось больше, и это ещё можно было списать на внушаемость. Интереснее то, что показал сканер. Когда человек считал вино дорогим, у него сильнее активировалась медиальная орбитофронтальная кора, где мозг кодирует переживаемое удовольствие. А первичная вкусовая кора, принимающая сигнал с языка, на цену почти не реагировала: с рецепторов приходило одно и то же. Разница рождалась уже в том, как мозг этот сигнал переживал, и её величину задавала цифра на ценнике (Plassmann et al., 2008).",
+    "Цена двигает не только отчёт об удовольствии. Тремя годами раньше Шив, Кармон и Ариели поили студентов энергетиком, обещавшим бодрость и остроту ума. Одни платили полную цену, другим он достался со скидкой, напиток был тот же. Купившие со скидкой решали потом меньше головоломок. Цена настроила ожидание, а ожидание подтянуло результат. Если число на ценнике переписывает и вкус, и сообразительность, стоит разобраться, как глубоко оно вмешивается в восприятие и откуда у него такая власть."
+   ],
+   "scene_type": "cold_open",
+   "illustration_ref": "decision_scales"
+  },
+  {
+   "id": "m2-cena-reference-point",
+   "t": "Точка отсчёта",
+   "p": [
+    "Цена зацепилась за устройство нашего восприятия. Само по себе число значит мало: триста рублей за кофе кажутся грабежом у метро и приемлемой платой в аэропорту, при том что в стакане одно и то же. Так устроено восприятие вообще. Ещё в XIX веке Вебер заметил, что заметная прибавка к стимулу пропорциональна самому стимулу: к тяжёлой гире нужно добавить больше, чем к лёгкой, чтобы рука почувствовала разницу. Фехнер обобщил это в закон — ощущение растёт медленнее стимула, по логарифму. Цена живёт по тому же правилу, и считывают её относительно ориентира: того, что платил раньше, что просят за соседний товар, что рассчитывал увидеть. Этот ориентир называют точкой отсчёта.",
+    "Тверски и Канеман показали его силу простой задачей. Человек покупает калькулятор за пятнадцать долларов и узнаёт, что в двадцати минутах ходьбы он стоит десять; многие идут ради этой пятёрки. Но если те же пять долларов можно сэкономить на куртке за сто двадцать пять, идти почти никто не хочет. Сумма экономии одна, а доля от цены разная: треть против четырёх процентов. Рука чувствует не рубли, а отношение, ровно как с гирей.",
+    "Сдвиньте ориентир — и та же сумма из «дорогой» станет «разумной», хотя на ценнике не изменится ни цифры. Откуда берётся этот ориентир и можно ли его подменить?"
+   ],
+   "card": "reference-point",
+   "scene_type": "mini_sim",
+   "interactive": {
+    "type": "draw-your-line",
+    "verb": "draw",
+    "params": {
+     "prompt": "Базовая цена растёт слева направо. Насколько заметна одна и та же прибавка +100? Проведите линию заметности.",
+     "points": [
+      1,
+      0.72,
+      0.52,
+      0.38,
+      0.3,
+      0.25,
+      0.22,
+      0.2
+     ],
+     "x_label": "базовая цена",
+     "y_label": "заметность прибавки"
+    }
+   }
+  },
+  {
+   "id": "m2-cena-anchoring",
+   "t": "Якорь",
+   "p": [
+    "Ориентир можно навязать извне — годится даже случайное число. Эффект описали Тверски и Канеман в 1974 году. Они крутили перед участниками рулетку, а потом спрашивали, какой процент стран Африки состоит в ООН. Рулетка останавливалась либо на 10, либо на 65, и это случайное число тянуло ответы за собой: чем больше выпадало, тем выше оказывалась названная доля. Механизм назвали привязкой с поправкой: человек берёт первое число за старт и подкручивает в нужную сторону, но останавливается слишком рано, не дойдя до настоящей оценки.",
+    "Якорь работает, даже когда он откровенно абсурден. Штрак и Муссвайлер спрашивали, умер ли Ганди раньше или позже девяти лет, и потом названный возраст смерти выходил ниже, чем у тех, кому для сравнения называли заведомо большое число. Спустя тридцать лет после рулетки Ариели, Лёвенштейн и Прелек перенесли тот же рычаг на цены. Они просили студентов записать последние две цифры номера страховки, а потом назвать, сколько те дали бы за вино, книгу, беспроводную клавиатуру, и под конец проводили настоящий аукцион. У кого две цифры попадали в верхнюю пятую часть диапазона, называли цены в полтора-три раза выше. При этом относительные оценки оставались разумными: вино у всех выходило дороже конфет. Произволен был лишь общий уровень, тогда как порядок сохранялся; авторы назвали это связной произвольностью.",
+    "Сила сдвига зависит от обстоятельств: чем увереннее человек в собственной оценке, тем слабее якорь, но само смещение воспроизводится надёжно. На нём держится и первый ход в переговорах — кто первым назвал цифру, тот задал поле, вокруг которого идёт торг. В рознице якорем служит первое число, попавшее в поле зрения раньше, чем человек начал считать сам: зачёркнутая «старая цена», самый дорогой тариф в начале списка, крупная сумма в заголовке. У рычага есть предел, за которым он перестаёт убеждать и начинает вызывать подозрение."
+   ],
+   "card": "anchoring",
+   "scene_type": "mini_sim",
+   "interactive": {
+    "type": "anchor-slider",
+    "verb": "adjust",
+    "params": {
+     "anchor": 1990,
+     "baseline": 700,
+     "min": 0,
+     "max": 3000,
+     "item": "годовая подписка на незнакомый сервис",
+     "currency": "₽"
+    }
+   }
+  },
+  {
+   "id": "m2-cena-prospect-theory",
+   "t": "Кривая, которой дали Нобеля",
+   "p": [
+    "За точкой отсчёта стоит механизм покрупнее. Канеман и Тверски описали его в 1979 году в работе о теории перспектив, одной из самых цитируемых в истории экономики; она и принесла Канеману Нобелевскую премию. Человека занимает не итог, а изменение относительно опорной точки — стало больше или меньше. Ценность этих изменений ложится на кривую особой формы. К выигрышам она вогнута — та же убывающая чувствительность, что и у гири Вебера из начала главы: разница между ста и двумястами рублями ощущается ярче, чем между тысячей ста и тысячей двумястами. К потерям та же кривая идёт вниз заметно круче, чем поднимается к выигрышам. У теории есть и второй рычаг, вес вероятности: редкие исходы человек переоценивает, и потому одинаково хорошо продаются лотерейный билет, страховка и «осталось два места».",
+    "Из асимметрии кривой выросла самая знаменитая идея поведенческой экономики: потеря переживается острее равного выигрыша. Неприятие потерь. В 1992 году, уже в кумулятивной версии теории, Тверски и Канеман вывели из лабораторных лотерей коэффициент около двух с четвертью: потерять сто рублей примерно вдвое неприятнее, чем приятно их найти. Классическим подтверждением был эффект владения: в опытах Канемана, Кнетча и Талера людям дарили кружку, и расстаться с ней они соглашались лишь за ощутимо большую сумму, чем сами минуту назад платили за такую же. На этом стоит добрая половина продуктовых приёмов: «осталось 2 часа», «вы теряете доступ», бесплатный период, который потом отбирают. Звучит как фундаментальный закон. И с ним за последнее десятилетие случилась неприятность."
+   ],
+   "card": "prospect-theory",
+   "scene_type": "mini_sim",
+   "interactive": {
+    "type": "lottery",
+    "verb": "choose",
+    "params": {
+     "gain": 50,
+     "risk": 100,
+     "currency": "$"
+    }
+   }
+  },
+  {
+   "id": "m2-cena-loss-aversion-critique",
+   "t": "Сколько весит потеря",
+   "p": [
+    "Насколько прочно само число «два»? Возможны три ответа. Надёжный закон, проверенный сотнями экспериментов. Реальный, но неустойчивый эффект, который в одних условиях есть, в других пропадает. Или во многом артефакт самой постановки опытов — скажем, того, что в лаборатории людям предлагали азартные ставки, на которые в жизни они бы не пошли. Вопрос не схоластический: на первом ответе продукт строить можно, а на третьем уже нет."
+   ],
+   "card": "loss-aversion-critique",
+   "scene_type": "twist",
+   "twist": true,
+   "twist_kind": "overrated",
+   "predict": {
+    "q": "Прежде чем идти дальше — ставка: насколько прочна эта опора?",
+    "verdict": false,
+    "options": [
+     {
+      "key": "law",
+      "label": "Надёжный закон, проверенный сотнями экспериментов"
+     },
+     {
+      "key": "unstable",
+      "label": "Реальный, но неустойчивый эффект"
+     },
+     {
+      "key": "artifact",
+      "label": "Во многом артефакт постановки опытов"
+     }
+    ]
+   },
+   "rp": [
+    "Данные последних лет склоняют ко второму и третьему. Ещё в 2006 году Дэвид Гал заметил, что многое из приписанного неприятию потерь объясняется проще, инерцией: своё человек по умолчанию не трогает, и это принимали за страх потерять. В 2018 году Гал и Дерек Ракер свели вместе множество работ и заключили, что неприятие потерь как универсальная сила заметно переоценено: в аккуратных экспериментах потеря и равный выигрыш нередко весили одинаково, а коэффициент около двух плавал от опыта к опыту. Эрт и Эрев на мелких ставках находили и вовсе нейтральность к потере. Дрогнул и эталонный эффект владения: Джон Лист показал, что у людей с опытом обмена, у коллекционеров и перекупщиков карточек, он почти исчезает — стоит привыкнуть отдавать и получать, и за кружку уже не держатся крепче, чем она стоит.",
+    "Практический вывод сдержанный: приём на страхе потери стоит на эффекте, которого в конкретной ситуации может не оказаться, тогда как инерция работает почти всегда. Удержать надёжнее, сделав продолжение действием по умолчанию, чем пугая утратой."
+   ]
+  },
+  {
+   "id": "m2-cena-mental-accounting",
+   "t": "Конверты и боль",
+   "p": [
+    "Цена живёт в голове ещё и потому, что деньги там не образуют единой массы. Ричард Талер описал это под именем ментального учёта: люди раскладывают средства по воображаемым счетам и тратят с разных счетов по-разному. Показательный пример. Человек, потерявший по дороге в театр билет за десять долларов, реже купит новый, чем тот, кто обронил такую же купюру наличными: билет и его замена идут с одного счёта «развлечения», и поход разом дорожает вдвое, тогда как потерянная купюра проходит по другому счёту и решения не меняет. Талер разделил и саму выгоду надвое: пользу от вещи и отдельное удовольствие от сделки. Бесплатная доставка радует сильнее равной ей скидки именно вторым: скидка лишь ужимает крупный счёт, а доставка закрывает целый отдельный.",
+    "К ментальному учёту добавляется механизм с прямым телесным выражением. Прелек и Лёвенштейн назвали его болью платежа и показали, отчего она слабеет: если заплатить заранее, к моменту удовольствия счёт уже закрыт, и трата не саднит. Оттого «всё включено» приятнее счёта в конце, а абонемент — разовой платы. Сам сигнал боли нашёл Кнутсон: когда человек видит завышенную цену, активируется передняя островковая доля, участок, отзывающийся на боль и отвращение. В томографе покупка решалась борьбой предвкушения товара в центре вознаграждения и этой боли, и по активности островка выбор предсказывался даже сверх того, что люди сообщали о цене и товаре (Knutson et al., 2007). Чем заметнее платёж, тем он болезненнее. Прелек и Симестер проверили это на аукционе: за одни и те же билеты с карты предлагали почти вдвое больше, чем наличными. Карта обезболивает расставание, и подписка с её незаметным списанием — та же анестезия. Та же гладкость, что убирает трение перед нужной покупкой, проводит мимо внимания и списание, которого человек не выбирал. Замечает он его обычно позже, разбирая выписку."
+   ],
+   "card": "mental-accounting",
+   "scene_type": "inline_card",
+   "inline_card_refs": [
+    "payment-pain"
+   ]
+  },
+  {
+   "id": "m2-cena-decoy-effect",
+   "t": "На чём держится цена",
+   "p": [
+    "Отсюда практическая проверка. Когда воспринимаемая ценность выросла, спросите, на чём держится прибавка. Если человек яснее понял, за что платит, или получил понятный ориентир, прибавка устойчива и переживёт спокойное размышление. Если она опирается на подброшенный якорь, на «вы потеряете» или на скрытую доплату, то живёт до первого пристального взгляда, а дальше оборачивается возвратами, отписками и недоверием. Влиять на восприятие цены вы будете всегда; вопрос в том, выдержит ли эффект внимательный взгляд.",
+    "Особняком стоит приём, который ведёт уже в другую область. К двум вариантам добавляют третий, нарочно проигрышный: он оттеняет нужный. Сам третий никто не берёт, его дело — сдвинуть выбор к соседу, а человеку кажется, что он рассудил сам. Хубер, Пейн и Путо описали это в 1982 году как эффект асимметричного доминирования; рядом стоит эффект компромисса, замеченный Симонсоном: средний из трёх вариантов берут чаще просто за то, что он средний. Правда, за пределами лаборатории оба шатки. Когда Фредерик с коллегами в 2014 году проверили приманку на реалистичных товарах, она почти исчезла; держится она там, где варианты описаны числами, и тает, едва доходит до вещей, которые можно подержать в руках. Но и где приём срабатывает, выбор сдвигает сама подстроенная обстановка, и провести границу между «помочь выбрать» и «выбрать за человека» здесь труднее всего. Этот разговор впереди — в главе о тёмных паттернах. Ближайший шаг другой: цену платят однажды, а возвращаются каждый день. Что приводит человека назад?"
+   ],
+   "card": "decoy-effect",
+   "scene_type": "payoff",
+   "cliff": "Привычка и удержание",
+   "illustration_ref": "full_cost_four",
+   "payoff": {
+    "payoff_moves": [
+     "Задайте ориентир до числа: что покажете рядом с ценой, тем она и станет.",
+     "Удерживайте продолжением по умолчанию, а не угрозой утраты: инерция работает почти всегда, страх потери — не везде.",
+     "Сделайте платёж заметным там, где нужно доверие, а не только гладким."
+    ]
+   }
+  }
+ ],
+ "m3-vnimanie": [
+  {
+   "id": "m3-vnimanie-stop",
+   "t": "Двадцать три минуты",
+   "p": [
+    "Вчера ваш пользователь собирался вернуться и закончить — сегодня так и не вернулся. Что встало между намерением и действием?",
+    "Разработчицу из вашей команды дёрнули «на минутку» — вопрос в чате. Она ответила за сорок секунд и вернулась к коду. Сколько пройдёт, прежде чем она снова в глубокой работе — там же, где была до вопроса?"
+   ],
+   "scene_type": "cold_open",
+   "twist": true,
+   "interactive": {
+    "type": "draw-your-line",
+    "verb": "draw",
+    "params": {
+     "points": [
+      0,
+      0.04,
+      0.09,
+      0.16,
+      0.26,
+      0.4,
+      0.6,
+      1
+     ],
+     "prompt": "Проведите линию: доля вернувшихся в глубокую работу — от минуты до тридцати.",
+     "x_label": "минуты после прерывания",
+     "y_label": "возврат в глубокую работу"
+    }
+   },
+   "predict": {
+    "q": "Сколько пройдёт, прежде чем она снова в глубокой работе?",
+    "verdict": false,
+    "options": [
+     {
+      "key": "min",
+      "label": "Пара минут — вопрос был на сорок секунд"
+     },
+     {
+      "key": "ten",
+      "label": "Минут десять"
+     },
+     {
+      "key": "long",
+      "label": "Дольше, чем кажется"
+     }
+    ]
+   },
+   "rp": [
+    "В 2004 году Глория Марк из Калифорнийского университета в Ирвайне неделями ходила за офисными работниками с секундомером. Полное возвращение к задаче после прерывания занимало в среднем двадцать три минуты — не к тексту на экране, а к состоянию, где мысль движется сама. За день сотрудник прерывался больше двадцати раз, и только половина прерываний приходила снаружи. Вторую половину человек устраивал себе сам.",
+    "В прошлой главе остался зазор: человек искренне собирался — и не сделал. Эта глава про то, что встаёт между. Первый ответ уже есть: минутка, которая стоит двадцать три."
+   ]
+  },
+  {
+   "id": "m3-vnimanie-47sec",
+   "t": "Сорок семь секунд",
+   "p": [
+    "В 2016-м Марк повторила замер в эпоху смартфонов: среднее переключение внимания сжалось до сорока семи секунд. Люди научились работать короткими вспышками, но каждая вспышка шла с физиологическими маркерами стресса, чаще всего с повышенным пульсом. Сессии дробились, ощущение занятости росло.",
+    "Человек, который открывает ваш продукт, никогда не приходит с чистого листа: у него уже есть история последних сорока семи секунд. Половину прерываний он устраивает себе сам. Вторая половина приходит снаружи — и у неё есть любимая форма."
+   ],
+   "scene_type": "story_beat"
+  },
+  {
+   "id": "m3-vnimanie-salience-network",
+   "t": "Почему бейдж срабатывает без разрешения",
+   "p": [
+    "Красный кружок с числом нарушает привычный вид экрана, и мозг регистрирует разрыв фона раньше, чем успевает сложиться намерение. Нейробиологи называют это сетью значимости (salience network): передняя поясная кора и передняя островковая доля включаются вместе, когда что-то выбивается из потока (Менон и Удин, 2010). Задача сети — не оценить важность, а засечь изменение: ориентировочный рефлекс, отработанный миллионами лет.",
+    "Производители приложений пришли к нему не через нейронауку, а через данные: уведомления повышали возвраты, красный бейдж обходился дешевле любого нового контента. Объяснение пришло позже эксперимента."
+   ],
+   "card": "salience-network",
+   "scene_type": "mechanism_visual"
+  },
+  {
+   "id": "m3-vnimanie-circadian-cognition",
+   "t": "Тот же человек — в другое время",
+   "p": [
+    "Один и тот же школьный тест пишут в восемь утра и в десять. Где баллы выше — и заметна ли разница?"
+   ],
+   "card": "circadian-cognition",
+   "scene_type": "prediction",
+   "twist": true,
+   "predict": {
+    "q": "Где баллы выше — и заметна ли разница?",
+    "verdict": false,
+    "options": [
+     {
+      "key": "same",
+      "label": "Разницы почти нет — тест тот же",
+      "after_text": "Тест действительно тот же. Данные о том, что менялось, — ниже."
+     },
+     {
+      "key": "ten",
+      "label": "В 10:00 заметно выше",
+      "after_text": "Стиан Сивертсен посчитал именно это. Насколько — ниже."
+     },
+     {
+      "key": "eight",
+      "label": "В 8:00 выше — утро свежее",
+      "after_text": "У ранних пиков такая логика есть. Что показали замеры — ниже."
+     }
+    ]
+   },
+   "rp": [
+    "Сивертсен с коллегами (2016) проанализировали школьные тесты по времени проведения: восьмичасовые давали систематически более низкие баллы, чем те же тесты в десять; разрыв сопоставим с несколькими днями пропуска занятий и заметнее всего у слабейших учеников. Тест не менялся — менялось состояние того, кто его проходил.",
+    "Способность к сложному вниманию ходит по суточному (циркадному) кругу: пик в первой половине дня, спад к полудню, вечерний подъём другого качества — эмоции острее, импульсивность выше. Ваш пользователь в девять утра и в десять вечера — два разных человека с одним аккаунтом. Конверсия в момент усталости может выглядеть успехом в метриках и быть совсем другим опытом."
+   ]
+  },
+  {
+   "id": "m3-vnimanie-acute-stress-cognition",
+   "t": "Стресс и сужение выбора",
+   "p": [
+    "Когда человек воспринимает угрозу — финансовую, социальную, срочную, — ресурсы перераспределяются: внимание уходит в угрозу, рабочая память сжимается, горизонт последствий укорачивается. Решения скатываются к быстрым и знакомым.",
+    "Мани, Муллайнатан, Шафир и Чжао (2013) сравнили когнитивные показатели индийских фермеров до урожая и после — под финансовым давлением и без него. Разрыв составил около тринадцати баллов на стандартных тестах. Позднейшие работы показали картину сложнее, и часть эффекта объясняется сопутствующими факторами, но направление воспроизводилось: под нагрузкой человек выбирает привычное и отказывается от того, что требует усилия.",
+    "Продукт, которым пользуются в момент давления, встречает человека в его самой уязвимой версии. Трение, которого не заметили в спокойном юзабилити-тесте, здесь превращается в ошибку."
+   ],
+   "card": "acute-stress-cognition",
+   "scene_type": "story_beat"
+  },
+  {
+   "id": "m3-vnimanie-goal-gradient",
+   "t": "Цель или захват",
+   "p": [
+    "Сеть значимости дёргает без спроса, суточный ритм и стресс сужают выбор. Каждый из этих механизмов можно повернуть против пользователя — и метрики вырастут. Но есть продукты, к которым возвращаются без сожаления: редакторы, языковые приложения, трекеры привычек. Они тоже удерживают. Чем?",
+    "Кофейня раздала две карточки лояльности: на десять штампов — и на двенадцать, где два проставлены заранее. До бесплатного кофе в обеих ровно десять визитов. Кто дойдёт быстрее?"
+   ],
+   "card": "goal-gradient",
+   "scene_type": "twist",
+   "twist": true,
+   "predict": {
+    "q": "Кто дойдёт быстрее?",
+    "verdict": false,
+    "options": [
+     {
+      "key": "same",
+      "label": "Одинаково — визитов поровну",
+      "after_text": "Арифметика на вашей стороне: расстояние одно и то же. Что решила психология — ниже."
+     },
+     {
+      "key": "second",
+      "label": "Вторая — прогресс уже начат",
+      "after_text": "Кивец, Урминский и Чжэн проверили ровно это. Что вышло и почему — ниже."
+     }
+    ]
+   },
+   "rp": [
+    "Вторая группа возвращалась чаще и дошла быстрее (Кивец, Урминский и Чжэн, 2006); ускорение к близкой цели воспроизводилось в кофейнях и онлайн-программах лояльности. Предвкушение нарастает, когда цель ощущается реальной и своей.",
+    "Разница с бейджем принципиальная. Уведомление входит помимо намерения — это действие над пользователем. Прогресс к цели работает через намерение: человек вложился, признал цель своей, и продвижение ощущается его победой. Продукты, к которым возвращаются без сожаления, обычно позволяют двигаться к цели, которую человек выбрал сам."
+   ]
+  },
+  {
+   "id": "m3-vnimanie-payoff",
+   "t": "Просто был вторник",
+   "p": [
+    "Вернёмся к пользователю, который собирался и не вернулся. Между «собирался» и «сделал» стояли: чужая минутка ценой в двадцать три; сигнал, который дёргает раньше намерения; время суток; давление момента. Он не ленивый и не нелояльный — у него просто был вторник.",
+    "Допустим, вы поймали момент: пользователь внимателен и в форме. Остался вопрос главнее — а нужен ли ему вообще ваш продукт? Какую работу он им нанимает?"
+   ],
+   "scene_type": "payoff",
+   "cliff": "Основы продуктового мышления",
+   "payoff": {
+    "payoff_moves": [
+     "Смотрите на момент, не на среднее: не ставьте взвешенный выбор на вечер усталости.",
+     "Разводите сигнал и цель: бейдж возвращает без намерения, прогресс — вместе с ним.",
+     "Проверяйте худший момент: юзабилити спокойного человека не предсказывает уставшего."
+    ],
+    "sky_slugs": [
+     "salience-network",
+     "circadian-cognition",
+     "acute-stress-cognition",
+     "goal-gradient"
+    ]
+   }
+  }
+ ],
+ "m4-privychka": [
+  {
+   "t": "Рука тянется до «зачем»",
+   "card": "striatal-habit-substrate",
+   "p": [
+    "Открыть приложение, разблокировав телефон, — не решение. Это реакция. Рука тянется к иконке прежде, чем в голове появился вопрос «зачем». Нейробиологи называют это переходом от целенаправленного действия к привычному: два разных контура мозга, два разных режима работы.",
+    "Целенаправленное действие управляется дорсомедиальным стриатумом и префронтальной корой — системой, которая взвешивает последствия: «если сделаю это, получу то». Привычное — дорсолатеральным стриатумом, контуром, который кэширует связь «сигнал",
+    "Проверить, чем управляет привычный контур, можно через devaluation test: если обесценить награду, прекратится ли действие? Когда привычка сформирована — нет. Именно поэтому доводы о пользе не ломают укоренившийся автоматизм: логика адресована системе, которая этим поведением уже не управляет."
+   ],
+   "id": "m4-privychka-striatal-habit-substrate"
+  },
+  {
+   "t": "Почему достаточно «иногда»",
+   "card": "variable-reward",
+   "p": [
+    "Было бы понятно, если бы продукты удерживали постоянной наградой. Но самое устойчивое поведение формирует другая схема.",
+    "В 1957 году Бёррес Скиннер и Чарльз Фёрстер описали, как разные режимы подкрепления влияют на поведение. Самый устойчивый — переменная схема: награда приходит непредсказуемо, через случайное число попыток. Поведение, сформированное так, гасится медленнее всего, потому что серия без награды неотличима от «просто затянувшейся паузы». Нейробиологическое объяснение появилось позже: дофаминергические нейроны активируются сильнее на возможность вознаграждения при неопределённости, чем на гарантированное получение (Schultz, Dayan & Montague, 1997).",
+    "Pull-to-refresh — классическая иллюстрация. Жест вниз — «рычаг», обновление ленты — переменная награда: иногда интересный пост, чаще ничего. Именно непредсказуемость, а не контент, удерживает в петле. Aza Raskin, создатель бесконечной прокрутки, прямо описал этот механизм как реализацию скиннеровской схемы. Та же логика лежала в основе лутбоксов — и именно из-за неё несколько стран приравняли их к азартным играм.",
+    "Переменная награда честна, если за непредсказуемостью стоит реальная ценность. Если нет — это не вовлечённость, а истощение."
+   ],
+   "id": "m4-privychka-variable-reward"
+  },
+  {
+   "t": "Стоимость выхода",
+   "card": "sunk-cost-fallacy",
+   "p": [
+    "В 1985 году Хэл Аркс и Кэтрин Блюмер разделили покупателей сезонных театральных билетов Университета Огайо на группы: одни заплатили полную цену, другие — со скидкой. Группа, заплатившая полную цену, посещала спектакли значительно чаще — при абсолютно одинаковой программе. Причина: психологический «долг» перед уже потраченными деньгами менял поведение.",
+    "Это ловушка невозвратных затрат. Рациональный аргумент прост: потраченное ушло в любом случае — бросишь или продолжишь. Единственный разумный вопрос о будущем: принесёт ли следующий шаг достаточно выгоды. Но люди ведут внутренние «счета» и ощущают потребность закрыть их в плюс. Отказ от продолжения ощущается как признание потери — а потери, по Канеману и Тверски, болезненнее равной выгоды.",
+    "Nir Eyal описал это как investment loop: пользователь вкладывает в продукт время, данные и контент, и эти вложения становятся причиной остаться даже тогда, когда продукт уже не так хорош. История переписки, накопленные достижения, персонализированные настройки — всё это создаёт стоимость выхода без прямой оплаты. Честный вопрос при проектировании: остались бы пользователи, если бы эти данные легко переносились?"
+   ],
+   "id": "m4-privychka-sunk-cost-fallacy"
+  },
+  {
+   "t": "Решение до момента слабости",
+   "card": "commitment-device",
+   "p": [
+    "Если автоматизм привычки и притяжение уже вложенного работают против долгосрочного выбора — что с этим делать?",
+    "Один из подходов — принять ограничивающее решение заблаговременно, до того как появится соблазн его нарушить. Это commitment device — устройство обязательства. Классический образ: Улисс у мачты. Современная версия: SMarT, программа Ричарда Талера и Шломо Бенарци, в которой сотрудники соглашались направлять часть будущих повышений зарплаты в пенсионные накопления. Обязательство было привязано к будущему событию — потери сейчас не было никакой. Семьдесят восемь процентов участников согласились; к четвёртому раунду повышений ставка накоплений выросла с 3,5 до 13,6 процента (Thaler & Benartzi, 2004).",
+    "Устройство работает на тех, кто осознаёт собственную склонность к немедленному вознаграждению — так называемых «sophisticates» в классификации O'Donoghue & Rabin (1999). Человек, уверённый, что и так выполнит план, устройства не возьмёт добровольно. Это ограничение важно: commitment device охватывает не всех — только тех, кто уже признал проблему."
+   ],
+   "id": "m4-privychka-commitment-device"
+  },
+  {
+   "t": "Одна графа в форме",
+   "card": "default-nudge",
+   "p": [
+    "Вопрос для прогноза: три механизма выше — привычка, переменная награда, невозвратные затраты — работают без участия сознательного выбора. Commitment device требует осознания. Есть ли инструмент, который меняет поведение большинства без осознания и без обмана?"
+   ],
+   "twist": true,
+   "predict": {
+    "q": "Что сильнее меняет поведение в ситуации с высокими ставками — личные взгляды или то, что написано «по умолчанию» в форме?",
+    "a": "Личные взгляды",
+    "b": "То, что «по умолчанию»"
+   },
+   "rp": [
+    "Эрик Джонсон и Дэн Голдстейн в 2003 году сравнили страны с разными системами донорства органов. В странах с opt-in — нужно специально зарегистрировать согласие — доля согласившихся оставалась на уровне нескольких десятков процентов. В странах с opt-out — согласие по умолчанию, отказаться нужно специально — регистрация согласия держалась около 90% и выше при сопоставимой культуре. Менялся один параметр: что стояло в графе «по умолчанию».",
+    "Инерция, неявное прочтение дефолта как «так задумано» и нежелание менять привычное состояние удерживают большинство на варианте, выбранном за них. Меняется не информация — информация та же. Меняется лишь то, что требует усилия: согласиться или отказаться.",
+    "Оговорка: opt-out мощно сдвигает регистрацию решений. Перенос к реальным донациям и трансплантациям слабее и держится инфраструктурой здравоохранения, а не только изменением дефолта. Тем не менее вывод остаётся: кто задаёт «по умолчанию» — задаёт поведение большинства без убеждения и без принуждения."
+   ],
+   "cliff": "Социальное и идентичность",
+   "id": "m4-privychka-default-nudge",
+   "payoff": {
+    "payoff_moves": [
+     "Привяжите продукт к существующему моменту дня, а не создавайте новый: привычка растёт на готовом триггере.",
+     "Уберите трение из повторного действия — дефолт и один шаг; рука тянется туда, где легко.",
+     "Проверьте стоимость выхода честно: если держит только она — это плен, не удержание. Мерьте возвраты по своей воле."
+    ]
+   }
+  }
+ ],
+ "m5-socialnoe": [
+  {
+   "t": "Линейки",
+   "card": null,
+   "p": [
+    "В 1951 году Соломон Аш попросил студентов Суортморского колледжа сравнить линии. Задача была очевидной: ведущий показывал эталон и три варианта на отдельной карточке, нужно было назвать, какой из вариантов совпадает по длине. В одиночку испытуемые ошибались меньше чем в одном проценте случаев.",
+    "Но в аудитории сидели восемь человек, и семеро из них были подставными. По очереди, уверенно, не переглядываясь, они называли явно неправильный вариант. Настоящий участник отвечал последним.",
+    "В 37% попыток он тоже называл неправильный ответ. Три четверти участников поддавались хотя бы раз. После опыта большинство объясняли себе, что, наверное, неправильно смотрели, или что группа знает что-то, чего не знают они. Давление было немым — только единодушие, которое с каждым ответом становилось труднее игнорировать (Asch, 1951, 1955)."
+   ],
+   "id": "m5-socialnoe-stop"
+  },
+  {
+   "t": "Норма своей комнаты",
+   "card": "social-proof",
+   "p": [
+    "Аш зафиксировал, что единодушие группы сильнее уверенности в очевидном. Но реальный рычаг — не само большинство, а то, чьё это большинство.",
+    "В 2008 году Ноа Гольдштейн, Роберт Чалдини и Владас Грискявичюс разместили в номерах отеля три варианта карточек. Первый — стандартный экологический призыв: пожалуйста, повесьте полотенце обратно, это поможет планете. Второй — описательная норма: 75% наших гостей участвуют в программе повторного использования полотенец. Третий — норма, уточнённая до конкретного номера: большинство гостей, останавливавшихся в этом самом номере, вешали полотенце повторно.",
+    "Экологическая карточка задала базовый уровень. «75% гостей» подняли повторное использование примерно на 26 процентных пунктов относительно него. Норма конкретного номера дала ещё больше. Люди не следуют норме человечества в целом — они ищут норму своей группы. Чем ближе идентификация, тем сильнее влияние (Goldstein, Cialdini & Griskevicius, 2008).",
+    "Из этого вырастает практическое разграничение. Описательная норма — что люди делают — часто эффективнее инъюнктивной — что они должны делать. «Большинство пользователей оставляют уведомления включёнными» работает иначе, чем «включи уведомления, чтобы не пропустить». Первое описывает мир. Второе даёт инструкцию. Мир убеждает сильнее."
+   ],
+   "id": "m5-socialnoe-social-proof"
+  },
+  {
+   "t": "Когда толпа перестаёт быть мудрой",
+   "card": "wisdom-of-crowds",
+   "p": [
+    "Если группа так хорошо направляет поведение — значит ли это, что коллективное мнение надёжнее индивидуального?",
+    "В 1907 году Фрэнсис Гальтон попал на ярмарку в Плимуте, где публика угадывала вес быка после разделки. Восемьсот человек записали свои варианты на карточки. Медиана ответов — 1207 фунтов. Реальный вес — 1198. Агрегат восьмисот независимых, разнообразных догадок оказался точнее, чем любая из них по отдельности.",
+    "Джеймс Суровецки в 2004 году вывел из этого принцип мудрости толпы: он работает, только когда суждения независимы. В 2011 году Ян Лоренц с коллегами проверили, что происходит при нарушении этого условия. Участники угадывали статистические величины — плотность населения, количество преступлений, длины рек. После каждого раунда некоторые видели чужие ответы. Уже через несколько раундов ответы конвергировали к одной точке, а точность агрегата падала. Разнообразие суждений — главная сила коллектива — испарялось, как только люди начинали видеть друг друга.",
+    "Социальное доказательство и мудрость толпы устроены ровно противоположно. Одно делает суждения зависимыми. Другое требует их независимости. «Посмотри, что выбирают другие» — значит убрать часть разнообразия из будущих выборов (Lorenz et al., 2011)."
+   ],
+   "id": "m5-socialnoe-wisdom-of-crowds"
+  },
+  {
+   "t": "Кола и лотерейный билет",
+   "card": "reciprocity",
+   "p": [
+    "Психолог Деннис Риган в 1971 году организовал простой опыт. Участники оценивали произведения искусства вместе с подставным человеком. В перерыве подставной уходил и иногда возвращался с двумя кока-колами — одну протягивал испытуемому, без вопроса. По окончании сессии он просил купить лотерейные билеты по 25 центов.",
+    "Получившие колу покупали вдвое больше. Независимо от симпатии к подставному: когда его заранее представляли неприятным человеком, отношение ухудшалось, а количество купленных билетов — нет. Неоплаченный жест порождал обязательство, которое не зависело от отношений (Regan, 1971).",
+    "Роберт Чалдини описал это как принцип взаимности: полученный дар создаёт потребность отдать, даже если его не просили. Именно поэтому бесплатный образец — не просто знакомство с продуктом, а социальный контракт. И именно поэтому пробный период работает на двух уровнях: человек узнаёт продукт и накапливает психологический долг за полученный опыт.",
+    "Форма подачи меняет природу акта. Промокод, разосланный миллиону человек, создаёт меньше обязательств, чем персональный жест. Чем более личным выглядит дар, тем сильнее возникающее чувство долга."
+   ],
+   "id": "m5-socialnoe-reciprocity"
+  },
+  {
+   "t": "Читать поступок как характер",
+   "card": "fundamental-attribution-error",
+   "p": [
+    "Пользователь видит: «85% покупателей этого тарифа рекомендуют его друзьям». Потом узнаёт, что в опросе участвовали только те, кто прошёл онбординг до конца — заведомо лояльная подвыборка. Изменится ли его оценка числа?"
+   ],
+   "twist": true,
+   "predict": {
+    "q": "«85% покупателей рекомендуют тариф» — но в опросе только прошедшие онбординг, заведомо лояльная подвыборка. Изменится ли оценка числа?",
+    "a": "Да, скорректирует вниз",
+    "b": "Нет, 85% уже закрепились"
+   },
+   "rp": [
+    "В 1967 году Эдвард Джонс и Виктор Харрис попросили студентов прочитать эссе о политике на Кубе и угадать настоящие взгляды автора. Одним говорили, что автор сам выбрал позицию. Другим — что тема и позиция были назначены преподавателем, никакого выбора не было.",
+    "Группа, знавшая о назначении, всё равно приписывала автору взгляды, совпадающие с эссе. Знание об отсутствии выбора ослабляло вывод, но не убирало его. Люди продолжали читать поведение как отражение установок, даже когда ситуация полностью его объясняла.",
+    "Ли Росс в 1977 году назвал это фундаментальной ошибкой атрибуции: мы систематически переоцениваем диспозиции человека — его характер, установки — и недооцениваем силу ситуации. Продавец, которого обязали улыбаться по скрипту, кажется приветливым. Отзыв, написанный за бонус, всё равно добавляет к образу продукта — даже когда читатель подозревает мотивацию автора.",
+    "Здесь и кроется ответ на вопрос из предыдущего раздела. Цифра «85%» не сотрётся от методологической ремарки — потому что обновлять убеждение под статистическую поправку требует усилий, которых в момент выбора нет. Ошибка атрибуции не требует невежества. Она работает и у людей, которые знают о ней (Jones & Harris, 1967; Ross, 1977)."
+   ],
+   "id": "m5-socialnoe-fundamental-attribution-error"
+  },
+  {
+   "t": "Контроль, который виден",
+   "card": "self-determination",
+   "p": [
+    "Есть граница, за которой социальное давление перестаёт работать и начинает вызывать обратное.",
+    "Эдвард Деси в 1971 году предложил студентам собирать головоломки Soma. Одних никак не поощряли. Других платили — доллар за правильно собранную фигуру. Потом платные сессии прекращали и наблюдали, сколько времени участники продолжали работать по собственному желанию. Те, кого платили, останавливались быстрее. Внешняя награда переключила воспринимаемую причину занятия: «я делаю это за деньги» вытеснило «мне это интересно».",
+    "Марк Леппер, Дэвид Грин и Ричард Нисбет в 1973 году повторили это с детьми и рисованием. Дети, которым заранее пообещали приз за рисование, после его отмены рисовали меньше, чем те, кого никогда не поощряли. Ожидаемая, видимая внешняя причина вытесняет внутреннюю.",
+    "Эдвард Деси и Ричард Райан, формулируя теорию самодетерминации, описали это через базовую потребность в автономии — ощущении, что выбор принадлежит вам. Рядом с ней стоят потребность в компетентности и в причастности. Когда программа лояльности слишком заметно управляет поведением через очки и уровни, она рискует сделать именно то, чего не хочет: превратить «мне нравится этот продукт» в «я здесь за бонусы» — и оставить пользователя, который уйдёт, как только бонусы иссякнут (Deci, 1971; Lepper, Greene & Nisbett, 1973; Ryan & Deci, 2000)."
+   ],
+   "cliff": "Доверие и сбои",
+   "id": "m5-socialnoe-self-determination",
+   "payoff": {
+    "payoff_moves": [
+     "Показывайте норму ближнего круга, не общую цифру: «команды, похожие на вашу» работает, «миллион пользователей» — нет.",
+     "Просите после того, как дали: взаимность запускается конкретной услугой, не баннером.",
+     "Прежде чем записать пользователя в «плохие», проверьте его ситуацию: поступок чаще объясняется контекстом, чем характером."
+    ]
+   }
+  }
+ ],
+ "m6-doverie": [
+  {
+   "t": "Сбой и предательство",
+   "card": null,
+   "p": [
+    "В 1997 году Сандра Моррисон и Деннис Робинсон разграничили две разные реакции на невыполненное обещание. Первая — простое неоправданное ожидание: человек рассчитывал на X, получил не-X, реагирует разочарованием и возможным уходом. Вторая — нарушение в строгом смысле: та же фактическая ситуация, но прочитанная как сознательное предательство. Реакция иная: гнев, желание публично осудить, намерение уйти независимо от компенсации.",
+    "Разница не в объективном ущербе. В одном исследовании группа новых сотрудников, которым обещали программу обучения и не дали, показала значимо больший гнев и намерение уйти, чем группа, которой просто выплатили чуть меньше обещанного. Деньги — транзакционный ущерб. Обучение — обещание, связанное с развитием и идентичностью. Нарушение второго задевает не только выгоду, но и основание отношений (Morrison & Robinson, 1997).",
+    "Это разграничение объясняет хорошо знакомую асимметрию: продукт, который выходит с задержкой — разочарование. Тот же продукт, который тихо добавляет платный функционал в то, что обещалось бесплатным, — предательство. Одно объясняется словом «плохо», другое — словом «нечестно». Слова звучат похоже, но запускают разные поведенческие цепочки."
+   ],
+   "id": "m6-doverie-stop"
+  },
+  {
+   "t": "Откуда берётся контракт",
+   "card": "psychological-contract",
+   "p": [
+    "Ничего из этого не написано в пользовательском соглашении. Дениз Руссо в 1989 году описала психологический контракт: систему неформальных взаимных обязательств, которые человек выстраивает из обещаний, прецедентов и аналогий с похожими отношениями.",
+    "Пример: SaaS-сервис несколько лет не поднимал цену для старых клиентов. Никто этого явно не обещал. Но прецедент создаёт ожидание, ожидание воспринимается как обязательство, а нарушение обязательства — как предательство. Когда цена наконец поднимается, первый вопрос пользователя не «насколько это разумно?», а «как они могли?».",
+    "Руссо описала два типа контракта. Транзакционный — конкретный, экономический, ограниченный по времени: я плачу X, получаю Y. Релационный — шире: это отношения, в которых предполагаются взаимная лояльность, долгосрочность, внимание к интересам партнёра. Нарушение релационного контракта воспринимается острее, даже при меньшем объективном ущербе. Изменение условий подписки за три дня до списания — транзакционное нарушение, его можно объяснить и закрыть. Обнаруженная продажа пользовательских данных — релационное: она задаёт вопрос, что именно представляли собой эти отношения с самого начала (Rousseau, 1989)."
+   ],
+   "id": "m6-doverie-psychological-contract"
+  },
+  {
+   "t": "Авторитет как делегат доверия",
+   "card": "authority-bias",
+   "p": [
+    "В 1963 году Стэнли Милгрэм описал, как далеко люди готовы зайти, следуя авторитету. Участники — обычные взрослые — нажимали на переключатели, которые, по их мнению, давали электрошок другому человеку в соседней комнате. Шестьдесят пять процентов довели напряжение до максимальной отметки в 450 вольт, несмотря на крики из-за стены. Условие было одно: рядом стоял человек в лабораторном халате, который спокойно говорил «пожалуйста, продолжайте».",
+    "Механизм не в страхе наказания — участники могли встать и уйти. Он в том, что присутствие воспринимаемого эксперта снимало с человека моральную ответственность: кто-то компетентный взял её на себя. Доверие передалось авторитетной фигуре, и собственное суждение перестало казаться необходимым (Milgram, 1963).",
+    "В продуктах версия мягче, но структура та же. Сигналы авторитета — знаки одобрения, рейтинги, «выбор редакции», упоминания в известных изданиях — работают как делегат доверия. Пользователь не оценивает продукт сам; он передаёт оценку тому, кого считает компетентным. Это рационально при информационной перегрузке: проверять каждое утверждение невозможно. Проблема возникает, когда интересы авторитетной инстанции расходятся с интересами пользователя — и знак одобрения выдаётся самой компанией или оплачен ею."
+   ],
+   "id": "m6-doverie-authority-bias"
+  },
+  {
+   "t": "Когда слова дёшевы",
+   "card": "cheap-talk",
+   "p": [
+    "В 1982 году Винсент Кроуфорд и Джоэль Собел опубликовали формальную модель, которую назвали cheap talk. Суть: когда интересы говорящего и слушателя расходятся, слова не несут информации — оба участника это понимают. Говорящий знает, что ему не верят, слушатель знает, что говорящий это знает. Устойчивое равновесие при полном расхождении интересов — молчание или бессодержательный шум (Crawford & Sobel, 1982).",
+    "Из этой модели вытекает практическое следствие. Компания, рекомендующая собственный продукт, производит дешёвый разговор по определению: её интересы очевидно в игре. Кредитным считается только дорогостоящий сигнал — тот, который слишком накладно сфабриковать. Майкл Спенс в 1973 году разобрал это на примере образования: диплом работает как сигнал работодателю не потому, что учёба создаёт навыки, а потому что получить его достаточно тяжело, чтобы только те, чья производительность высока, были готовы заплатить эту цену (Spence, 1973).",
+    "Для продуктов та же логика. «Мы заботимся о вашей приватности» на странице, монетизирующей данные — дешёвый разговор: слова ничего не стоят. «Мы выплачиваем штраф, если нарушаем SLA» — дорогостоящий сигнал: компания принимает на себя реальный риск. Акерлоф в 1970 году показал, чем кончается рынок, на котором покупатель не может отличить качественный товар от некачественного: продавцы хорошего товара уходят, потому что не могут получить за него справедливую цену, и на рынке остаются одни «лимоны» (Akerlof, 1970). Рынок доверия работает так же: дешёвые сигналы вытесняют дорогостоящие — пока не появляется механизм, делающий ложь накладной."
+   ],
+   "id": "m6-doverie-cheap-talk"
+  },
+  {
+   "t": "Что делает объяснение бесполезным",
+   "card": "psychological-contract",
+   "p": [
+    "Компания присылает уведомление: «Мы обновили политику конфиденциальности. Теперь мы можем делиться некоторыми данными с партнёрами для улучшения вашего опыта». Как вы себя чувствуете?"
+   ],
+   "twist": true,
+   "predict": {
+    "q": "Это обычная бизнес-практика — или вы чувствуете, что доверие нарушено?",
+    "a": "Обычная практика",
+    "b": "Нарушение доверия"
+   },
+   "rp": [
+    "Чувство нарушенного доверия — даже когда данных мало и конкретного вреда нет — воспроизводится устойчивее, чем кажется. Роберт Байес и Барри Шапиро в 1987 году исследовали, что смягчает реакцию на организационные нарушения. Они обнаружили, что объяснения — то, что они назвали «social accounts» — работают при транзакционных нарушениях: компания не поставила товар вовремя, объяснила причину, эмоциональный счёт закрылся. Но при нарушениях, затронувших идентичность и базовые ожидания, объяснения давали меньше: они снижали гнев, но не меняли поведение — намерение уйти и рассказать другим оставалось.",
+    "Это ключевое разграничение. Когда нарушение транзакционное, его можно закрыть компенсацией или объяснением. Когда релационное — затрагивает основание отношений — компенсация воспринимается как попытка откупиться: «они думают, что это можно купить».",
+    "Именно поэтому изменение политики приватности задевает острее, чем задержка поставки на ту же денежную сумму. Данные передавались в рамках неявного контракта: сервис работает, данные улучшают его для меня. Когда данные уходят третьим сторонам — нарушена не цена, а природа отношений. И здесь объяснение «это стандартная практика» работает хуже, чем при любой транзакционной ошибке: оно не отвечает на вопрос «кем вы оказались», а лишь говорит, что другие поступают так же.",
+    "Моррисон и Робинсон добавили важный нюанс: нарушение воспринимается острее, когда человек убеждён, что другая сторона знала о своём обещании и сознательно его нарушила. Случайная ошибка — это сбой. Обнаруженный расчёт — это предательство. Именно этот вывод определяет, почему скрытое изменение условий — даже юридически корректное — бьёт по доверию сильнее открытого повышения цены (Bies & Shapiro, 1987; Morrison & Robinson, 1997)."
+   ],
+   "cliff": "Тёмные паттерны",
+   "id": "m6-doverie-psychological-contract-2",
+   "payoff": {
+    "payoff_moves": [
+     "Выпишите невысказанные обещания продукта: психологический контракт нарушают там, где его не заметили.",
+     "При сбое компенсируйте делом, не только объяснением: слова без издержек отношение не чинят.",
+     "Не тратьте авторитет на мелочи: каждый «важный» бейдж без причины обесценивает следующий."
+    ]
+   }
+  }
+ ],
+ "m7-temnye": [
+  {
+   "t": "Поток, который назвали Iliad",
+   "card": null,
+   "p": [
+    "Отменить подписку Amazon Prime в США до 2023 года значило пройти несколько страниц и дать несколько отдельных подтверждений. Внутри компании этот поток называли Iliad. Каждый экран был спроектирован: промежуточные страницы предлагали «приостановить» вместо «отменить»; кнопка «Продолжить отмену» располагалась ниже и бледнее, чем кнопка «Остаться»; один из экранов перечислял бонусы, которые придётся потерять. Ложь отсутствовала. Просто уход требовал усилий, и часть людей сдавалась до финала.",
+    "В сентябре 2025 года Федеральная торговая комиссия закрыла дело мировым соглашением: Amazon выплатила $2,5 млрд — $1 млрд штрафа и $1,5 млрд возврата примерно 35 миллионам пользователей. Механика, которая годами держала показатель удержания, в итоге обошлась суммой, сопоставимой с тем, что это удержание за то же время принесло."
+   ],
+   "id": "m7-temnye-stop"
+  },
+  {
+   "t": "Название и таксономия",
+   "card": "dark-patterns-taxonomy",
+   "p": [
+    "Гарри Бригнулл в 2010 году начал собирать на deceptive.design скриншоты интерфейсов, в которых дизайн работал против пользователя. Колин Грей с коллегами в 2018 году предложил систематику из пяти страт: от паттернов, очевидных с первого взгляда, до тех, где пользователь не осознаёт, что выбор уже сделан за него. Аруниш Матур с командой в 2019 году прошёлся по ста тысячам страниц с одиннадцати тысяч наиболее посещаемых сайтов и обнаружил 1 818 экземпляров, распределённых по пятнадцати категориям. Чем популярнее сайт, тем выше плотность применения.",
+    "Ключевое разграничение пришло из регуляторного языка, оказавшегося точнее интуитивного. Калифорнийский CPRA и европейский DSA в статье 25(1) определяют тёмный паттерн не через намерение разработчика, а через эффект: подрыв автономии выбора. «Мы не хотели никого обмануть» не является защитой — достаточно того, что интерфейс системно смещает выборы."
+   ],
+   "id": "m7-temnye-dark-patterns-taxonomy"
+  },
+  {
+   "t": "Три рычага",
+   "card": "sludge",
+   "p": [
+    "Большинство тёмных паттернов опираются на три поведенческих механизма, каждый из которых уже встречался в предыдущих модулях.",
+    "Дефолт и статус-кво. Уильям Самуэльсон и Ричард Зекхаузер в 1988 году показали, что люди устойчиво тяготеют к текущему состоянию — даже когда лучшие альтернативы доступны и понятны. Из этого вырастает самый дешёвый по исполнению паттерн: установить выгодный продукту вариант по умолчанию. Предзаполненный чекбокс согласия на рассылку, автоматическое продление без явного подтверждения. Исследование, опубликованное на ACM CHI 2020, проверило европейские cookie-баннеры: реально соответствовали требованиям GDPR лишь 11,8%; остальные использовали предвыбранные настройки или скрытый opt-out.",
+    "Sludge: трение как оружие. Касс Санстейн в книге 2021 года описал антинаджи: если наджи убирают полезное трение с нужных действий или добавляют его к вредным, то sludge — это намеренно созданное бесполезное трение на пути к тому, что пользователь уже решил сделать. Поток Amazon — классический sludge. Каждый дополнительный экран предлагал «остаться» как дефолт, и часть людей останавливалась не потому, что передумала, а потому что устала.",
+    "К тому же ряду примыкает sunk cost: чем больше человек уже вложил в продукт — время настройки, загруженные данные, освоенный интерфейс, — тем выше воспринимаемая цена ухода. Sludge усиливает это: каждый пройденный шаг добавляет к сумме уже потраченного.",
+    "Фрейм отказа. Когда кнопка «Нет, спасибо» переформулируется в «Нет, я не хочу экономить», это не другое слово — другой фрейм. Канеман и Тверски в 1981 году показали: логически эквивалентные варианты, поданные как «сохранить» против «потерять», меняют выбор предсказуемо — потери воспринимаются острее выигрышей той же величины. Confirmshaming встраивает эту асимметрию прямо в текст отказа: отказаться становится психологически дороже, чем согласиться."
+   ],
+   "id": "m7-temnye-sludge"
+  },
+  {
+   "t": "Где граница",
+   "card": "consent-dark-patterns",
+   "p": [
+    "Перед вами экран онбординга. Кнопка «Начать бесплатный месяц» — синяя, крупная, по центру. Под ней серым мелким шрифтом: «Отменить можно в любой момент». Ниже, значительно меньше и светлее — ссылка «Нет, мне не нужен бесплатный доступ к материалам»."
+   ],
+   "twist": true,
+   "predict": {
+    "q": "Что здесь происходит с архитектурой выбора?",
+    "a": "Стандартный UX",
+    "b": "Тёмный паттерн"
+   },
+   "rp": [
+    "Оба ответа содержат часть правды, и именно здесь граница труднее всего. Хороший UX делает нужное действие заметным — это и есть задача дизайна. Тёмный паттерн делает то же самое, но определяет «нужное» по метрике продукта, а не по задаче пользователя.",
+    "Регуляторный критерий — эффект, а не намерение. Практический формулируется проще: чьи интересы обслуживает дизайн в этой точке? Асимметрия кнопок обслуживает показатель активации. Пользователь не получает ничего, что помогло бы принять решение: неизвестно, когда начнётся списание, какова сумма, насколько легко отменить. Информация о цене согласия скрыта, дизайн толкает к согласию.",
+    "В версии без паттерна: обе кнопки сопоставимого размера, под ними — когда начнётся списание и как отменить. Конверсия в онбординге, вероятно, ниже. Пользователи, которые остались, понимают, за что платят."
+   ],
+   "id": "m7-temnye-consent-dark-patterns"
+  },
+  {
+   "t": "Счёт, который появляется позже",
+   "card": "status-quo-bias",
+   "p": [
+    "Здесь тёмный паттерн воспроизводит ту же структуру, что нарушение психологического контракта из прошлого модуля: счёт выставляется позже, в другой строке отчёта.",
+    "Краткосрочно дашборд выглядит хорошо: конверсия выросла, отмены снизились, удержание держится. Долгосрочно: человек, удержанный против воли, не продлит без напоминания, а обнаружив в выписке неожиданное списание — уходит с ощущением обмана, а не просто разочарования. По Моррисон и Робинсон, этот тип нарушения воспринимается как релационный: объяснение его не закрывает, намерение уйти остаётся.",
+    "Amazon прошёл через это в полной мере. FTC установила, что поток отмены был намеренно усложнён ради снижения оттока. Паттерн, несколько лет державший метрику удержания, в одном квартале обнулил её выигрыш и прибавил к нему регуляторный и репутационный счёт. DSA обязывает европейские платформы делать выход из подписки столь же лёгким, как вход; FTC ведёт аналогичные дела за пределами Amazon. Приёмы, которые раньше не имели цены в балансе, получили её — в форме исков и мировых соглашений."
+   ],
+   "cliff": "Метрики честно",
+   "id": "m7-temnye-status-quo-bias",
+   "payoff": {
+    "payoff_moves": [
+     "На каждом экране решения задайте вопрос: чьи интересы обслуживает этот шаг.",
+     "Посчитайте цену тёмного приёма заранее: возвраты, отписки, регуляторный счёт — Amazon он обошёлся в 2,5 миллиарда.",
+     "Симметрия входа и выхода: отписка не длиннее подписки — самый дешёвый тест на честность."
+    ]
+   }
+  }
+ ],
+ "m8-metriki": [
+  {
+   "id": "m8-metriki-stop",
+   "t": "Двадцать тысяч хвостов",
+   "p": [
+    "Прошлый модуль закончился вопросом: как читать метрику, если механика, её производящая, могла быть устроена так, чтобы она росла? Ответ начинается в 1902 году и городе Ханой.",
+    "В апреле 1902 года французские колониальные власти Ханоя объявили вознаграждение за каждый крысиный хвост. Задача казалась прозрачной: снизить популяцию крыс, разносивших болезни. Связь между метрикой и целью выглядела прямой — поймал крысу, принёс хвост, получил плату. 12 июня того же года за один день в пункты сдали 20 114 хвостов. По бумагам программа работала.",
+    "На улицах тем временем появились крысы без хвостов. Вьетнамцы отрезали хвост и отпускали крысу живой — она продолжала размножаться. Другие привозили хвосты из деревень; третьи разводили крыс специально ради премии. Программу закрыли. Крысиная популяция в городе к тому моменту выросла.",
+    "Метрика «хвосты в день» поднималась исправно. К числу крыс она с какого-то момента перестала иметь отношение."
+   ],
+   "scene_type": "cold_open"
+  },
+  {
+   "id": "m8-metriki-goodharts-law",
+   "t": "Когда мера становится целью",
+   "p": [
+    "Чарльз Гудхарт в 1975 году наблюдал похожее в денежной политике: как только регулятор начинал давить на конкретный денежный агрегат, тот переставал надёжно предсказывать инфляцию — банки адаптировали поведение к измеряемому показателю, а не к тому, что он должен был отражать. Мэрилин Стратерн в 1997 году сформулировала это компактно: как только мера становится целью, она перестаёт быть хорошей мерой.",
+    "В продукте механизм тот же. Если команда оценивается по DAU, она оптимизирует DAU. Уведомление, возвращающее человека в приложение на двадцать секунд, поднимает дневной счётчик — раздражение в дашборд не попадает. Стрик-механика удерживает человека открывать приложение ежедневно не потому, что ему нужно, а потому что жалко терять серию: DAU растёт, воспринимаемая ценность нет. Автовоспроизведение следующего видео поднимает время сессии и снижает осознанность просмотра. Каждый из этих приёмов оптимизирует измеримое, не трогая того, ради чего оно вводилось.",
+    "Это предсказуемое следствие одного решения: назначить метрику целью."
+   ],
+   "card": "goodharts-law"
+  },
+  {
+   "id": "m8-metriki-surrogation",
+   "t": "Суррогация",
+   "p": [
+    "Когда North Star Metric превращается из прокси в цель, в голове у команды происходит тихая подмена. Джейкоб Чои, Гэри Хект и Уильям Тейлер в 2012 году изучили этот механизм экспериментально: участники, получившие конкретную метрику для оценки стратегического показателя, начинали действовать так, будто метрика и есть стратегия — теряя из виду то, что она должна была отражать. Авторы назвали это суррогацией. Конструкт экспериментально поддержан, но воспроизводился преимущественно в работах одной группы, и насколько устойчив за их пределами — вопрос открытый.",
+    "Практически это ощущается так. «Время прослушивания должно расти» — без «потому что людям становится лучше». В этом пропущенном «потому что» и живёт суррогация. Метрика постоянно перед глазами, ценность под ней — нет. Метрика быстро реагирует на любой релиз, изменение в жизни пользователя видно только в удержании через месяц. Дашборд отвечает на вопрос «что происходит с числом?». Чтобы спросить «что происходит с человеком?» — нужно отдельное усилие.",
+    "Проверка простая и редко приятная: если убрать метрику из системы оценки команды на квартал, изменится ли что-нибудь в том, что команда делает для пользователя? Если нет — метрика уже суррогат.",
+    "Дашборд показывает: DAU вырос на 18% за три недели после запуска push-уведомлений. Ретеншн на 7-й день не изменился. Медианная длина сессии сократилась на 12%. Что это означает?"
+   ],
+   "card": "surrogation",
+   "scene_type": "prediction",
+   "twist": true,
+   "predict": {
+    "q": "Что это означает?",
+    "verdict": false,
+    "options": [
+     {
+      "key": "a",
+      "label": "Продукт стал полезнее — люди возвращаются чаще"
+     },
+     {
+      "key": "b",
+      "label": "Уведомления возвращают, но ценность сессии не выросла"
+     }
+    ]
+   },
+   "rp": [
+    "И здесь — поворот, которого не было в предыдущих модулях."
+   ]
+  },
+  {
+   "id": "m8-metriki-confirmation-bias",
+   "t": "По ту сторону экрана",
+   "p": [
+    "Всё, что прошла программа — якоря цены, сила дефолтов, неприятие потерь, психологический контракт, паттерны выбора — описывало, как поведенческие механизмы действуют на пользователя. Те же механизмы действуют на команду, читающую дашборд.",
+    "Команда, видящая рост DAU после запуска уведомлений, склонна объяснить его продуктовыми улучшениями, а не механикой напоминаний — даже когда данные неоднозначны. Команда, вложившая квартал в фичу, читает результаты А/Б-теста щедрее: замечает значимость там, где её нет, и не замечает сигналов против. Аналитик, несколько месяцев строивший отчёт вокруг одной метрики, привязывается к ней как к ориентиру — смена ощущается как потеря. Прошлые числа становятся якорем для следующего планирования так же предсказуемо, как случайная цифра тянула за собой оценки в опыте Тверски и Канемана.",
+    "Поведение под давлением стимулов, тяготение к статус-кво, неприятие дискомфортных данных — всё это работает у продакта за дашбордом ровно так же, как у пользователя в онбординге. Субъект по ту сторону экрана тоже человек."
+   ],
+   "card": "confirmation-bias"
+  },
+  {
+   "id": "m8-metriki-north-star-metric",
+   "t": "Честность как практика",
+   "p": [
+    "Отсюда вытекает один вопрос, который стоит задавать каждой метрике: если это число вырастет, пользователю станет лучше? Рост выручки достижим и через снижение ценности. DAU — через уведомления. Время в приложении — через автовоспроизведение. Рост каждой из этих метрик совместим с тем, что пользователю становится хуже.",
+    "Честная метрика устроена так, что её трудно растить, не создавая реальной ценности. Это часто означает метрику медленнее и шумнее: «пользователи, вернувшиеся через 30 дней без напоминания» медленнее, чем DAU; «заказы, которые человек сделал повторно» медленнее, чем «число заказов». Скорость реакции и удобство отчёта — свойства метрики, а не её связи с реальностью.",
+    "Хвосты в Ханое считали быстро.",
+    "Через восемь модулей вы вели одну программу лояльности — видели, как она спотыкается на цене, на механике привычки, на социальном давлении, на доверии и его сбоях, на паттернах выбора. Теперь вы смотрите на данные и решаете, что произошло. Программа лояльности в ваших руках. Одна метрика — та, по которой вы поймёте, что она работает честно."
+   ],
+   "card": "north-star-metric",
+   "scene_type": "payoff",
+   "payoff": {
+    "payoff_moves": [
+     "Разделяйте наблюдение и цель: метрика в OKR перестаёт измерять. North Star — ориентир, не KPI команды.",
+     "К каждому числу — поведенческая пара: NPS сверяйте с реальными рефералами, вовлечённость — с возвратами по своей воле.",
+     "Ищите суррогацию у себя: если команда обсуждает, как поднять метрику, а не пользу, — мера уже стала целью."
+    ]
+   }
+  }
+ ],
+ "mF-slova-dela": [
+  {
+   "id": "mF-intent-gap",
+   "t": "Слова и дела",
+   "scene_type": "cold_open",
+   "card": "intention-behavior-gap",
+   "twist": true,
+   "p": [
+    "Ваш пользователь в опросе написал: «Конечно, куплю». Наступает день релиза. Купит?"
+   ],
+   "predict": {
+    "q": "Купит?",
+    "verdict": false,
+    "options": [
+     {
+      "key": "a",
+      "label": "Да — слова что-то значат",
+      "after_text": "Значат. Вопрос — сколько именно: между словом и покупкой есть измеренный зазор. Он ниже."
+     },
+     {
+      "key": "b",
+      "label": "Нет — скажет и не сделает",
+      "after_text": "Он не врал — отвечал искренне. Просто между «сказал» и «сделал» есть зазор, и он измерен. Ниже."
+     }
+    ]
+   },
+   "rp": [
+    "Питер Шииран в 2002 году свёл воедино десять мета-анализов таких обещаний — от диет до покупок. Намерения объясняют около 28% различий в реальном поведении. Остальное — то, что встаёт между словом и делом: контекст, привычка, цена усилия, момент.",
+    "Человек искренне собирался — и не сделал. Декларация — не поведение. На этом зазоре стоит всё, что дальше: почему фичи, о которых просили, лежат без дела; почему опросы обещают спрос, которого нет; почему смотреть надо на то, что люди делают.",
+    "Это первая звезда вашего неба — зазор между намерением и действием (intention–action gap)."
+   ]
+  }
+ ]
+};
+/*BITS-END*/
+
+var qs=new URLSearchParams(location.search);
+// URL-канон (path-build-contract §C): path.html?ch=<chapter_id>&stop=<stop_id>. Легаси quest/stop(индекс) конвертится.
+var QKEY=qs.get('ch')||qs.get('quest');
+var STOPID=qs.get('ch')?qs.get('stop'):null;
+var STOP=(!qs.get('ch')&&qs.get('stop'))?parseInt(qs.get('stop'),10):null; // легаси-индекс
+function quest(k){ var hit=QUESTS.filter(function(q){return q.key===k;})[0]; if(hit) return hit;
+ var cc=chapterCfg(k); if(cc&&BITS[cc.ch.bits_ref||k]) return {key:k,title:cc.ch.title||k,promise:cc.dir.tagline||'',desc:'',n:(BITS[cc.ch.bits_ref||k]||[]).length,slugs:[],icon:''};
+ return null; }
+// реальное число остановок = длина BITS-нарратива (когда есть), иначе q.n. Иначе хаб врёт «8», а квест играет 5.
+function stopsOf(q){ return (BITS[q.key]&&BITS[q.key].length)||q.n; }
+function questByKey(k){ for(var i=0;i<QUESTS.length;i++){ if(QUESTS[i].key===k) return QUESTS[i]; } return null; }
+// «Следующий лучший» герой (fa710369): (а) есть in-progress → продолжить; (б) первый непройденный по порядку; (в) всё пройдено.
+// pickHero удалён: героя выбирает renderHome по PROG/PATHCFG (v1.1)
+
+// Строка «что узнаете» под остановкой (fa710369 п.3 — контент Каллиопы content/quest-stop-teasers.md).
+// Ключ по факт. quest-key + заголовок бита. m2 «Конверты/Боль» доразбиты из 1 тизера Каллиопы (флаг ей).
+var QSTOP_TEASERS={"m1-osnovy": {"Одна команда, два продукта": "как одно умение дало и провал, и хит", "Работа, которую нанимают": "зачем люди «нанимают» продукт: работа важнее функций", "Цена ошибки": "как проверить самое рискованное допущение до того, как потрачен бюджет", "Что происходит дальше": "сделайте прогноз: каким продукт станет через два года", "Два года спустя": "чем обернулись два года выполнения запросов клиентов", "Как узнать, что попал": "признаки product-market fit против его имитации", "Вовлечённость растёт": "когда рост метрик обманывает: тщеславие и Гудхарт"}, "m2-cena": {"Дегустация в томографе": "как цена меняет само удовольствие, не только отчёт", "Точка отсчёта": "почему цену считывают относительно ориентира", "Якорь": "как случайное число сдвигает «справедливую» цену", "Кривая, которой дали Нобеля": "теория перспектив: почему потери весят больше", "Сколько весит потеря": "проверка на прочность: что показала перепроверка коэффициента «два»", "Конверты и боль": "ментальный учёт и почему карта «обезболивает» трату", "На чём держится цена": "как отличить устойчивый сдвиг цены от манипуляции"}, "m3-vnimanie": {"Двадцать три минуты": "сколько стоит одно переключение внимания", "Почему бейдж срабатывает без разрешения": "как заметность перехватывает внимание", "Тот же человек — в другое время": "как состояние и время суток меняют решения", "Стресс и сужение выбора": "что стресс делает с вниманием и выбором", "Одного этого мало": "почему внимание необходимо, но недостаточно", "Цель или захват": "где помощь сосредоточиться переходит в захват"}, "m4-privychka": {"Рука тянется до «зачем»": "как привычка опережает осознанное решение", "Почему достаточно «иногда»": "сила переменного подкрепления", "Стоимость выхода": "что удерживает: ценность или цена ухода", "Решение до момента слабости": "как заранее связать себя обязательством", "Одна графа в форме": "эксперимент с донорством: что решает поведение большинства"}, "m5-socialnoe": {"Линейки": "как чужое поведение задаёт норму", "Норма своей комнаты": "почему весит норма ближнего круга, а не всех", "Когда толпа перестаёт быть мудрой": "границы «мудрости толпы»", "Кола и лотерейный билет": "взаимность: как маленькая услуга обязывает", "Читать поступок как характер": "как один поступок превращается в приговор человеку", "Контроль, который виден": "как заметный контроль убивает мотивацию"}, "m6-doverie": {"Сбой и предательство": "почему сбой бьёт по доверию сильнее, чем по функции", "Откуда берётся контракт": "психологический контракт: невысказанные ожидания", "Авторитет как делегат доверия": "как авторитет заменяет проверку и когда подводит", "Когда слова дёшевы": "почему обещания без издержек не убеждают", "Что делает объяснение бесполезным": "когда объяснение чинит доверие, а когда нет"}, "m7-temnye": {"Поток, который назвали Iliad": "как большой тёмный паттерн выглядит вблизи", "Название и таксономия": "как тёмные паттерны называют и классифицируют", "Три рычага": "дефолт, статус-кво и невозвратные затраты в деле", "Где граница": "как отличить нудж от манипуляции — и почему это трудно", "Счёт, который появляется позже": "регуляторная и репутационная цена"}, "m8-metriki": {"Двадцать тысяч хвостов": "как одно число начинает жить своей жизнью", "Когда мера становится целью": "закон Гудхарта: почему целевая метрика слепнет", "Суррогация": "как подмена цели показателем сбивает команду", "По ту сторону экрана": "где искажения ищут в последнюю очередь", "Честность как практика": "как выбрать метрику, которая не лжёт"}};
+// тизеры v3 (content/quest-stop-teasers.md, Каллиопа-66)
+
+function renderHome(){
+ document.getElementById('nav').style.display='';
+ document.getElementById('overlay').innerHTML='';
+ progLoadLocal(); progMigrate();
+ var live=liveChapters(), H='';
+ var allDone=live.length>0 && live.every(function(x){return chDone(x.ch.id);});
+ var fund=(PATHCFG&&PATHCFG.directions||[]).filter(function(d){return d.id==='foundation';})[0];
+ var fundLive=(fund&&fund.chapters||[]).filter(function(c){return c.status==='live';});
+ var fundDone=fundLive.length>0 && fundLive.every(function(c){return chDone(c.id);});
+ var seen=0; try{ seen=+localStorage.getItem('mc:path:seen')||0; }catch(e){}
+ try{ localStorage.setItem('mc:path:seen', String(Date.now())); }catch(e){}
+ var paused=seen?Math.floor((Date.now()-seen)/86400000):0;
+ // in-progress глава (0<K<M) — приоритет; отдельно «следующая непройденная» для S2-без-прогресса
+ var curIP=null, cur=null, curK=0;
+ for(var i2=0;i2<live.length;i2++){ var c=live[i2].ch; var k=chapterDoneCount(c.id), m=chapterStops(c.id).length;
+  if(k>0&&k<m){ curIP=c; curK=k; break; } }
+ if(curIP){ cur=curIP; }
+ else { for(var i3=0;i3<live.length;i3++){ if(!chDone(live[i3].ch.id)){ cur=live[i3].ch; curK=chapterDoneCount(cur.id); break; } } }
+ var fresh = live.every(function(x){return chapterDoneCount(x.ch.id)===0;});
+
+ if(allDone){ // S4
+  H='<div class="hh"><div class="hkick">'+esc(PSTR.s1.kicker)+'</div><h1 class="ht1">'+esc(PSTR.s4.h1)+'</h1><div class="hline">'+esc(PSTR.s4.line)+'</div>'+
+    '<div class="hacts"><a class="pri" href="frontier.html">'+esc(PSTR.s4.cta_frontier)+'</a></div></div>'+dirListHtml();
+ } else if(fresh){ // S1 — без выбора
+  var first=fundLive[0]||live[0].ch;
+  // пояснение новичку «что такое Путь» (PSTR.s1.what — черновик, финал Каллиопы)
+  var _whatL=(PSTR.s1&&PSTR.s1.what)?'<div class="hwhat">'+esc(PSTR.s1.what)+'</div>':'';
+  H='<div class="hh"><div class="hkick">'+esc(PSTR.s1.kicker)+'</div><h1 class="ht1">'+esc(PSTR.s1.h1)+'</h1><div class="hline">'+esc(PSTR.s1.line)+'</div>'+_whatL+
+    skyHtml(first.id, first.title, 0)+
+    '<div class="hcta"><a href="'+urlFor(first.id,1)+'" data-go-ch="'+esc(first.id)+'" data-go-stop="1">'+esc(PSTR.s1.cta)+'</a></div>'+
+    '<a class="haside" href="solve-home.html">'+esc(PSTR.s1.aside)+'</a></div>'+dirListHtml();
+ } else if(fundDone && !curIP){ // S3-lite (§A): фундамент пройден, ничего in-progress — момент выбора
+  H='<div class="hh"><div class="hkick">'+esc(PSTR.s1.kicker)+'</div><h1 class="ht1">'+esc((PSTR.s3&&PSTR.s3.h1)||'Фундамент пройден. Куда дальше?')+'</h1></div>'+dirListHtml(true);
+ } else { // S2 (+S2b рекап) — рамка и ориентация вернувшемуся (правки Артёма, bus 38895927 п.2)
+  var m=chapterStops(cur.id).length, k=Math.min(curK+1,m);
+  // а) постоянный kicker «Ваш путь» + строка-рамка: за 2 сек понятно, ГДЕ ты (строки — черновик, финал Каллиопы)
+  var _frameL=(PSTR.s2&&PSTR.s2.frame)?'<div class="hwhat">'+esc(PSTR.s2.frame)+'</div>':'';
+  H='<div class="hh"><div class="hkick">'+esc(PSTR.s1.kicker)+'</div>'+_frameL+'<h1 class="ht1">'+esc(cur.title)+'</h1>';
+  // в) re-entry рекап: пауза >2 дней → фраза последней пройденной остановки (path-details §3); фолбэк — рекап главы
+  if(paused>2){ var rc=null;
+   if(curK>0){ var _lb=(BITS[cur.id]||[])[curK-1]; rc=_lb?((QSTOP_TEASERS[cur.id]||{})[_lb.t]||null):null; }
+   if(!rc){ for(var i4=live.length-1;i4>=0;i4--){ if(chDone(live[i4].ch.id)){ rc=(PSTR.recaps||{})[live[i4].ch.id]; break; } } }
+   if(!rc) rc=(PSTR.recaps||{})[cur.id];
+   if(rc&&typeof rc==='string') H+='<div class="hrecap">'+esc(fmtP(PSTR.s2b.recap,{recap:rc,k:k}))+'</div>'; }
+  // б) общий прогресс над CTA: ориентация в целом, не только в главе
+  var doneCh=live.filter(function(x){return chDone(x.ch.id);}).length;
+  var _ovT=doneCh>0?fmtP(PSTR.s2.overall||'',{n:chapterNum(cur.id),y:live.length,d:doneCh}):fmtP(PSTR.s2.overall0||'',{n:chapterNum(cur.id),y:live.length});
+  if(_ovT) H+='<div class="hoverall">'+esc(_ovT)+'</div>';
+  // прогресс главы — ОДНИМ визуалом (точки). Тёмное мини-небо убрано из S2: дублировало точки (дизайн-аудит).
+  H+='<div class="hprog" aria-label="остановка '+k+' из '+m+'">'+esc(fmtP(PSTR.s2.progress,{k:(m?k:1),m:(m||'…')}))+hdots(k,m)+'</div>'+
+     '<div class="hcta"><a href="'+urlFor(cur.id,k)+'" data-go-ch="'+esc(cur.id)+'" data-go-stop="'+k+'">'+esc(PSTR.s2.cta)+'</a></div>';
+  // г) тизер следующего под CTA: «куда дальше и зачем» буквально
+  var _nb=(BITS[cur.id]||[])[k-1];
+  if(_nb&&_nb.t){ var _ntz=(QSTOP_TEASERS[cur.id]||{})[_nb.t];
+   H+='<div class="hnext">'+esc(fmtP(_ntz?(PSTR.s2.next||''):(PSTR.s2.next_short||''),{t:_nb.t,teaser:_ntz||''}))+'</div>'; }
+  if(paused>7) H+='<button class="hrestart" data-goch2="'+esc(cur.id)+'">'+esc(PSTR.s2b.restart)+'</button>';
+  H+='</div>'+dirListHtml(false, cur&&cur.id);
+ }
+ document.getElementById('wrap').innerHTML=H;
+ bindHome();
+ // intro-оверлей до-Путьному (§G): был старый прогресс, Путь видит впервые
+ try{ if(!localStorage.getItem('mc:path:intro') && localStorage.getItem('mc:quests_done') && JSON.parse(localStorage.getItem('mc:quests_done')||'[]').length){
+  var n=cur?chapterNum(cur.id):1;
+  document.getElementById('overlay').innerHTML='<div class="cold"><div class="ck">'+esc((PSTR.intro||{}).h1||'Истории стали Путём')+'</div><div class="cq" style="font-size:17px">'+esc(fmtP((PSTR.intro||{}).line||'',{n:n}))+'</div><button class="cb" id="introGo">'+esc((PSTR.intro||{}).cta||'Продолжить')+'</button></div>';
+  document.getElementById('introGo').onclick=function(){ try{ localStorage.setItem('mc:path:intro','1'); }catch(e){} document.getElementById('overlay').innerHTML=''; };
+ } }catch(e){}
+ var st= allDone?'s4':(fresh?'s1':(fundDone&&!curIP?'s3':(paused>7?'s2b':'s2')));
+ try{ track('path_home',{state:st,anon_id:anonId()}); }catch(e){}
+}
+function fmtP(t,vars){ return String(t||'').replace(/\{(\w+)\}/g,function(_,kk){ return (vars&&vars[kk]!=null)?vars[kk]:''; }); }
+function hdots(k,m){ var h=''; for(var i=1;i<=m;i++) h+='<i class="'+(i<k?'on':(i===k?'cur':''))+'"></i>'; return '<div class="hdots" aria-hidden="true">'+h+'</div>'; }
+function skyHtml(ch,title,lit){ var n=chapterStops(ch).length||6; var st=''; for(var i=0;i<n;i++) st+='<span class="hst'+(i<lit?' lit':'')+'"></span>'; return '<div class="hsky"><div class="hsl">'+esc(title)+'</div><div class="hstars">'+st+'</div></div>'; }
+function dirListHtml(expanded, curId){ // S3-LITE (§A): направления → главы-карточки; live=кликабельны, writing=«пишется» (+eta §F)
+ var H='<div class="dirs">';
+ // home:false — направление не показываем на доме (диагностика живёт только контекстно, bus 38895927 п.1)
+ ((PATHCFG&&PATHCFG.directions)||[]).filter(function(d){return d.home!==false;}).forEach(function(d){
+  var chs=d.chapters||[];
+  var empty=!chs.length;
+  // dtag печатаем только у пустых/раскрытых (у непустых направлений таглайн — лишний текст на сканирование, дизайн-аудит)
+  H+='<div class="dir'+(empty?' dir-empty':'')+'"><div class="dname">'+esc(d.name)+'</div>'+((empty||expanded)?('<div class="dtag">'+esc(d.tagline||'')+'</div>'):'');
+  if(empty){
+   if(d.link){ H+='<div class="chrow live" data-href="'+esc(d.link)+'"><span class="chn">→</span><span class="chb"><span class="cht">Открыть диагностику</span></span></div>'; }
+   else H+='<div class="chrow writing thin"><span class="chn">✎</span><span class="chb"><span class="cht" style="color:var(--meta);font-weight:600">'+esc((PSTR.service||{}).writing||'Пишется')+'</span></span></div>';
+  }
+  chs.forEach(function(c){
+   if(c.status==='live'){ var k=chapterDoneCount(c.id), m=chapterStops(c.id).length, dn=chDone(c.id), isCur=(c.id===curId);
+    // бейдж-дробь «1/7» убран (непонятен, bus 38895927 п.2д); прогресс начатой главы — словами, единым стилем
+    // время — единый источник estMin (честная оценка по словам+интерактивам); mins()=n*3 врал ×3 (go-live D3, Прометей+Артём)
+    var meta = dn?esc(PSTR.done_label||'пройдена') : (isCur?('Сейчас · остановка '+Math.min(k+1,m)+' из '+m) : (k>0?('остановка '+Math.min(k+1,m)+' из '+m):(stp(m)+' · ~'+estMin(c.bits_ref||c.id)+' мин')));
+    // «обновлена» — один раз тихо: только у начатых/пройденных и пока главу не открыли после обновления
+    var _revSeen=0; try{ _revSeen=+localStorage.getItem('mc:path:revseen:'+c.id)||0; }catch(e){}
+    var showRev=c.rev>1&&!isCur&&(k>0||dn)&&_revSeen<c.rev;
+    H+='<div class="chrow live'+(dn?' done':'')+(isCur?' cur':'')+'" data-goch="'+esc(c.id)+'"><span class="chn">'+(dn?'✓':'&nbsp;')+'</span><span class="chb"><span class="cht">'+esc(c.title)+'</span><span class="chm">'+meta+(showRev?' · <i class="chrev">'+esc((PSTR.service||{}).chapter_updated||'обновлена')+'</i>':'')+'</span></span><svg class="cv" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>';
+   } else {
+    // §F (go-live): день («выйдет в четверг») ТОЛЬКО при наличии eta; иначе просто «✎ Пишется»
+    var eta=c.eta?new Date(c.eta):null; var etaTxt=(eta&&!isNaN(eta))?'✎ Пишется — выйдет в четверг':((PSTR.service||{}).writing||'✎ Пишется');
+    H+='<div class="chrow writing"><span class="chn">✎</span><span class="chb"><span class="cht">'+esc(c.title)+'</span><span class="chm">'+esc(etaTxt)+'</span></span></div>';
+   }
+  });
+  H+='</div>';
+ });
+ return H+'</div>';
+}
+function bindHome(){
+ Array.prototype.forEach.call(document.querySelectorAll('[data-goch]'),function(el){ el.onclick=function(){ goStop(el.getAttribute('data-goch'),0); }; });
+ Array.prototype.forEach.call(document.querySelectorAll('[data-href]'),function(el){ el.onclick=function(){ location.href=el.getAttribute('data-href'); }; });
+ Array.prototype.forEach.call(document.querySelectorAll('[data-go-ch]'),function(el){ el.onclick=function(e){ e.preventDefault(); goStop(el.getAttribute('data-go-ch'), parseInt(el.getAttribute('data-go-stop'),10)||1); }; });
+ Array.prototype.forEach.call(document.querySelectorAll('[data-goch2]'),function(el){ el.onclick=function(){ goStop(el.getAttribute('data-goch2'),1); }; }); // «заново» = остановка 1, прогресс НЕ сбрасываем (§G)
+}
+function toastQ(m){ var t=document.getElementById('toast'); if(!t) return; t.textContent=m; t.classList.add('on'); clearTimeout(t._h); t._h=setTimeout(function(){ t.classList.remove('on'); },1800); }
+// сохранение квеста: залогин → БД (kind='quest'), аноним → localStorage 'mc:qfav'
+function qfavGet(){ try{ return JSON.parse(localStorage.getItem('mc:qfav')||'[]')||[]; }catch(e){ return []; } }
+function qfavHas(k){ var l=qfavGet(); for(var i=0;i<l.length;i++){ if(l[i]&&l[i].slug===k) return true; } return false; }
+function qfavToggle(k,t){ var l=qfavGet(),i=-1; for(var j=0;j<l.length;j++){ if(l[j]&&l[j].slug===k){i=j;break;} } if(i>=0) l.splice(i,1); else l.unshift({slug:k,title:t||k,ts:Date.now()}); try{ localStorage.setItem('mc:qfav',JSON.stringify(l)); }catch(e){} return i<0; }
+function questSavedState(key){
+ if(window.__MEMBER && window.__SB){ return window.__SB.rpc('saves_list',{p_kind:'quest'}).then(function(r){ var rows=(r&&!r.error&&r.data)||[]; return rows.some(function(x){return x.slug===key;}); }).catch(function(){ return false; }); }
+ return Promise.resolve(qfavHas(key));
+}
+function questSaveToggle(key,title){
+ if(window.__MEMBER && window.__SB){ return window.__SB.rpc('save_toggle',{p_slug:key,p_title:title||key,p_kind:'quest'}).then(function(r){ if(r&&r.error) throw r.error; return !!r.data; }); }
+ return Promise.resolve(qfavToggle(key,title));
+}
+function mergeQfavs(SB, done){
+ var local=qfavGet(); if(!local.length){ if(done)done(); return; }
+ SB.rpc('saves_list',{p_kind:'quest'}).then(function(r){
+  var have={}; ((r&&!r.error&&r.data)||[]).forEach(function(x){ have[x.slug]=1; });
+  var pend=local.filter(function(x){ return x&&x.slug&&!have[x.slug]; });
+  var i=0; (function nx(){ if(i>=pend.length){ try{localStorage.removeItem('mc:qfav');}catch(e){} if(done)done(); return; }
+   var it=pend[i++]; SB.rpc('save_toggle',{p_slug:it.slug,p_title:it.title||it.slug,p_kind:'quest'}).then(nx,nx); })();
+ },function(){ if(done)done(); });
+}
+// ── НАВИГАЦИЯ (§C): pushState на каждую остановку; back = предыдущая; канон path.html?ch=&stop=<stop_id> ──
+function urlFor(ch,stopIdx){ var bits=BITS[ch]; if(stopIdx==null) return 'path.html?ch='+encodeURIComponent(ch);
+ if(stopIdx===0) return 'path.html?ch='+encodeURIComponent(ch);
+ var sid=bits&&bits[stopIdx-1]?bits[stopIdx-1].id:('i'+stopIdx);
+ return 'path.html?ch='+encodeURIComponent(ch)+'&stop='+encodeURIComponent(sid); }
+function isFoundation(ch){ var cc=chapterCfg(ch); return !cc || (cc.dir&&cc.dir.id==='foundation'); }
+function guestGate(ch){ // §G: контент не прячем насовсем — оверлей с честной упаковкой гейта
+ document.getElementById('overlay').innerHTML='<div class="cold"><div class="ck">По приглашению</div><div class="cq" style="font-size:16px;line-height:24px">'+esc(PSTR.guest_gate||'Специализации — для участников.')+'</div><div class="cm"></div><button class="cb" id="ggIn">Войти</button><button class="cb" id="ggF" style="margin-top:10px;background:none;border:1px solid var(--line);color:var(--ink)">К Фундаменту</button></div>';
+ document.getElementById('ggIn').onclick=function(){ location.href='access.html'; };
+ document.getElementById('ggF').onclick=function(){ document.getElementById('overlay').innerHTML=''; goHome(); };
+}
+function goStop(ch,stopIdx,replace){ var q=quest(ch); if(!q){ location.href='path.html'; return; }
+ if(stopIdx>0 && !isFoundation(ch) && window.__MEMBER===false){ guestGate(ch); return; }
+ // открыл главу после обновления → бейдж «обновлена» больше не показываем (один раз тихо)
+ try{ var _cc=chapterCfg(ch); if(_cc&&_cc.ch&&_cc.ch.rev>1) localStorage.setItem('mc:path:revseen:'+ch,String(_cc.ch.rev)); }catch(e){}
+ var st=(stopIdx>((BITS[ch]||[]).length))?stopIdx:Math.max(0,stopIdx);
+ try{ history[replace?'replaceState':'pushState']({ch:ch,stop:stopIdx},'',(stopIdx>((BITS[ch]||[]).length))?('path.html?ch='+encodeURIComponent(ch)+'&fin=1'):urlFor(ch,stopIdx)); }catch(e){}
+ if(stopIdx===0) renderDetail(q); else renderPlayer(q,stopIdx); }
+function goHome(replace){ try{ history[replace?'replaceState':'pushState']({home:1},'','path.html'); }catch(e){} renderHome(); }
+window.addEventListener('popstate',function(e){ var st=e.state||{};
+ if(st.ch!=null){ var q=quest(st.ch); if(q){ if(st.stop===0) renderDetail(q); else renderPlayer(q,st.stop); return; } }
+ renderHome(); });
+function renderDetail(q){
+ document.getElementById('nav').style.display='';
+ progLoadLocal(); progMigrate(); // экран главы отдавал снапшот до старта: перечитать прогресс, чтобы отметки/CTA были свежими (cold-audit)
+ var H='<div class="bar"><button class="ib" id="back"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><div class="bt">'+esc(q.title)+'</div>'+
+  '<button class="ib" id="qfav" aria-label="Сохранить главу" style="margin-left:auto"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 6.3L21 10l-4.8 4 .8 6.7L12 17.6 6 20.7l.8-6.7L2 10l6.4-.7z"/></svg></button></div>';
+ H+='<div class="head"><div class="kick">Глава</div></div>';
+ H+='<div class="coldq">'+esc(q.promise)+'</div>';
+ var dbits=BITS[q.key];
+ var steps=dbits?dbits.map(function(b){return b.t;}):((q.slugs||[]).map(function(s){return titleOf(s);}));
+ H+='<div class="dmeta">'+stp(steps.length)+' · ~'+estMin(q.key)+' мин</div>';
+ H+='<div class="ddesc">'+esc(q.desc)+'</div>';
+ // прогресс из живого PROG: отметки пройденных остановок + «текущая» (не снапшот до старта, cold-audit)
+ var stIds=chapterStops(q.key), pmap=PROG[q.key]||{}, doneN=chapterDoneCount(q.key), nextIx=nextStopIdx(q.key);
+ H+='<div class="stops"><div class="l">Остановки</div>';
+ var CAP=8, TZ=QSTOP_TEASERS[q.key]||{}; // fa710369: все остановки + строка «что узнаете» (Каллиопа)
+ steps.slice(0,CAP).forEach(function(t,i){ var ds=TZ[t]||''; var sdone=stIds[i]&&pmap[stIds[i]]; var scur=!sdone&&(i+1===nextIx)&&doneN>0;
+  H+='<div class="stoprow'+(sdone?' sdone':'')+(scur?' scur':'')+'"><span class="n">'+(sdone?'✓':(i+1))+'</span><span class="sb"><span class="t">'+esc(t)+'</span>'+(ds?'<span class="sd">'+esc(ds)+'</span>':'')+'</span></div>'; });
+ if(steps.length>CAP) H+='<div class="stoprow"><span class="n">…</span><span class="t" style="color:var(--meta)">ещё '+(steps.length-CAP)+'</span></div>';
+ H+='</div>';
+ document.getElementById('wrap').innerHTML=H;
+ // CTA отражает прогресс: «Начать»/«Продолжить»/«Пройти заново» (chDone)
+ var _cd=chDone(q.key); var _btnL=_cd?'Пройти заново →':(doneN>0?('Продолжить · остановка '+Math.min(doneN+1,stIds.length)+' →'):'Начать главу →');
+ document.getElementById('overlay').innerHTML='<div class="start"><div class="start-in"><button id="startBtn">'+esc(_btnL)+'</button></div></div>';
+ document.getElementById('back').onclick=function(){ goHome(); };
+ document.getElementById('startBtn').onclick=function(){ goStop(q.key, _cd?1:nextStopIdx(q.key)); };
+ var qfav=document.getElementById('qfav');
+ if(qfav){ questSavedState(q.key).then(function(saved){ qfav.classList.toggle('on', !!saved); });
+  qfav.onclick=function(){ questSaveToggle(q.key,q.title).then(function(on){ qfav.classList.toggle('on', on); toastQ(on?'Глава сохранена':'Убрано из сохранённого'); }).catch(function(err){ toastQ((err&&err.message)||'Не удалось сохранить'); }); }; }
+ bindQ();
+}
+function renderPlayer(q,stop){
+ document.getElementById('nav').style.display='none';
+ document.getElementById('overlay').innerHTML='';
+ var bits=BITS[q.key];
+ var M=bits?bits.length:q.slugs.length;
+ // позиция для «Мой путь»/re-entry (новая модель): mc:path:last
+ try{ if(stop>0 && stop<=M) localStorage.setItem('mc:path:last', JSON.stringify({ch:q.key,stop:stop,m:M,title:q.title,ts:Date.now()})); }catch(e){}
+ // события §D: path_stop_view = ВХОД на остановку (drop-off = view без step); время меряет stepDone
+ if(stop>0&&stop<=M){ window.__stopT=Date.now(); var _sid=bits&&bits[stop-1]?bits[stop-1].id:('i'+stop); try{ track('path_stop_view',{chapter:q.key,stop:_sid,anon_id:anonId()}); }catch(e){} }
+ // финал засчитывается ТОЛЬКО при реально пройденных остановках — ?fin=1/легаси-индекс с холодным прогрессом не фабрикуют «главу пройдено» (cold-audit §B)
+ else if(stop>M){ if(chDone(q.key)){ if(!window['__cdt_'+q.key]){ window['__cdt_'+q.key]=1; try{ track('chapter_done',{chapter:q.key,kind:'done',anon_id:anonId()}); }catch(e){} } } }
+ if(stop===0){ // COLD-OPEN
+  document.getElementById('wrap').innerHTML='';
+  document.getElementById('overlay').innerHTML='<div class="cold"><div class="ck">Глава · '+esc(q.title)+'</div><div class="cq">'+esc(q.promise)+'</div><div class="cm">'+stp(M)+' · ~'+estMin(q.key)+' мин</div><button class="cb" id="go">Начать →</button></div>';
+  document.getElementById('go').onclick=function(){ goStop(q.key,1); };
+  return;
+ }
+ if(stop>M){ // ФИНАЛ ГЛАВЫ (path-core §3): 3 хода + мост в Диагностику + зажигание звёзд. Конфетти запрещены (§4).
+  var next=null; (function(){ var l=liveChapters().map(function(x){return x.ch.id;}); var i=l.indexOf(q.key);
+   for(var j=i+1;j<l.length;j++){ var c=quest(l[j]); if(c&&!chDone(l[j])){ next=c; return; } }
+   for(var j2=0;j2<l.length;j2++){ if(l[j2]!==q.key && quest(l[j2]) && !chDone(l[j2])){ next=quest(l[j2]); return; } } })();
+  var CD=(PSTR&&PSTR.chapter_done)||{};
+  var lastBit=bits&&bits[bits.length-1];
+  var moves=(lastBit&&lastBit.payoff&&(lastBit.payoff.payoff_moves||lastBit.payoff.moves))||null;
+  var starsN=bits?bits.length:q.slugs.length;
+  var starsRow=''; for(var si=0;si<starsN;si++) starsRow+='<span class="fstar" style="animation-delay:'+(si*120)+'ms">✦</span>';
+  var H='<div class="ptop"><div class="row"><button class="x" onclick="goHome()" aria-label="К Пути">✕</button><div class="pc">'+esc(CD.kicker||'Глава пройдена')+'</div></div></div>'+
+   '<div class="fin"><div class="fsky">'+starsRow+'</div><h2>'+esc(CD.kicker||'Глава пройдена')+'</h2>'+
+   '<p>«'+esc(q.title)+'» — '+stp(M)+' позади. '+esc((CD.stars||'Созвездие {name}: +{k} звёзд').replace('{name}',(chapterCfg(q.key)&&chapterCfg(q.key).dir.name)||q.title).replace('{k}',starsN).replace('{n}',starsN))+'</p>';
+  if(moves&&moves.length){ H+='<div class="fmoves"><div class="l">'+esc(CD.moves||'Примени завтра: 3 хода')+'</div>'+moves.slice(0,3).map(function(m,i){ return '<div class="fmv"><span class="n">'+(i+1)+'</span><span>'+esc(m)+'</span></div>'; }).join('')+'</div>'; }
+  H+='<div class="btns">'+
+   // мост в Диагностику убран из прода (реш. Артёма): «Дальше на пути» — основное действие финала
+   (next?'<button class="pri" onclick="goStop(\''+next.key+'\',0)">'+esc((CD.next||'Дальше на пути: {next}').replace('{next}',next.title).replace('{title}',next.title))+' →</button>':'')+
+   '<button onclick="location.href=\'explore.html?quest='+q.key+'\'">Показать на Карте</button>'+
+   '<button onclick="goHome()">'+esc(CD.home||'К Пути')+'</button></div></div>';
+  document.getElementById('wrap').innerHTML=H;
+  return;
+ }
+ var dots='<div class="pdots">'+Array.apply(null,{length:M}).map(function(_,i){ var n=i+1; return '<i class="'+(n<stop?'on':(n===stop?'cur':''))+'"></i>'; }).join('')+'</div>';
+ var ptop='<div class="ptop"><div class="row"><button class="x" onclick="goStop(\''+q.key+'\',0)" aria-label="К главе">✕</button><div class="pc" aria-label="остановка '+stop+' из '+M+'">Остановка '+stop+' из '+M+'</div></div>'+dots+'</div>';
+ function paras(arr,cls){ return '<div class="beat'+(cls?' '+cls:'')+'">'+arr.map(function(x){return '<p>'+esc(x)+'</p>';}).join('')+'</div>'; }
+ function nextBtn(){ var nt=(stop<M)?(bits?(bits[stop]&&bits[stop].t):titleOf(q.slugs[stop])):''; var lb=(stop===M)?'Финал главы →':(nt?'Дальше: '+esc(nt):'Дальше →'); return '<div class="pnext"><button onclick="stepDone()">'+lb+'</button></div>'; }
+ window.stepDone=function(){ var sid=bits&&bits[stop-1]?bits[stop-1].id:('i'+stop); progSet(q.key,sid,'done'); try{ track('path_step',{chapter:q.key,stop:sid,anon_id:anonId(),dur_s:window.__stopT?Math.round((Date.now()-window.__stopT)/1000):null}); }catch(e){}
+  // честность «остановка зажжёт звезду» (cold-audit): отмечаем концепт(ы) бита посещёнными — небо Карты и «арсенал» ведут от прохождения
+  try{ var _b=bits&&bits[stop-1]; if(_b){ var refs=[]; if(_b.card) refs.push(_b.card); (_b.inline_card_refs||[]).forEach(function(s){ if(s) refs.push(s); });
+   if(refs.length){ var _vis={}; try{ _vis=JSON.parse(localStorage.getItem('mc:visited')||'{}')||{}; }catch(e){} refs.forEach(function(s){ _vis[s]=1; }); try{ localStorage.setItem('mc:visited',JSON.stringify(_vis)); }catch(e){}
+    if(window.__MEMBER&&window.__SB){ refs.forEach(function(s){ try{ var _p=window.__SB.rpc('mark_visited',{p_slug:s}); if(_p&&_p.catch) _p.catch(function(){}); }catch(e){} }); } } } }catch(e){}
+  goStop(q.key,stop+1); };
+ // «Разобрать глубже» — разворот концепта НА МЕСТЕ (аккордеон), без ухода на card.html.
+ function deeper(slug){ if(!slug) return '';
+  // рус. название показываем только если известно (иначе не тащим англ. слаг в крупную кнопку); хинт зовёт нажать
+  var tn=(typeof TITLES!=='undefined'&&TITLES[slug])?TITLES[slug]:null;
+  var sub=tn?esc(tn):'узнать, как это работает на самом деле';
+  return '<div class="dig" data-slug="'+esc(slug)+'">'
+   +'<button class="dt" type="button" aria-label="Разобрать глубже" onclick="digToggle(this,\''+esc(slug)+'\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();digToggle(this,\''+esc(slug)+'\');}">'
+   +'<span class="di" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span>'
+   +'<span class="dtx"><span class="dtl">Разобрать глубже</span><span class="dts">'+sub+'</span></span>'
+   +'<svg class="cv" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+   +'</button>'
+   +'<div class="db"></div></div>'; }
+ if(bits){ // НАРРАТИВНАЯ МОДЕЛЬ (+сцены v2: mini_sim / inline_card_refs по scene-схеме 89638eb8)
+  var b=bits[stop-1]; var twist=!!b.twist;
+  var H=ptop+paras(b.p);
+  if(b.interactive) H+='<div id="simSlot"></div>';
+  var POPT = twist ? (b.predict.options || [{key:'a',label:b.predict.a},{key:'b',label:b.predict.b}]) : [];
+  if(twist){ H+='<div class="predict" id="predict"><div class="q">'+esc(b.predict.q)+'</div><div class="opts">'+POPT.map(function(o,oi){ return '<button data-i="'+oi+'">'+esc(o.label)+'</button>'; }).join('')+'</div></div>'; }
+  H+='<div id="stopwrap"'+(twist?' style="display:none"':'')+'></div>';
+  document.getElementById('wrap').innerHTML=H;
+  // mini_sim: реальная модель из sim_verbs.js (honest-interactive); библиотека недоступна → тихо без сима (проза самодостаточна)
+  if(b.interactive && window.SIM){ var _sm={'lottery':'lottery','anchor-slider':'anchor','draw-your-line':'drawLine'}[b.interactive.type];
+   if(_sm && SIM[_sm]){ try{ SIM[_sm](document.getElementById('simSlot'), b.interactive.params||{}, function(r){ try{ track('quest_sim',{key:q.key,stop:stop,verb:b.interactive.verb}); }catch(e){} }); }catch(e){} } }
+  function paint(){
+   var inner='';
+   if(twist && b.rp){ inner+='<div class="twtag">Поворот</div>'+paras(b.rp,'reveal'); }
+   // inline_card_refs: разворот доп. концептов НА МЕСТЕ (аккордеоны) — сверх основной card-привязки бита
+   (b.inline_card_refs||[]).forEach(function(sl){ if(sl && sl!==b.card) inner+=deeper(sl); });
+   inner+=deeper(b.card)+nextBtn();
+   document.getElementById('stopwrap').innerHTML=inner;
+  }
+  if(twist){
+   // Настоящая ставка: помним выбор, трекаем, БЕЗ вердикта (у части твистов честный ответ — ни a, ни b).
+   // Реакция называет ставку и ведёт в reveal, не судит «верно/неверно» (иначе фальшь = смерть честности).
+   var pel=document.getElementById('predict');
+   function choose(ix,doTrack){ var o=POPT[ix]||POPT[0]; var chosen=o.key||String(ix); var label=o.label;
+    if(doTrack){ try{ localStorage.setItem('mc:qpred:'+q.key+':'+stop, chosen); }catch(e){} try{ track('quest_predict',{key:q.key,stop:stop,chosen:chosen,anon_id:anonId()}); }catch(e){} }
+    var opts=pel.querySelector('.opts'); if(opts) opts.style.display='none';
+    var qq=pel.querySelector('.q'); if(qq) qq.innerHTML=o.after_text?esc(o.after_text):('Ваша ставка: «'+esc(label)+'». А вот что показала практика:');
+    document.getElementById('stopwrap').style.display=''; paint();
+   }
+   Array.prototype.forEach.call(pel.querySelectorAll('.opts button'),function(btn){ btn.onclick=function(){ choose(+btn.getAttribute('data-i'),true); }; });
+   var prev=null; try{ prev=localStorage.getItem('mc:qpred:'+q.key+':'+stop); }catch(e){}
+   if(prev!=null){ var pix=-1; POPT.forEach(function(o,oi){ if((o.key||String(oi))===prev) pix=oi; }); if(pix>=0) choose(pix,false); } // возврат — reveal без повторного трека
+  }
+  else paint();
+  return;
+ }
+ // Без BITS-нарратива играть нечего — уводим на деталь главы.
+ goStop(q.key,0,true);
+}
+
+function bindQ(){ Array.prototype.forEach.call(document.querySelectorAll('[data-q]'),function(el){ el.onclick=function(){ var rs=el.getAttribute('data-resume'); goStop(el.getAttribute('data-q'), rs?parseInt(rs,10):0); }; }); }
+
+// маршрутизация (§C): ?ch=&stop=<stop_id> канон · ?ch= деталь · ?quest=&stop=<индекс> легаси · пусто = дом
+progLoadLocal(); progMigrate();
+(function route(){
+ if(QKEY && quest(QKEY)){
+  var idx=null;
+  if(STOPID!=null){ var st=chapterStops(QKEY); var ii=st.indexOf(STOPID); idx=(ii>=0)?(ii+1):(qs.get('fin')?st.length+1:1); if(STOPID==='0'||STOPID==='') idx=0; }
+  else if(qs.get('fin')) idx=chapterStops(QKEY).length+1;
+  else if(STOP!==null) idx=STOP; // легаси-индекс из quests.html?quest&stop
+  if(idx!==null){ goStop(QKEY, idx, true); } else { try{ history.replaceState({ch:QKEY,stop:0},'','path.html?ch='+encodeURIComponent(QKEY)); }catch(e){} renderDetail(quest(QKEY)); }
+  return;
+ }
+ try{ history.replaceState({home:1},'','path.html'); }catch(e){}
+ renderHome();
+})();
+
+// плавная подмена сид→живое (кроссфейд, чтобы контент не «прыгал» резко)
+function fadeSwap(elId, fn){ var el=document.getElementById(elId); if(!el){ fn(); return; } el.style.transition='opacity .2s'; el.style.opacity='0'; setTimeout(function(){ try{ fn(); }catch(e){} requestAnimationFrame(function(){ el.style.opacity='1'; }); }, 170); }
+// живой режим: квесты из БД + карточки остановок
+(function boot(){
+ function go(){
+  try{
+   if(!(window.SUPABASE_URL && window.SUPABASE_ANON_KEY && window.supabase && window.supabase.createClient)) return;
+   var SB=window.supabase.createClient(String(window.SUPABASE_URL).trim(),String(window.SUPABASE_ANON_KEY).trim());
+   window.__SB=SB; var member=false; SB.auth.getSession().then(function(s){ member=!!(s&&s.data&&s.data.session); window.__MEMBER=member;
+    if(member){ mergeQfavs(SB); progSyncMember(SB); } // §B: слить гостевой прогресс и забрать серверный
+    else if(QKEY && (STOPID!=null||STOP!==null) && !isFoundation(QKEY)) guestGate(QKEY); // §G: гость на членской главе
+    window.__livecard=function(slug,paint){ SB.rpc(member?'kb_node_bundle':'kb_public_bundle',{p_slug:slug}).then(function(r){ if(r&&!r.error&&r.data){ var b=r.data; var bs=b.body||b.body_struct||{}; paint(b.title||titleOf(slug), bs['суть']||'', bs['применение']||''); } }).catch(function(){}); };
+    SB.from('quests').select('key,ord,title,icon,promise,description,slugs,recommended,status').eq('status','active').order('ord').then(function(r){ if(r&&!r.error&&r.data&&r.data.length){
+      var nq=r.data.map(function(q){return {key:q.key,icon:q.icon||'✦',rec:!!q.recommended,title:q.title,promise:q.promise||'',desc:q.description||'',n:(BITS[q.key]?BITS[q.key].length:(q.slugs||[]).length),slugs:q.slugs||[]};});
+      // сигнатура: перерисовываем ТОЛЬКО если DB реально отличается от статики (иначе — гратуитное моргание)
+      var sig=function(a){return (a||[]).map(function(q){return q.key+'|'+q.rec+'|'+q.title+'|'+q.n;}).join('§');};
+      if(sig(nq)===sig(QUESTS)) return; // контент тот же — ничего не трогаем
+      QUESTS=nq;
+      if(STOP!==null||STOPID!=null||qs.get('fin')) return; // идёт прохождение/финал — плеер не перерисовываем
+      // прямая подмена (без fadeSwap — нет провала в 0 opacity, нет моргания)
+      if(QKEY && quest(QKEY)) renderDetail(quest(QKEY));
+    }}).catch(function(){});
+    // догрузить живую карточку текущей остановки
+    if(QKEY && quest(QKEY) && STOP!==null && STOP>0){ var qq=quest(QKEY); if(STOP<=qq.slugs.length){ var sl=qq.slugs[STOP-1]; if(!SEEDCARD[sl] && !isTwist(sl)){ /* paint после рендера */ setTimeout(function(){ if(window.__livecard && document.getElementById('stopwrap')){ window.__livecard(sl,function(t,l,a){ var sw=document.getElementById('stopwrap'); if(sw && sw.style.display!=='none'){ renderPlayer(qq,STOP);} }); } },50); } } }
+   }).catch(function(){});
+  }catch(_){}
+ }
+ function load(src,cb){ var s=document.createElement('script'); s.src=src; s.onload=cb; s.onerror=cb; document.head.appendChild(s); }
+ function loadCfg(done){ var ps=['./config.js','../config.js','/book-reader/config.js']; var i=0; (function nx(){ if(window.SUPABASE_URL||i>=ps.length) return done(); var sc=document.createElement('script'); sc.src=ps[i++]; sc.onload=function(){ setTimeout(function(){ window.SUPABASE_URL?done():nx(); },0); }; sc.onerror=nx; document.head.appendChild(sc); })(); }
+  loadCfg(function(){ load('vendor/supabase.min.js', go); });
+})();
+</script>
+<script>(function(){if(!('serviceWorker' in navigator))return;var reg=null,shown=false;function anim(){var st=document.createElement('style');st.textContent='@keyframes __spin{to{transform:rotate(360deg)}}';document.head.appendChild(st);var o=document.createElement('div');o.id='__updanim';o.style.cssText='position:fixed;inset:0;z-index:100000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:rgba(20,17,12,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;transition:opacity .3s';o.innerHTML='<div style="width:44px;height:44px;border-radius:50%;border:3px solid rgba(255,255,255,.25);border-top-color:#C98A3A;animation:__spin .8s linear infinite"></div><div style="color:#F4EEE2;font:600 15px/1.3 -apple-system,system-ui,sans-serif">Обновляем…</div>';(document.body||document.documentElement).appendChild(o);requestAnimationFrame(function(){o.style.opacity='1';});}function doUpdate(){var bb=document.getElementById('__updbar');if(bb)bb.style.opacity='0';anim();try{if(reg&&reg.waiting)reg.waiting.postMessage({type:'SKIP_WAITING'});}catch(e){}var done=false,fin=function(){if(done)return;done=true;location.reload();};try{navigator.serviceWorker.addEventListener('controllerchange',fin);}catch(e){}setTimeout(fin,1600);}function showUpd(){if(shown)return;shown=true;try{if(sessionStorage.getItem('mc:updshown'))return;sessionStorage.setItem('mc:updshown','1');}catch(e){}var b=document.createElement('div');b.id='__updbar';b.style.cssText='position:fixed;left:50%;transform:translateX(-50%) translateY(8px);bottom:calc(16px + env(safe-area-inset-bottom));z-index:99999;display:flex;align-items:center;gap:12px;background:#17150F;color:#F4EEE2;font:600 14px/1.3 -apple-system,BlinkMacSystemFont,system-ui,sans-serif;padding:10px 12px 10px 16px;border-radius:14px;box-shadow:0 10px 34px rgba(0,0,0,.34);max-width:calc(100vw - 26px);opacity:0;transition:opacity .25s,transform .25s';var s=document.createElement('span');s.textContent='Доступна новая версия';var btn=document.createElement('button');btn.textContent='Обновить';btn.style.cssText='border:0;background:#8A5314;color:#fff;font:inherit;font-weight:700;padding:8px 15px;border-radius:10px;cursor:pointer;flex:none';btn.onclick=doUpdate;b.appendChild(s);b.appendChild(btn);(document.body||document.documentElement).appendChild(b);requestAnimationFrame(function(){b.style.opacity='1';b.style.transform='translateX(-50%) translateY(0)';});}try{navigator.serviceWorker.register('sw.js').then(function(r){reg=r;}).catch(function(){});}catch(e){}try{navigator.serviceWorker.addEventListener('message',function(e){if(e.data&&e.data.type==='NEW_VERSION')showUpd();});}catch(e){}try{navigator.serviceWorker.ready.then(function(r){reg=r;if(r.waiting)showUpd();r.addEventListener('updatefound',function(){var nw=r.installing;if(nw)nw.addEventListener('statechange',function(){if(nw.state==='installed'&&navigator.serviceWorker.controller)showUpd();});});});}catch(e){}})();</script>
+<script>try{document.addEventListener("touchstart",function(){},{passive:true});}catch(e){}</script>
+</body>
+</html>

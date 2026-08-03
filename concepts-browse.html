@@ -1,13 +1,15 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" style="background:#FBFAF7">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Идеи — Матчасть</title>
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#FBFAF7"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<title>Концепты · Матчасть</title>
 <style>
 :root{
- --bg:#FBFAF7; --ink:#17150F; --ink2:#56504A; --meta:#8B847B; --line:#ECE7DD; --card:#fff;
- --gold:#B06A1F; --gold-br:#C98A3A;
+ --bg:#FBFAF7; --ink:#17150F; --ink2:#56504A; --meta:#6E675E; --line:#ECE7DD; --card:#fff;
+ --gold:#97591A; --gold-br:#99682A;
  --solid:#2F7D4F; --mixed:#B8801F; --contested:#C2452F; --inbox:#8B847B;
  --be:#C98A3A; --cog:#CDA92F; --ux:#C2546A; --soc:#6B5CA5; --org:#2F8E8E; --mot:#B0452F; --prod:#3E8E8E; --neu:#8A5CC2; --def:#9A9080;
  --pill:999px; --r:16px;
@@ -36,7 +38,8 @@ body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSys
 .row .dot.solid{background:var(--solid)}.row .dot.mixed{background:var(--mixed)}.row .dot.contested{background:var(--contested)}.row .dot.inbox{background:var(--inbox)}
 .row .main{flex:1;min-width:0}
 .row .ti{font-size:16px;font-weight:600;line-height:21px}
-.row .tg{font-size:12px;color:var(--meta);margin-top:2px}
+.row .ds{font-size:13px;line-height:18px;color:var(--ink2);margin-top:3px}
+.row .tg{font-size:12px;color:var(--meta);margin-top:3px}
 .row .star{color:var(--gold-br);font-size:14px;flex:none}
 .row .lit{width:8px;height:8px;border-radius:50%;background:var(--gold-br);box-shadow:0 0 6px var(--gold);flex:none}
 .row .cv{color:var(--meta);flex:none}
@@ -50,14 +53,44 @@ body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSys
 .ni{flex:1;min-height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:none;border:0;color:var(--meta);cursor:pointer}
 .ni svg{width:24px;height:24px}.ni .lb{font-size:11px;font-weight:600}.ni.on{color:var(--gold)}
 @media(prefers-reduced-motion:reduce){*{animation:none!important}}
+/*TAP-FEEDBACK*/button:active,a:active,[onclick]:active,.ni:active,[data-k]:active,[data-route]:active,[data-slug]:active,[data-cont]:active,[data-q]:active,.row:active,.rt-row:active,.lg-row:active,.fc:active,.stoprow:active,.opt:active,.pill:active,.tab:active,.deeper:active{opacity:.6;transition:opacity .06s}
+/*MCUX v1 — единый UX: нативные переходы между страницами, ховеры, тап-фидбек, reduced-motion*/
+@view-transition{navigation:auto}
+.nav{view-transition-name:mcnav}
+button:active,a:active,[onclick]:active,.ni:active,.mrow:active,.row:active,.res:active,.tbtn:active,.fc:active,.opt:active,.pill:active{opacity:.6;transition:opacity .06s}
+@media(hover:hover){a:hover,button:hover,.ni:hover,.mrow:hover,.row:hover,.res:hover,.tbtn:hover,.fc:hover,.opt:hover,[data-k]:hover,[data-slug]:hover,[data-cont]:hover,[data-route]:hover,[data-q]:hover{opacity:.85;transition:opacity .12s ease;cursor:pointer}}
+@media(hover:none){button:active,a:active,[onclick]:active,.ni:active,.mrow:active,.row:active,.res:active,.tbtn:active,.fc:active,.opt:active,.lp:active,.rc:active,.cont:active,.hero:active,.scd:active,.tl:active,.fd:active,.lk:active,.deeper:active,[data-k]:active,[data-slug]:active,[data-cont]:active,[data-route]:active,[data-q]:active{opacity:.72;transform:scale(.97);transition:transform .06s ease,opacity .06s}}
+a:focus-visible,button:focus-visible,[onclick]:focus-visible,.ni:focus-visible,.mrow:focus-visible,.row:focus-visible,.res:focus-visible,.tbtn:focus-visible,.fc:focus-visible,.opt:focus-visible,.lp:focus-visible,.rc:focus-visible,[data-k]:focus-visible,[data-slug]:focus-visible,[data-cont]:focus-visible,[data-route]:focus-visible{outline:2px solid var(--gold,#97591A);outline-offset:2px;border-radius:6px}
+.mcstate{padding:46px 20px;text-align:center;color:var(--meta,#6E675E)}
+.mcstate .ic{font-size:30px;line-height:1;margin-bottom:12px;opacity:.75}
+.mcstate .msg{font-size:14.5px;line-height:20px;max-width:300px;margin:0 auto}
+.mcstate .retry{margin-top:16px;display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:700;color:var(--gold,#97591A);background:none;border:1px solid var(--line,#ECE7DD);border-radius:999px;padding:9px 18px;cursor:pointer}
+.mcsk{background:linear-gradient(90deg,#EFEBE2,#F6F3ED,#EFEBE2);background-size:200% 100%;animation:mcsh 1.2s infinite;border-radius:12px}
+@keyframes mcsh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+/*MCDESK v1 — десктоп (>=960px): нижний таб-бар -> левый сайдбар, контент смещается вправо; мобилка не трогается*/
+@media(min-width:960px){
+ body:has(nav.nav){padding-left:236px}
+ nav.nav{top:0;bottom:0;right:auto;width:236px;border-top:0;border-right:1px solid var(--line);padding:0}
+ nav.nav .navin{flex-direction:column;align-items:stretch;height:100vh;max-width:none;margin:0;padding:22px 14px;gap:3px}
+ nav.nav .ni{flex:0 0 auto;flex-direction:row;justify-content:flex-start;gap:14px;min-height:0;height:auto;padding:12px 14px;border-radius:12px}
+ nav.nav .ni svg{width:22px;height:22px}
+ nav.nav .ni .lb{font-size:15px;font-weight:600}
+ nav.nav .ni.on{background:rgba(176,106,31,.09)}
+ @media(hover:hover){nav.nav .ni:hover{background:rgba(176,106,31,.06);opacity:1}}
+ body:has(nav.nav) .topbar{left:236px}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}
 </style>
+<style>/*mc:desktop*/@media(min-width:1020px){.nav{top:0;bottom:0;left:0;right:auto;width:92px;border-top:0;border-right:1px solid var(--line);padding-bottom:0}.navin{flex-direction:column;justify-content:center;gap:8px;height:100%;max-width:none}.ni{flex:0 0 auto;padding:13px 0;margin:0 10px;border-radius:12px}.ni.on{background:rgba(151,89,26,.08)}body{padding-left:92px}.wrap{max-width:760px}.cta{left:92px}.topbar{left:92px}}@media(hover:hover){.ni{transition:color .15s,background .15s}.ni:hover{color:var(--gold)}a{transition:opacity .12s}}</style>
 </head>
 <body>
-<div class="wrap">
+<script>/*mc:hashroute*/(function(){try{var m=(location.hash||"").match(/^#\/c\/([^?&#]+)/);if(m&&m[1]){location.replace("card.html?slug="+encodeURIComponent(decodeURIComponent(m[1])));}}catch(e){}})();</script>
+<div class="wrap" role="main">
  <div class="bar">
   <div class="bartop">
    <button class="ib" id="back" aria-label="Назад"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
-   <div style="font-size:15px;font-weight:700" id="barTitle">Идеи</div>
+   <div style="font-size:15px;font-weight:700" id="barTitle">Концепты</div>
+   <a class="ib" href="search.html" aria-label="Поиск" style="margin-left:auto;text-decoration:none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></a>
   </div>
   <div class="lens" id="lens"></div>
  </div>
@@ -65,10 +98,10 @@ body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSys
 </div>
 
 <nav class="nav"><div class="navin">
- <button class="ni" onclick="location.href='explore.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 1.5L13 16l-1.5-4.5z"/></svg><span class="lb">Исследовать</span></button>
- <button class="ni on" onclick="location.href='solve-home.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5A2.5 2.5 0 0 0 6.5 8H20"/></svg><span class="lb">Решить</span></button>
- <button class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v-8"/><path d="M12 12c0-4 3-6 7-6 0 4-3 6-7 6z"/><path d="M12 14c0-3-2-5-6-5 0 3 2 5 6 5z"/></svg><span class="lb">Расти</span></button>
- <button class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span class="lb">Меню</span></button>
+ <button class="ni" onclick="location.href='path.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="18" r="2.2"/><path d="M8.3 15.7C11 13 13 11 15.7 8.3"/><path d="M17.5 3l1.1 2.4L21 6.5l-2.4 1.1L17.5 10l-1.1-2.4L14 6.5l2.4-1.1z"/></svg><span class="lb">Путь</span></button>
+ <button class="ni on" onclick="location.href='solve-home.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5A2.5 2.5 0 0 0 6.5 8H20"/></svg><span class="lb">Справочник</span></button>
+ <button class="ni" onclick="location.href='explore.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 1.5L13 16l-1.5-4.5z"/></svg><span class="lb">Карта</span></button>
+ <button class="ni" onclick="location.href='personal.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span class="lb">Моё</span></button>
 </div></nav>
 
 <script>
@@ -99,12 +132,15 @@ var SEED=[
  ["miller-law","Закон Миллера","ux","mixed"],["reward-prediction-error","Ошибка предсказания награды","be","solid"],
  ["mimetic-desire","Миметическое желание","soc","mixed"],["diffusion-of-innovations","Диффузия инноваций","def","solid"]
 ];
-var ROBT={solid:"Подтверждено",mixed:"Неоднозначно",contested:"Спорно",inbox:"В проработке"};
+var ROBT={solid:"Проверено",mixed:"Есть нюансы",contested:"Спорно",inbox:"В проработке"};
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
 function cssv(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
 
 var NODES=SEED.map(function(a){return {s:a[0],t:a[1],d:a[2],r:a[3]};});
 var VISITED={}, MEMBER=false;
+// синхронно: токен сессии в localStorage → участник сразу
+try{ for(var _mi=0;_mi<localStorage.length;_mi++){ var _mk=localStorage.key(_mi); if(_mk&&_mk.indexOf('sb-')===0&&_mk.indexOf('-auth-token')>0){ var _mv=localStorage.getItem(_mk); if(_mv&&_mv.length>20){ MEMBER=true; break; } } } }catch(e){}
+try{ var _vc=JSON.parse(localStorage.getItem('mc:visited')||'null'); if(_vc&&typeof _vc==='object'){ VISITED=_vc; } }catch(e){}
 var LENS='theme';   // theme(=По областям) | all | nesushie
 var FILTER=null;    // конкретная дисциплина (ключ) при дип-линке
 
@@ -112,11 +148,13 @@ var qs=new URLSearchParams(location.search);
 if(qs.get('view')==='nesushie') LENS='nesushie';
 if(qs.get('theme')){ FILTER=qs.get('theme'); LENS='theme'; }
 
+// Обрезка тизера по границе слова (строка «что это» под концептом, v5 п.6).
+function clipW(s,n){ s=String(s==null?'':s).replace(/\s+/g,' ').trim(); if(s.length<=n) return s; var c=s.slice(0,n); var i=c.lastIndexOf(' '); if(i>Math.floor(n*0.6)) c=c.slice(0,i); return c.replace(/[\s.,;:!?«»()"'—–-]+$/,'')+'…'; }
 function rowHtml(n,showTag){
  var lit=MEMBER&&VISITED[n.s];
- return '<div class="row" data-go="'+esc(n.s)+'"><span class="dot '+n.r+'" title="'+esc(ROBT[n.r]||'')+'"></span>'+
-   '<div class="main"><div class="ti">'+esc(n.t)+'</div>'+(showTag?'<div class="tg">'+esc(D[n.d]||'')+'</div>':'')+'</div>'+
-   (IMP[n.s]?'<span class="star" title="Несущая идея">★</span>':'')+
+ return '<div class="row" data-go="'+esc(n.s)+'" role="button" tabindex="0" aria-label="'+esc(n.t)+'"><span class="dot '+n.r+'" title="'+esc(ROBT[n.r]||'')+'"></span>'+
+   '<div class="main"><div class="ti">'+esc(n.t)+'</div>'+(n.c?'<div class="ds">'+esc(clipW(n.c,95))+'</div>':'')+(showTag?'<div class="tg">'+esc(D[n.d]||'')+'</div>':'')+'</div>'+
+   (IMP[n.s]?'<span class="star" title="Ключевой концепт">★</span>':'')+
    (lit?'<span class="lit" title="Изучено"></span>':'')+
    '<svg class="cv" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>';
 }
@@ -129,28 +167,28 @@ function render(){
  var H='';
  if(LENS==='nesushie'){
   var ns=NODES.filter(function(n){return IMP[n.s];});
-  document.getElementById('barTitle').textContent='Несущие идеи';
-  H+='<div class="head"><div class="kick">База знаний</div><div class="h1">С чего начать</div><div class="sub">'+(ns.length>20?ns.length:'28')+' главных идей о том, как люди принимают решения. Основа, на которую опирается всё остальное.</div></div>';
-  H+=ns.map(function(n){return rowHtml(n,true);}).join('') || '<div class="empty">Скоро здесь появятся идеи.</div>';
+  document.getElementById('barTitle').textContent='Ключевые концепты';
+  H+='<div class="head"><div class="kick">База знаний</div><h1 class="h1">С чего начать</h1><div class="sub">'+ns.length+' главных концептов о том, как люди принимают решения. Основа, на которую опирается всё остальное.</div></div>';
+  H+=ns.map(function(n){return rowHtml(n,true);}).join('') || '<div class="mcstate"><div class="ic">✦</div><div class="msg">Скоро здесь появятся концепты.</div></div>';
  } else if(FILTER){
   var inT=NODES.filter(function(n){return n.d===FILTER;});
   document.getElementById('barTitle').textContent=D[FILTER]||'Тема';
   var spor=inT.filter(function(n){return n.r==='mixed'||n.r==='contested';}).slice(0,3).map(function(n){return n.t;});
-  H+='<div class="head"><div class="kick">Область знания</div><div class="h1">'+esc(D[FILTER]||'Тема')+'</div><div class="sub">'+inT.length+' идей в этой области</div></div>';
-  if(spor.length) H+='<div class="tension"><b>Внутри есть спорные места:</b> '+spor.map(esc).join(', ')+' — у этих идей есть серьёзные «но».</div>';
-  H+='<div class="maplink" onclick="location.href=\'explore.html\'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 1.5L13 16l-1.5-4.5z"/></svg>Показать на карте</div>';
-  H+=(inT.map(function(n){return rowHtml(n,false);}).join('')) || '<div class="empty">Скоро здесь появятся идеи.</div>';
+  H+='<div class="head"><div class="kick">Область знания</div><h1 class="h1">'+esc(D[FILTER]||'Область знания')+'</h1><div class="sub">'+inT.length+' '+(inT.length===1?'концепт':(inT.length<5?'концепта':'концептов'))+' в этой области</div></div>';
+  if(spor.length) H+='<div class="tension"><b>Внутри есть спорные места:</b> '+spor.map(esc).join(', ')+' — у этих концептов есть серьёзные «но».</div>';
+  H+='<a class="maplink" href="explore.html" style="text-decoration:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 1.5L13 16l-1.5-4.5z"/></svg>Показать на карте</a>';
+  H+=(inT.map(function(n){return rowHtml(n,false);}).join('')) || '<div class="mcstate"><div class="ic">✦</div><div class="msg">Скоро здесь появятся концепты.</div></div>';
  } else if(LENS==='all'){
-  document.getElementById('barTitle').textContent='Все идеи';
+  document.getElementById('barTitle').textContent='Все концепты';
   var all=NODES.slice().sort(function(a,b){return a.t.localeCompare(b.t,'ru');});
-  H+='<div class="head"><div class="kick">База знаний</div><div class="h1">Все идеи</div><div class="sub">'+all.length+' идей · по алфавиту</div></div>';
+  H+='<div class="head"><div class="kick">База знаний</div><h1 class="h1">Все концепты</h1><div class="sub">'+all.length+' '+(all.length===1?'концепт':(all.length%10>=2&&all.length%10<=4&&(all.length%100<10||all.length%100>=20)?'концепта':'концептов'))+' · по алфавиту</div></div>';
   H+=all.map(function(n){return rowHtml(n,true);}).join('');
  } else { // По областям — секции
   document.getElementById('barTitle').textContent='Области знания';
-  H+='<div class="head"><div class="kick">База знаний</div><div class="h1">Области знания</div><div class="sub">по дисциплинам</div></div>';
+  H+='<div class="head"><div class="kick">База знаний</div><h1 class="h1">Области знания</h1><div class="sub">по дисциплинам</div></div>';
   var byD={}; NODES.forEach(function(n){(byD[n.d]=byD[n.d]||[]).push(n);});
   Object.keys(byD).sort(function(a,b){return byD[b].length-byD[a].length;}).forEach(function(d){
-   H+='<div class="seccount"><span class="cbar" style="background:var('+(DCOLV[d]||'--def')+')"></span>'+esc(D[d]||d)+' · '+byD[d].length+'</div>';
+   H+='<h2 class="seccount"><span class="cbar" style="background:var('+(DCOLV[d]||'--def')+')"></span>'+esc(D[d]||d)+' · '+byD[d].length+'</h2>';
    H+=byD[d].map(function(n){return rowHtml(n,false);}).join('');
   });
  }
@@ -158,36 +196,40 @@ function render(){
  Array.prototype.forEach.call(document.querySelectorAll('[data-go]'),function(el){ el.onclick=function(){ location.href='card.html?slug='+encodeURIComponent(el.getAttribute('data-go')); }; });
 }
 document.getElementById('lens').addEventListener('click',function(e){ var b=e.target.closest('[data-lens]'); if(!b) return; LENS=b.getAttribute('data-lens'); FILTER=null; render(); });
+document.addEventListener('keydown',function(e){ if(e.key!=='Enter'&&e.key!==' '&&e.key!=='Spacebar') return; var t=e.target&&e.target.closest?e.target.closest('[data-go]'):null; if(!t) return; e.preventDefault(); t.click(); });
 document.getElementById('back').onclick=function(){ if(history.length>1) history.back(); else location.href='solve-home.html'; };
 
 render();
 
 // живой режим: полный список + туман
+// плавная подмена сид→живое (кроссфейд контейнера, чтобы контент не «прыгал» резко)
+function fadeSwap(elId, fn){ var el=document.getElementById(elId); if(!el){ fn(); return; } el.style.transition='opacity .2s'; el.style.opacity='0'; setTimeout(function(){ try{ fn(); }catch(e){} requestAnimationFrame(function(){ el.style.opacity='1'; }); }, 170); }
 (function boot(){
  function go(){
   try{
    if(!(window.SUPABASE_URL && window.SUPABASE_ANON_KEY && window.supabase && window.supabase.createClient)) return;
    var SB=window.supabase.createClient(String(window.SUPABASE_URL).trim(),String(window.SUPABASE_ANON_KEY).trim());
    SB.auth.getSession().then(function(s){ MEMBER=!!(s&&s.data&&s.data.session);
-    if(MEMBER) SB.rpc('my_visited_slugs').then(function(r){ if(r&&!r.error&&Array.isArray(r.data)){VISITED={};r.data.forEach(function(sl){VISITED[sl]=1;}); render();} }).catch(function(){});
+    if(MEMBER) SB.rpc('my_visited_slugs').then(function(r){ if(r&&!r.error&&Array.isArray(r.data)){VISITED={};r.data.forEach(function(sl){VISITED[sl]=1;}); try{localStorage.setItem('mc:visited',JSON.stringify(VISITED));}catch(e){} render();} }).catch(function(){});
     SB.rpc('kb_public_graph').then(function(r){ if(r&&!r.error&&r.data&&r.data.nodes){
-      var dmap={"disc-behavioral-econ":"be","disc-cognitive":"cog","disc-social":"soc","disc-product":"prod","disc-ux-hci":"ux","disc-org":"org","disc-motivation":"mot","disc-neuro":"neu"};
+      var dmap={"disc-behavioral-econ":"be","disc-cognitive":"cog","disc-social":"soc","disc-product":"prod","disc-product-practice":"prod","disc-ux-hci":"ux","disc-org":"org","disc-org-systems":"org","disc-motivation":"mot","disc-neuro":"neu","disc-linguistics":"cog","disc-evolutionary":"soc"};
       IMP={};
       NODES=r.data.nodes.filter(function(n){return (n.node_layer==='concept'||n.node_layer==='instrument') && (n.kind!=='scenario'&&n.kind!=='term');}).map(function(n){
         var disc=(n.tags||[]).filter(function(t){return t.axis==='discipline';})[0];
         if((n.tags||[]).some(function(t){return t.axis==='importance';})) IMP[n.slug]=1;
-        return {s:n.slug,t:n.title,d:disc?(dmap[disc.slug]||'def'):'def',r:n.robustness||'mixed'};
+        return {s:n.slug,t:n.title,d:disc?(dmap[disc.slug]||'def'):'def',r:n.robustness||'mixed',c:(n.claim||'')};
       });
-      render();
+      fadeSwap('body', render);
     }}).catch(function(){});
    }).catch(function(){});
   }catch(_){}
  }
  function load(src,cb){ var s=document.createElement('script'); s.src=src; s.onload=cb; s.onerror=cb; document.head.appendChild(s); }
- function loadCfg(done){ var ps=['../config.js','./config.js','config.js','/book-reader/config.js']; var i=0; (function nx(){ if(window.SUPABASE_URL||i>=ps.length) return done(); var sc=document.createElement('script'); sc.src=ps[i++]; sc.onload=function(){ setTimeout(function(){ window.SUPABASE_URL?done():nx(); },0); }; sc.onerror=nx; document.head.appendChild(sc); })(); }
-  loadCfg(function(){ load('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.108.2', go); });
+ function loadCfg(done){ var ps=['./config.js','../config.js','/book-reader/config.js']; var i=0; (function nx(){ if(window.SUPABASE_URL||i>=ps.length) return done(); var sc=document.createElement('script'); sc.src=ps[i++]; sc.onload=function(){ setTimeout(function(){ window.SUPABASE_URL?done():nx(); },0); }; sc.onerror=nx; document.head.appendChild(sc); })(); }
+  loadCfg(function(){ load('vendor/supabase.min.js', go); });
 })();
 </script>
-<script>if('serviceWorker' in navigator){try{navigator.serviceWorker.register('sw.js').catch(function(){});}catch(e){}}</script>
+<script>(function(){if(!('serviceWorker' in navigator))return;var reg=null,shown=false;function anim(){var st=document.createElement('style');st.textContent='@keyframes __spin{to{transform:rotate(360deg)}}';document.head.appendChild(st);var o=document.createElement('div');o.id='__updanim';o.style.cssText='position:fixed;inset:0;z-index:100000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:rgba(20,17,12,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;transition:opacity .3s';o.innerHTML='<div style="width:44px;height:44px;border-radius:50%;border:3px solid rgba(255,255,255,.25);border-top-color:#C98A3A;animation:__spin .8s linear infinite"></div><div style="color:#F4EEE2;font:600 15px/1.3 -apple-system,system-ui,sans-serif">Обновляем…</div>';(document.body||document.documentElement).appendChild(o);requestAnimationFrame(function(){o.style.opacity='1';});}function doUpdate(){var bb=document.getElementById('__updbar');if(bb)bb.style.opacity='0';anim();try{if(reg&&reg.waiting)reg.waiting.postMessage({type:'SKIP_WAITING'});}catch(e){}var done=false,fin=function(){if(done)return;done=true;location.reload();};try{navigator.serviceWorker.addEventListener('controllerchange',fin);}catch(e){}setTimeout(fin,1600);}function showUpd(){if(shown)return;shown=true;try{if(sessionStorage.getItem('mc:updshown'))return;sessionStorage.setItem('mc:updshown','1');}catch(e){}var b=document.createElement('div');b.id='__updbar';b.style.cssText='position:fixed;left:50%;transform:translateX(-50%) translateY(8px);bottom:calc(16px + env(safe-area-inset-bottom));z-index:99999;display:flex;align-items:center;gap:12px;background:#17150F;color:#F4EEE2;font:600 14px/1.3 -apple-system,BlinkMacSystemFont,system-ui,sans-serif;padding:10px 12px 10px 16px;border-radius:14px;box-shadow:0 10px 34px rgba(0,0,0,.34);max-width:calc(100vw - 26px);opacity:0;transition:opacity .25s,transform .25s';var s=document.createElement('span');s.textContent='Доступна новая версия';var btn=document.createElement('button');btn.textContent='Обновить';btn.style.cssText='border:0;background:#C98A3A;color:#fff;font:inherit;font-weight:700;padding:8px 15px;border-radius:10px;cursor:pointer;flex:none';btn.onclick=doUpdate;b.appendChild(s);b.appendChild(btn);(document.body||document.documentElement).appendChild(b);requestAnimationFrame(function(){b.style.opacity='1';b.style.transform='translateX(-50%) translateY(0)';});}try{navigator.serviceWorker.register('sw.js').then(function(r){reg=r;}).catch(function(){});}catch(e){}try{navigator.serviceWorker.addEventListener('message',function(e){if(e.data&&e.data.type==='NEW_VERSION')showUpd();});}catch(e){}try{navigator.serviceWorker.ready.then(function(r){reg=r;if(r.waiting)showUpd();r.addEventListener('updatefound',function(){var nw=r.installing;if(nw)nw.addEventListener('statechange',function(){if(nw.state==='installed'&&navigator.serviceWorker.controller)showUpd();});});});}catch(e){}})();</script>
+<script>try{document.addEventListener("touchstart",function(){},{passive:true});}catch(e){}</script>
 </body>
 </html>

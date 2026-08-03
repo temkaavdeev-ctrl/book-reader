@@ -1,15 +1,17 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" style="background:#FBFAF7">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Матчасть — Решить (боевой)</title>
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#FBFAF7" media="(prefers-color-scheme:light)"><meta name="theme-color" content="#100D0A" media="(prefers-color-scheme:dark)"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<title>Справочник — база знаний</title>
 <style>
 :root{
- --bg:#FBFAF7; --ink:#17150F; --ink2:#56504A; --meta:#8B847B; --line:#ECE7DD; --card:#fff;
- --gold:#B06A1F; --gold-br:#C98A3A; --on:#fff;
+ --bg:#FBFAF7; --ink:#17150F; --ink2:#56504A; --meta:#6E675E; --line:#ECE7DD; --card:#fff;
+ --gold:#97591A; --gold-br:#C98A3A; --on:#fff;
  --solid:#2F7D4F; --mixed:#B8801F; --contested:#C2452F; --info:#6B5CA5; --tension:#C2546A;
- --econ:#C98A3A; --cog:#CDA92F; --ux:#C2546A; --soc:#6B5CA5; --org:#2F8E8E; --mot:#B0452F; --prod:#3E8E8E; --neu:#8A5CC2; --evo:#4E9A6B; --def:#8B847B;
+ --econ:#C98A3A; --cog:#CDA92F; --ux:#C2546A; --soc:#6B5CA5; --org:#2B8282; --mot:#B0452F; --prod:#3E8E8E; --neu:#8A5CC2; --evo:#4E9A6B; --def:#8B847B;
  --r:20px; --rs:14px; --pill:999px;
  --sh:0 2px 12px rgba(20,17,12,.05),0 1px 2px rgba(20,17,12,.04);
  --shh:0 18px 46px rgba(20,17,12,.24);
@@ -17,19 +19,62 @@
 }
 *{box-sizing:border-box} html,body{margin:0}
 body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;font-size:16px;line-height:24px;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+/* Тёмная тема (тёплая «ночная обсерватория»): токены переопределены в конце стилей — см. @media(prefers-color-scheme:dark) */
 .app{max-width:720px;margin:0 auto;min-height:100vh;padding:0 20px calc(var(--nav) + env(safe-area-inset-bottom) + 16px)}
-.top{padding:20px 0 4px}
+.top{padding:20px 0 4px;position:relative}
+.shc{position:absolute;top:16px;right:0;width:42px;height:42px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:var(--card);border:1px solid var(--line);color:var(--ink2);box-shadow:var(--sh);text-decoration:none}.shc:active{opacity:.6}
 .kick{font-size:13px;font-weight:600;color:var(--gold);letter-spacing:.02em}
 .h1{font-size:34px;line-height:39px;font-weight:800;letter-spacing:-.025em;margin:3px 0 5px}
 .subt{font-size:15px;line-height:21px;color:var(--ink2)}
-.ter{display:inline-flex;align-items:center;gap:7px;margin-top:13px;font-size:14px;color:var(--ink2);background:#fff;border:1px solid var(--line);border-radius:var(--pill);padding:7px 13px;box-shadow:var(--sh)}
+/* v5 п.1/8: видимый поиск-инпут — главный вход в Матчасть, рядом «крутить случайную» */
+.msearch{margin-top:16px}
+.msf{display:flex;align-items:center;gap:10px;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;box-shadow:var(--sh)}
+.msf svg{flex:none;color:var(--meta)}
+.msf input{flex:1;border:0;background:none;font:inherit;font-size:16px;color:var(--ink);outline:none;min-width:0}
+.msf input::placeholder{color:var(--meta)}
+.msf input::-webkit-search-cancel-button{-webkit-appearance:none}
+.msdice{flex:none;border:0;background:none;color:var(--gold);cursor:pointer;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;line-height:1;border-radius:8px}
+.msdice:active{opacity:.55}
+.mschips{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.mschip{border:1px solid var(--line);background:var(--card);color:var(--ink2);font:inherit;font-size:13px;font-weight:500;padding:7px 13px;border-radius:999px;cursor:pointer}
+.mschip:active{opacity:.6}
+/* v5 п.7: бейдж надёжности — чистый чип + смысл на тап (ⓘ), человечный ярлык; светлый и тёмный контексты */
+.rbadge{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;line-height:1;padding:5px 10px;border-radius:var(--pill);border:1px solid;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.rbadge .rbd{width:7px;height:7px;border-radius:50%;flex:none}
+.rbadge .rbi{font-size:11px;font-weight:700;opacity:.7}
+.rbadge.solid{background:rgba(47,125,79,.10);border-color:rgba(47,125,79,.34);color:#2C7549}
+.rbadge.mixed{background:rgba(184,128,31,.11);border-color:rgba(184,128,31,.36);color:#8A5E14}
+.rbadge.contested{background:rgba(194,69,47,.10);border-color:rgba(194,69,47,.34);color:#AC3820}
+.rbadge.solid .rbd{background:#2F7D4F}.rbadge.mixed .rbd{background:#B8801F}.rbadge.contested .rbd{background:#C2452F}
+.rbadge.on-dark.solid{background:rgba(127,212,160,.13);border-color:rgba(127,212,160,.32);color:#8FDCAC}
+.rbadge.on-dark.mixed{background:rgba(231,192,122,.13);border-color:rgba(231,192,122,.32);color:#EBC98A}
+.rbadge.on-dark.contested{background:rgba(240,165,147,.13);border-color:rgba(240,165,147,.34);color:#F0A593}
+.rbadge.on-dark.solid .rbd{background:#8FDCAC}.rbadge.on-dark.mixed .rbd{background:#EBC98A}.rbadge.on-dark.contested .rbd{background:#F0A593}
+.rbadge:active{opacity:.7}@media(hover:hover){.rbadge:hover{filter:brightness(1.05)}}
+.fc .rbadge{margin-top:13px}.hcard .rbadge{margin-top:12px}
+/* v5 d94ae8f1: вход в Фронтир знания (научный край) с Матчасти */
+.frontlink{display:flex;align-items:center;gap:13px;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px 15px;box-shadow:var(--sh)}
+.frontlink .fl-i{flex:none;width:38px;height:38px;border-radius:11px;background:rgba(201,138,58,.11);display:flex;align-items:center;justify-content:center;color:var(--gold)}
+.frontlink .fl-i svg{width:20px;height:20px}
+.frontlink .fl-b{flex:1;min-width:0;display:block}
+.frontlink .fl-t{display:block;font-size:15.5px;font-weight:700;color:var(--ink)}
+.frontlink .fl-s{display:block;font-size:13px;line-height:18px;color:var(--meta);margin-top:2px}
+.frontlink .fl-cv{flex:none;color:var(--meta)}
+.ter{display:inline-flex;align-items:center;gap:7px;margin-top:13px;font-size:14px;color:var(--ink2);background:var(--card);border:1px solid var(--line);border-radius:var(--pill);padding:7px 13px;box-shadow:var(--sh)}
+/* Питч гостя (62bbf2db) */
+.pitchhdr{margin-top:12px;font-size:13.5px;line-height:19px;font-weight:600;color:var(--ink2)}
+.pitchban{margin-top:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 13px;box-shadow:var(--sh)}
+.pitchban .pb-t{flex:1;min-width:180px;font-size:13.5px;line-height:19px;color:var(--ink2)}
+.pitchban .pb-cta{font-size:13.5px;font-weight:700;color:var(--gold);text-decoration:none;white-space:nowrap}
+.pitchban .pb-x{flex:none;width:44px;height:44px;margin:-9px -9px -9px 0;display:flex;align-items:center;justify-content:center;border:0;background:none;color:var(--meta);font-size:15px;line-height:1;cursor:pointer;border-radius:8px}
+.pitchban .pb-x:hover{background:var(--bg)}
 .ter b{color:var(--gold);font-weight:700}.ter svg{width:15px;height:15px;color:var(--gold-br)}
 section{margin-top:30px}
 .sh{margin-bottom:13px}
 .st{font-size:22px;line-height:27px;font-weight:700;letter-spacing:-.01em}
 .ss{font-size:14px;line-height:19px;color:var(--meta);margin-top:2px}
 .arow{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
-.all{font-size:14px;font-weight:600;color:var(--gold);text-decoration:none;white-space:nowrap;cursor:pointer}
+.all{font-size:14px;font-weight:600;color:var(--gold);text-decoration:none;white-space:nowrap;cursor:pointer;padding:13px 4px 13px 13px;margin:-13px -4px -13px -13px}
 .hero{position:relative;overflow:hidden;border-radius:var(--r);padding:22px;cursor:pointer;background:linear-gradient(152deg,#241E18,#15110C);color:#F4EEE2;box-shadow:var(--shh)}
 .hero::after{content:"";position:absolute;right:-44px;top:-44px;width:170px;height:170px;border-radius:50%;background:radial-gradient(circle,rgba(201,138,58,.32),transparent 70%)}
 .hk{font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--gold-br);position:relative}
@@ -39,11 +84,20 @@ section{margin-top:30px}
 .tag{font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;padding:5px 11px;border-radius:var(--pill);background:rgba(194,69,47,.18);color:#F0A593;border:1px solid rgba(194,69,47,.42)}
 .tag.mix{background:rgba(184,128,31,.18);color:#E7C07A;border-color:rgba(184,128,31,.42)}
 .hgo{margin-left:auto;font-size:14px;font-weight:700;color:var(--gold-br)}
-.cont{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);border-radius:var(--rs);padding:14px 16px;box-shadow:var(--sh);cursor:pointer}
+.hlane{display:flex;gap:14px;overflow-x:auto;margin:0 -20px;padding:2px 20px 8px;scrollbar-width:none}.hlane::-webkit-scrollbar{display:none}
+.hcard{flex:0 0 254px;position:relative;overflow:hidden;background:linear-gradient(152deg,#241E18,#15110C);color:#F4EEE2;border-radius:var(--r);padding:18px;box-shadow:var(--shh);cursor:pointer}
+.hcard::after{content:"";position:absolute;right:-40px;top:-40px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(201,138,58,.28),transparent 70%)}
+.hcard .hk{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--gold-br);position:relative}
+.hct{text-wrap:balance;font-size:18px;line-height:23px;font-weight:800;letter-spacing:-.01em;margin:7px 0 6px;position:relative}
+.hcx{font-size:13.5px;line-height:19px;color:#CBBEA6;position:relative;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.hcard .tag{margin-top:12px;position:relative}
+.hmore{background:linear-gradient(152deg,#1c1913,#131110);display:flex;flex-direction:column;justify-content:center}
+.hmore .hgo{margin:10px 0 0}
+.cont{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:var(--rs);padding:14px 16px;box-shadow:var(--sh);cursor:pointer}
 .cont .dot{width:9px;height:9px;border-radius:50%;background:var(--gold);flex:none}
 .cont .l{font-size:16px;font-weight:600}.cont .s{font-size:13px;color:var(--meta)}.cont svg{margin-left:auto;color:var(--meta)}
 .feat{display:grid;gap:14px}
-.fc{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--sh);cursor:pointer;transition:transform .14s}
+.fc{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--sh);cursor:pointer;transition:transform .14s}
 .fc:active{transform:scale(.99)}
 .fcn{font-size:13px;font-weight:700;color:var(--gold)}
 .fct{font-size:21px;line-height:26px;font-weight:700;letter-spacing:-.01em;margin:4px 0 6px}
@@ -52,20 +106,21 @@ section{margin-top:30px}
 .chip .d{width:8px;height:8px;border-radius:50%}.chip.solid .d{background:var(--solid)}.chip.mixed .d{background:var(--mixed)}.chip.contested .d{background:var(--contested)}
 .lane{display:flex;gap:14px;overflow-x:auto;margin:0 -20px;padding:2px 20px 6px;scrollbar-width:none}
 .lane::-webkit-scrollbar{display:none}
-.scd{flex:0 0 250px;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--sh);cursor:pointer}
+.scd{flex:0 0 250px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--sh);cursor:pointer}
 .scs{font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--org)}
 .sct{font-size:18px;line-height:23px;font-weight:700;margin:6px 0 5px}
 .scdd{font-size:14px;line-height:19px;color:var(--ink2)}
 .scm{margin-top:14px;font-size:13px;color:var(--meta)}
 .tiles{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:560px){.tiles{grid-template-columns:1fr}}
-.tl{background:#fff;border:1px solid var(--line);border-left:4px solid var(--econ);border-radius:var(--r);padding:18px;box-shadow:var(--sh);cursor:pointer}
+.tl{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--econ);border-radius:var(--r);padding:18px;box-shadow:var(--sh);cursor:pointer}
 .tlh{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
 .tln{font-size:17px;font-weight:700}.tlc{font-size:13px;color:var(--meta);white-space:nowrap}
-.tlx{font-size:13px;line-height:19px;color:var(--ink2);margin-top:6px}
-.tlt{margin-top:12px;font-size:13px;font-weight:600;color:var(--tension)}
+.tlw{font-size:13.5px;line-height:19px;color:var(--ink2);margin-top:6px}
+.tlx{font-size:12.5px;line-height:18px;color:var(--meta);margin-top:6px}
+.tlt{margin-top:12px;font-size:13px;font-weight:600;color:#A0344C}/* затемнён с --tension #C2546A: мелкий текст 13px требует AA 4.5 (a11y-гейт 58560322) */
 .finds{display:grid;gap:14px}
-.fd{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--sh);cursor:pointer}
+.fd{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--sh);cursor:pointer}
 .fdh{display:flex;align-items:center;gap:10px;margin-bottom:7px}
 .bdg{font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--info);background:rgba(107,92,165,.1);padding:3px 9px;border-radius:var(--pill)}
 .fdt{font-size:17px;line-height:23px;font-weight:700}.fdd{font-size:14px;line-height:20px;color:var(--ink2);margin-top:4px}
@@ -73,7 +128,11 @@ section{margin-top:30px}
 .bar{width:64px;height:5px;border-radius:3px;background:var(--line);overflow:hidden}.bar i{display:block;height:100%;background:var(--mixed)}
 .conf span{font-size:12px;font-weight:600;color:var(--meta)}
 .duo{display:flex;gap:14px}
-.bt{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:9px;height:52px;border-radius:var(--rs);font-size:15px;font-weight:700;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+.bt{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:9px;height:52px;border-radius:var(--rs);font-size:15px;font-weight:700;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.serl{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+.serlink{background:none;border:0;color:var(--meta);font-size:14px;font-weight:600;cursor:pointer;padding:6px 4px}
+.serlink:hover{color:var(--ink)}
+.serdot{color:var(--line)}
 .bt svg{width:20px;height:20px;color:var(--gold)}
 .nav{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(251,250,247,.94);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
 .navin{max-width:720px;margin:0 auto;display:flex}
@@ -84,11 +143,12 @@ section{margin-top:30px}
 .sheet.on{transform:translateY(0)}
 .grip{width:38px;height:5px;border-radius:3px;background:var(--line);margin:10px auto 0}
 .sbar{position:sticky;top:0;background:var(--bg);display:flex;justify-content:space-between;padding:8px 18px 12px;border-bottom:1px solid var(--line)}
-.ib{width:42px;height:42px;display:inline-flex;align-items:center;justify-content:center;border:0;background:none;color:var(--ink2);border-radius:var(--pill);cursor:pointer}
+.ib{width:42px;height:42px;display:inline-flex;align-items:center;justify-content:center;border:0;background:none;color:var(--ink2);border-radius:var(--pill);cursor:pointer;transition:color .15s}
+.ib.on{color:var(--gold)}.ib.on svg{fill:var(--gold)}
 .cb{padding:18px 22px 60px}
 .ct{font-size:30px;line-height:35px;font-weight:800;letter-spacing:-.02em;margin:6px 0 12px}
 .clead{font-size:17px;line-height:26px}
-.cap{margin-top:20px;background:#fff;border:1px solid var(--line);border-radius:var(--rs);padding:16px;box-shadow:var(--sh)}
+.cap{margin-top:20px;background:var(--card);border:1px solid var(--line);border-radius:var(--rs);padding:16px;box-shadow:var(--sh)}
 .cap .lb{font-size:13px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px}
 .cap .bd{font-size:16px;line-height:24px;white-space:pre-line}
 .honest{margin-top:16px;background:#211C16;color:#EFE6D7;border-radius:var(--rs);padding:16px}
@@ -98,16 +158,108 @@ section{margin-top:30px}
 .dsec{margin-top:18px}.dsec .l{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--meta);margin-bottom:6px}.dsec .b{font-size:16px;line-height:24px;white-space:pre-line}
 .loading{padding:40px 0;text-align:center;color:var(--meta);font-size:14px}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+/*TAP-FEEDBACK*/button:active,a:active,[onclick]:active,.ni:active,[data-k]:active,[data-route]:active,[data-slug]:active,[data-cont]:active,[data-q]:active,.row:active,.rt-row:active,.lg-row:active,.fc:active,.stoprow:active,.opt:active,.pill:active,.tab:active,.deeper:active{opacity:.6;transition:opacity .06s}
+/*MCUX v1 — единый UX: нативные переходы между страницами, ховеры, тап-фидбек, reduced-motion*/
+@view-transition{navigation:auto}
+.nav{view-transition-name:mcnav}
+button:active,a:active,[onclick]:active,.ni:active,.mrow:active,.row:active,.res:active,.tbtn:active,.fc:active,.opt:active,.pill:active{opacity:.6;transition:opacity .06s}
+@media(hover:hover){a:hover,button:hover,.ni:hover,.mrow:hover,.row:hover,.res:hover,.tbtn:hover,.fc:hover,.opt:hover,[data-k]:hover,[data-slug]:hover,[data-cont]:hover,[data-route]:hover,[data-q]:hover{opacity:.85;transition:opacity .12s ease;cursor:pointer}}
+@media(hover:none){button:active,a:active,[onclick]:active,.ni:active,.mrow:active,.row:active,.res:active,.tbtn:active,.fc:active,.opt:active,.lp:active,.rc:active,.cont:active,.hero:active,.scd:active,.tl:active,.fd:active,.lk:active,.deeper:active,[data-k]:active,[data-slug]:active,[data-cont]:active,[data-route]:active,[data-q]:active{opacity:.72;transform:scale(.97);transition:transform .06s ease,opacity .06s}}
+a:focus-visible,button:focus-visible,[onclick]:focus-visible,.ni:focus-visible,.mrow:focus-visible,.row:focus-visible,.res:focus-visible,.tbtn:focus-visible,.fc:focus-visible,.opt:focus-visible,.lp:focus-visible,.rc:focus-visible,[data-k]:focus-visible,[data-slug]:focus-visible,[data-cont]:focus-visible,[data-route]:focus-visible{outline:2px solid var(--gold,#97591A);outline-offset:2px;border-radius:6px}
+.mcstate{padding:46px 20px;text-align:center;color:var(--meta,#6E675E)}
+.mcstate .ic{font-size:30px;line-height:1;margin-bottom:12px;opacity:.75}
+.mcstate .msg{font-size:14.5px;line-height:20px;max-width:300px;margin:0 auto}
+.mcstate .retry{margin-top:16px;display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:700;color:var(--gold,#97591A);background:none;border:1px solid var(--line,#ECE7DD);border-radius:999px;padding:9px 18px;cursor:pointer}
+.mcsk{background:linear-gradient(90deg,#EFEBE2,#F6F3ED,#EFEBE2);background-size:200% 100%;animation:mcsh 1.2s infinite;border-radius:12px}
+@keyframes mcsh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+/*MCDESK v1 — десктоп (>=960px): нижний таб-бар -> левый сайдбар, контент смещается вправо; мобилка не трогается*/
+@media(min-width:960px){
+ body:has(nav.nav){padding-left:236px}
+ nav.nav{top:0;bottom:0;right:auto;width:236px;border-top:0;border-right:1px solid var(--line);padding:0}
+ nav.nav .navin{flex-direction:column;align-items:stretch;height:100vh;max-width:none;margin:0;padding:22px 14px;gap:3px}
+ nav.nav .ni{flex:0 0 auto;flex-direction:row;justify-content:flex-start;gap:14px;min-height:0;height:auto;padding:12px 14px;border-radius:12px}
+ nav.nav .ni svg{width:22px;height:22px}
+ nav.nav .ni .lb{font-size:15px;font-weight:600}
+ nav.nav .ni.on{background:rgba(176,106,31,.09)}
+ @media(hover:hover){nav.nav .ni:hover{background:rgba(176,106,31,.06);opacity:1}}
+ body:has(nav.nav) .topbar{left:236px}
+ body:has(nav.nav) .sheet{left:236px}
+}
+/*MCATM v1 — десктоп (>=960px): атмосфера/глубина обсерватории + микро-жизнь на ховере. Мобилка не трогается, всё в каноне.*/
+@media(min-width:960px){
+ body{background-color:var(--bg);background-repeat:no-repeat;background-attachment:fixed;
+   background-image:
+     radial-gradient(1150px 640px at 88% -8%, rgba(201,138,58,.08), transparent 62%),
+     radial-gradient(820px 560px at 3% 106%, rgba(107,92,165,.05), transparent 60%);}
+ body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;box-shadow:inset 0 0 260px rgba(20,17,12,.055)}
+}
+@media(min-width:960px) and (hover:hover){
+ .scd,.rc,.sit,.card,.feat,.fc,.tile,.cont{transition:transform .17s ease, box-shadow .17s ease, border-color .17s ease}
+ .scd:hover,.rc:hover,.sit:hover,.card:hover,.feat:hover,.fc:hover,.cont:hover{opacity:1;transform:translateY(-2px);box-shadow:0 12px 32px rgba(20,17,12,.12)}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}
+/* онбординг-оверлей: первый визит, Матчасть интерактивна под ним */
+.onbov{position:fixed;inset:0;z-index:900;display:flex;align-items:flex-end;justify-content:center;background:rgba(20,17,12,.42);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);opacity:0;transition:opacity .3s;padding:0 14px calc(18px + env(safe-area-inset-bottom))}
+.onbov.on{opacity:1}
+.onbc{width:100%;max-width:520px;background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:0 24px 60px rgba(20,17,12,.34);padding:20px 18px 16px;transform:translateY(16px);transition:transform .3s}
+.onbov.on .onbc{transform:translateY(0)}
+.onbk{font-size:13px;font-weight:600;color:var(--gold);letter-spacing:.02em}
+.onbt{font-size:22px;line-height:27px;font-weight:800;letter-spacing:-.02em;margin:3px 0 4px}
+.onbs{font-size:14px;line-height:20px;color:var(--ink2);margin-bottom:14px}
+.onbg{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.onbi{text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:12px 13px;cursor:pointer;transition:border-color .15s,background .15s;font:inherit;color:var(--ink)}
+.onbi .t{font-size:15px;font-weight:700}
+.onbi .s{font-size:12.5px;color:var(--meta);margin-top:1px}
+.onbi.sel{border-color:var(--gold-br);background:rgba(201,138,58,.09)}
+.onbi:active{transform:scale(.98)}
+.onbf{display:flex;align-items:center;gap:12px;margin-top:15px}
+.onbp{font-size:14px;font-weight:600;color:var(--meta);background:none;border:0;cursor:pointer;padding:10px 4px}
+.onbb{margin-left:auto;background:var(--gold);color:#fff;border:0;border-radius:12px;font:inherit;font-weight:700;font-size:15px;padding:11px 18px;cursor:pointer}
+.onbb:disabled{opacity:.4;cursor:default}
+/* v4: живой вкус честного разбора (ценность до ввода) + опциональная под-задачу */
+.onbdemo{background:#211C16;color:#EFE6D7;border-radius:14px;padding:13px 14px;margin-bottom:4px}
+.onbdemo-h{display:flex;align-items:flex-start;gap:9px;margin-bottom:8px}
+.onbdemo-t{font-size:14.5px;font-weight:700;line-height:19px;flex:1}
+.onbdemo-lb{font-size:11.5px;font-weight:700;color:var(--gold-br);text-transform:uppercase;letter-spacing:.03em;margin-bottom:4px}
+.onbdemo-bd{font-size:13.5px;line-height:20px;color:#E4DAC9}
+.onbtune{display:block;width:100%;text-align:center;background:none;border:0;color:var(--meta);font:inherit;font-size:13.5px;font-weight:600;padding:13px 4px 2px;cursor:pointer}
+.onbtune:active{opacity:.7}
+@media(min-width:560px){.onbov{align-items:center}}
+/* ── Тёмная тема (тёплая «ночная обсерватория»). В конце стилей, чтобы точечные override победили по порядку. ── */
+/* Тёмная тема (тёплая «ночная обсерватория»). Ручной выбор (Настройки → Тема): mcApplyTheme резолвит 'auto'
+   по системе и ставит html[data-theme]. Явный html[data-theme="dark"] переключает CSS-переменные независимо от системы. */
+html[data-theme="dark"]{ --bg:#100D0A; --ink:#F2ECE0; --ink2:#C6BDAF; --meta:#948B7D; --line:#2B2620; --card:#191510; --on:#fff;
+   --gold:#D69A4C; --gold-br:#E0A24E;
+   --sh:0 2px 12px rgba(0,0,0,.4),0 1px 2px rgba(0,0,0,.34); --shh:0 20px 48px rgba(0,0,0,.55); background:#100D0A!important }
+html[data-theme="dark"] .nav{background:rgba(16,13,10,.92)}
+html[data-theme="dark"] .onbc{background:#17130E}
+html[data-theme="dark"] .mcsk{background:linear-gradient(90deg,#1b1710,#241f16,#1b1710);background-size:200% 100%}
+/* Пре-JS фолбэк: пока выбор ещё не проставлен (data-theme отсутствует) — следуем системе. */
+@media(prefers-color-scheme:dark){
+ html:not([data-theme]){ --bg:#100D0A; --ink:#F2ECE0; --ink2:#C6BDAF; --meta:#948B7D; --line:#2B2620; --card:#191510; --on:#fff;
+   --gold:#D69A4C; --gold-br:#E0A24E;
+   --sh:0 2px 12px rgba(0,0,0,.4),0 1px 2px rgba(0,0,0,.34); --shh:0 20px 48px rgba(0,0,0,.55); background:#100D0A!important }
+ html:not([data-theme]) .nav{background:rgba(16,13,10,.92)}
+ html:not([data-theme]) .onbc{background:#17130E}
+ html:not([data-theme]) .mcsk{background:linear-gradient(90deg,#1b1710,#241f16,#1b1710);background-size:200% 100%}
+}
 </style>
+<style>/*mc:desktop*/@media(min-width:1020px){.nav{top:0;bottom:0;left:0;right:auto;width:92px;border-top:0;border-right:1px solid var(--line);padding-bottom:0}.navin{flex-direction:column;justify-content:center;gap:8px;height:100%;max-width:none}.ni{flex:0 0 auto;padding:13px 0;margin:0 10px;border-radius:12px}.ni.on{background:rgba(151,89,26,.08)}body{padding-left:92px}.wrap{max-width:760px}.cta{left:92px}.topbar{left:92px}}@media(hover:hover){.ni{transition:color .15s,background .15s}.ni:hover{color:var(--gold)}a{transition:opacity .12s}}</style>
 </head>
 <body>
-<div class="app" id="app"><div class="loading">Загружаю…</div></div>
+<script>/*mc:hashroute*/(function(){try{var h=location.hash||"";var m=h.match(/^#\/c\/([^?&#]+)/);if(m&&m[1]){location.replace("card.html?slug="+encodeURIComponent(decodeURIComponent(m[1])));return;}
+/* легаси инвайт-ссылки #/join/<code> — единственный канал привлечения; конвертируем в access.html?invite= (cold-audit) */
+var j=h.match(/^#\/join\/([^?&#]+)/);if(j&&j[1]){location.replace("access.html?invite="+encodeURIComponent(decodeURIComponent(j[1])));return;}}catch(e){}})();</script>
+<script>/*mc:theme*/(function(){function apply(){try{var p=localStorage.getItem('mc:theme')||'auto';var eff=(p==='light'||p==='dark')?p:((window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light');document.documentElement.setAttribute('data-theme',eff);}catch(e){}}window.mcApplyTheme=apply;apply();try{if(window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').addEventListener)window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',function(){var p;try{p=localStorage.getItem('mc:theme')||'auto';}catch(e){p='auto';}if(p==='auto')apply();});}catch(e){}})();</script>
+<script>/*mc:track*/function track(k,p){try{if(window.__SB){var _pr=window.__SB.rpc('reader_event',{p_kind:k,p_payload:p||{}});if(_pr&&_pr.catch)_pr.catch(function(){});}}catch(e){}}</script>
+<div class="app" id="app" role="main"><div style="padding:24px 0"><div class="mcsk" style="height:18px;width:38%;margin-bottom:10px"></div><div class="mcsk" style="height:36px;width:82%;margin-bottom:9px"></div><div class="mcsk" style="height:15px;width:58%;margin-bottom:22px"></div><div class="mcsk" style="height:150px;border-radius:20px;margin-bottom:16px"></div><div class="mcsk" style="height:118px;border-radius:20px;margin-bottom:14px"></div><div class="mcsk" style="height:118px;border-radius:20px"></div></div></div>
+<!-- Админ-доступ (Пульт/Кабина) живёт в меню (personal.html → Админ), не на витрине Матчасти. -->
 
 <nav class="nav"><div class="navin">
- <button class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 1.5L13 16l-1.5-4.5z"/></svg><span class="lb">Исследовать</span></button>
- <button class="ni on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5A2.5 2.5 0 0 0 6.5 8H20"/></svg><span class="lb">Решить</span></button>
- <button class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v-8"/><path d="M12 12c0-4 3-6 7-6 0 4-3 6-7 6z"/><path d="M12 14c0-3-2-5-6-5 0 3 2 5 6 5z"/></svg><span class="lb">Расти</span></button>
- <button class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span class="lb">Меню</span></button>
+ <button class="ni" onclick="location.href='path.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="18" r="2.2"/><path d="M8.3 15.7C11 13 13 11 15.7 8.3"/><path d="M17.5 3l1.1 2.4L21 6.5l-2.4 1.1L17.5 10l-1.1-2.4L14 6.5l2.4-1.1z"/></svg><span class="lb">Путь</span></button>
+ <button class="ni on" onclick="location.href='solve-home.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5A2.5 2.5 0 0 0 6.5 8H20"/></svg><span class="lb">Справочник</span></button>
+ <button class="ni" onclick="location.href='explore.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 1.5L13 16l-1.5-4.5z"/></svg><span class="lb">Карта</span></button>
+ <button class="ni" onclick="location.href='personal.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span class="lb">Моё</span></button>
 </div></nav>
 
 <div class="scrim" id="scrim" onclick="closeCard()"></div>
@@ -116,7 +268,7 @@ section{margin-top:30px}
  <div class="sbar">
   <button class="ib" onclick="closeCard()" aria-label="Назад"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
   <div style="display:flex;gap:4px">
-   <button class="ib" aria-label="В избранное"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.6-7-9.6A3.9 3.9 0 0 1 12 7a3.9 3.9 0 0 1 7 3.4c0 5-7 9.6-7 9.6z"/></svg></button>
+   <button class="ib" id="favBtn" onclick="favCurrent()" aria-label="В избранное"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.6-7-9.6A3.9 3.9 0 0 1 12 7a3.9 3.9 0 0 1 7 3.4c0 5-7 9.6-7 9.6z"/></svg></button>
   </div>
  </div>
  <div class="cb" id="cb"></div>
@@ -125,11 +277,11 @@ section{margin-top:30px}
 <!-- сид: реальный публичный снимок solve_home() — мгновенный/офлайн рендер; при сети заменяется живым вызовом -->
 <script>
 var SEED = {
- territory:null, all28:17,
+ territory:null, all24:24,
  hero:{slug:"hook-model", title:"Модель крючка (Hook Model, Eyal)", rob:"mixed",
    teaser:"Знаменитый рецепт удержания: проведи пользователя по петле — получишь лояльного. Но тот же механизм строит и вредную зависимость. Разбираем, где граница.",
    card:{lead:"Привычка к продукту формируется петлёй из четырёх стадий: триггер → действие → ПЕРЕМЕННОЕ вознаграждение → вложение. Нир Эйал, «Hooked» (2014), на базе модели Фогга и подкрепления Скиннера.",
-     apply:"Картируйте 4 стадии: какой ВНУТРЕННИЙ триггер закрываете (не внешний пуш), как упростить действие, где уместна переменная награда, что пользователь вкладывает. Обязательно прогоните через «матрицу манипуляции» Эйала.",
+     apply:"Картируйте 4 стадии: какой «внутренний» триггер закрываете (не внешний пуш), как упростить действие, где уместна переменная награда, что пользователь вкладывает. Обязательно прогоните через «матрицу манипуляции» Эйала.",
      mech:"Внутренний триггер (скука, тревога) запускает простейшее действие ради непредсказуемой награды (подкрепление Скиннера), затем вложение повышает ценность возврата. Каждый цикл крепче связывает триггер с продуктом.",
      counter:"Тот же механизм, что строит полезную привычку, строит и вредную зависимость: переменное вознаграждение работает потому, что эксплуатирует дофаминовую систему помимо воли. Эйал сам ввёл «матрицу манипуляции» и написал «Indistractable» в ответ на то, как индустрия применила Hook ради удержания вопреки интересам людей. Вопрос не «как зацепить», а «служит ли петля пользователю или эксплуатирует его»."}},
  featured:[
@@ -147,7 +299,7 @@ var SEED = {
       ex:"Эксперимент с кружками (Kahneman, Knetsch, Thaler 1990): владельцы просили вдвое больше, чем готовы платить покупатели. Эффект слабеет у опытных трейдеров (List 2003)."}}
  ],
  situations:[
-  {slug:"scenario-recovery", title:"Восстановление после сбоя", teaser:"Продукт подвёл — упал сервис, зависла оплата. Как вернуть доверие.", forces:0, tools:0, stage:null}
+  {slug:"scenario-recovery", title:"Восстановление после сбоя", teaser:"Продукт подвёл — упал сервис, зависла оплата. Как вернуть доверие.", forces:3, tools:1, stage:"Удержание"}
  ],
  themes:[
   {discipline:"Поведенческая экономика", cnt:25, samples:["Неприятие потерь","Смещение к настоящему","Якорение"]},
@@ -164,65 +316,135 @@ var SEED = {
 };
 
 var DCOL={"Поведенческая экономика":"--econ","Когнитивная психология":"--cog","UX / HCI":"--ux","UX/HCI":"--ux","Социальная психология":"--soc","Организационные системы":"--org","Орг-системы":"--org","Мотивация/идентичность":"--mot","Продуктовые практики":"--prod","Нейронаука/тело":"--neu","Эволюция/этология":"--evo"};
-var ROB={solid:{c:"solid",t:"Подтверждено"},mixed:{c:"mixed",t:"Неоднозначно"},contested:{c:"contested",t:"Спорно"}};
+// v5 п.6: «зачем это продакту» — 1 строка на область (не просто список концептов).
+var DWHY={"Поведенческая экономика":"Как люди реально оценивают цену, риск и выгоду — против «рационального» пользователя.","Когнитивная психология":"Пределы внимания и памяти — сколько сложности выдержит пользователь.","Социальная психология":"Как влияют другие — доверие, нормы, социальное доказательство.","UX / HCI":"Как устройство интерфейса помогает решению или мешает ему.","UX/HCI":"Как устройство интерфейса помогает решению или мешает ему.","Продуктовые практики":"Рамки и метрики, которыми продакт ведёт продукт.","Мотивация/идентичность":"Что удерживает и формирует привычку — без тёмных крючков.","Организационные системы":"Как устроены команды и стимулы вокруг продукта.","Орг-системы":"Как устроены команды и стимулы вокруг продукта.","Нейронаука/тело":"Телесная основа решений — что идёт до сознательного выбора.","Эволюция/этология":"Древние программы поведения, всплывающие в продукте."};
+function discWhy(d){ return DWHY[d]||"Что это направление даёт продакту на практике."; }
+var ROB={solid:{c:"solid",t:"Проверено"},mixed:{c:"mixed",t:"Есть нюансы"},contested:{c:"contested",t:"Спорно"}};
 var FTYPE={gap:"Граница",bridge:"Мост",contradiction:"Спор"};
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
-function robInfo(r){return ROB[r]||{c:"mixed",t:"Неоднозначно"};}
+function plural(n,a,b,c){var m=Math.abs(+n||0)%100,d=m%10;if(m>10&&m<20)return c;if(d>1&&d<5)return b;if(d===1)return a;return c;}
+function robInfo(r){return ROB[r]||{c:"mixed",t:"Есть нюансы"};}
+// v5 п.7: научный сигнал надёжности — человечный ярлык + смысл на тап (ⓘ). Класс c из robInfo.
+var ROBX={solid:{t:'Проверено',m:'Устойчиво воспроизводится в исследованиях'},mixed:{t:'Есть нюансы',m:'Работает, но с важными оговорками'},contested:{t:'Спорно',m:'Данные противоречивы — единого мнения нет'}};
+function robBadge(rob, dark){ var c=robInfo(rob).c; var x=ROBX[c]||ROBX.mixed;
+ // Информ-бейдж (НЕ вложенная кнопка внутри карточки-кнопки — a11y nested-interactive): без role/tabindex.
+ // aria-label несёт смысл скринридеру; тап-тултип (data-rob) — прогрессивное усиление для указателя.
+ return '<span class="rbadge '+c+(dark?' on-dark':'')+'" data-rob="'+c+'" aria-label="Надёжность: '+esc(x.t)+' — '+esc(x.m)+'"><span class="rbd"></span>'+esc(x.t)+'<span class="rbi" aria-hidden="true">ⓘ</span></span>'; }
+// Обрезка превью по ГРАНИЦЕ СЛОВА (свип f37dac39): серверные тизеры/byline режутся по фикс-длине посреди слова
+// («…Кажет», «(worki», «DAU, вы»). Хвост-огрызок честнее убрать, чем показать. Короткие/полные строки не трогаем.
+function clip(s,n){ s=String(s==null?"":s); if(s.length<=n) return s; var c=s.slice(0,n); var i=c.lastIndexOf(" ");
+ if(i>Math.floor(n*0.6)) c=c.slice(0,i); c=c.replace(/[\s.,;:!?«»()"'—–-]+$/,"");
+ c=c.replace(/(?:\s+(?:в|во|на|и|а|но|с|со|к|ко|о|об|обо|у|не|ни|по|из|изо|за|для|что|как|от|до|при|под|над|без|же|ли|бы|то|любой|любую|любым|своей|свою|своего|этой|эту|его|её|их|такой|такую))+$/i,""); return c+"…"; }
 
 var CUR=SEED;
+// Персонализация Слой-1: выбранные в онбординге рычаги (product levers). Переживают live-рефреш (модульная переменная).
+var MC_GOALS=null; try{ var _mm0=JSON.parse(localStorage.getItem('mc:model')||'null'); if(_mm0&&_mm0.goals&&_mm0.goals.length) MC_GOALS=_mm0.goals; }catch(e){}
+// рычаг → ключевые слова (сверяем со stage+title+teaser ситуации, регистронезависимо)
+var LEVER_MATCH={
+ activation:['актив','онбординг','aha','пуст','ценност','первое озар','выдач'],
+ retention:['удерж','отток','возврат','лояльн','отмен подписк'],
+ monetization:['монетиз','оплат','цен','пейволл','тариф','чекаут','платн','подписк'],
+ engagement:['вовлеч','вниман','привыч','пуш','уведомл'],
+ decisions:['решен','приоритет','выбор']
+};
+function leverLabel(k){ for(var i=0;i<ONB_LEVERS.length;i++){ if(ONB_LEVERS[i].k===k) return ONB_LEVERS[i].t; } return k; }
+function leverLabels(goals){ return (goals||[]).map(leverLabel).join(', '); }
+function sitMatches(s,goals){ if(!goals||!goals.length) return false; var hay=((s.stage||'')+' '+(s.title||'')+' '+(s.teaser||'')).toLowerCase();
+ for(var i=0;i<goals.length;i++){ var kws=LEVER_MATCH[goals[i]]||[]; for(var j=0;j<kws.length;j++){ if(hay.indexOf(kws[j])>=0) return true; } } return false; }
+function orderSits(sits,goals){ var hot=[],cold=[]; sits.forEach(function(s){ (sitMatches(s,goals)?hot:cold).push(s); }); return hot.concat(cold); }
+// Секция «Под вашу задачу» вынесена: когда есть выбор рычагов — совпавшие ситуации ведут, заголовок называет цель.
+function sitSectionHtml(d){
+ var base=(d.situations||[]);
+ var sits=base.filter(function(s){return (s.forces||0)>0||(s.tools||0)>0;});
+ if(!sits.length) return '';
+ var goals=MC_GOALS||[];
+ if(goals.length) sits=orderSits(sits,goals);
+ var sub=goals.length ? ('под вашу цель: '+esc(leverLabels(goals))) : 'ситуации, с которыми сталкиваетесь в продукте';
+ var H='<section><div class="sh arow"><div><h2 class="st">Под вашу задачу</h2><div class="ss">'+sub+'</div></div><a class="all" href="situations.html">Все '+(d.situations_total||sits.length)+' →</a></div><div class="lane">';
+ sits.forEach(function(s){ var oi=base.indexOf(s);
+  var meta=[]; if(s.forces) meta.push(s.forces+' '+plural(s.forces,'сила','силы','сил')); if(s.tools) meta.push(s.tools+' '+plural(s.tools,'приём','приёма','приёмов'));
+  var hot=goals.length&&sitMatches(s,goals);
+  H+='<div class="scd" '+(hot?'style="box-shadow:inset 0 0 0 1.5px rgba(201,138,58,.45)"':'')+' data-k="s'+oi+'">'+(s.stage?'<div class="scs">'+esc(s.stage)+'</div>':'<div class="scs">Ситуация</div>')+'<div class="sct">'+esc(s.title)+'</div><div class="scdd">'+esc(s.teaser)+'</div><div class="scm">'+meta.join(' · ')+'</div></div>'; });
+ H+='</div></section>';
+ return H;
+}
+// Пере-ранжирование после выбора в онбординге: секция уезжает вверх, заголовок под цель, скролл + тост.
+function reRank(goals){ MC_GOALS=(goals&&goals.length)?goals:null; try{ render(CUR); }catch(e){}
+ setTimeout(function(){ try{ var target=null; Array.prototype.forEach.call(document.querySelectorAll('#app .st'),function(st){ if(!target && st.textContent.indexOf('Под вашу задачу')===0) target=st.closest('section'); }); if(target){ target.scrollIntoView({behavior:'smooth',block:'start'}); } }catch(e){} }, 80);
+ try{ toast('Готово — собрали под вашу задачу'); }catch(e){}
+}
 function render(d){
  CUR=d;
- var H='<div class="top"><div class="kick">База знаний</div><div class="h1">Матчасть</div>'+
-   '<div class="subt">Как люди принимают решения — и как это применить в продукте</div>';
- if(d.territory && d.territory.total){ H+='<div class="ter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.3 6.2L20.5 11l-6.2 2.3L12 19.5 9.7 13.3 3.5 11l6.2-1.8z"/></svg><span><b>'+d.territory.lit+'</b> из '+d.territory.total+' идей изучено</span></div>'; }
- H+='</div>';
+ // v5 (screen-matchast-home v5): ЗНАНИЕ-ПЕРВЫМ. Личный слой (карта/Продолжить) убран с экрана → в Меню (personal).
+ var H='<div class="top"><div class="kick">База знаний</div><h1 class="h1">Справочник</h1>'+
+   '<div class="subt">Быстрый ответ под ваш вопрос — с пометкой надёжности</div></div>';
+ // п.1/8: видимый поиск = главный вход (не иконка), рядом — «крутить случайную». Поиск ведёт в search.html (kb_search_epistemic).
+ H+='<div class="msearch"><form class="msf" id="msform" role="search"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>'+
+   '<input id="msq" type="search" placeholder="Что разобрать?" aria-label="Что разобрать" autocomplete="off" enterkeyhint="search">'+
+   '<button type="button" class="msdice" data-k="rnd" aria-label="Случайный концепт" title="Открыть случайный концепт"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="9" cy="9" r="1.1" fill="currentColor" stroke="none"/><circle cx="15" cy="9" r="1.1" fill="currentColor" stroke="none"/><circle cx="9" cy="15" r="1.1" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="1.1" fill="currentColor" stroke="none"/></svg></button></form>'+
+   '<div class="mschips"><button class="mschip" data-q="онбординг">онбординг</button><button class="mschip" data-q="удержание">удержание</button><button class="mschip" data-q="ценообразование">ценообразование</button></div></div>';
+
+ // Питч-шапка для ГОСТЯ (62bbf2db, воронка первого впечатления): тонкая несмахиваемая строка-ценность (JTBD)
+ // + отдельный dismissible-баннер с CTA на доступ. Корневой redirect НЕ трогаем — только ценность-первой.
+ if(!window.__MEMBER){
+  H+='<div class="pitchhdr">Продуктовые методы по науке — где метод врёт и чем крыть на ревью.</div>';
+  var _pseen=false; try{ _pseen=localStorage.getItem('mc:pitch:seen')==='1'; }catch(e){}
+  if(!_pseen) H+='<div class="pitchban" id="pitchban"><span class="pb-t">Реакции, заметки и полный доступ — по приглашению.</span><a class="pb-cta" href="access.html">Как получить →</a><button class="pb-x" data-k="pitchx" aria-label="Скрыть баннер">✕</button></div>';
+ }
+
+ // «Продолжить» и «ваша карта» перенесены в Меню (personal) — экран Матчасти = чистое знание (v5 п.2/9).
+
+ // ПОД ВАШУ ЗАДАЧУ — primary наверх, когда есть выбор рычагов (иначе рисуется в своём обычном месте ниже)
+ if(MC_GOALS) H+=sitSectionHtml(d);
 
  // ГЕРО — честный разбор (спорный/неоднозначный пример)
- if(d.hero){ var hr=robInfo(d.hero.rob);
+ // Честный разбор СЕРИЕЙ (screen-matchast-home v2): лента тёмных мини-карточек первым экраном.
+ if(d.honest_series && d.honest_series.length){
+  var _ht=d.honest_total||d.honest_series.length;
+  H+='<section style="margin-top:22px"><div class="sh arow"><div><h2 class="st">Честный разбор</h2><div class="ss">мифы продуктовых методов — и как на самом деле · '+_ht+' '+plural(_ht,'разбор','разбора','разборов')+'</div></div><a class="all" href="honest.html">Все →</a></div><div class="hlane">';
+  d.honest_series.forEach(function(h,i){
+   H+='<div class="hcard" data-k="hs'+i+'"><div class="hk">Честный разбор</div><div class="hct">'+esc(h.title)+'</div><div class="hcx">'+esc(clip(h.teaser,115))+'</div>'+robBadge(h.rob,true)+'</div>';
+  });
+  var _extra=(d.honest_full||0)-(d.honest_total||0);
+  if(!window.__MEMBER && _extra>0) H+='<div class="hcard hmore" data-k="hslogin"><div class="hct">Ещё '+_extra+' в полном доступе</div><div class="hcx">Полные честные разборы — по приглашению.</div><span class="hgo">Войти →</span></div>';
+  H+='</div></section>';
+ } else if(d.hero){
   H+='<section style="margin-top:22px"><div class="hero" data-k="hero"><div class="hk">Честный разбор</div>'+
-    '<div class="ht">'+esc(d.hero.title)+'</div><div class="hb">'+esc(d.hero.teaser)+'</div>'+
-    '<div class="hf"><span class="tag'+(d.hero.rob==="mixed"?" mix":"")+'">'+esc(hr.t)+'</span><span class="hgo">Открыть разбор →</span></div></div></section>'; }
+    '<div class="ht">'+esc(d.hero.title)+'</div><div class="hb">'+esc(clip(d.hero.teaser,155))+'</div>'+
+    '<div class="hf">'+robBadge(d.hero.rob,true)+'<span class="hgo">Открыть разбор →</span></div></div></section>'; }
+
+ // Карточка диагностики убрана с дома/Справочника (правка Артёма, bus 38895927 п.1): непонятна без контекста.
+ // Диагностика живёт контекстно — финалы глав price/metrics (diag_bridge) + мосты с карточек nps-survey/rice-prioritization.
+
+ // ПОД ВАШУ ЗАДАЧУ — ситуации (после честной серии, до «С чего начать»; если не подняты наверх выбором рычагов)
+ if(!MC_GOALS) H+=sitSectionHtml(d);
 
  // НЕСУЩИЕ
- if(d.featured && d.featured.length){
-  H+='<section><div class="sh arow"><div><div class="st">С чего начать</div><div class="ss">'+(d.all28||d.featured.length)+' главных идей о том, как люди принимают решения</div></div><a class="all">Все '+(d.all28||'')+' →</a></div><div class="feat">';
-  d.featured.forEach(function(f,i){ var r=robInfo(f.rob);
-   H+='<div class="fc" data-k="f'+i+'"><div class="fcn">0'+(i+1)+'</div><div class="fct">'+esc(f.title)+'</div><div class="fcd">'+esc(f.byline)+'</div><span class="chip '+r.c+'"><span class="d"></span>'+esc(r.t)+'</span></div>'; });
-  H+='</div></section>'; }
+ // «С чего начать» УМЕР (ПУТЬ v1, 844b195b §0): роль забрал дом Пути. Секция удалена, данные featured остаются в бандле.
 
- // ПОД ТВОЮ ЗАДАЧУ — ситуации (тонко = ок, «пополняется»)
- if(d.situations && d.situations.length){
-  H+='<section><div class="sh"><div class="st">Под твою задачу</div><div class="ss">ситуации, с которыми сталкиваешься в продукте</div></div><div class="lane">';
-  d.situations.forEach(function(s,i){
-   var meta=[]; if(s.forces) meta.push(s.forces+' сил'); if(s.tools) meta.push(s.tools+' приёмов'); meta.push('пополняется');
-   H+='<div class="scd" data-k="s'+i+'">'+(s.stage?'<div class="scs">'+esc(s.stage)+'</div>':'<div class="scs">Ситуация</div>')+'<div class="sct">'+esc(s.title)+'</div><div class="scdd">'+esc(s.teaser)+'</div><div class="scm">'+meta.join(' · ')+'</div></div>'; });
-  H+='</div></section>'; }
 
  // ОБЛАСТИ ЗНАНИЯ — темы (живые дисциплины)
  if(d.themes && d.themes.length){
-  H+='<section><div class="sh"><div class="st">Области знания</div><div class="ss">по дисциплинам — выбери направление</div></div><div class="tiles">';
+  H+='<section><div class="sh"><h2 class="st">Области знания</h2><div class="ss">по дисциплинам — выберите направление</div></div><div class="tiles">';
   d.themes.forEach(function(t,i){ var col=DCOL[t.discipline]||"--def";
-   H+='<div class="tl" style="border-left-color:var('+col+')" data-k="t'+i+'"><div class="tlh"><span class="tln">'+esc(t.discipline)+'</span><span class="tlc">'+t.cnt+' идей</span></div><div class="tlx">'+(t.samples||[]).map(esc).join(' · ')+'</div><div class="tlt">внутри есть спорные места →</div></div>'; });
+   H+='<div class="tl" style="border-left-color:var('+col+')" data-k="t'+i+'"><div class="tlh"><span class="tln">'+esc(t.discipline)+'</span><span class="tlc">'+t.cnt+' '+plural(t.cnt,'концепт','концепта','концептов')+'</span></div><div class="tlw">'+esc(discWhy(t.discipline))+'</div>'+((t.samples&&t.samples.length)?('<div class="tlx">Несущие: '+(t.samples||[]).map(esc).join(' · ')+'</div>'):'')+'<div class="tlt">внутри есть спорные места →</div></div>'; });
   H+='</div></section>'; }
 
- // ЕЩЁ НЕ ДОКАЗАНО — находки
- if(d.findings && d.findings.length){
-  H+='<section><div class="sh"><div class="st">Ещё не доказано</div><div class="ss">гипотезы на грани знания — помечаем, насколько они подтверждены</div></div><div class="finds">';
-  d.findings.forEach(function(f,i){ var conf=f.conf||10; var lab=conf<15?'слабо подтверждено':(conf<40?'мало данных':'есть данные');
-   H+='<div class="fd" data-k="fd'+i+'"><div class="fdh"><span class="bdg">'+esc(FTYPE[f.type]||f.type||"Гипотеза")+'</span></div><div class="fdt">'+esc(f.title)+'</div><div class="fdd">'+esc(f.teaser)+'</div><div class="conf"><span class="bar"><i style="width:'+Math.max(6,Math.min(100,conf))+'%"></i></span><span>'+lab+'</span></div></div>'; });
-  H+='</div></section>'; }
+ // ФРОНТИР ЗНАНИЯ — вход в «Находки» (научный край) из Матчасти (d94ae8f1): вторичная секция ниже областей.
+ { var _fn=(d.findings&&d.findings.length)||0;
+   H+='<section style="margin-top:22px"><a class="frontlink" href="frontier.html"><span class="fl-i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2 2M16.4 16.4l2 2M18.4 5.6l-2 2M7.6 16.4l-2 2"/></svg></span>'+
+     '<span class="fl-b"><span class="fl-t">Фронтир знания'+(_fn?(' · '+_fn+' '+plural(_fn,'открытый вопрос','открытых вопроса','открытых вопросов')):'')+'</span><span class="fl-s">Научный край: гипотезы, границы и споры — что ещё не устоялось.</span></span>'+
+     '<svg class="fl-cv" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a></section>'; }
 
- // СЕРЕНДИП
- H+='<section><div class="sh"><div class="st">Не знаешь, с чего?</div></div><div class="duo">'+
-   '<button class="bt" data-k="rnd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h6l10 10v6h-6L4 10z"/><path d="M14 4h6v6"/></svg>Случайная идея</button>'+
-   '<button class="bt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 1.5L13 16l-1.5-4.5z"/></svg>Открыть карту</button></div></section>';
+ // «Ещё не доказано» — на frontier.html; «Случайная идея» поднята к поиску (v5 п.8); «Открыть карту» — в nav (п.9).
 
  document.getElementById('app').innerHTML=H;
+ // a11y (guest-P0): data-k карточки клавиатурно-доступны — клик делегирован, фокус-стиль :focus-visible уже есть.
+ Array.prototype.forEach.call(document.querySelectorAll('#app [data-k]'), function(el){ el.setAttribute('role','button'); el.setAttribute('tabindex','0'); });
 }
 
 function cardHtml(title, rob, c){
- var r=robInfo(rob);
- var h='<div class="ct">'+esc(title)+'</div><div class="chip '+r.c+'" style="margin-bottom:14px"><span class="d"></span>'+esc(r.t)+'</div>';
+ var h='<h2 class="ct">'+esc(title)+'</h2><div style="margin-bottom:14px">'+robBadge(rob,false)+'</div>';
  if(c.lead) h+='<div class="clead">'+esc(c.lead)+'</div>';
  if(c.apply) h+='<div class="cap"><div class="lb">Как применить в продукте</div><div class="bd">'+esc(c.apply)+'</div></div>';
  if(c.counter) h+='<div class="honest"><div class="lb">А как на самом деле</div><div class="bd">'+esc(c.counter)+'</div></div>';
@@ -231,38 +453,159 @@ function cardHtml(title, rob, c){
   if(c.ex) h+='<div class="dsec"><div class="l">Пример</div><div class="b">'+esc(c.ex)+'</div></div>'; h+='</div>'; }
  return h;
 }
-function openSeedCard(title, rob, c){ document.getElementById('cb').innerHTML=cardHtml(title,rob,c); showSheet(); }
-function showSheet(){ document.getElementById('scrim').classList.add('on'); document.getElementById('sheet').classList.add('on'); document.getElementById('sheet').scrollTop=0; }
-function closeCard(){ document.getElementById('scrim').classList.remove('on'); document.getElementById('sheet').classList.remove('on'); }
+var SHEET_CUR=null;
+function openSeedCard(title, rob, c, slug){ SHEET_CUR={slug:slug||null, title:title||'', kind:'card'}; document.getElementById('cb').innerHTML=cardHtml(title,rob,c); syncFav(); showSheet(); }
+// «В избранное» в шторке: член → save_toggle, гость → приглашение войти
+function syncFav(){ var b=document.getElementById('favBtn'); if(!b) return; b.classList.remove('on');
+  if(window.__MEMBER && window.__SB && SHEET_CUR && SHEET_CUR.slug){ try{ var pr=window.__SB.rpc('card_user_state',{p_slug:SHEET_CUR.slug}); if(pr&&pr.then) pr.then(function(r){ var d=(r&&!r.error&&r.data)||{}; if(d.saved) b.classList.add('on'); }); }catch(e){} } }
+function favCurrent(){ if(!SHEET_CUR){ return; }
+  if(!window.__MEMBER){ toast('Сохранённое — после входа'); setTimeout(function(){ location.href='access.html'; }, 700); return; }
+  if(!window.__SB || !SHEET_CUR.slug){ toast('Не удалось сохранить. Попробуйте ещё раз.'); return; }
+  var b=document.getElementById('favBtn'); var willOn=!(b&&b.classList.contains('on')); if(b) b.classList.toggle('on', willOn);
+  try{ var pr=window.__SB.rpc('save_toggle',{p_slug:SHEET_CUR.slug,p_title:SHEET_CUR.title||SHEET_CUR.slug,p_kind:'card'});
+    if(pr&&pr.then) pr.then(function(r){ if(r&&r.error){ if(b) b.classList.toggle('on', !willOn); toast('Не удалось сохранить. Попробуйте ещё раз.'); return; } var saved=!!(r&&r.data); if(b) b.classList.toggle('on', saved); toast(saved?'Сохранено':'Убрано из сохранённого'); }, function(){ if(b) b.classList.toggle('on', !willOn); toast('Нет сети. Попробуйте позже.'); });
+  }catch(e){ toast('Не удалось сохранить. Попробуйте ещё раз.'); }
+}
+function toast(m){ var t=document.getElementById('mctoast'); if(!t){ t=document.createElement('div'); t.id='mctoast'; t.style.cssText='position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(8px);z-index:120;background:#17150F;color:#F4EEE2;font:600 13.5px/1.35 -apple-system,system-ui,sans-serif;padding:10px 15px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.3);opacity:0;transition:opacity .2s,transform .2s;max-width:calc(100vw - 32px);text-align:center'; document.body.appendChild(t); } t.textContent=m; requestAnimationFrame(function(){ t.style.opacity='1'; t.style.transform='translateX(-50%) translateY(0)'; }); clearTimeout(window._mctt); window._mctt=setTimeout(function(){ t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(8px)'; }, 2000); }
+var _sheetPrevFocus=null;
+function _sheetBg(hidden){ ['app'].forEach(function(id){ var el=document.getElementById(id); if(el){ if(hidden){ el.setAttribute('aria-hidden','true'); } else { el.removeAttribute('aria-hidden'); } } }); var nv=document.querySelector('nav.nav'); if(nv){ if(hidden){ nv.setAttribute('aria-hidden','true'); } else { nv.removeAttribute('aria-hidden'); } } }
+function showSheet(){ _sheetPrevFocus=document.activeElement; document.getElementById('scrim').classList.add('on'); var sh=document.getElementById('sheet'); sh.classList.add('on'); sh.scrollTop=0; _sheetBg(true); var f=sh.querySelector('button, a[href], [tabindex]'); if(f){ try{ f.focus(); }catch(e){} } }
+function closeCard(){ document.getElementById('scrim').classList.remove('on'); var sh=document.getElementById('sheet'); sh.classList.remove('on'); _sheetBg(false); try{ if(_sheetPrevFocus&&_sheetPrevFocus.focus) _sheetPrevFocus.focus(); }catch(e){} _sheetPrevFocus=null; }
+// a11y: Tab-ловушка внутри открытой шторки (фокус не убегает на скрытый фон)
+document.getElementById('sheet').addEventListener('keydown',function(e){ if(e.key!=='Tab') return; var sh=document.getElementById('sheet'); if(!sh.classList.contains('on')) return; var f=sh.querySelectorAll('button, a[href], [tabindex]:not([tabindex="-1"])'); if(!f.length) return; var a=f[0], z=f[f.length-1]; if(e.shiftKey && document.activeElement===a){ e.preventDefault(); z.focus(); } else if(!e.shiftKey && document.activeElement===z){ e.preventDefault(); a.focus(); } });
+// свайп-вниз для закрытия шторок (guard по scrollTop — не мешает прокрутке)
+function attachSwipe(sheet, closeFn){
+  var startY=0, dy=0, dragging=false;
+  sheet.addEventListener('touchstart',function(e){ if(e.touches.length!==1) return; if(sheet.scrollTop>0) return; startY=e.touches[0].clientY; dy=0; dragging=true; sheet.style.transition='none'; },{passive:true});
+  sheet.addEventListener('touchmove',function(e){ if(!dragging) return; dy=e.touches[0].clientY-startY; if(dy<0){ dy=0; } sheet.style.transform='translateY('+dy+'px)'; if(dy>4 && e.cancelable){ e.preventDefault(); } },{passive:false});
+  function end(){ if(!dragging) return; dragging=false; sheet.style.transition='transform .24s cubic-bezier(0,0,0,1)';
+    if(dy>90){ sheet.style.transform='translateY(101%)'; setTimeout(function(){ closeFn(); sheet.style.transform=''; sheet.style.transition=''; },240); }
+    else { sheet.style.transform='translateY(0)'; setTimeout(function(){ sheet.style.transform=''; sheet.style.transition=''; },240); } }
+  sheet.addEventListener('touchend',end,{passive:true}); sheet.addEventListener('touchcancel',end,{passive:true});
+}
+(function(){ var s1=document.getElementById('sheet'); if(s1) attachSwipe(s1, closeCard); })();
 
 // клики
 document.addEventListener('click',function(e){
+ // v5 п.7: тап по бейджу надёжности → смысл в тосте (не открывает карточку под ним).
+ var rb=e.target.closest('[data-rob]'); if(rb){ var _rc=rb.getAttribute('data-rob'); var _rx=ROBX[_rc]||ROBX.mixed; toast(_rx.t+' — '+_rx.m.charAt(0).toLowerCase()+_rx.m.slice(1)); return; }
  var el=e.target.closest('[data-k]'); if(!el) return; var k=el.getAttribute('data-k');
- if(k==='hero' && CUR.hero){ openSeedCard(CUR.hero.title, CUR.hero.rob, CUR.hero.card); return; }
- if(k[0]==='f' && k[1]!=='d'){ var fi=+k.slice(1); var f=CUR.featured&&CUR.featured[fi]; if(f) openSeedCard(f.title,f.rob,f.card); return; }
+ if(k==='pitchx'){ try{ localStorage.setItem('mc:pitch:seen','1'); }catch(e){} var pb=document.getElementById('pitchban'); if(pb&&pb.remove) pb.remove(); return; }
+ if(k==='cont'){ try{ var _l=JSON.parse(localStorage.getItem('mc:last')||'null'); if(_l&&_l.slug) location.href='card.html?slug='+encodeURIComponent(_l.slug); }catch(e){} return; }
+ if(k==='hero' && CUR.hero){ openSeedCard(CUR.hero.title, CUR.hero.rob, CUR.hero.card, CUR.hero.slug); return; }
+ if(k==='hslogin'){ location.href='access.html'; return; }
+ if(k[0]==='h' && k[1]==='s' && /^hs\d+$/.test(k)){ var hi=+k.slice(2); var hs=CUR.honest_series&&CUR.honest_series[hi]; if(hs) openSeedCard(hs.title, hs.rob, hs.card, hs.slug); return; }
+ if(k[0]==='f' && k[1]!=='d'){ var fi=+k.slice(1); var f=CUR.featured&&CUR.featured[fi]; if(f) openSeedCard(f.title,f.rob,f.card,f.slug); return; }
  if(k[0]==='t'){ var ti=+k.slice(1); var t=CUR.themes&&CUR.themes[ti]; if(t){ var DKEY={"Поведенческая экономика":"be","Когнитивная психология":"cog","UX / HCI":"ux","UX/HCI":"ux","Социальная психология":"soc","Организационные системы":"org","Орг-системы":"org","Мотивация/идентичность":"mot","Продуктовые практики":"prod","Нейронаука/тело":"neu"}; var tk=DKEY[t.discipline]; location.href='concepts-browse.html'+(tk?('?theme='+tk):''); } return; }
  if(k[0]==='s' && k!=='s'){ var si=+k.slice(1); var s=CUR.situations&&CUR.situations[si]; if(s){ location.href='situations.html?slug='+encodeURIComponent(s.slug||''); } return; }
- if(k[0]==='f'&&k[1]==='d'){ var di=+k.slice(2); var fd=CUR.findings&&CUR.findings[di]; location.href='findings.html'+(fd&&fd.slug?('?slug='+encodeURIComponent(fd.slug)):''); return; }
- if(k==='rnd'){ var all=(CUR.featured||[]).concat(CUR.hero?[CUR.hero]:[]); var p=all[Math.floor(Math.random()*all.length)]; if(p) openSeedCard(p.title,p.rob,p.card); return; }
+ if(k[0]==='f'&&k[1]==='d'){ var di=+k.slice(2); var fd=CUR.findings&&CUR.findings[di]; location.href='frontier.html'+(fd&&fd.slug?('?focus='+encodeURIComponent(fd.slug)):''); return; }
+ if(k==='map'){ location.href='explore.html'; return; }
+ if(k==='rnd'){ var all=(CUR.featured||[]).concat(CUR.hero?[CUR.hero]:[]); var p=all[Math.floor(Math.random()*all.length)]; if(p) openSeedCard(p.title,p.rob,p.card,p.slug); return; }
 });
+// v5 п.1: поиск-инпут и чипы-примеры → search.html (там kb_search_epistemic + генеративный notfound).
+document.addEventListener('submit',function(e){ if(e.target && e.target.id==='msform'){ e.preventDefault(); var el=document.getElementById('msq'); var q=(el&&el.value||'').trim(); location.href='search.html'+(q?('?q='+encodeURIComponent(q)):''); } });
+document.addEventListener('click',function(e){ var ch=e.target.closest('[data-q]'); if(ch){ var q=ch.getAttribute('data-q')||''; location.href='search.html'+(q?('?q='+encodeURIComponent(q)):''); } });
 document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeCard(); });
+// a11y: Enter/Space активируют сфокусированную data-k карточку (клик всплывёт в делегированный обработчик).
+document.addEventListener('keydown',function(e){ if(e.key!=='Enter'&&e.key!==' '&&e.key!=='Spacebar') return; var t=e.target; if(t&&t.getAttribute&&(t.getAttribute('data-k')||t.getAttribute('data-rob'))){ e.preventDefault(); t.click(); } });
 
 // карточка по сети (для тем/ситуаций, у которых нет встроенного тела)
 function liveCard(slugOrTitle){
- if(!window.__SB){ openSeedCard(slugOrTitle, 'mixed', {lead:'Полная карточка подгружается из базы при наличии сети.'}); return; }
- document.getElementById('cb').innerHTML='<div class="loading">Загружаю карточку…</div>'; showSheet();
+ SHEET_CUR={slug:slugOrTitle, title:slugOrTitle, kind:'card'};
+ if(!window.__SB){ openSeedCard(slugOrTitle, 'mixed', {lead:'Полная карточка подгружается из базы при наличии сети.'}, slugOrTitle); return; }
+ document.getElementById('cb').innerHTML='<div style="padding:6px 0"><div class="mcsk" style="height:20px;width:46%;margin-bottom:12px"></div><div class="mcsk" style="height:28px;width:84%;margin-bottom:16px"></div><div class="mcsk" style="height:15px;margin-bottom:7px"></div><div class="mcsk" style="height:15px;width:94%;margin-bottom:7px"></div><div class="mcsk" style="height:15px;width:68%;margin-bottom:20px"></div><div class="mcsk" style="height:88px;border-radius:14px"></div></div>'; showSheet();
  var guest=!window.__MEMBER;
  window.__SB.rpc(guest?'kb_public_bundle':'kb_node_bundle',{p_slug:slugOrTitle}).then(function(r){
   var b=r&&r.data; if(!b){ document.getElementById('cb').innerHTML=cardHtml(slugOrTitle,'mixed',{lead:'Карточка не найдена в открытой части базы.'}); return; }
-  var bs=b.body_struct||b; 
+  var bs=b.body_struct||b; if(SHEET_CUR){ SHEET_CUR.title=b.title||slugOrTitle; } syncFav();
   document.getElementById('cb').innerHTML=cardHtml(b.title||slugOrTitle, b.robustness||'mixed', {
    lead:bs['суть'], apply:bs['применение'], mech:bs['механизм'], ex:bs['пример'],
    counter:bs['как-на-самом-деле']||bs['механизм-заблуждения']});
  }).catch(function(){ document.getElementById('cb').innerHTML=cardHtml(slugOrTitle,'mixed',{lead:'Нет сети — полная карточка недоступна офлайн.'}); });
 }
 
-// первичный рендер из сида — мгновенно, без сети
-render(SEED);
+// синхронно: токен сессии в localStorage → рисуем как участник сразу (без гостевого мелькания)
+function mcLikelyMember(){ try{ for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(k&&k.indexOf('sb-')===0&&k.indexOf('-auth-token')>0){ var v=localStorage.getItem(k); if(v&&v.length>20) return true; } } }catch(e){} return false; }
+if(mcLikelyMember()) window.__MEMBER=true;
+// ── Онбординг-оверлей (первый визит): захватываем цели → Матчасть под задачу. Голос: «вы», сухой уважающий коллега.
+var ONB_LEVERS=[
+ {k:'activation',t:'Активация',s:'довести до ценности'},
+ {k:'retention',t:'Удержание',s:'вернуть и удержать'},
+ {k:'monetization',t:'Монетизация',s:'цена и оплата'},
+ {k:'engagement',t:'Вовлечение',s:'внимание и привычка'},
+ {k:'decisions',t:'Решения',s:'приоритеты и выбор'}
+];
+function mcModelGet(){ try{ return JSON.parse(localStorage.getItem('mc:model')||'null'); }catch(e){ return null; } }
+function mcOnbSeen(){ var m=mcModelGet(); if(m && (m.skipped || (m.goals&&m.goals.length))) return true; try{ return localStorage.getItem('mc:onbdone')==='1'; }catch(e){ return false; } }
+// v4 (screen-onboarding v4, 347341d9): ЦЕННОСТЬ первым — никакого вопроса-гейта до ценности (догфудинг:
+// reciprocity + cognitive-load, принципы самой базы). Экран 1 = «что это» + живой вкус честного разбора, БЕЗ ввода.
+// Персонализация «под задачу» — ОПЦИОНАЛЬНО и ПОТОМ (экран 2, opt-in). Закрыть = впустить (дружелюбный дефолт).
+function showOnboarding(){
+ if(document.getElementById('onbov') || mcOnbSeen()) return;
+ var ov=document.createElement('div'); ov.id='onbov'; ov.className='onbov';
+ document.body.appendChild(ov);
+ requestAnimationFrame(function(){ ov.classList.add('on'); });
+ var _prevFocus=document.activeElement;
+ function close(seen){ if(seen){ try{ localStorage.setItem('mc:onbdone','1'); }catch(e){} } ov.classList.remove('on'); try{ if(_prevFocus&&_prevFocus.focus) _prevFocus.focus(); }catch(e){} setTimeout(function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); }, 320); }
+ // a11y: Esc/тап-по-фону = впустить (дружелюбный дефолт, не «пропуск-как-отказ»); Tab-ловушка внутри.
+ ov.addEventListener('keydown',function(e){
+   if(e.key==='Escape'){ e.preventDefault(); close(true); return; }
+   if(e.key==='Tab'){ var f=ov.querySelectorAll('button, [tabindex]'); if(!f.length) return; var a=f[0], z=f[f.length-1];
+     if(e.shiftKey && document.activeElement===a){ e.preventDefault(); z.focus(); }
+     else if(!e.shiftKey && document.activeElement===z){ e.preventDefault(); a.focus(); } }
+ });
+ ov.addEventListener('click',function(e){ if(e.target===ov) close(true); });
+
+ // ── Экран 1: ЦЕННОСТЬ (что это + живой вкус разбора, без ввода) ──
+ function renderWelcome(){
+  var hero=(CUR&&CUR.hero)||SEED.hero; var hr=robInfo(hero.rob);
+  var taste=(hero.card&&hero.card.counter)?hero.card.counter:hero.teaser;
+  ov.innerHTML='<div class="onbc" role="dialog" aria-modal="true" aria-label="Честно о поведении">'
+    +'<div class="onbk">Честно о поведении</div>'
+    +'<div class="onbt">Как люди на самом деле принимают решения</div>'
+    +'<div class="onbs">Разборы продуктовых методов — с пометкой, насколько концепт подтверждён, и ссылкой на источник. Не лайфхаки, а связанный граф.</div>'
+    +'<div class="onbdemo"><div class="onbdemo-h"><span class="onbdemo-t">'+esc(hero.title)+'</span><span class="tag'+(hero.rob==="mixed"?" mix":"")+'">'+esc(hr.t)+'</span></div>'
+      +'<div class="onbdemo-lb">А как на самом деле</div><div class="onbdemo-bd">'+esc(clip(taste,240))+'</div></div>'
+    +'<div class="onbf"><button class="onbb" id="onbEnter" style="margin-left:0;width:100%">Открыть Справочник →</button></div>'
+    +'<button class="onbtune" id="onbTune">Подстроить под вашу задачу →</button></div>';
+  var eb=ov.querySelector('#onbEnter'); if(eb) try{ eb.focus(); }catch(e){}
+  eb.onclick=function(){ try{ track('onboard_enter',{}); }catch(e){} close(true); };
+  ov.querySelector('#onbTune').onclick=function(){ try{ track('onboard_tune_open',{}); }catch(e){} renderTune(); };
+ }
+
+ // ── Экран 2 (ОПЦИОНАЛЬНО, по желанию, ПОСЛЕ ценности): рычаг → под задачу ──
+ function renderTune(){
+  var sel={};
+  var tiles=ONB_LEVERS.map(function(l){ return '<button class="onbi" data-k="'+l.k+'"><div class="t">'+esc(l.t)+'</div><div class="s">'+esc(l.s)+'</div></button>'; }).join('');
+  ov.innerHTML='<div class="onbc" role="dialog" aria-modal="true" aria-label="Подстроить под вашу задачу"><div class="onbk">Подстроить под вашу задачу</div>'
+    +'<div class="onbt">Над чем вы сейчас работаете?</div>'
+    +'<div class="onbs">Выберите, что ближе — поднимем нужное первым. Необязательно, можно вернуться позже.</div>'
+    +'<div class="onbg">'+tiles+'</div>'
+    +'<div class="onbf"><button class="onbp" id="onbSkip">Не сейчас</button><button class="onbb" id="onbGo" disabled>Показать →</button></div></div>';
+  var go=ov.querySelector('#onbGo');
+  var _first=ov.querySelector('.onbi'); if(_first) try{ _first.focus(); }catch(e){}
+  Array.prototype.forEach.call(ov.querySelectorAll('.onbi'),function(b){ b.onclick=function(){ var k=b.getAttribute('data-k'); if(sel[k]){ delete sel[k]; b.classList.remove('sel'); } else { sel[k]=1; b.classList.add('sel'); } go.disabled=Object.keys(sel).length===0; }; });
+  ov.querySelector('#onbSkip').onclick=function(){ try{ track('onboard_skip',{}); }catch(e){} close(true); };
+  go.onclick=function(){ var goals=Object.keys(sel); if(!goals.length) return;
+    try{ localStorage.setItem('mc:model', JSON.stringify({goals:goals, ts:Date.now()})); localStorage.setItem('mc:onbdone','1'); }catch(e){}
+    try{ track('onboard_done',{goals:goals}); }catch(e){}
+    if(window.__MEMBER && window.__SB){ try{ var pr=window.__SB.rpc('um_apply',{p_goals:goals,p_interests:[],p_source:'overlay'}); if(pr&&pr.catch) pr.catch(function(){}); }catch(e){} }
+    reRank(goals); // выбор ВИДИМО перестраивает главную: секция «Под вашу задачу» наверх, под цель
+    close(false);
+  };
+ }
+
+ renderWelcome();
+}
+function maybeOnboard(){ setTimeout(function(){ try{ if(!mcOnbSeen() && !window.__MEMBER) showOnboarding(); }catch(e){} }, 700); }
+
+// первичный рендер: из кеша (localStorage — переживает перезапуск PWA) либо из сида
+var HOME_CACHE=null;
+try{ var _hc=localStorage.getItem('solvehome:data'); if(_hc){ HOME_CACHE=JSON.parse(_hc); } }catch(e){}
+render(HOME_CACHE||SEED);
+maybeOnboard();
+// Сигнатура видимого контента главной (v5 п.6): что реально рисуется на экране. Меняется — перерисовываем; нет — пропускаем (без флеша).
+function homeSig(d){ if(!d) return ''; return [(d.hero&&d.hero.slug)||'', d.all24||d.all28||'', (d.honest_series||[]).length, d.honest_total||'', d.honest_full||'', (d.featured||[]).length, (d.situations||[]).length, (d.themes||[]).length, (d.findings||[]).length].join('|'); }
 
 // живой запрос при наличии сети + конфига
 (function boot(){
@@ -271,16 +614,36 @@ render(SEED);
    if(!(window.SUPABASE_URL && window.SUPABASE_ANON_KEY && window.supabase && window.supabase.createClient)) return;
    var SB=window.supabase.createClient(String(window.SUPABASE_URL).trim(), String(window.SUPABASE_ANON_KEY).trim());
    window.__SB=SB;
-   SB.auth.getSession().then(function(s){ window.__MEMBER=!!(s&&s.data&&s.data.session); }).catch(function(){});
-   SB.rpc('solve_home').then(function(r){ if(r&&!r.error&&r.data){ try{ render(r.data); }catch(_){} } }).catch(function(){});
+   SB.auth.getSession().then(function(s){ var _sess=s&&s.data&&s.data.session; window.__MEMBER=!!_sess; try{
+    // «Продолжить» из серверного контракта home_resume (свежайший визит из reader_signals, кросс-девайс); mc:last — мгновенный фолбэк
+    if(_sess&&_sess.user&&_sess.user.id){ SB.rpc('home_resume',{p_who:_sess.user.id}).then(function(rr){ var rd=rr&&!rr.error&&rr.data; if(rd&&rd.has_continue&&rd.slug){ try{ localStorage.setItem('mc:last', JSON.stringify({slug:rd.slug,title:rd.title})); }catch(e){} /* «Продолжить» теперь в «Моё» (personal), не на Матчасти — ре-рендер главной не нужен (v5 п.2/п.6 антифлеш) */ } }).catch(function(){});
+      // Онбординг для члена: гейт по um_get().onboarded_at; гостя, выбравшего цели, сливаем один раз (um_apply, source=merge)
+      SB.rpc('um_get').then(function(um){ var m=(um&&!um.error&&um.data)||{}; var onboarded=!!(m&&m.onboarded_at); var g=mcModelGet();
+        if(m && m.goals && m.goals.length){ MC_GOALS=m.goals; try{ if(window.CUR) render(window.CUR); }catch(e){} }
+        if(!onboarded && g && g.goals && g.goals.length){ try{ var pr=SB.rpc('um_apply',{p_goals:g.goals,p_interests:[],p_source:'merge'}); if(pr&&pr.catch) pr.catch(function(){}); }catch(e){} onboarded=true; }
+        if(onboarded){ try{ localStorage.setItem('mc:onbdone','1'); localStorage.removeItem('mc:model'); }catch(e){} var _o=document.getElementById('onbov'); if(_o){ _o.classList.remove('on'); setTimeout(function(){ if(_o.parentNode) _o.parentNode.removeChild(_o); },320); } }
+        else if(!mcOnbSeen()){ showOnboarding(); }
+      }).catch(function(){});
+    } else { window.__MEMBER=false; maybeOnboard(); }
+   }catch(_e){} }).catch(function(){});
+   SB.rpc('solve_home').then(function(r){ if(r&&!r.error&&r.data){ var d=r.data;
+       try{ localStorage.setItem('solvehome:data', JSON.stringify(d)); }catch(e){}
+       // v5 п.6 фикс моргания: перерисовываем ТОЛЬКО когда реально видимый контент отличается от отрисованного
+       // (stale-while-revalidate). Иначе — гратуитный repaint = флеш. Сигнатура по тому, что рендерится на экране
+       // (territory убрана из v5 — в сигнатуру не входит).
+       if(homeSig(d)===homeSig(CUR)){ CUR=d; return; }
+       var app=document.getElementById('app'); app.style.transition='opacity .18s'; app.style.opacity='0';
+       setTimeout(function(){ try{ render(d); }catch(_){} requestAnimationFrame(function(){ app.style.opacity='1'; }); }, 180);
+     } }).catch(function(){});
   }catch(_){}
  }
  // подтянуть конфиг рядом с приложением (../config.js на Pages), затем supabase-js
  function load(src,cb){ var s=document.createElement('script'); s.src=src; s.onload=cb; s.onerror=cb; document.head.appendChild(s); }
- function loadCfg(done){ var ps=['../config.js','./config.js','config.js','/book-reader/config.js']; var i=0; (function nx(){ if(window.SUPABASE_URL||i>=ps.length) return done(); var sc=document.createElement('script'); sc.src=ps[i++]; sc.onload=function(){ setTimeout(function(){ window.SUPABASE_URL?done():nx(); },0); }; sc.onerror=nx; document.head.appendChild(sc); })(); }
-  loadCfg(function(){ load('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.108.2', go); });
+ function loadCfg(done){ var ps=['./config.js','../config.js','/book-reader/config.js']; var i=0; (function nx(){ if(window.SUPABASE_URL||i>=ps.length) return done(); var sc=document.createElement('script'); sc.src=ps[i++]; sc.onload=function(){ setTimeout(function(){ window.SUPABASE_URL?done():nx(); },0); }; sc.onerror=nx; document.head.appendChild(sc); })(); }
+  loadCfg(function(){ load('vendor/supabase.min.js', go); });
 })();
 </script>
-<script>if('serviceWorker' in navigator){try{navigator.serviceWorker.register('sw.js').catch(function(){});}catch(e){}}</script>
+<script>(function(){if(!('serviceWorker' in navigator))return;var reg=null,shown=false;function anim(){var st=document.createElement('style');st.textContent='@keyframes __spin{to{transform:rotate(360deg)}}';document.head.appendChild(st);var o=document.createElement('div');o.id='__updanim';o.style.cssText='position:fixed;inset:0;z-index:100000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:rgba(20,17,12,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;transition:opacity .3s';o.innerHTML='<div style="width:44px;height:44px;border-radius:50%;border:3px solid rgba(255,255,255,.25);border-top-color:#C98A3A;animation:__spin .8s linear infinite"></div><div style="color:#F4EEE2;font:600 15px/1.3 -apple-system,system-ui,sans-serif">Обновляем…</div>';(document.body||document.documentElement).appendChild(o);requestAnimationFrame(function(){o.style.opacity='1';});}function doUpdate(){var bb=document.getElementById('__updbar');if(bb)bb.style.opacity='0';anim();try{if(reg&&reg.waiting)reg.waiting.postMessage({type:'SKIP_WAITING'});}catch(e){}var done=false,fin=function(){if(done)return;done=true;location.reload();};try{navigator.serviceWorker.addEventListener('controllerchange',fin);}catch(e){}setTimeout(fin,1600);}function showUpd(){if(shown)return;shown=true;try{if(sessionStorage.getItem('mc:updshown'))return;sessionStorage.setItem('mc:updshown','1');}catch(e){}var b=document.createElement('div');b.id='__updbar';b.style.cssText='position:fixed;left:50%;transform:translateX(-50%) translateY(8px);bottom:calc(16px + env(safe-area-inset-bottom));z-index:99999;display:flex;align-items:center;gap:12px;background:#17150F;color:#F4EEE2;font:600 14px/1.3 -apple-system,BlinkMacSystemFont,system-ui,sans-serif;padding:10px 12px 10px 16px;border-radius:14px;box-shadow:0 10px 34px rgba(0,0,0,.34);max-width:calc(100vw - 26px);opacity:0;transition:opacity .25s,transform .25s';var s=document.createElement('span');s.textContent='Доступна новая версия';var btn=document.createElement('button');btn.textContent='Обновить';btn.style.cssText='border:0;background:#C98A3A;color:#fff;font:inherit;font-weight:700;padding:8px 15px;border-radius:10px;cursor:pointer;flex:none';btn.onclick=doUpdate;b.appendChild(s);b.appendChild(btn);(document.body||document.documentElement).appendChild(b);requestAnimationFrame(function(){b.style.opacity='1';b.style.transform='translateX(-50%) translateY(0)';});}try{navigator.serviceWorker.register('sw.js').then(function(r){reg=r;}).catch(function(){});}catch(e){}try{navigator.serviceWorker.addEventListener('message',function(e){if(e.data&&e.data.type==='NEW_VERSION')showUpd();});}catch(e){}try{navigator.serviceWorker.ready.then(function(r){reg=r;if(r.waiting)showUpd();r.addEventListener('updatefound',function(){var nw=r.installing;if(nw)nw.addEventListener('statechange',function(){if(nw.state==='installed'&&navigator.serviceWorker.controller)showUpd();});});});}catch(e){}})();</script>
+<script>try{document.addEventListener("touchstart",function(){},{passive:true});}catch(e){}</script>
 </body>
 </html>
