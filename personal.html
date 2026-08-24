@@ -250,4 +250,83 @@ function renderHub(){
   var t=STATE.territory||{lit:0,total:0,by_discipline:[],frontier_open:0};
   var _lit=t.lit||0;
   // ПРОФИЛЬ = только идентичность (+ арсенал, если есть). Онбординг/прогресс Пути — отдельными карточками ниже.
-  H+='<div class="prof"><div class="prow"><div class="av">'+esc((STATE.name||STATE.email||'?').slice(0,1).toUpperCase())+'<
+  H+='<div class="prof"><div class="prow"><div class="av">'+esc((STATE.name||STATE.email||'?').slice(0,1).toUpperCase())+'</div><div class="pinfo"><div class="nm">'+esc(STATE.name||'Читатель')+'</div><div class="em">'+esc(STATE.email||'')+'</div></div>'+(STATE.member?'<button class="psignout" id="signout" type="button">Выйти</button>':'')+'</div></div>';
+  // Территория-как-мастерство (da11343e): карта — портрет освоенного, не полоса-на-завершение.
+  if(_lit>0){
+   var _by=(t.by_discipline||[]).filter(function(d){return (d.lit||0)>0;});
+   var _max=Math.max.apply(null,_by.map(function(d){return d.lit||0;}).concat([1]));
+   H+='<div class="terr"><div class="terrh"><span class="l">Ваш арсенал</span><span class="v">'+_lit+' '+plural(_lit,'концепт','концепта','концептов')+'</span></div>';
+   if(_by.length){ H+='<div class="discs">'+_by.slice(0,6).map(function(d){ var nm=d.discipline||d.label||''; var k=d.key||LBLK[nm]||'def'; if(!nm) nm=D[k]||k; var dw=Math.round((d.lit/_max)*100); return '<div class="drow"><span class="nm">'+esc(nm)+'</span><span class="mini"><i style="width:'+Math.max(8,dw)+'%;background:var('+(DCOLV[k]||'--def')+')"></i></span><span class="ct">'+d.lit+'</span></div>'; }).join('')+'</div>'; }
+   if(t.frontier_open){ H+='<div class="terrm">Ещё '+t.frontier_open+' '+plural(t.frontier_open,'гипотеза','гипотезы','гипотез')+' ждут на фронтире знания.</div>'; }
+   H+='</div>';
+  }
+  H+='</div>';
+ } else if(STATE.signed_in){
+  H+='<div class="guest"><p>Вы вошли, но доступ участника ещё не открыт. Нужно приглашение — или напишите автору: tg @artavdeev.</p><button class="btn pri" onclick="location.href=\'access.html\'">Как получить доступ</button><div class="sign" style="margin-top:12px"><button id="signout" type="button">Выйти</button></div></div>';
+ } else {
+  H+='<div class="guest"><p>Вы листаете как гость. Честный слой виден, но прогресс, заметки и реакции — после входа.</p><button class="btn pri" onclick="location.href=\'access.html\'">Войти</button></div>';
+ }
+ // ЕДИНЫЙ вход в Путь (устраняет тройной дубль: профиль/resume/таб). Взаимоисключающе:
+ //  • есть позиция → «Мой путь · продолжить»;  • нет и карта пуста → онбординг «Начать Путь». Таб «Путь» = глобальный вход.
+ if(_pl){
+  var _pt=(_pl.title?_pl.title+' · ':'')+'остановка '+_pl.stop+(_pl.m?(' из '+_pl.m):'');
+  if(!_pl.title){ _pt='Продолжить с места, где остановились'; }
+  H+='<a class="resume" href="path.html"><span class="rsm-dot"></span><span class="rsm-b"><span class="rsm-l">Мой путь</span><span class="rsm-s">'+esc(_pt)+'</span></span><svg class="rsm-cv" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a>';
+ } else if(STATE.member){
+  H+='<a class="resume rsm-start" href="path.html"><span class="rsm-dot"></span><span class="rsm-b"><span class="rsm-l">Ваш путь</span><span class="rsm-s">Первая остановка зажжёт первую звезду — 3 минуты</span></span><svg class="rsm-cv" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a>';
+ }
+ H+='<div class="seclbl">Личное</div><div class="menu">'+row('favorites',IC.star,'Сохранённое')+(STATE.member?row('community',IC.people,'Сообщество'):'')+'</div>';
+ // «Диагностика метода» убрана из прода (реш. Артёма)
+ // MCP — доступ участнику всегда открыт (это не тумблер): убран ложный бейдж «выключено» (6ac1f4c6; MOM E2E: MCP жив, лейбл врал).
+ H+='<div class="seclbl">О проекте</div><div class="menu">'+row('about',IC.user,'Об авторе и принципах')+row('mcp',IC.plug,'Доступ к MCP')+row('settings',IC.gear,'Настройки')+
+   '<div class="mrow" role="button" tabindex="0" id="appUpd">'+icon(IC.refresh)+'<span class="t">Обновить приложение</span><svg class="cv" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div></div>';
+ if(STATE.member && (STATE.email||'').toLowerCase()==='temka.avdeev@gmail.com'){
+  var _chev='<svg class="cv" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
+  H+='<div class="seclbl">Админ</div><div class="menu">'+
+     '<div class="mrow" role="button" tabindex="0" onclick="location.href=\'pult.html\'">'+icon(IC.dash)+'<span class="t">Пульт флота</span><span class="reldot" id="reldot" style="display:none"></span>'+_chev+'</div>'+
+     '<div class="mrow" role="button" tabindex="0" onclick="location.href=\'index-admin.html#dash\'">'+icon(IC.gear)+'<span class="t">Старая админка · редакторы</span>'+_chev+'</div>'+
+     '</div>';
+ }
+ // Интерфейс-откат «к старой версии» — ТОЛЬКО админу (1f9546e7 ч.2): всем остальным новый интерфейс по умолчанию, без тумблера отката.
+ if(STATE.member && (STATE.email||'').toLowerCase()==='temka.avdeev@gmail.com') H+='<div class="seclbl">Интерфейс</div><div class="menu"><div class="mrow" role="button" tabindex="0" onclick="location.href=\'index.html?v2=1\'">'+icon(IC.gear)+'<span class="t">Вернуться к старой версии</span><svg class="cv" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div></div>';
+ // «Выйти» переехала в карточку профиля (рядом с читателем, реш. Артёма); нижняя дублирующая убрана
+ document.getElementById('wrap').innerHTML=H;
+ Array.prototype.forEach.call(document.querySelectorAll('[data-view]'),function(el){ el.onclick=function(){ location.href='personal.html?view='+el.getAttribute('data-view'); }; });
+ var so=document.getElementById('signout'); if(so) so.onclick=function(){ if(!confirm('Точно выйти из аккаунта?')) return; clearLocalProgress(); if(window.__SB) window.__SB.auth.signOut().then(function(){ location.href='access.html'; }); else location.href='access.html'; };
+ // «Обновить приложение»: снимаем service-worker и весь кеш → гарантированно свежая версия с сервера (бейдж «v5» убран — читался как вечное уведомление)
+ var _up=document.getElementById('appUpd');
+ if(_up) _up.onclick=function(){ _up.querySelector('.t').textContent='Обновляю…';
+  Promise.resolve().then(function(){ if('serviceWorker' in navigator) return navigator.serviceWorker.getRegistrations().then(function(rs){ return Promise.all(rs.map(function(r){return r.unregister();})); }); })
+   .then(function(){ if(window.caches&&caches.keys) return caches.keys().then(function(ks){ return Promise.all(ks.map(function(k){return caches.delete(k);})); }); })
+   .catch(function(){}).then(function(){ location.reload(true); });
+ };
+ checkRelease();
+}
+// красная точка на «Пульт флота», когда есть сборка новее, чем в проде (та же логика, что в pult.html)
+function checkRelease(){
+ var d=document.getElementById('reldot'); if(!d||!window.__SB) return;
+ window.__SB.rpc('deploy_candidates_list').then(function(r){
+  if(!r||r.error||!r.data||!r.data.length){ return; }
+  var rows=r.data; var live=rows.filter(function(x){return x.is_live;})[0];
+  var liveT=live?Date.parse(live.ingested_at):Infinity;
+  var pend=rows.filter(function(x){return !x.is_live && Date.parse(x.ingested_at)>=liveT;}).length;
+  if(pend>0){ d.style.display='inline-block'; d.title=pend+' '+(pend===1?'сборка ждёт':'сборок ждут')+' публикации'; }
+ }).catch(function(){});
+}
+
+function sub(title, inner){
+ document.getElementById('wrap').innerHTML='<div class="bar"><button class="ib" id="back" aria-label="Назад"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><div class="bt">'+esc(title)+'</div></div>'+inner;
+ document.getElementById('back').onclick=function(){ location.href='personal.html'; };
+}
+
+function mcpShell(){
+ return '<div class="head"><div class="h1">Честный слой для ИИ</div></div>'+
+  '<div class="prose"><p>Подключите базу к своему ИИ — Claude, ChatGPT, Perplexity получают наши разборы с пометкой надёжности и ссылкой на источник, а не догадки.</p></div>'+
+  '<div class="mcpdemo"><div class="dl">Пример ответа с нашим слоем</div>'+
+   '<div class="dq">«Добавить таймер обратного отсчёта на оплату?»</div>'+
+   '<div class="da">Дефицит времени поднимает конверсию — но <span class="rb solid">проверено</span> лишь для реального дефицита; искусственный таймер = тёмный паттерн, эрозия доверия.<span class="src">Источник: Cialdini, 2001 · разбор в карточке →</span></div></div>'+
+  '<div id="mcpBody"><div style="color:var(--meta);font-size:13px;padding:8px 0">…</div></div>'+
+  '<p class="fw">Научный слой, не догадки: каждый разбор — с пометкой устойчивости, критикой и ссылкой на источник.</p>';
+}
+function mcpConfig(tok){
+ return '{\n  "mcpServers": {\n    "matchast": {\n      "url": "https://wsnqmjzmtjpezkzlzhra.supabase.co/functions/v1/kb-mcp",\n      "headers": { "Authorization": "Bearer '+tok+'" }\n    }\n  }\n}';
