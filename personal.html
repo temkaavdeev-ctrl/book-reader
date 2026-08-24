@@ -19,9 +19,7 @@ body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSys
 .bar{position:sticky;top:0;z-index:20;background:var(--navbg);backdrop-filter:blur(8px);display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--line)}
 .ib{width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;border:0;background:none;color:var(--ink2);border-radius:var(--pill);cursor:pointer}.ib:active{background:var(--line)}
 .bt{font-size:15px;font-weight:700}
-/* профиль */
 .prof{margin-top:18px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:var(--sh)}
-/* «Продолжить» — перенос с Матчасти (v5 п.2 / c4ff6366): последнее открытое */
 .resume{display:flex;align-items:center;gap:13px;margin-top:16px;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:15px 16px;box-shadow:var(--sh)}
 .resume .rsm-dot{width:9px;height:9px;border-radius:50%;background:var(--gold);flex:none}
 .resume .rsm-b{flex:1;min-width:0;display:block}
@@ -64,7 +62,6 @@ body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSys
 .seclbl{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--meta);margin:24px 0 8px;padding-left:4px}
 .sign{margin-top:20px;text-align:center}
 .sign button{background:none;border:0;color:var(--gold);font-size:15px;font-weight:600;cursor:pointer}
-/* подэкраны */
 .head{padding:16px 0 4px}.h1{font-size:28px;line-height:33px;font-weight:800;letter-spacing:-.02em;margin:3px 0 8px}
 .prose{font-size:16px;line-height:25px;color:var(--ink2)}
 .prose p{margin:0 0 14px}.prose strong{color:var(--ink)}
@@ -89,7 +86,6 @@ body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSys
 .mcpbtn.rot{color:var(--gold);border-color:var(--gold);margin-top:14px}
 .mcpguest{margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;text-align:center;color:var(--ink2)}
 .mcpguest a{color:var(--gold);font-weight:700;text-decoration:none}
-/* пер-клиентские карточки подключения MCP (6ac1f4c6) */
 .mcpcli{display:flex;flex-direction:column;gap:10px}
 .mcpc{background:var(--card);border:1px solid var(--line);border-radius:var(--rs);padding:14px 15px}
 .mcpc .ch{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;color:var(--ink)}
@@ -125,8 +121,7 @@ body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSys
 .ni{flex:1;min-height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:none;border:0;color:var(--meta);cursor:pointer}
 .ni svg{width:24px;height:24px}.ni .lb{font-size:11px;font-weight:600}.ni.on{color:var(--gold)}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
-/*TAP-FEEDBACK*/button:active,a:active,[onclick]:active,.ni:active,[data-k]:active,[data-route]:active,[data-slug]:active,[data-cont]:active,[data-q]:active,.row:active,.rt-row:active,.lg-row:active,.fc:active,.stoprow:active,.opt:active,.pill:active,.tab:active,.deeper:active{opacity:.6;transition:opacity .06s}
-/*MCUX v1 — единый UX: нативные переходы между страницами, ховеры, тап-фидбек, reduced-motion*/
+button:active,a:active,[onclick]:active,.ni:active,[data-k]:active,[data-route]:active,[data-slug]:active,[data-cont]:active,[data-q]:active,.row:active,.rt-row:active,.lg-row:active,.fc:active,.stoprow:active,.opt:active,.pill:active,.tab:active,.deeper:active{opacity:.6;transition:opacity .06s}
 @view-transition{navigation:auto}
 .nav{view-transition-name:mcnav}
 button:active,a:active,[onclick]:active,.ni:active,.mrow:active,.row:active,.res:active,.tbtn:active,.fc:active,.opt:active,.pill:active{opacity:.6;transition:opacity .06s}
@@ -139,7 +134,6 @@ a:focus-visible,button:focus-visible,[onclick]:focus-visible,.ni:focus-visible,.
 .mcstate .retry{margin-top:16px;display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:700;color:var(--gold,#97591A);background:none;border:1px solid var(--line,#ECE7DD);border-radius:999px;padding:9px 18px;cursor:pointer}
 .mcsk{background:linear-gradient(90deg,#EFEBE2,#F6F3ED,#EFEBE2);background-size:200% 100%;animation:mcsh 1.2s infinite;border-radius:12px}
 @keyframes mcsh{0%{background-position:200% 0}100%{background-position:-200% 0}}
-/*MCDESK v1 — десктоп (>=960px): нижний таб-бар -> левый сайдбар, контент смещается вправо; мобилка не трогается*/
 @media(min-width:960px){
  body:has(nav.nav){padding-left:236px}
  nav.nav{top:0;bottom:0;right:auto;width:236px;border-top:0;border-right:1px solid var(--line);padding:0}
@@ -152,7 +146,6 @@ a:focus-visible,button:focus-visible,[onclick]:focus-visible,.ni:focus-visible,.
  body:has(nav.nav) .topbar{left:236px}
 }
 @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}
-/* сегмент выбора темы (Настройки → Тема): Авто/Светлая/Тёмная */
 .thseg{display:inline-flex;gap:2px;background:var(--line);border-radius:9px;padding:2px}
 .thseg button{border:0;background:none;font:inherit;font-size:13px;font-weight:600;padding:6px 12px;border-radius:7px;cursor:pointer;color:var(--meta)}
 .thseg button.on{background:var(--card);color:var(--ink)}
@@ -175,7 +168,7 @@ html[data-theme="dark"] .mcsk{background:linear-gradient(90deg,#1b1710,#241f16,#
 .nbrand{display:none}
 @media(min-width:960px){
  .nbrand{display:block;position:absolute;top:26px;left:28px;right:20px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-br);text-decoration:none;line-height:17px}
- nav.nav .navin{padding-top:96px!important;justify-content:flex-start!important} /* марка сверху, меню под ней — единая высота на всех поверхностях */
+ nav.nav .navin{padding-top:96px!important;justify-content:flex-start!important}
 }
 @media(min-width:960px) and (hover:hover){.nbrand:hover{filter:brightness(1.08)}}
 </style>
@@ -200,7 +193,6 @@ function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return
 function plural(n,a,b,c){var m=Math.abs(+n||0)%100,d=m%10;if(m>10&&m<20)return c;if(d>1&&d<5)return b;if(d===1)return a;return c;}
 function cssv(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
 function favGet(){ try{ return JSON.parse(localStorage.getItem('mc:fav')||'[]')||[]; }catch(e){ return []; } }
-// залогин → список из БД (saves_list, все виды); аноним → localStorage (карточки)
 function favItemsHtml(){
  var l = STATE.member ? (STATE.saves||[]) : favGet();
  if(!l.length) return '';
@@ -214,7 +206,6 @@ function bindCards(){
  Array.prototype.forEach.call(document.querySelectorAll('[data-card]'),function(el){ el.onclick=function(){ location.href='card.html?slug='+encodeURIComponent(el.getAttribute('data-card')); }; });
  Array.prototype.forEach.call(document.querySelectorAll('[data-quest]'),function(el){ el.onclick=function(){ location.href='quests.html?quest='+encodeURIComponent(el.getAttribute('data-quest')); }; });
 }
-// merge-on-login: слить localStorage-избранное (карточки) → БД, только отсутствующее, затем очистить локаль
 function mergeFavs(SB, done){
  var local=favGet(); if(!local.length){ if(done)done(); return; }
  SB.rpc('saves_list',{p_kind:'card'}).then(function(r){
@@ -224,11 +215,7 @@ function mergeFavs(SB, done){
    var it=pend[i++]; SB.rpc('save_toggle',{p_slug:it.slug,p_title:it.title||it.slug,p_kind:'card'}).then(nx,nx); })();
  },function(){ if(done)done(); });
 }
-
-// синхронно: если в localStorage лежит токен сессии Supabase — мы почти наверняка залогинены (сессия восстановится),
-// поэтому рисуем участника сразу, без гостевого мелькания. signOut токен удаляет, так что ложных срабатываний почти нет.
 function mcLikelySignedIn(){ try{ for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(k&&k.indexOf('sb-')===0&&k.indexOf('-auth-token')>0){ var v=localStorage.getItem(k); if(v&&v.length>20) return true; } } }catch(e){} return false; }
-// identity ≠ membership: session token is signed-in, whitelist/is_member is member.
 var STATE={signedIn:false, member:false, name:'', email:'', territory:null, mcpOn:false, saves:null};
 try{ var _ps=localStorage.getItem('personal:state'); if(_ps){ var _pd=JSON.parse(_ps); if(_pd){ STATE.email=_pd.email||''; STATE.name=_pd.name||''; STATE.territory=_pd.territory||null; STATE.signedIn=!!_pd.signedIn; } } }catch(e){}
 if(mcLikelySignedIn()) STATE.signedIn=true;
@@ -236,15 +223,11 @@ function stateSig(){ return STATE.signedIn+'|'+STATE.member+'|'+STATE.email+'|'+
 function saveStateCache(){ try{ localStorage.setItem('personal:state', JSON.stringify({signedIn:STATE.signedIn,member:STATE.member,email:STATE.email,name:STATE.name,territory:STATE.territory})); }catch(e){} }
 function accessHref(){ return (STATE.signedIn && !STATE.member) ? 'access.html' : 'access.html?view=login'; }
 var qs=new URLSearchParams(location.search); var VIEW=qs.get('view');
-
 function icon(p){ return '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>'; }
 var IC={book:'<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/>',star:'<path d="M12 3l2.6 6.3L21 10l-4.8 4 .8 6.7L12 17.6 6 20.7l.8-6.7L2 10l6.4-.7z"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',plug:'<path d="M9 7V3M15 7V3M7 7h10v4a5 5 0 0 1-10 0z"/><path d="M12 16v5"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/>',dash:'<path d="M4 14a8 8 0 0 1 16 0"/><path d="M12 14l3.5-3"/>',refresh:'<path d="M21 12a9 9 0 1 1-2.6-6.4M21 3v5h-5"/>',cv:'<path d="M9 6l6 6-6 6"/>',diag:'<path d="M9 11l2.2 2.2L15.5 9"/><rect x="4" y="4" width="16" height="16" rx="4"/>',people:'<circle cx="9" cy="8" r="3.2"/><path d="M3 20a6 6 0 0 1 12 0"/><circle cx="17.5" cy="9" r="2.3"/><path d="M16 14.5A5 5 0 0 1 21 19.5"/>'};
-
 function row(view,ic,t,badge){ return '<div class="mrow" role="button" tabindex="0" data-view="'+view+'">'+icon(ic)+'<span class="t">'+esc(t)+'</span>'+(badge?'<span class="badge">'+esc(badge)+'</span>':'')+'<svg class="cv" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>'; }
-
 function renderHub(){
  var H='<div class="bar"><div class="bt">Моё</div></div>';
- // позиция на Пути (mc:path:last пишет плеер) — считаем ДО профиля: решает, что показывать (продолжить vs начать)
  var _pl=null;
  try{ _pl=JSON.parse(localStorage.getItem('mc:path:last')||'null');
   if(!_pl){ var _lq=JSON.parse(localStorage.getItem('mc:quest_last')||'null'); if(_lq&&_lq.key) _pl={title:_lq.title||'',stop:_lq.stop,m:_lq.M}; }
@@ -252,9 +235,234 @@ function renderHub(){
  if(STATE.member){
   var t=STATE.territory||{lit:0,total:0,by_discipline:[],frontier_open:0};
   var _lit=t.lit||0;
-  // ПРОФИЛЬ = только идентичность (+ арсенал, если есть). Онбординг/прогресс Пути — отдельными карточками ниже.
   H+='<div class="prof"><div class="prow"><div class="av">'+esc((STATE.name||STATE.email||'?').slice(0,1).toUpperCase())+'</div><div class="pinfo"><div class="nm">'+esc(STATE.name||'Читатель')+'</div><div class="em">'+esc(STATE.email||'')+'</div></div>'+(STATE.member?'<button class="psignout" id="signout" type="button">Выйти</button>':'')+'</div></div>';
-  // Территория-как-мастерство (da11343e): карта — портрет освоенного, не полоса-на-завершение.
   if(_lit>0){
    var _by=(t.by_discipline||[]).filter(function(d){return (d.lit||0)>0;});
    var _max=Math.max.apply(null,_by.map(function(d){return d.lit||0;}).concat([1]));
+   H+='<div class="terr"><div class="terrh"><span class="l">Ваш арсенал</span><span class="v">'+_lit+' '+plural(_lit,'концепт','концепта','концептов')+'</span></div>';
+   if(_by.length){ H+='<div class="discs">'+_by.slice(0,6).map(function(d){ var nm=d.discipline||d.label||''; var k=d.key||LBLK[nm]||'def'; if(!nm) nm=D[k]||k; var dw=Math.round((d.lit/_max)*100); return '<div class="drow"><span class="nm">'+esc(nm)+'</span><span class="mini"><i style="width:'+Math.max(8,dw)+'%;background:var('+(DCOLV[k]||'--def')+')"></i></span><span class="ct">'+d.lit+'</span></div>'; }).join('')+'</div>'; }
+   if(t.frontier_open){ H+='<div class="terrm">Ещё '+t.frontier_open+' '+plural(t.frontier_open,'гипотеза','гипотезы','гипотез')+' ждут на фронтире знания.</div>'; }
+   H+='</div>';
+  }
+  H+='</div>';
+ } else if(STATE.signedIn){
+  H+='<div class="guest"><p>Вы вошли, но членство книги — по приглашению. Прогресс, заметки и реакции откроются по ссылке от участника.</p><a class="btn pri" href="access.html" style="display:inline-flex;text-decoration:none;margin-bottom:10px">Как получить доступ</a><div><button class="psignout" id="signout" type="button">Выйти</button></div></div>';
+ } else {
+  H+='<div class="guest"><p>Вы листаете как гость. Честный слой виден, но прогресс, заметки и реакции — после входа.</p><button class="btn pri" onclick="location.href=\''+accessHref()+'\'">Войти</button></div>';
+ }
+ if(_pl){
+  var _pt=(_pl.title?_pl.title+' · ':'')+'остановка '+_pl.stop+(_pl.m?(' из '+_pl.m):'');
+  if(!_pl.title){ _pt='Продолжить с места, где остановились'; }
+  H+='<a class="resume" href="path.html"><span class="rsm-dot"></span><span class="rsm-b"><span class="rsm-l">Мой путь</span><span class="rsm-s">'+esc(_pt)+'</span></span><svg class="rsm-cv" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a>';
+ } else if(STATE.member){
+  H+='<a class="resume rsm-start" href="path.html"><span class="rsm-dot"></span><span class="rsm-b"><span class="rsm-l">Ваш путь</span><span class="rsm-s">Первая остановка зажжёт первую звезду — 3 минуты</span></span><svg class="rsm-cv" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a>';
+ }
+ H+='<div class="seclbl">Личное</div><div class="menu">'+row('favorites',IC.star,'Сохранённое')+(STATE.member?row('community',IC.people,'Сообщество'):'')+'</div>';
+ H+='<div class="seclbl">О проекте</div><div class="menu">'+row('about',IC.user,'Об авторе и принципах')+row('mcp',IC.plug,'Доступ к MCP')+row('settings',IC.gear,'Настройки')+
+   '<div class="mrow" role="button" tabindex="0" id="appUpd">'+icon(IC.refresh)+'<span class="t">Обновить приложение</span><svg class="cv" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div></div>';
+ if(STATE.member && (STATE.email||'').toLowerCase()==='temka.avdeev@gmail.com'){
+  var _chev='<svg class="cv" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
+  H+='<div class="seclbl">Админ</div><div class="menu">'+
+     '<div class="mrow" role="button" tabindex="0" onclick="location.href=\'pult.html\'">'+icon(IC.dash)+'<span class="t">Пульт флота</span><span class="reldot" id="reldot" style="display:none"></span>'+_chev+'</div>'+
+     '<div class="mrow" role="button" tabindex="0" onclick="location.href=\'index-admin.html#dash\'">'+icon(IC.gear)+'<span class="t">Старая админка · редакторы</span>'+_chev+'</div>'+
+     '</div>';
+ }
+ if(STATE.member && (STATE.email||'').toLowerCase()==='temka.avdeev@gmail.com') H+='<div class="seclbl">Интерфейс</div><div class="menu"><div class="mrow" role="button" tabindex="0" onclick="location.href=\'index.html?v2=1\'">'+icon(IC.gear)+'<span class="t">Вернуться к старой версии</span><svg class="cv" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div></div>';
+ document.getElementById('wrap').innerHTML=H;
+ Array.prototype.forEach.call(document.querySelectorAll('[data-view]'),function(el){ el.onclick=function(){ location.href='personal.html?view='+el.getAttribute('data-view'); }; });
+ var so=document.getElementById('signout'); if(so) so.onclick=function(){ if(!confirm('Точно выйти из аккаунта?')) return; clearLocalProgress(); if(window.__SB) window.__SB.auth.signOut().then(function(){ location.href='access.html'; }); else location.href='access.html'; };
+ var _up=document.getElementById('appUpd');
+ if(_up) _up.onclick=function(){ _up.querySelector('.t').textContent='Обновляю…';
+  Promise.resolve().then(function(){ if('serviceWorker' in navigator) return navigator.serviceWorker.getRegistrations().then(function(rs){ return Promise.all(rs.map(function(r){return r.unregister();})); }); })
+   .then(function(){ if(window.caches&&caches.keys) return caches.keys().then(function(ks){ return Promise.all(ks.map(function(k){return caches.delete(k);})); }); })
+   .catch(function(){}).then(function(){ location.reload(true); });
+ };
+ checkRelease();
+}
+function checkRelease(){
+ var d=document.getElementById('reldot'); if(!d||!window.__SB) return;
+ window.__SB.rpc('deploy_candidates_list').then(function(r){
+  if(!r||r.error||!r.data||!r.data.length){ return; }
+  var rows=r.data; var live=rows.filter(function(x){return x.is_live;})[0];
+  var liveT=live?Date.parse(live.ingested_at):Infinity;
+  var pend=rows.filter(function(x){return !x.is_live && Date.parse(x.ingested_at)>=liveT;}).length;
+  if(pend>0){ d.style.display='inline-block'; d.title=pend+' '+(pend===1?'сборка ждёт':'сборок ждут')+' публикации'; }
+ }).catch(function(){});
+}
+function sub(title, inner){
+ document.getElementById('wrap').innerHTML='<div class="bar"><button class="ib" id="back" aria-label="Назад"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><div class="bt">'+esc(title)+'</div></div>'+inner;
+ document.getElementById('back').onclick=function(){ location.href='personal.html'; };
+}
+function mcpShell(){
+ return '<div class="head"><div class="h1">Честный слой для ИИ</div></div>'+
+  '<div class="prose"><p>Подключите базу к своему ИИ — Claude, ChatGPT, Perplexity получают наши разборы с пометкой надёжности и ссылкой на источник, а не догадки.</p></div>'+
+  '<div class="mcpdemo"><div class="dl">Пример ответа с нашим слоем</div>'+
+   '<div class="dq">«Добавить таймер обратного отсчёта на оплату?»</div>'+
+   '<div class="da">Дефицит времени поднимает конверсию — но <span class="rb solid">проверено</span> лишь для реального дефицита; искусственный таймер = тёмный паттерн, эрозия доверия.<span class="src">Источник: Cialdini, 2001 · разбор в карточке →</span></div></div>'+
+  '<div id="mcpBody"><div style="color:var(--meta);font-size:13px;padding:8px 0">…</div></div>'+
+  '<p class="fw">Научный слой, не догадки: каждый разбор — с пометкой устойчивости, критикой и ссылкой на источник.</p>';
+}
+function mcpConfig(tok){
+ return '{\n  "mcpServers": {\n    "matchast": {\n      "url": "https://wsnqmjzmtjpezkzlzhra.supabase.co/functions/v1/kb-mcp",\n      "headers": { "Authorization": "Bearer '+tok+'" }\n    }\n  }\n}';
+}
+function copyClip(txt, btn, okLabel){ try{ navigator.clipboard.writeText(txt).then(function(){ var o=btn.textContent; btn.textContent=okLabel||'Скопировано ✓'; setTimeout(function(){ btn.textContent=o; },1500); }); }catch(e){} }
+function fillMcp(tok){
+ var el=document.getElementById('mcpBody'); if(!el) return;
+ var CLIENTS='<div class="seclbl" style="margin-top:22px">Как подключить</div><div class="mcpcli">'+
+  '<div class="mcpc"><div class="ch">Claude <span class="cst ok">рабочая</span></div><div class="cb"><b>Claude Desktop:</b> Настройки → Разработчик → Изменить конфиг → вставьте конфиг выше → перезапустите Claude.<br><b>claude.ai:</b> Настройки → Коннекторы → «Добавить свой» → URL и заголовок авторизации из конфига.</div></div>'+
+  '<div class="mcpc"><div class="ch">Perplexity <span class="cst">уточняем</span></div><div class="cb">Поддержка удалённых MCP у Perplexity меняется. Если ваш клиент их поддерживает — используйте конфиг выше; точные шаги подтвердим прежде чем публиковать.</div></div>'+
+  '<div class="mcpc"><div class="ch">DeepSeek <span class="cst">уточняем</span></div><div class="cb">Нативная MCP-поддержка уточняется; вероятный путь — MCP-совместимый клиент поверх DeepSeek API. Подтвердим перед публикацией шагов.</div></div>'+
+  '</div>';
+ el.innerHTML='<div class="tokbox"><div class="l">Ваш MCP-токен</div><code id="mTok">'+esc(tok)+'</code><button class="mcpbtn" id="mCopyTok">Скопировать токен</button></div>'+
+  '<div class="cfgbox"><div class="l">Конфиг — вставьте в настройки MCP-клиента</div><pre id="mCfg">'+esc(mcpConfig(tok))+'</pre><button class="mcpbtn" id="mCopyCfg">Скопировать конфиг</button></div>'+
+  CLIENTS+
+  '<button class="mcpbtn rot" id="mRot">Перевыпустить токен</button>';
+ document.getElementById('mCopyTok').onclick=function(){ copyClip(tok,this); };
+ document.getElementById('mCopyCfg').onclick=function(){ copyClip(mcpConfig(tok),this,'Конфиг скопирован ✓'); };
+ document.getElementById('mRot').onclick=function(){ if(!confirm('Перевыпустить токен? Старый перестанет работать.')) return; if(!window.__SB) return; this.disabled=true; window.__SB.rpc('mcp_my_token_rotate').then(function(r){ var t=(r&&!r.error&&r.data&&r.data[0])||null; if(t&&t.token) fillMcp(t.token); }).catch(function(){}); };
+}
+function wireMcp(){
+ var el=document.getElementById('mcpBody'); if(!el) return;
+ if(!STATE.member){ el.innerHTML='<div class="mcpguest">Подключение MCP — для участников. <a href="'+accessHref()+'">'+(STATE.signedIn?'Как получить доступ':'Войти')+'</a></div>'; return; }
+ if(!window.__SB){ el.innerHTML=window.__CFGFAIL?'<div class="mcstate"><div class="ic">⚠</div><div class="msg">Не удалось подключиться.</div><button class="retry" onclick="location.reload()">↻ Повторить</button></div>':'<div style="color:var(--meta);font-size:13px;padding:8px 0">Подключаем…</div>'; return; }
+ window.__SB.rpc('mcp_my_token').then(function(r){ var t=(r&&!r.error&&r.data&&r.data[0])||null; if(t&&t.token) fillMcp(t.token); else el.innerHTML='<div class="mcpguest">Не удалось получить токен — <a href="'+accessHref()+'">Войдите</a> как участник.</div>'; }).catch(function(){ el.innerHTML='<div class="mcstate"><div class="ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4L2.8 19.5h18.4z"/><path d="M12 10v4M12 17h.01"/></svg></div><div class="msg">Не удалось загрузить.</div><button class="retry" onclick="wireMcp()">↻ Повторить</button></div>'; });
+}
+function communityShell(){
+ return '<div class="head"><div class="h1">Сообщество</div></div>'+
+  '<div class="prose"><p>Доступ — только по приглашению, узким кругом. Приведите того, кому это правда нужно.</p></div>'+
+  '<div id="commBody"><div style="color:var(--meta);font-size:13px;padding:8px 0">…</div></div>';
+}
+function inviteGraphSvg(edges, meId){
+ if(!edges||!edges.length){ return '<svg viewBox="0 0 320 56"><text x="160" y="32" text-anchor="middle" fill="#B3A893" font-size="13">Граф появится с первым приглашением</text></svg>'; }
+ var nodes={}, adj={}, indeg={};
+ edges.forEach(function(e){ if(!e.from||!e.to) return; nodes[e.from]=1; nodes[e.to]=1; (adj[e.from]=adj[e.from]||[]).push(e.to); indeg[e.to]=(indeg[e.to]||0)+1; });
+ var ids=Object.keys(nodes); if(!ids.length) return '';
+ var depth={}; var roots=ids.filter(function(id){ return !indeg[id]; }); var q=roots.slice(); roots.forEach(function(r){depth[r]=0;});
+ while(q.length){ var u=q.shift(); (adj[u]||[]).forEach(function(v){ if(depth[v]==null){ depth[v]=(depth[u]||0)+1; q.push(v); } }); }
+ ids.forEach(function(id){ if(depth[id]==null) depth[id]=0; });
+ var byD={}; ids.forEach(function(id){ (byD[depth[id]]=byD[depth[id]]||[]).push(id); });
+ var maxD=0; ids.forEach(function(id){ if(depth[id]>maxD) maxD=depth[id]; });
+ var W=320, rowH=56, padY=24, pos={};
+ for(var d=0; d<=maxD; d++){ var row=byD[d]||[]; row.forEach(function(id,i){ pos[id]={ x: W*(i+1)/(row.length+1), y: padY + d*rowH }; }); }
+ var Hh = padY*2 + maxD*rowH;
+ var E=edges.map(function(e){ var a=pos[e.from], b=pos[e.to]; if(!a||!b) return ''; return '<line x1="'+a.x.toFixed(1)+'" y1="'+a.y.toFixed(1)+'" x2="'+b.x.toFixed(1)+'" y2="'+b.y.toFixed(1)+'" stroke="#3a3329" stroke-width="1.2"/>'; }).join('');
+ var N=ids.map(function(id){ var p=pos[id]; var me=(meId&&id===meId); return '<circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="'+(me?7:5)+'" fill="'+(me?'#E7C07A':'#6E665A')+'"'+(me?' stroke="#fff" stroke-width="1.5"':'')+'/>'; }).join('');
+ return '<svg viewBox="0 0 '+W+' '+Hh+'">'+E+N+'</svg>';
+}
+function wireCommunity(){
+ var el=document.getElementById('commBody'); if(!el) return;
+ if(!STATE.member){ el.innerHTML='<div class="mcpguest">Сообщество — для участников. <a href="'+accessHref()+'">'+(STATE.signedIn?'Как получить доступ':'Войти')+'</a></div>'; return; }
+ if(!window.__SB){ el.innerHTML=window.__CFGFAIL?'<div class="mcstate"><div class="ic">⚠</div><div class="msg">Не удалось подключиться.</div><button class="retry" onclick="location.reload()">↻ Повторить</button></div>':'<div style="color:var(--meta);font-size:13px;padding:8px 0">Загружаем…</div>'; return; }
+ window.__SB.rpc('invite_community').then(function(r){ var d=(r&&!r.error&&r.data)||null;
+   if(!d){ el.innerHTML='<div class="mcstate"><div class="ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4L2.8 19.5h18.4z"/><path d="M12 10v4M12 17h.01"/></svg></div><div class="msg">Не удалось загрузить.</div><button class="retry" onclick="wireCommunity()">↻ Повторить</button></div>'; return; }
+   var avail=d.available||0, meId=STATE.uid||null, prog=d.next_invite_progress||{have:0,need:5};
+   var left=Math.max(0,(prog.need||5)-(prog.have||0)), pct=Math.round((prog.have||0)/(prog.need||5)*100);
+   var H='<div class="cstat"><div class="c"><div class="v">'+(d.size||0)+'</div><div class="l">участников</div></div>'+
+     '<div class="c"><div class="v">'+((d.invited&&d.invited.length)||0)+'</div><div class="l">вы привели</div></div>'+
+     '<div class="c"><div class="v">'+avail+'</div><div class="l">осталось<br>приглашений</div></div></div>';
+   if(avail>0){ H+='<div class="cprog"><div class="l">У вас '+avail+' '+plural(avail,'приглашение','приглашения','приглашений')+'</div></div>'; }
+   else { H+='<div class="cprog"><div class="l">Ещё '+left+' '+plural(left,'карточка','карточки','карточек')+' до нового приглашения · '+(prog.have||0)+' из '+(prog.need||5)+'</div><div class="pbar"><i style="width:'+Math.max(4,pct)+'%"></i></div>'+
+     ((d.invited&&d.invited.length)?'':'<div class="chelp" style="margin-top:8px">Старт — ноль приглашений. Зарабатываете вкладом. Лотерею очков на вас мы не крутим.</div>')+'</div>'; }
+   H+='<button class="mcpbtn pri" id="cGen"'+(avail<=0?' disabled':'')+'>'+(avail>0?'Создать приглашение':'Приглашения закончились')+'</button>';
+   if(avail>0) H+='<div class="chelp">Создайте ссылку и отправьте её лично тому, кому это нужно. Ссылка действует 37 часов.</div>';
+   H+='<div id="cCode"></div>';
+   H+='<div class="cgraph"><div class="gl">Граф приглашений</div>'+inviteGraphSvg(d.edges||[], meId)+'<div class="gh">Точка — участник, линия — кто кого привёл. Золотая — вы. Анонимно.</div></div>';
+   if(d.invited&&d.invited.length){ H+='<div class="cinv"><div class="gl">Вы привели</div>'+d.invited.map(function(x){ var dt=x.at?new Date(Date.parse(x.at)):null; var ag=(dt&&!isNaN(dt.getTime()))?(dt.getDate()+'.'+(dt.getMonth()+1)):''; return '<div class="invrow"><span class="d"></span><span>участник</span><span class="ag">'+ag+'</span></div>'; }).join('')+'</div>'; }
+   el.innerHTML=H;
+   var gen=document.getElementById('cGen');
+   if(gen&&avail>0) gen.onclick=function(){ if(!window.__SB) return; gen.disabled=true; gen.textContent='Создаём…';
+     window.__SB.rpc('invite_generate').then(function(r2){ var c=(r2&&!r2.error&&r2.data&&r2.data[0])||null;
+       if(c&&c.code){ var link=location.origin+location.pathname.replace(/[^/]*$/,'')+'access.html?invite='+c.code;
+         document.getElementById('cCode').innerHTML='<div class="codebox"><code>'+esc(link)+'</code><button class="mcpbtn" id="cCopy" style="margin:0">Копировать</button></div><div class="gh" style="color:var(--meta);margin-top:8px">Ссылка одноразовая'+(c.expires_at?(' · до '+new Date(Date.parse(c.expires_at)).toLocaleDateString()):'')+'</div>';
+         document.getElementById('cCopy').onclick=function(){ copyClip(link,this); }; gen.style.display='none';
+       } else { gen.disabled=false; gen.textContent='Создать приглашение'; }
+     }).catch(function(){ gen.disabled=false; gen.textContent='Создать приглашение'; }); };
+ }).catch(function(){ el.innerHTML='<div class="mcstate"><div class="ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4L2.8 19.5h18.4z"/><path d="M12 10v4M12 17h.01"/></svg></div><div class="msg">Не удалось загрузить.</div><button class="retry" onclick="wireCommunity()">↻ Повторить</button></div>'; });
+}
+function renderView(v){
+ if(v==='community'){ sub('Сообщество', communityShell()); wireCommunity(); return; }
+ if(v==='favorites'){ var ff=favItemsHtml();
+   var favEmpty=STATE.savesError?'<div class="mcstate"><div class="ic">⚠</div><div class="msg">Не удалось загрузить избранное.</div><button class="retry" onclick="location.reload()">↻ Повторить</button></div>':'<div class="empty"><div class="em">★</div>Отмечайте ★ на карточках — соберите нужное в одном месте.</div>';
+   sub('Сохранённое', ff||favEmpty); if(ff) bindCards(); }
+ else if(v==='about') sub('Об авторе и принципах',
+   '<div class="head"><div class="h1">Честно о поведении</div></div><div class="prose">'+
+   '<p>Это база знаний о том, как люди принимают решения, собранная для продакт-менеджеров. Не сборник лайфхаков, а связанный граф идей из поведенческой экономики, психологии и UX.</p>'+
+   '<p><strong>Честность устойчивости.</strong> Каждая теория либо проверена по исследованиям, либо помечена как не подтверждённая, либо связана с опровержениями и контртеориями. У каждой идеи видна степень надёжности: «проверено», «есть нюансы» или «спорно». Мы не выдаём догадки за факты.</p>'+
+   '<p><strong>Firewall.</strong> Мы свободно называем и разбираем тёмные паттерны — но никогда не применяем их к собственным читателям. Никаких поддельных лотерей, давления и манипулятивных триггеров здесь.</p>'+
+   '<p>Проект открывается узким кругом по приглашениям. Автор — Артём Авдеев: <a href="https://t.me/artavdeev" target="_blank" rel="noopener" style="color:var(--gold);font-weight:600;text-decoration:none">tg @artavdeev</a>.</p></div>');
+ else if(v==='mcp'){ sub('Доступ к MCP', mcpShell()); wireMcp(); }
+ else if(v==='settings') sub('Настройки',
+   '<div style="margin-top:18px"><div class="toggle"><span class="t">Тема оформления</span><div class="thseg" id="thseg" role="group" aria-label="Тема оформления"><button data-th="auto">Авто</button><button data-th="light">Светлая</button><button data-th="dark">Тёмная</button></div></div>'+
+   '<div class="toggle"><span class="t" id="sw2l">Уведомления о новом</span><div class="sw on" id="sw2" role="switch" tabindex="0" aria-checked="true" aria-labelledby="sw2l"><i></i></div></div>'+
+   '<div class="toggle"><span class="t" id="sw3l">Сохранять для офлайна</span><div class="sw" id="sw3" role="switch" tabindex="0" aria-checked="false" aria-labelledby="sw3l"><i></i></div></div></div>'+
+   '<p style="color:var(--meta);font-size:13px;margin-top:16px">Настройки применяются на этом устройстве.</p>'+
+   '<div style="margin-top:26px;border-top:1px solid var(--line);padding-top:20px"><button id="resetProg" style="width:100%;background:var(--card);border:1px solid var(--line);color:var(--contested);border-radius:12px;padding:13px;font:inherit;font-weight:600;cursor:pointer">Сбросить прогресс</button>'+
+   '<p style="color:var(--meta);font-size:12.5px;line-height:17px;margin-top:9px">Очистит прочитанные карточки, пройденные главы, «Продолжить» и онбординг'+(STATE.member?' — на этом устройстве и на сервере (ваша карта знаний)':' на этом устройстве')+'. Сохранённое и вход не затрагиваются.</p></div>');
+ else { renderHub(); return; }
+ Array.prototype.forEach.call(document.querySelectorAll('.sw'),function(s){ s.onclick=function(){ s.classList.toggle('on'); s.setAttribute('aria-checked', s.classList.contains('on')?'true':'false'); }; });
+ (function(){ var seg=document.getElementById('thseg'); if(!seg) return;
+   var cur; try{ cur=localStorage.getItem('mc:theme')||'auto'; }catch(e){ cur='auto'; }
+   function paint(v){ Array.prototype.forEach.call(seg.querySelectorAll('button'),function(b){ var on=b.getAttribute('data-th')===v; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on?'true':'false'); }); }
+   paint(cur);
+   Array.prototype.forEach.call(seg.querySelectorAll('button'),function(b){ b.onclick=function(){ var v=b.getAttribute('data-th'); try{ localStorage.setItem('mc:theme', v); }catch(e){} paint(v); if(window.mcApplyTheme) window.mcApplyTheme(); }; });
+ })();
+ var _rp=document.getElementById('resetProg'); if(_rp) _rp.onclick=mcResetProgress;
+}
+function clearLocalProgress(){ try{ var del=[]; for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(!k) continue;
+  if(k==='mc:fav'||k==='mc:qfav'||k==='mc:visited'||k==='mc:last'||k==='mc:quests_done'||k==='mc:quest_last'||k==='personal:state'||k==='explore:graph'||k==='solvehome:data'||k.indexOf('mc:path:')===0||k.indexOf('mc:qpred:')===0||k.indexOf('mc:card:')===0) del.push(k);
+ } del.forEach(function(k){ try{localStorage.removeItem(k);}catch(e){} }); }catch(e){} }
+function mcResetProgress(){
+ if(!confirm('Сбросить прогресс?\nОчистятся прочитанные карточки, пройденные главы, «Продолжить» и онбординг. Сохранённое и вход останутся.')) return;
+ var keep={'mc:fav':1}; var progKeys={'mc:visited':1,'mc:quests_done':1,'mc:quest_last':1,'mc:last':1,'mc:model':1,'mc:onbdone':1,'explore:graph':1,'solvehome:data':1};
+ try{ var del=[]; for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(!k||keep[k]) continue; if(progKeys[k]||k.indexOf('mc:card:')===0||k.indexOf('mc:visited')===0||k.indexOf('mc:path:')===0||k.indexOf('mc:qpred:')===0) del.push(k); } del.forEach(function(k){ try{localStorage.removeItem(k);}catch(e){} }); }catch(e){}
+ try{ var ps=JSON.parse(localStorage.getItem('personal:state')||'null'); if(ps){ ps.territory=null; localStorage.setItem('personal:state', JSON.stringify(ps)); } }catch(e){}
+ var b=document.getElementById('resetProg'); if(b){ b.disabled=true; b.textContent='Сбрасываем…'; }
+ function done(){ location.href='solve-home.html'; }
+ if(STATE.member && window.__SB){ var pr=window.__SB.rpc('reset_my_progress'); if(pr&&pr.then){ pr.then(done, done); } else done(); }
+ else done();
+}
+if(VIEW) renderView(VIEW); else renderHub();
+document.addEventListener('keydown',function(e){
+ if(e.key!=='Enter'&&e.key!==' '&&e.key!=='Spacebar') return;
+ var t=e.target; if(!t||!t.closest) return;
+ var el=t.closest('.mrow,.sw'); if(!el) return;
+ e.preventDefault(); el.click();
+});
+(function boot(){
+ function go(){
+  try{
+   if(!(window.SUPABASE_URL && window.SUPABASE_ANON_KEY && window.supabase && window.supabase.createClient)) return;
+   var SB=window.supabase.createClient(String(window.SUPABASE_URL).trim(),String(window.SUPABASE_ANON_KEY).trim()); window.__SB=SB;
+   SB.auth.getSession().then(function(s){ var sess=s&&s.data&&s.data.session;
+    var oldSig=stateSig();
+    STATE.signedIn=!!sess; STATE.member=false;
+    if(sess){ STATE.email=sess.user.email||''; STATE.uid=sess.user.id||null; STATE.name=(sess.user.user_metadata&&(sess.user.user_metadata.name||sess.user.user_metadata.full_name))||''; }
+    else { STATE.email=''; STATE.uid=null; }
+    function finish(){ saveStateCache(); if(VIEW){ renderView(VIEW); } else if(stateSig()!==oldSig){ renderHub(); } }
+    function loadMember(){ mergeFavs(SB, function(){ Promise.all([
+       SB.rpc('my_territory').then(function(r){return r;},function(){return null;}),
+       SB.rpc('saves_list').then(function(r){return r;},function(){return null;})
+      ]).then(function(res){ var tr=res[0], sv=res[1];
+       if(tr&&!tr.error&&tr.data) STATE.territory=tr.data;
+       if(sv&&!sv.error&&sv.data) STATE.saves=sv.data; else STATE.savesError=true;
+       finish();
+      }); }); }
+    if(!STATE.signedIn){ STATE.territory=null; STATE.saves=null; finish(); return; }
+    SB.rpc('is_member').then(function(r){
+      STATE.member=!!(r&&!r.error&&r.data===true);
+      if(STATE.member) loadMember();
+      else { STATE.territory=null; STATE.saves=null; finish(); }
+    }, function(){ STATE.member=false; STATE.territory=null; STATE.saves=null; finish(); });
+   }).catch(function(){});
+  }catch(_){}
+ }
+ function load(src,cb){ var sc=document.createElement('script'); sc.src=src; sc.onload=cb; sc.onerror=cb; document.head.appendChild(sc); }
+ function loadCfg(done){ var ps=['./config.js','../config.js','/book-reader/config.js']; var i=0; (function nx(){ if(window.SUPABASE_URL||i>=ps.length) return done(); var sc=document.createElement('script'); sc.src=ps[i++]; sc.onload=function(){ setTimeout(function(){ window.SUPABASE_URL?done():nx(); },0); }; sc.onerror=nx; document.head.appendChild(sc); })(); }
+  function cfgFail(){ window.__CFGFAIL=true; try{ if(VIEW) renderView(VIEW); }catch(e){} }
+  loadCfg(function(){ if(!window.SUPABASE_URL){ cfgFail(); return; } load('vendor/supabase.min.js', function(){ if(!(window.supabase&&window.supabase.createClient)){ cfgFail(); return; } go(); }); });
+})();
+</script>
+<script>(function(){if(!('serviceWorker' in navigator))return;var reg=null,shown=false;function anim(){var st=document.createElement('style');st.textContent='@keyframes __spin{to{transform:rotate(360deg)}}';document.head.appendChild(st);var o=document.createElement('div');o.id='__updanim';o.style.cssText='position:fixed;inset:0;z-index:100000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:rgba(20,17,12,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;transition:opacity .3s';o.innerHTML='<div style="width:44px;height:44px;border-radius:50%;border:3px solid rgba(255,255,255,.25);border-top-color:#C98A3A;animation:__spin .8s linear infinite"></div><div style="color:#F4EEE2;font:600 15px/1.3 -apple-system,system-ui,sans-serif">Обновляем…</div>';(document.body||document.documentElement).appendChild(o);requestAnimationFrame(function(){o.style.opacity='1';});}function doUpdate(){var bb=document.getElementById('__updbar');if(bb)bb.style.opacity='0';anim();try{if(reg&&reg.waiting)reg.waiting.postMessage({type:'SKIP_WAITING'});}catch(e){}var done=false,fin=function(){if(done)return;done=true;location.reload();};try{navigator.serviceWorker.addEventListener('controllerchange',fin);}catch(e){}setTimeout(fin,1600);}function showUpd(){if(shown)return;shown=true;try{if(sessionStorage.getItem('mc:updshown'))return;sessionStorage.setItem('mc:updshown','1');}catch(e){}var b=document.createElement('div');b.id='__updbar';b.style.cssText='position:fixed;left:50%;transform:translateX(-50%) translateY(8px);bottom:calc(16px + env(safe-area-inset-bottom));z-index:99999;display:flex;align-items:center;gap:12px;background:#17150F;color:#F4EEE2;font:600 14px/1.3 -apple-system,BlinkMacSystemFont,system-ui,sans-serif;padding:10px 12px 10px 16px;border-radius:14px;box-shadow:0 10px 34px rgba(0,0,0,.34);max-width:calc(100vw - 26px);opacity:0;transition:opacity .25s,transform .25s';var s=document.createElement('span');s.textContent='Доступна новая версия';var btn=document.createElement('button');btn.textContent='Обновить';btn.style.cssText='border:0;background:#C98A3A;color:#fff;font:inherit;font-weight:700;padding:8px 15px;border-radius:10px;cursor:pointer;flex:none';btn.onclick=doUpdate;b.appendChild(s);b.appendChild(btn);(document.body||document.documentElement).appendChild(b);requestAnimationFrame(function(){b.style.opacity='1';b.style.transform='translateX(-50%) translateY(0)';});}try{navigator.serviceWorker.register('sw.js').then(function(r){reg=r;}).catch(function(){});}catch(e){}try{navigator.serviceWorker.addEventListener('message',function(e){if(e.data&&e.data.type==='NEW_VERSION')showUpd();});}catch(e){}try{navigator.serviceWorker.ready.then(function(r){reg=r;if(r.waiting)showUpd();r.addEventListener('updatefound',function(){var nw=r.installing;if(nw)nw.addEventListener('statechange',function(){if(nw.state==='installed'&&navigator.serviceWorker.controller)showUpd();});});});}catch(e){}})();</script>
+<script>try{document.addEventListener("touchstart",function(){},{passive:true});}catch(e){}</script>
+</body>
+</html>
