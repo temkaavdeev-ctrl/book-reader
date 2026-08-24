@@ -7,10 +7,9 @@
 
 ## Repo HTML
 - `access.html` on this branch = live invite/OIDC page
-- Full `personal.html` with `my_access()` (session ≠ member) is ready locally at:
-  - agent: `/agent/repos/book-reader/personal.html`
-  - source: `book_sources/v3/personal.html`
-- Temporary stub may redirect to live until Hermes copies the file via deploy_stage
+- `personal.html` on this branch = full Моё with `my_access()` (session ≠ member)
+  - guest banner / signed_in-not-member banner / member profile+territory+saves
+  - source mirror: `book_sources/v3/personal.html`
 
-## Apply personal.html
-Copy workspace `personal.html` over the stub, then `sh deploy_stage.sh` / prod ingest as usual.
+## Deploy
+After merge: Hermes `deploy_stage.sh` / prod ingest as usual (or GitHub Actions deploy-prod).
