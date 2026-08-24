@@ -1,7 +1,7 @@
 /* mc-auth.js — единая логика доступа к books:
  * 1) гость — только публичный слой;
- * 2) сессия ≠ доступ: членство = whitelist (или admin);
- * 3) инвайт: access.html?invite=CODE → регистрация/вход → invite_redeem → whitelist.
+ * 2) сессия ≠ членство: signed_in vs member via my_access()/is_member();
+ * 3) инвайт: access.html?invite=CODE → Authelia PKCE → membership_after_auth.
  */
 (function(global){
   var ADMIN='temka.avdeev@gmail.com';
@@ -67,24 +67,28 @@
   function roleCacheKey(uid){ return 'bp_role:'+uid; }
 
   function checkBooksAccess(SB,user){
-    if(!SB||!user) return Promise.resolve({ member:false, role:'reader', admin:false });
-    if(isAdmin(user)) return Promise.resolve({ member:true, role:'editor', admin:true });
+    if(!SB||!user) return Promise.resolve({ member:false, signed_in:false, role:'reader', admin:false });
+    var admin=isAdmin(user);
     var mk=memberCacheKey(user.id), rk=roleCacheKey(user.id);
-    function fromCache(){
-      if(lsGet(mk)==='1') return { member:true, role:lsGet(rk)||'reader', admin:false, cached:true };
-      return { member:false, role:'reader', admin:false, cached:true };
+    function fromCache(signed){
+      var cachedMember=admin || lsGet(mk)==='1';
+      return { member:cachedMember, signed_in:!!signed, role:admin?'editor':(lsGet(rk)||'reader'), admin:admin, cached:true };
     }
-    if(typeof navigator!=='undefined' && navigator.onLine===false) return Promise.resolve(fromCache());
-    return SB.from('whitelist').select('email,role').eq('email',(user.email||'').toLowerCase()).limit(1).then(function(r){
-      if(r.error) return fromCache();
-      if(r.data&&r.data.length){
-        var role=r.data[0].role||'reader';
-        lsSet(mk,'1'); lsSet(rk,role);
-        return { member:true, role:role, admin:false };
+    if(typeof navigator!=='undefined' && navigator.onLine===false) return Promise.resolve(fromCache(true));
+    return SB.rpc('my_access').then(function(r){
+      var d=(r&&!r.error&&r.data)||null;
+      if(!d){
+        return SB.rpc('is_member').then(function(m){
+          var member=admin || !!(m&&!m.error&&m.data===true);
+          lsSet(mk, member?'1':'0');
+          return { member:member, signed_in:true, role:admin?'editor':'reader', admin:admin };
+        });
       }
-      lsSet(mk,'0');
-      return { member:false, role:'reader', admin:false };
-    }).catch(function(){ return fromCache(); });
+      var member=admin || !!d.member;
+      lsSet(mk, member?'1':'0');
+      if(d.role) lsSet(rk, d.role);
+      return { member:member, signed_in:!!d.signed_in, role:d.role||(admin?'editor':'reader'), admin:admin, name:d.name||'', email:d.email||'' };
+    }).catch(function(){ return fromCache(true); });
   }
 
   function redeemInvite(SB,code,name){
@@ -96,23 +100,23 @@
   function finishAuth(SB,session,opts){
     opts=opts||{};
     var user=session&&session.user;
-    if(!user) return Promise.resolve({ ok:false, error:'no_session' });
-    var p=Promise.resolve(null);
-    if(opts.inviteCode){
-      p=p.then(function(){ return redeemInvite(SB,opts.inviteCode,opts.inviteName||''); }).then(function(rd){
-        if(rd&&rd.error) return { ok:false, error:rd.error.message, redeemFailed:true };
-        return null;
-      });
-    }
-    return p.then(function(fail){
-      if(fail) return fail;
+    if(!user) return Promise.resolve({ ok:false, signed_in:false, error:'no_session' });
+    var args={};
+    if(opts.inviteCode) args.p_code=opts.inviteCode;
+    if(opts.inviteName) args.p_name=opts.inviteName;
+    var p=SB.rpc('membership_after_auth', args).then(function(r){ return r; }, function(){
+      if(!opts.inviteCode) return null;
+      return redeemInvite(SB,opts.inviteCode,opts.inviteName||'');
+    });
+    return p.then(function(){
       return checkBooksAccess(SB,user).then(function(acc){
         return {
-          ok:acc.member,
+          ok:true,
+          signed_in:true,
           member:acc.member,
           role:acc.role,
           admin:acc.admin,
-          redirect:opts.isSignup?'path.html':'solve-home.html',
+          redirect:'path.html',
           user:user
         };
       });
@@ -123,8 +127,9 @@
     cb=cb||function(){};
     if(!SB){
       global.__MEMBER=false;
+      global.__SIGNED_IN=false;
       global.__BOOKS_ROLE='reader';
-      cb({ session:null, user:null, member:false, role:'reader' });
+      cb({ session:null, user:null, signed_in:false, member:false, role:'reader' });
       return Promise.resolve();
     }
     return SB.auth.getSession().then(function(s){
@@ -132,19 +137,22 @@
       var user=sess?sess.user:null;
       if(!user){
         global.__MEMBER=false;
+        global.__SIGNED_IN=false;
         global.__BOOKS_ROLE='reader';
-        cb({ session:null, user:null, member:false, role:'reader' });
+        cb({ session:null, user:null, signed_in:false, member:false, role:'reader' });
         return null;
       }
+      global.__SIGNED_IN=true;
       return checkBooksAccess(SB,user).then(function(acc){
         global.__MEMBER=acc.member;
         global.__BOOKS_ROLE=acc.role;
-        cb({ session:sess, user:user, member:acc.member, role:acc.role, admin:acc.admin });
+        cb({ session:sess, user:user, signed_in:true, member:acc.member, role:acc.role, admin:acc.admin });
       });
     }).catch(function(){
-      global.__MEMBER=mcLikelySession();
+      global.__MEMBER=false;
+      global.__SIGNED_IN=mcLikelySession();
       global.__BOOKS_ROLE='reader';
-      cb({ session:null, user:null, member:!!global.__MEMBER, role:'reader' });
+      cb({ session:null, user:null, signed_in:!!global.__SIGNED_IN, member:false, role:'reader' });
     });
   }
 
@@ -164,5 +172,6 @@
 
   global.McAuth=McAuth;
   global.mcLikelyMember=mcLikelySession;
-  if(mcLikelySession()) global.__MEMBER=true;
+  global.__SIGNED_IN=mcLikelySession();
+  global.__MEMBER=false;
 })(typeof window!=='undefined'?window:this);
