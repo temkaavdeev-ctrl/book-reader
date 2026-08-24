@@ -273,4 +273,212 @@ function renderHub(){
   if(!_pl.title){ _pt='Продолжить с места, где остановились'; }
   H+='<a class="resume" href="path.html"><span class="rsm-dot"></span><span class="rsm-b"><span class="rsm-l">Мой путь</span><span class="rsm-s">'+esc(_pt)+'</span></span><svg class="rsm-cv" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a>';
  } else if(STATE.member){
-  H+='<a class="resume rsm-start" href="path.html"><span class="rsm-dot"></span><span class="rsm-b"><span class="rsm-l">Ваш путь</span><span class="rsm-s">Первая остановка зажжёт первую звезду — 3 минуты</span></span><svg class="rsm-cv" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-li
+  H+='<a class="resume rsm-start" href="path.html"><span class="rsm-dot"></span><span class="rsm-b"><span class="rsm-l">Ваш путь</span><span class="rsm-s">Первая остановка зажжёт первую звезду — 3 минуты</span></span><svg class="rsm-cv" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a>';
+ }
+ H+='<div class="seclbl">Личное</div><div class="menu">'+row('favorites',IC.star,'Сохранённое')+(STATE.member?row('community',IC.people,'Сообщество'):'')+'</div>';
+ // «Диагностика метода» убрана из прода (реш. Артёма)
+ // MCP — доступ участнику всегда открыт (это не тумблер): убран ложный бейдж «выключено» (6ac1f4c6; MOM E2E: MCP жив, лейбл врал).
+ H+='<div class="seclbl">О проекте</div><div class="menu">'+row('about',IC.user,'Об авторе и принципах')+row('mcp',IC.plug,'Доступ к MCP')+row('settings',IC.gear,'Настройки')+
+   '<div class="mrow" role="button" tabindex="0" id="appUpd">'+icon(IC.refresh)+'<span class="t">Обновить приложение</span><svg class="cv" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div></div>';
+ if(STATE.member && (STATE.email||'').toLowerCase()==='temka.avdeev@gmail.com'){
+  var _chev='<svg class="cv" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
+  H+='<div class="seclbl">Админ</div><div class="menu">'+
+     '<div class="mrow" role="button" tabindex="0" onclick="location.href=\'pult.html\'">'+icon(IC.dash)+'<span class="t">Пульт флота</span><span class="reldot" id="reldot" style="display:none"></span>'+_chev+'</div>'+
+     '<div class="mrow" role="button" tabindex="0" onclick="location.href=\'index-admin.html#dash\'">'+icon(IC.gear)+'<span class="t">Старая админка · редакторы</span>'+_chev+'</div>'+
+     '</div>';
+ }
+ // Интерфейс-откат «к старой версии» — ТОЛЬКО админу (1f9546e7 ч.2): всем остальным новый интерфейс по умолчанию, без тумблера отката.
+ if(STATE.member && (STATE.email||'').toLowerCase()==='temka.avdeev@gmail.com') H+='<div class="seclbl">Интерфейс</div><div class="menu"><div class="mrow" role="button" tabindex="0" onclick="location.href=\'index.html?v2=1\'">'+icon(IC.gear)+'<span class="t">Вернуться к старой версии</span><svg class="cv" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div></div>';
+ // «Выйти» переехала в карточку профиля (рядом с читателем, реш. Артёма); нижняя дублирующая убрана
+ document.getElementById('wrap').innerHTML=H;
+ Array.prototype.forEach.call(document.querySelectorAll('[data-view]'),function(el){ el.onclick=function(){ location.href='personal.html?view='+el.getAttribute('data-view'); }; });
+ var so=document.getElementById('signout'); if(so) so.onclick=function(){ if(!confirm('Точно выйти из аккаунта?')) return; clearLocalProgress(); if(window.__SB) window.__SB.auth.signOut().then(function(){ location.href='access.html'; }); else location.href='access.html'; };
+ // «Обновить приложение»: снимаем service-worker и весь кеш → гарантированно свежая версия с сервера (бейдж «v5» убран — читался как вечное уведомление)
+ var _up=document.getElementById('appUpd');
+ if(_up) _up.onclick=function(){ _up.querySelector('.t').textContent='Обновляю…';
+  Promise.resolve().then(function(){ if('serviceWorker' in navigator) return navigator.serviceWorker.getRegistrations().then(function(rs){ return Promise.all(rs.map(function(r){return r.unregister();})); }); })
+   .then(function(){ if(window.caches&&caches.keys) return caches.keys().then(function(ks){ return Promise.all(ks.map(function(k){return caches.delete(k);})); }); })
+   .catch(function(){}).then(function(){ location.reload(true); });
+ };
+ checkRelease();
+}
+// красная точка на «Пульт флота», когда есть сборка новее, чем в проде (та же логика, что в pult.html)
+function checkRelease(){
+ var d=document.getElementById('reldot'); if(!d||!window.__SB) return;
+ window.__SB.rpc('deploy_candidates_list').then(function(r){
+  if(!r||r.error||!r.data||!r.data.length){ return; }
+  var rows=r.data; var live=rows.filter(function(x){return x.is_live;})[0];
+  var liveT=live?Date.parse(live.ingested_at):Infinity;
+  var pend=rows.filter(function(x){return !x.is_live && Date.parse(x.ingested_at)>=liveT;}).length;
+  if(pend>0){ d.style.display='inline-block'; d.title=pend+' '+(pend===1?'сборка ждёт':'сборок ждут')+' публикации'; }
+ }).catch(function(){});
+}
+
+function sub(title, inner){
+ document.getElementById('wrap').innerHTML='<div class="bar"><button class="ib" id="back" aria-label="Назад"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><div class="bt">'+esc(title)+'</div></div>'+inner;
+ document.getElementById('back').onclick=function(){ location.href='personal.html'; };
+}
+
+function mcpShell(){
+ return '<div class="head"><div class="h1">Честный слой для ИИ</div></div>'+
+  '<div class="prose"><p>Подключите базу к своему ИИ — Claude, ChatGPT, Perplexity получают наши разборы с пометкой надёжности и ссылкой на источник, а не догадки.</p></div>'+
+  '<div class="mcpdemo"><div class="dl">Пример ответа с нашим слоем</div>'+
+   '<div class="dq">«Добавить таймер обратного отсчёта на оплату?»</div>'+
+   '<div class="da">Дефицит времени поднимает конверсию — но <span class="rb solid">проверено</span> лишь для реального дефицита; искусственный таймер = тёмный паттерн, эрозия доверия.<span class="src">Источник: Cialdini, 2001 · разбор в карточке →</span></div></div>'+
+  '<div id="mcpBody"><div style="color:var(--meta);font-size:13px;padding:8px 0">…</div></div>'+
+  '<p class="fw">Научный слой, не догадки: каждый разбор — с пометкой устойчивости, критикой и ссылкой на источник.</p>';
+}
+function mcpConfig(tok){
+ return '{\n  "mcpServers": {\n    "matchast": {\n      "url": "https://wsnqmjzmtjpezkzlzhra.supabase.co/functions/v1/kb-mcp",\n      "headers": { "Authorization": "Bearer '+tok+'" }\n    }\n  }\n}';
+}
+function copyClip(txt, btn, okLabel){ try{ navigator.clipboard.writeText(txt).then(function(){ var o=btn.textContent; btn.textContent=okLabel||'Скопировано ✓'; setTimeout(function(){ btn.textContent=o; },1500); }); }catch(e){} }
+function fillMcp(tok){
+ var el=document.getElementById('mcpBody'); if(!el) return;
+ // Пер-клиентские карточки (6ac1f4c6): Claude — подтверждённо рабочая; Perplexity/DeepSeek — честная заглушка (не публикуем непроверенные шаги).
+ var CLIENTS='<div class="seclbl" style="margin-top:22px">Как подключить</div><div class="mcpcli">'+
+  '<div class="mcpc"><div class="ch">Claude <span class="cst ok">рабочая</span></div><div class="cb"><b>Claude Desktop:</b> Настройки → Разработчик → Изменить конфиг → вставьте конфиг выше → перезапустите Claude.<br><b>claude.ai:</b> Настройки → Коннекторы → «Добавить свой» → URL и заголовок авторизации из конфига.</div></div>'+
+  '<div class="mcpc"><div class="ch">Perplexity <span class="cst">уточняем</span></div><div class="cb">Поддержка удалённых MCP у Perplexity меняется. Если ваш клиент их поддерживает — используйте конфиг выше; точные шаги подтвердим прежде чем публиковать.</div></div>'+
+  '<div class="mcpc"><div class="ch">DeepSeek <span class="cst">уточняем</span></div><div class="cb">Нативная MCP-поддержка уточняется; вероятный путь — MCP-совместимый клиент поверх DeepSeek API. Подтвердим перед публикацией шагов.</div></div>'+
+  '</div>';
+ el.innerHTML='<div class="tokbox"><div class="l">Ваш MCP-токен</div><code id="mTok">'+esc(tok)+'</code><button class="mcpbtn" id="mCopyTok">Скопировать токен</button></div>'+
+  '<div class="cfgbox"><div class="l">Конфиг — вставьте в настройки MCP-клиента</div><pre id="mCfg">'+esc(mcpConfig(tok))+'</pre><button class="mcpbtn" id="mCopyCfg">Скопировать конфиг</button></div>'+
+  CLIENTS+
+  '<button class="mcpbtn rot" id="mRot">Перевыпустить токен</button>';
+ document.getElementById('mCopyTok').onclick=function(){ copyClip(tok,this); };
+ document.getElementById('mCopyCfg').onclick=function(){ copyClip(mcpConfig(tok),this,'Конфиг скопирован ✓'); };
+ document.getElementById('mRot').onclick=function(){ if(!confirm('Перевыпустить токен? Старый перестанет работать.')) return; if(!window.__SB) return; this.disabled=true; window.__SB.rpc('mcp_my_token_rotate').then(function(r){ var t=(r&&!r.error&&r.data&&r.data[0])||null; if(t&&t.token) fillMcp(t.token); }).catch(function(){}); };
+}
+function wireMcp(){
+ var el=document.getElementById('mcpBody'); if(!el) return;
+ if(!STATE.member){ el.innerHTML='<div class="mcpguest">Подключение MCP — для участников. <a href="access.html">Войти</a></div>'; return; }
+ if(!window.__SB){ el.innerHTML=window.__CFGFAIL?'<div class="mcstate"><div class="ic">⚠</div><div class="msg">Не удалось подключиться.</div><button class="retry" onclick="location.reload()">↻ Повторить</button></div>':'<div style="color:var(--meta);font-size:13px;padding:8px 0">Подключаем…</div>'; return; }
+ window.__SB.rpc('mcp_my_token').then(function(r){ var t=(r&&!r.error&&r.data&&r.data[0])||null; if(t&&t.token) fillMcp(t.token); else el.innerHTML='<div class="mcpguest">Не удалось получить токен — <a href="access.html">Войдите</a> как участник.</div>'; }).catch(function(){ el.innerHTML='<div class="mcstate"><div class="ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4L2.8 19.5h18.4z"/><path d="M12 10v4M12 17h.01"/></svg></div><div class="msg">Не удалось загрузить.</div><button class="retry" onclick="wireMcp()">↻ Повторить</button></div>'; });
+}
+function communityShell(){
+ return '<div class="head"><div class="h1">Сообщество</div></div>'+
+  '<div class="prose"><p>Доступ — только по приглашению, узким кругом. Приведите того, кому это правда нужно.</p></div>'+
+  '<div id="commBody"><div style="color:var(--meta);font-size:13px;padding:8px 0">…</div></div>';
+}
+function inviteGraphSvg(edges, meId){
+ if(!edges||!edges.length){ return '<svg viewBox="0 0 320 56"><text x="160" y="32" text-anchor="middle" fill="#B3A893" font-size="13">Граф появится с первым приглашением</text></svg>'; }
+ var nodes={}, adj={}, indeg={};
+ edges.forEach(function(e){ if(!e.from||!e.to) return; nodes[e.from]=1; nodes[e.to]=1; (adj[e.from]=adj[e.from]||[]).push(e.to); indeg[e.to]=(indeg[e.to]||0)+1; });
+ var ids=Object.keys(nodes); if(!ids.length) return '';
+ var depth={}; var roots=ids.filter(function(id){ return !indeg[id]; }); var q=roots.slice(); roots.forEach(function(r){depth[r]=0;});
+ while(q.length){ var u=q.shift(); (adj[u]||[]).forEach(function(v){ if(depth[v]==null){ depth[v]=(depth[u]||0)+1; q.push(v); } }); }
+ ids.forEach(function(id){ if(depth[id]==null) depth[id]=0; });
+ var byD={}; ids.forEach(function(id){ (byD[depth[id]]=byD[depth[id]]||[]).push(id); });
+ var maxD=0; ids.forEach(function(id){ if(depth[id]>maxD) maxD=depth[id]; });
+ var W=320, rowH=56, padY=24, pos={};
+ for(var d=0; d<=maxD; d++){ var row=byD[d]||[]; row.forEach(function(id,i){ pos[id]={ x: W*(i+1)/(row.length+1), y: padY + d*rowH }; }); }
+ var Hh = padY*2 + maxD*rowH;
+ var E=edges.map(function(e){ var a=pos[e.from], b=pos[e.to]; if(!a||!b) return ''; return '<line x1="'+a.x.toFixed(1)+'" y1="'+a.y.toFixed(1)+'" x2="'+b.x.toFixed(1)+'" y2="'+b.y.toFixed(1)+'" stroke="#3a3329" stroke-width="1.2"/>'; }).join('');
+ var N=ids.map(function(id){ var p=pos[id]; var me=(meId&&id===meId); return '<circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="'+(me?7:5)+'" fill="'+(me?'#E7C07A':'#6E665A')+'"'+(me?' stroke="#fff" stroke-width="1.5"':'')+'/>'; }).join('');
+ return '<svg viewBox="0 0 '+W+' '+Hh+'">'+E+N+'</svg>';
+}
+function wireCommunity(){
+ var el=document.getElementById('commBody'); if(!el) return;
+ if(!STATE.member){ el.innerHTML='<div class="mcpguest">Сообщество — для участников. <a href="access.html">Войти</a></div>'; return; }
+ if(!window.__SB){ el.innerHTML=window.__CFGFAIL?'<div class="mcstate"><div class="ic">⚠</div><div class="msg">Не удалось подключиться.</div><button class="retry" onclick="location.reload()">↻ Повторить</button></div>':'<div style="color:var(--meta);font-size:13px;padding:8px 0">Загружаем…</div>'; return; }
+ window.__SB.rpc('invite_community').then(function(r){ var d=(r&&!r.error&&r.data)||null;
+   if(!d){ el.innerHTML='<div class="mcstate"><div class="ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4L2.8 19.5h18.4z"/><path d="M12 10v4M12 17h.01"/></svg></div><div class="msg">Не удалось загрузить.</div><button class="retry" onclick="wireCommunity()">↻ Повторить</button></div>'; return; }
+   var avail=d.available||0, meId=STATE.uid||null, prog=d.next_invite_progress||{have:0,need:5};
+   var left=Math.max(0,(prog.need||5)-(prog.have||0)), pct=Math.round((prog.have||0)/(prog.need||5)*100);
+   var H='<div class="cstat"><div class="c"><div class="v">'+(d.size||0)+'</div><div class="l">участников</div></div>'+
+     '<div class="c"><div class="v">'+((d.invited&&d.invited.length)||0)+'</div><div class="l">вы привели</div></div>'+
+     '<div class="c"><div class="v">'+avail+'</div><div class="l">осталось<br>приглашений</div></div></div>';
+   // Прогресс-бар только когда его смысл ясен — «зарабатывание» следующего приглашения (подписан N из M). Когда приглашения есть — без бара.
+   if(avail>0){ H+='<div class="cprog"><div class="l">У вас '+avail+' '+plural(avail,'приглашение','приглашения','приглашений')+'</div></div>'; }
+   else { H+='<div class="cprog"><div class="l">Ещё '+left+' '+plural(left,'карточка','карточки','карточек')+' до нового приглашения · '+(prog.have||0)+' из '+(prog.need||5)+'</div><div class="pbar"><i style="width:'+Math.max(4,pct)+'%"></i></div>'+
+     ((d.invited&&d.invited.length)?'':'<div class="chelp" style="margin-top:8px">Старт — ноль приглашений. Зарабатываете вкладом. Лотерею очков на вас мы не крутим.</div>')+'</div>'; }
+   H+='<button class="mcpbtn pri" id="cGen"'+(avail<=0?' disabled':'')+'>'+(avail>0?'Создать приглашение':'Приглашения закончились')+'</button>';
+   if(avail>0) H+='<div class="chelp">Создайте ссылку и отправьте её лично тому, кому это нужно. Ссылка действует 37 часов.</div>';
+   H+='<div id="cCode"></div>';
+   H+='<div class="cgraph"><div class="gl">Граф приглашений</div>'+inviteGraphSvg(d.edges||[], meId)+'<div class="gh">Точка — участник, линия — кто кого привёл. Золотая — вы. Анонимно.</div></div>';
+   if(d.invited&&d.invited.length){ H+='<div class="cinv"><div class="gl">Вы привели</div>'+d.invited.map(function(x){ var dt=x.at?new Date(Date.parse(x.at)):null; var ag=(dt&&!isNaN(dt.getTime()))?(dt.getDate()+'.'+(dt.getMonth()+1)):''; return '<div class="invrow"><span class="d"></span><span>участник</span><span class="ag">'+ag+'</span></div>'; }).join('')+'</div>'; }
+   el.innerHTML=H;
+   var gen=document.getElementById('cGen');
+   if(gen&&avail>0) gen.onclick=function(){ if(!window.__SB) return; gen.disabled=true; gen.textContent='Создаём…';
+     window.__SB.rpc('invite_generate').then(function(r2){ var c=(r2&&!r2.error&&r2.data&&r2.data[0])||null;
+       if(c&&c.code){ var link=location.origin+location.pathname.replace(/[^/]*$/,'')+'access.html?invite='+c.code;
+         document.getElementById('cCode').innerHTML='<div class="codebox"><code>'+esc(link)+'</code><button class="mcpbtn" id="cCopy" style="margin:0">Копировать</button></div><div class="gh" style="color:var(--meta);margin-top:8px">Ссылка одноразовая'+(c.expires_at?(' · до '+new Date(Date.parse(c.expires_at)).toLocaleDateString()):'')+'</div>';
+         document.getElementById('cCopy').onclick=function(){ copyClip(link,this); }; gen.style.display='none';
+       } else { gen.disabled=false; gen.textContent='Создать приглашение'; }
+     }).catch(function(){ gen.disabled=false; gen.textContent='Создать приглашение'; }); };
+ }).catch(function(){ el.innerHTML='<div class="mcstate"><div class="ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4L2.8 19.5h18.4z"/><path d="M12 10v4M12 17h.01"/></svg></div><div class="msg">Не удалось загрузить.</div><button class="retry" onclick="wireCommunity()">↻ Повторить</button></div>'; });
+}
+function renderView(v){
+ if(v==='community'){ sub('Сообщество', communityShell()); wireCommunity(); return; }
+ if(v==='favorites'){ var ff=favItemsHtml();
+   // ошибка сети ≠ пустота: не показывать «начните сохранять» тому, у кого saves не загрузились (честность, cold-audit)
+   var favEmpty=STATE.savesError?'<div class="mcstate"><div class="ic">⚠</div><div class="msg">Не удалось загрузить избранное.</div><button class="retry" onclick="location.reload()">↻ Повторить</button></div>':'<div class="empty"><div class="em">★</div>Отмечайте ★ на карточках — соберите нужное в одном месте.</div>';
+   sub('Сохранённое', ff||favEmpty); if(ff) bindCards(); }
+ else if(v==='about') sub('Об авторе и принципах',
+   '<div class="head"><div class="h1">Честно о поведении</div></div><div class="prose">'+
+   '<p>Это база знаний о том, как люди принимают решения, собранная для продакт-менеджеров. Не сборник лайфхаков, а связанный граф идей из поведенческой экономики, психологии и UX.</p>'+
+   '<p><strong>Честность устойчивости.</strong> Каждая теория либо проверена по исследованиям, либо помечена как не подтверждённая, либо связана с опровержениями и контртеориями. У каждой идеи видна степень надёжности: «проверено», «есть нюансы» или «спорно». Мы не выдаём догадки за факты.</p>'+
+   '<p><strong>Firewall.</strong> Мы свободно называем и разбираем тёмные паттерны — но никогда не применяем их к собственным читателям. Никаких поддельных лотерей, давления и манипулятивных триггеров здесь.</p>'+
+   '<p>Проект открывается узким кругом по приглашениям. Автор — Артём Авдеев: <a href="https://t.me/artavdeev" target="_blank" rel="noopener" style="color:var(--gold);font-weight:600;text-decoration:none">tg @artavdeev</a>.</p></div>');
+ else if(v==='mcp'){ sub('Доступ к MCP', mcpShell()); wireMcp(); }
+ else if(v==='settings') sub('Настройки',
+   '<div style="margin-top:18px"><div class="toggle"><span class="t">Тема оформления</span><div class="thseg" id="thseg" role="group" aria-label="Тема оформления"><button data-th="auto">Авто</button><button data-th="light">Светлая</button><button data-th="dark">Тёмная</button></div></div>'+
+   '<div class="toggle"><span class="t" id="sw2l">Уведомления о новом</span><div class="sw on" id="sw2" role="switch" tabindex="0" aria-checked="true" aria-labelledby="sw2l"><i></i></div></div>'+
+   '<div class="toggle"><span class="t" id="sw3l">Сохранять для офлайна</span><div class="sw" id="sw3" role="switch" tabindex="0" aria-checked="false" aria-labelledby="sw3l"><i></i></div></div></div>'+
+   '<p style="color:var(--meta);font-size:13px;margin-top:16px">Настройки применяются на этом устройстве.</p>'+
+   '<div style="margin-top:26px;border-top:1px solid var(--line);padding-top:20px"><button id="resetProg" style="width:100%;background:var(--card);border:1px solid var(--line);color:var(--contested);border-radius:12px;padding:13px;font:inherit;font-weight:600;cursor:pointer">Сбросить прогресс</button>'+
+   '<p style="color:var(--meta);font-size:12.5px;line-height:17px;margin-top:9px">Очистит прочитанные карточки, пройденные главы, «Продолжить» и онбординг'+(STATE.member?' — на этом устройстве и на сервере (ваша карта знаний)':' на этом устройстве')+'. Сохранённое и вход не затрагиваются.</p></div>');
+ else { renderHub(); return; }
+ Array.prototype.forEach.call(document.querySelectorAll('.sw'),function(s){ s.onclick=function(){ s.classList.toggle('on'); s.setAttribute('aria-checked', s.classList.contains('on')?'true':'false'); }; });
+ // Тема (1f9546e7 ч.1): реальный 3-state Авто/Светлая/Тёмная — persist mc:theme + applyTheme (data-theme на <html>).
+ (function(){ var seg=document.getElementById('thseg'); if(!seg) return;
+   var cur; try{ cur=localStorage.getItem('mc:theme')||'auto'; }catch(e){ cur='auto'; }
+   function paint(v){ Array.prototype.forEach.call(seg.querySelectorAll('button'),function(b){ var on=b.getAttribute('data-th')===v; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on?'true':'false'); }); }
+   paint(cur);
+   Array.prototype.forEach.call(seg.querySelectorAll('button'),function(b){ b.onclick=function(){ var v=b.getAttribute('data-th'); try{ localStorage.setItem('mc:theme', v); }catch(e){} paint(v); if(window.mcApplyTheme) window.mcApplyTheme(); }; });
+ })();
+ var _rp=document.getElementById('resetProg'); if(_rp) _rp.onclick=mcResetProgress;
+}
+// Общее устройство: при выходе стереть локальный прогресс/избранное, иначе progMerge зальёт его в аккаунт следующего входящего (cold-audit privacy)
+function clearLocalProgress(){ try{ var del=[]; for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(!k) continue;
+  if(k==='mc:fav'||k==='mc:qfav'||k==='mc:visited'||k==='mc:last'||k==='mc:quests_done'||k==='mc:quest_last'||k==='personal:state'||k==='explore:graph'||k==='solvehome:data'||k.indexOf('mc:path:')===0||k.indexOf('mc:qpred:')===0||k.indexOf('mc:card:')===0) del.push(k);
+ } del.forEach(function(k){ try{localStorage.removeItem(k);}catch(e){} }); }catch(e){} }
+// сброс прогресса: локальные ключи + (для члена) серверные visit-сигналы через reset_my_progress()
+function mcResetProgress(){
+ if(!confirm('Сбросить прогресс?\nОчистятся прочитанные карточки, пройденные главы, «Продолжить» и онбординг. Сохранённое и вход останутся.')) return;
+ var keep={'mc:fav':1}; var progKeys={'mc:visited':1,'mc:quests_done':1,'mc:quest_last':1,'mc:last':1,'mc:model':1,'mc:onbdone':1,'explore:graph':1,'solvehome:data':1};
+ // Путь — основная модель прогресса: чистим все mc:path:* (s:/last/seen/ts/intro/migrated) и ставки твистов mc:qpred:* (cold-audit)
+ try{ var del=[]; for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(!k||keep[k]) continue; if(progKeys[k]||k.indexOf('mc:card:')===0||k.indexOf('mc:visited')===0||k.indexOf('mc:path:')===0||k.indexOf('mc:qpred:')===0) del.push(k); } del.forEach(function(k){ try{localStorage.removeItem(k);}catch(e){} }); }catch(e){}
+ try{ var ps=JSON.parse(localStorage.getItem('personal:state')||'null'); if(ps){ ps.territory=null; localStorage.setItem('personal:state', JSON.stringify(ps)); } }catch(e){}
+ var b=document.getElementById('resetProg'); if(b){ b.disabled=true; b.textContent='Сбрасываем…'; }
+ function done(){ location.href='solve-home.html'; }
+ if(STATE.member && window.__SB){ var pr=window.__SB.rpc('reset_my_progress'); if(pr&&pr.then){ pr.then(done, done); } else done(); }
+ else done();
+}
+
+if(VIEW) renderView(VIEW); else renderHub();
+
+// keyboard operability: Enter/Space on role-ful clickable rows/switches fires their click handler
+document.addEventListener('keydown',function(e){
+ if(e.key!=='Enter'&&e.key!==' '&&e.key!=='Spacebar') return;
+ var t=e.target; if(!t||!t.closest) return;
+ var el=t.closest('.mrow,.sw'); if(!el) return;
+ e.preventDefault(); el.click();
+});
+
+// живой режим
+(function boot(){
+ function go(){
+  try{
+   if(!(window.SUPABASE_URL && window.SUPABASE_ANON_KEY && window.supabase && window.supabase.createClient)) return;
+   var SB=window.supabase.createClient(String(window.SUPABASE_URL).trim(),String(window.SUPABASE_ANON_KEY).trim()); window.__SB=SB;
+   var oldSig=stateSig();
+   function finish(){ saveStateCache(); if(VIEW){ renderView(VIEW); } else if(stateSig()!==oldSig){ renderHub(); } }
+   function applyAccess(a){
+    a=a||{};
+    STATE.signed_in=!!a.signed_in;
+    STATE.member=!!a.member;
+    STATE.email=a.email||'';
+    STATE.uid=a.uid||null;
+    STATE.name=a.name||'';
+    if(STATE.member){ mergeFavs(SB, function(){ Promise.all([
+       SB.rpc('my_territory').then(function(r){return r;},function(){return null;
