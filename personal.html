@@ -1,1 +1,84 @@
-<!-- probe -->
+<!doctype html>
+<html lang="ru" style="background:#FBFAF7">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#FBFAF7"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<title>Меню · Матчасть</title>
+<style>
+:root{
+ --bg:#FBFAF7; --ink:#17150F; --ink2:#56504A; --meta:#6E675E; --line:#ECE7DD; --card:#fff;
+ --gold:#97591A; --gold-br:#C98A3A;
+ --be:#C98A3A; --cog:#CDA92F; --ux:#C2546A; --soc:#6B5CA5; --org:#2F8E8E; --mot:#B0452F; --prod:#3E8E8E; --neu:#8A5CC2; --def:#9A9080;
+ --pill:999px; --r:18px; --rs:14px;
+ --sh:0 2px 12px rgba(20,17,12,.05),0 1px 2px rgba(20,17,12,.04);
+}
+*{box-sizing:border-box} html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;font-size:16px;line-height:24px;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+.wrap{max-width:680px;margin:0 auto;min-height:100vh;padding:0 20px calc(80px + env(safe-area-inset-bottom))}
+.bar{position:sticky;top:0;z-index:20;background:rgba(251,250,247,.94);backdrop-filter:blur(8px);display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--line)}
+.ib{width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;border:0;background:none;color:var(--ink2);border-radius:var(--pill);cursor:pointer}.ib:active{background:var(--line)}
+.bt{font-size:15px;font-weight:700}
+.prof{margin-top:18px;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:var(--sh)}
+.prow{display:flex;align-items:center;gap:14px}
+.av{width:52px;height:52px;border-radius:50%;background:linear-gradient(150deg,#C98A3A,#8A5520);color:#fff;font-size:22px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none}
+.pinfo .nm{font-size:18px;font-weight:700}
+.pinfo .em{font-size:14px;color:var(--meta)}
+.guest{margin-top:18px;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:var(--sh);text-align:center}
+.guest p{color:var(--ink2);margin:0 0 14px}
+.btn{height:48px;border-radius:var(--rs);border:0;font-size:15px;font-weight:700;cursor:pointer;padding:0 22px}
+.btn.pri{background:var(--gold);color:#fff}
+.menu{margin-top:24px;background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)}
+.mrow{display:flex;align-items:center;gap:14px;padding:16px 18px;border-bottom:1px solid var(--line);cursor:pointer}
+.mrow:last-child{border-bottom:0}.mrow:active{background:var(--bg)}
+.mrow .ic{width:22px;height:22px;color:var(--gold);flex:none}
+.mrow .t{flex:1;font-size:16px;font-weight:600}
+.seclbl{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--meta);margin:24px 0 8px;padding-left:4px}
+.sign{margin-top:20px;text-align:center}
+.sign button{background:none;border:0;color:var(--gold);font-size:15px;font-weight:600;cursor:pointer}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:10;background:rgba(251,250,247,.94);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.navin{max-width:720px;margin:0 auto;display:flex}
+.ni{flex:1;min-height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:none;border:0;color:var(--meta);cursor:pointer}
+.ni svg{width:24px;height:24px}.ni .lb{font-size:11px;font-weight:600}.ni.on{color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="wrap" id="wrap"></div>
+<script>
+var STATE={signedIn:false, member:false, name:'', email:'', territory:null, mcpOn:false, saves:null};
+function accessHref(){ return (STATE.signedIn && !STATE.member) ? 'access.html' : 'access.html?view=login'; }
+function renderHub(){
+ var H='<div class="bar"><div class="bt">Меню</div></div>';
+ if(STATE.member){
+  H+='<div class="prof"><div class="prow"><div class="av">'+((STATE.name||STATE.email||'?').slice(0,1).toUpperCase())+'</div><div class="pinfo"><div class="nm">'+(STATE.name||'Читатель')+'</div><div class="em">'+(STATE.email||'')+'</div></div></div></div>';
+ } else if(STATE.signedIn){
+  H+='<div class="guest"><p>Вы вошли, но членство книги — по приглашению. Прогресс, заметки и реакции откроются по ссылке от участника.</p><a class="btn pri" href="access.html" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;margin-bottom:10px">Как получить доступ</a><div><button class="psignout" id="signout" type="button">Выйти</button></div></div>';
+ } else {
+  H+='<div class="guest"><p>Вы листаете как гость. Честный слой виден, но прогресс, заметки и реакции — после входа.</p><button class="btn pri" onclick="location.href=\''+accessHref()+'\'">Войти</button></div>';
+ }
+ document.getElementById('wrap').innerHTML=H;
+ var so=document.getElementById('signout'); if(so) so.onclick=function(){ if(window.__SB) window.__SB.auth.signOut().then(function(){ location.href='access.html'; }); else location.href='access.html'; };
+}
+renderHub();
+(function boot(){
+ function go(){
+  try{
+   if(!(window.SUPABASE_URL && window.SUPABASE_ANON_KEY && window.supabase && window.supabase.createClient)) return;
+   var SB=window.supabase.createClient(String(window.SUPABASE_URL).trim(),String(window.SUPABASE_ANON_KEY).trim()); window.__SB=SB;
+   McAuth.boot(SB,function(acc){
+    STATE.signedIn=!!(acc.signed_in || acc.user);
+    STATE.member=!!acc.member;
+    if(acc.user){ STATE.email=acc.user.email||''; STATE.name=(acc.user.user_metadata&&(acc.user.user_metadata.name||acc.user.user_metadata.full_name))||''; }
+    if(!STATE.signedIn){ STATE.member=false; STATE.email=''; }
+    renderHub();
+   });
+  }catch(_){}
+ }
+ function load(src,cb){ var sc=document.createElement('script'); sc.src=src; sc.onload=cb; sc.onerror=cb; document.head.appendChild(sc); }
+ function loadCfg(done){ var ps=['../config.js','./config.js','config.js','/book-reader/config.js']; var i=0; (function nx(){ if(window.SUPABASE_URL||i>=ps.length) return done(); var sc=document.createElement('script'); sc.src=ps[i++]; sc.onload=function(){ setTimeout(function(){ window.SUPABASE_URL?done():nx(); },0); }; sc.onerror=nx; document.head.appendChild(sc); })(); }
+ loadCfg(function(){ load('vendor/supabase.min.js', function(){ load('mc-auth.js', go); }); });
+})();
+</script>
+</body>
+</html>
