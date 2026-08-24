@@ -20,6 +20,7 @@ body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSys
 .bar{position:sticky;top:0;z-index:20;background:rgba(251,250,247,.94);backdrop-filter:blur(8px);display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--line)}
 .ib{width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;border:0;background:none;color:var(--ink2);border-radius:var(--pill);cursor:pointer}.ib:active{background:var(--line)}
 .bt{font-size:15px;font-weight:700}
+/* профиль */
 .prof{margin-top:18px;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:var(--sh)}
 .prow{display:flex;align-items:center;gap:14px}
 .av{width:52px;height:52px;border-radius:50%;background:linear-gradient(150deg,#C98A3A,#8A5520);color:#fff;font-size:22px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none}
@@ -51,6 +52,7 @@ body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSys
 .seclbl{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--meta);margin:24px 0 8px;padding-left:4px}
 .sign{margin-top:20px;text-align:center}
 .sign button{background:none;border:0;color:var(--gold);font-size:15px;font-weight:600;cursor:pointer}
+/* подэкраны */
 .head{padding:16px 0 4px}.h1{font-size:28px;line-height:33px;font-weight:800;letter-spacing:-.02em;margin:3px 0 8px}
 .prose{font-size:16px;line-height:25px;color:var(--ink2)}
 .prose p{margin:0 0 14px}.prose strong{color:var(--ink)}
@@ -103,6 +105,8 @@ body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSys
 .ni{flex:1;min-height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:none;border:0;color:var(--meta);cursor:pointer}
 .ni svg{width:24px;height:24px}.ni .lb{font-size:11px;font-weight:600}.ni.on{color:var(--gold)}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+/*TAP-FEEDBACK*/button:active,a:active,[onclick]:active,.ni:active,[data-k]:active,[data-route]:active,[data-slug]:active,[data-cont]:active,[data-q]:active,.row:active,.rt-row:active,.lg-row:active,.fc:active,.stoprow:active,.opt:active,.pill:active,.tab:active,.deeper:active{opacity:.6;transition:opacity .06s}
+/*MCUX v1 — единый UX: нативные переходы между страницами, ховеры, тап-фидбек, reduced-motion*/
 @view-transition{navigation:auto}
 .nav{view-transition-name:mcnav}
 button:active,a:active,[onclick]:active,.ni:active,.mrow:active,.row:active,.res:active,.tbtn:active,.fc:active,.opt:active,.pill:active{opacity:.6;transition:opacity .06s}
@@ -115,6 +119,7 @@ a:focus-visible,button:focus-visible,[onclick]:focus-visible,.ni:focus-visible,.
 .mcstate .retry{margin-top:16px;display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:700;color:var(--gold,#97591A);background:none;border:1px solid var(--line,#ECE7DD);border-radius:999px;padding:9px 18px;cursor:pointer}
 .mcsk{background:linear-gradient(90deg,#EFEBE2,#F6F3ED,#EFEBE2);background-size:200% 100%;animation:mcsh 1.2s infinite;border-radius:12px}
 @keyframes mcsh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+/*MCDESK v1 — десктоп (>=960px): нижний таб-бар -> левый сайдбар, контент смещается вправо; мобилка не трогается*/
 @media(min-width:960px){
  body:has(nav.nav){padding-left:236px}
  nav.nav{top:0;bottom:0;right:auto;width:236px;border-top:0;border-right:1px solid var(--line);padding:0}
@@ -140,14 +145,15 @@ a:focus-visible,button:focus-visible,[onclick]:focus-visible,.ni:focus-visible,.
  <button class="ni on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span class="lb">Меню</span></button>
 </div></nav>
 
-<script src="mc-auth.js"></script>
 <script>
 var D={be:"Поведенческая экономика",cog:"Когнитивная психология",soc:"Социальная психология",prod:"Продуктовые практики",mot:"Мотивация/идентичность",ux:"UX / HCI",org:"Орг-системы",neu:"Нейронаука/тело"};
 var DCOLV={be:"--be",cog:"--cog",soc:"--soc",prod:"--prod",mot:"--mot",ux:"--ux",org:"--org",neu:"--neu",def:"--def"};
 var LBLK={"Поведенческая экономика":"be","Когнитивная психология":"cog","Социальная психология":"soc","Продуктовые практики":"prod","Мотивация/идентичность":"mot","UX / HCI":"ux","Организационные системы":"org","Нейронаука/тело":"neu","Лингвистика интерфейса":"def","Эволюция/этология":"def"};
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
 function plural(n,a,b,c){var m=Math.abs(+n||0)%100,d=m%10;if(m>10&&m<20)return c;if(d>1&&d<5)return b;if(d===1)return a;return c;}
+function cssv(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
 function favGet(){ try{ return JSON.parse(localStorage.getItem('mc:fav')||'[]')||[]; }catch(e){ return []; } }
+// залогин → список из БД (saves_list, все виды); аноним → localStorage (карточки)
 function favItemsHtml(){
  var l = STATE.member ? (STATE.saves||[]) : favGet();
  if(!l.length) return '';
@@ -161,6 +167,7 @@ function bindCards(){
  Array.prototype.forEach.call(document.querySelectorAll('[data-card]'),function(el){ el.onclick=function(){ location.href='card.html?slug='+encodeURIComponent(el.getAttribute('data-card')); }; });
  Array.prototype.forEach.call(document.querySelectorAll('[data-quest]'),function(el){ el.onclick=function(){ location.href='quests.html?quest='+encodeURIComponent(el.getAttribute('data-quest')); }; });
 }
+// merge-on-login: слить localStorage-избранное (карточки) → БД, только отсутствующее, затем очистить локаль
 function mergeFavs(SB, done){
  var local=favGet(); if(!local.length){ if(done)done(); return; }
  SB.rpc('saves_list',{p_kind:'card'}).then(function(r){
@@ -170,6 +177,9 @@ function mergeFavs(SB, done){
    var it=pend[i++]; SB.rpc('save_toggle',{p_slug:it.slug,p_title:it.title||it.slug,p_kind:'card'}).then(nx,nx); })();
  },function(){ if(done)done(); });
 }
+
+// синхронно: если в localStorage лежит токен сессии Supabase — мы почти наверняка залогинены (сессия восстановится),
+// поэтому рисуем участника сразу, без гостевого мелькания. signOut токен удаляет, так что ложных срабатываний почти нет.
 function mcLikelySignedIn(){ try{ for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(k&&k.indexOf('sb-')===0&&k.indexOf('-auth-token')>0){ var v=localStorage.getItem(k); if(v&&v.length>20) return true; } } }catch(e){} return false; }
 var STATE={signedIn:false, member:false, name:'', email:'', territory:null, mcpOn:false, saves:null};
 try{ var _ps=localStorage.getItem('personal:state'); if(_ps){ var _pd=JSON.parse(_ps); if(_pd){ STATE.email=_pd.email||''; STATE.name=_pd.name||''; STATE.territory=_pd.territory||null; STATE.signedIn=!!_pd.signedIn; STATE.member=!!_pd.member; } } }catch(e){}
@@ -179,15 +189,20 @@ function stateSig(){ return STATE.signedIn+'|'+STATE.member+'|'+STATE.email+'|'+
 function saveStateCache(){ try{ localStorage.setItem('personal:state', JSON.stringify({signedIn:STATE.signedIn,member:STATE.member,email:STATE.email,name:STATE.name,territory:STATE.territory})); }catch(e){} }
 function accessHref(){ return (STATE.signedIn && !STATE.member) ? 'access.html' : 'access.html?view=login'; }
 var qs=new URLSearchParams(location.search); var VIEW=qs.get('view');
+
 function icon(p){ return '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>'; }
 var IC={book:'<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/>',star:'<path d="M12 3l2.6 6.3L21 10l-4.8 4 .8 6.7L12 17.6 6 20.7l.8-6.7L2 10l6.4-.7z"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',plug:'<path d="M9 7V3M15 7V3M7 7h10v4a5 5 0 0 1-10 0z"/><path d="M12 16v5"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/>',dash:'<path d="M4 14a8 8 0 0 1 16 0"/><path d="M12 14l3.5-3"/>',cv:'<path d="M9 6l6 6-6 6"/>',people:'<circle cx="9" cy="8" r="3.2"/><path d="M3 20a6 6 0 0 1 12 0"/><circle cx="17.5" cy="9" r="2.3"/><path d="M16 14.5A5 5 0 0 1 21 19.5"/>'};
+
 function row(view,ic,t,badge){ return '<div class="mrow" role="button" tabindex="0" data-view="'+view+'">'+icon(ic)+'<span class="t">'+esc(t)+'</span>'+(badge?'<span class="badge">'+esc(badge)+'</span>':'')+'<svg class="cv" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>'; }
+
 function renderHub(){
  var H='<div class="bar"><div class="bt">Меню</div></div>';
  if(STATE.member){
   var t=STATE.territory||{lit:0,total:0,by_discipline:[],frontier_open:0};
   var _lit=t.lit||0;
   H+='<div class="prof"><div class="prow"><div class="av">'+esc((STATE.name||STATE.email||'?').slice(0,1).toUpperCase())+'</div><div class="pinfo"><div class="nm">'+esc(STATE.name||'Читатель')+'</div><div class="em">'+esc(STATE.email||'')+'</div></div></div>';
+  // Территория-как-мастерство (da11343e): карта — портрет освоенного, не полоса-на-завершение. Убран общий %-бар
+  // и «N из TOTAL» (крючок/firewall); дисциплины показывают ФОРМУ знания (бар относительно вашего максимума, не к total).
   if(_lit>0){
    var _by=(t.by_discipline||[]).filter(function(d){return (d.lit||0)>0;});
    var _max=Math.max.apply(null,_by.map(function(d){return d.lit||0;}).concat([1]));
@@ -208,7 +223,10 @@ function renderHub(){
  H+='<div class="seclbl">О проекте</div><div class="menu">'+row('about',IC.user,'Об авторе и принципах')+row('mcp',IC.plug,'Доступ к MCP', STATE.mcpOn?'включено':'выключено')+row('settings',IC.gear,'Настройки')+'</div>';
  if(STATE.member && (STATE.email||'').toLowerCase()==='temka.avdeev@gmail.com'){
   var _chev='<svg class="cv" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
-  H+='<div class="seclbl">Админ</div><div class="menu">'+'<div class="mrow" role="button" tabindex="0" onclick="location.href=\'pult.html\'">'+icon(IC.dash)+'<span class="t">Пульт флота</span><span class="reldot" id="reldot" style="display:none"></span>'+_chev+'</div>'+'<div class="mrow" role="button" tabindex="0" onclick="location.href=\'index-admin.html#dash\'">'+icon(IC.gear)+'<span class="t">Старая админка · редакторы</span>'+_chev+'</div>'+'</div>';
+  H+='<div class="seclbl">Админ</div><div class="menu">'+
+     '<div class="mrow" role="button" tabindex="0" onclick="location.href=\'pult.html\'">'+icon(IC.dash)+'<span class="t">Пульт флота</span><span class="reldot" id="reldot" style="display:none"></span>'+_chev+'</div>'+
+     '<div class="mrow" role="button" tabindex="0" onclick="location.href=\'index-admin.html#dash\'">'+icon(IC.gear)+'<span class="t">Старая админка · редакторы</span>'+_chev+'</div>'+
+     '</div>';
  }
  H+='<div class="seclbl">Интерфейс</div><div class="menu"><div class="mrow" role="button" tabindex="0" onclick="location.href=\'index.html?v2=1\'">'+icon(IC.gear)+'<span class="t">Вернуться к старой версии</span><svg class="cv" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div></div>';
  if(STATE.member) H+='<div class="sign"><button id="signout">Выйти</button></div>';
@@ -217,6 +235,7 @@ function renderHub(){
  var so=document.getElementById('signout'); if(so) so.onclick=function(){ if(window.__SB) window.__SB.auth.signOut().then(function(){ location.href='access.html'; }); else location.href='access.html'; };
  checkRelease();
 }
+// красная точка на «Пульт флота», когда есть сборка новее, чем в проде (та же логика, что в pult.html)
 function checkRelease(){
  var d=document.getElementById('reldot'); if(!d||!window.__SB) return;
  window.__SB.rpc('deploy_candidates_list').then(function(r){
@@ -227,12 +246,20 @@ function checkRelease(){
   if(pend>0){ d.style.display='inline-block'; d.title=pend+' '+(pend===1?'сборка ждёт':'сборок ждут')+' публикации'; }
  }).catch(function(){});
 }
+
 function sub(title, inner){
  document.getElementById('wrap').innerHTML='<div class="bar"><button class="ib" id="back" aria-label="Назад"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><div class="bt">'+esc(title)+'</div></div>'+inner;
  document.getElementById('back').onclick=function(){ location.href='personal.html'; };
 }
+
 function mcpShell(){
- return '<div class="head"><div class="h1">Честный слой для ИИ</div></div>'+'<div class="prose"><p>Подключи базу к своему ИИ — Claude, ChatGPT, Perplexity получают наши разборы с пометкой надёжности и ссылкой на источник, а не догадки.</p></div>'+'<div class="mcpdemo"><div class="dl">Пример ответа с нашим слоем</div>'+'<div class="dq">«Добавить таймер обратного отсчёта на оплату?»</div>'+'<div class="da">Дефицит времени поднимает конверсию — но <span class="rb solid">подтверждено</span> лишь для реального дефицита; искусственный таймер = тёмный паттерн, эрозия доверия.<span class="src">Источник: Cialdini, 2001 · разбор в карточке →</span></div></div>'+'<div id="mcpBody"><div style="color:var(--meta);font-size:13px;padding:8px 0">…</div></div>'+'<p class="fw">Честный слой, не «как манипулировать». Тёмные паттерны мы называем и разбираем — не применяем к вам.</p>';
+ return '<div class="head"><div class="h1">Честный слой для ИИ</div></div>'+
+  '<div class="prose"><p>Подключи базу к своему ИИ — Claude, ChatGPT, Perplexity получают наши разборы с пометкой надёжности и ссылкой на источник, а не догадки.</p></div>'+
+  '<div class="mcpdemo"><div class="dl">Пример ответа с нашим слоем</div>'+
+   '<div class="dq">«Добавить таймер обратного отсчёта на оплату?»</div>'+
+   '<div class="da">Дефицит времени поднимает конверсию — но <span class="rb solid">подтверждено</span> лишь для реального дефицита; искусственный таймер = тёмный паттерн, эрозия доверия.<span class="src">Источник: Cialdini, 2001 · разбор в карточке →</span></div></div>'+
+  '<div id="mcpBody"><div style="color:var(--meta);font-size:13px;padding:8px 0">…</div></div>'+
+  '<p class="fw">Честный слой, не «как манипулировать». Тёмные паттерны мы называем и разбираем — не применяем к вам.</p>';
 }
 function mcpConfig(tok){
  return '{\n  "mcpServers": {\n    "matchast": {\n      "url": "https://wsnqmjzmtjpezkzlzhra.supabase.co/functions/v1/kb-mcp",\n      "headers": { "Authorization": "Bearer '+tok+'" }\n    }\n  }\n}';
@@ -240,7 +267,9 @@ function mcpConfig(tok){
 function copyClip(txt, btn, okLabel){ try{ navigator.clipboard.writeText(txt).then(function(){ var o=btn.textContent; btn.textContent=okLabel||'Скопировано ✓'; setTimeout(function(){ btn.textContent=o; },1500); }); }catch(e){} }
 function fillMcp(tok){
  var el=document.getElementById('mcpBody'); if(!el) return;
- el.innerHTML='<div class="tokbox"><div class="l">Твой MCP-токен</div><code id="mTok">'+esc(tok)+'</code><button class="mcpbtn" id="mCopyTok">Скопировать токен</button></div>'+'<div class="cfgbox"><div class="l">Конфиг — вставь в настройки MCP клиента</div><pre id="mCfg">'+esc(mcpConfig(tok))+'</pre><button class="mcpbtn" id="mCopyCfg">Скопировать конфиг</button></div>'+'<button class="mcpbtn rot" id="mRot">Перевыпустить токен</button>';
+ el.innerHTML='<div class="tokbox"><div class="l">Твой MCP-токен</div><code id="mTok">'+esc(tok)+'</code><button class="mcpbtn" id="mCopyTok">Скопировать токен</button></div>'+
+  '<div class="cfgbox"><div class="l">Конфиг — вставь в настройки MCP клиента</div><pre id="mCfg">'+esc(mcpConfig(tok))+'</pre><button class="mcpbtn" id="mCopyCfg">Скопировать конфиг</button></div>'+
+  '<button class="mcpbtn rot" id="mRot">Перевыпустить токен</button>';
  document.getElementById('mCopyTok').onclick=function(){ copyClip(tok,this); };
  document.getElementById('mCopyCfg').onclick=function(){ copyClip(mcpConfig(tok),this,'Конфиг скопирован ✓'); };
  document.getElementById('mRot').onclick=function(){ if(!confirm('Перевыпустить токен? Старый перестанет работать.')) return; if(!window.__SB) return; this.disabled=true; window.__SB.rpc('mcp_my_token_rotate').then(function(r){ var t=(r&&!r.error&&r.data&&r.data[0])||null; if(t&&t.token) fillMcp(t.token); }).catch(function(){}); };
@@ -252,7 +281,9 @@ function wireMcp(){
  window.__SB.rpc('mcp_my_token').then(function(r){ var t=(r&&!r.error&&r.data&&r.data[0])||null; if(t&&t.token) fillMcp(t.token); else el.innerHTML='<div class="mcpguest">Не удалось получить токен — <a href="access.html">войди</a> как участник.</div>'; }).catch(function(){ el.innerHTML='<div class="mcstate"><div class="ic">⚠️</div><div class="msg">Не удалось загрузить.</div><button class="retry" onclick="wireMcp()">↻ Повторить</button></div>'; });
 }
 function communityShell(){
- return '<div class="head"><div class="h1">Сообщество</div></div>'+'<div class="prose"><p>Матчасть растёт приглашениями — узким кругом. Приведи того, кому это правда нужно.</p></div>'+'<div id="commBody"><div style="color:var(--meta);font-size:13px;padding:8px 0">…</div></div>';
+ return '<div class="head"><div class="h1">Сообщество</div></div>'+
+  '<div class="prose"><p>Матчасть растёт приглашениями — узким кругом. Приведи того, кому это правда нужно.</p></div>'+
+  '<div id="commBody"><div style="color:var(--meta);font-size:13px;padding:8px 0">…</div></div>';
 }
 function inviteGraphSvg(edges, meId){
  if(!edges||!edges.length){ return '<svg viewBox="0 0 320 56"><text x="160" y="32" text-anchor="middle" fill="#B3A893" font-size="13">Граф появится с первым приглашением</text></svg>'; }
@@ -279,7 +310,9 @@ function wireCommunity(){
    if(!d){ el.innerHTML='<div class="mcstate"><div class="ic">⚠️</div><div class="msg">Не удалось загрузить.</div><button class="retry" onclick="wireCommunity()">↻ Повторить</button></div>'; return; }
    var avail=d.available||0, meId=STATE.uid||null, prog=d.next_invite_progress||{have:0,need:5};
    var left=Math.max(0,(prog.need||5)-(prog.have||0)), pct=Math.round((prog.have||0)/(prog.need||5)*100);
-   var H='<div class="cstat"><div class="c"><div class="v">'+(d.size||0)+'</div><div class="l">участников</div></div>'+'<div class="c"><div class="v">'+((d.invited&&d.invited.length)||0)+'</div><div class="l">ты привёл</div></div>'+'<div class="c"><div class="v">'+avail+'</div><div class="l">осталось<br>приглашений</div></div></div>';
+   var H='<div class="cstat"><div class="c"><div class="v">'+(d.size||0)+'</div><div class="l">участников</div></div>'+
+     '<div class="c"><div class="v">'+((d.invited&&d.invited.length)||0)+'</div><div class="l">ты привёл</div></div>'+
+     '<div class="c"><div class="v">'+avail+'</div><div class="l">осталось<br>приглашений</div></div></div>';
    H+='<div class="cprog"><div class="l">'+(avail>0?('У вас '+avail+' '+plural(avail,'приглашение','приглашения','приглашений')):('Ещё '+left+' '+plural(left,'карточка','карточки','карточек')+' до нового приглашения'))+'</div><div class="pbar"><i style="width:'+Math.max(4,pct)+'%"></i></div></div>';
    H+='<button class="mcpbtn pri" id="cGen"'+(avail<=0?' disabled':'')+'>'+(avail>0?'Создать приглашение':'Приглашения закончились')+'</button><div id="cCode"></div>';
    H+='<div class="cgraph"><div class="gl">Граф приглашений</div>'+inviteGraphSvg(d.edges||[], meId)+'<div class="gh">Точка — участник, линия — кто кого привёл. Золотая — ты. Анонимно.</div></div>';
@@ -298,13 +331,25 @@ function wireCommunity(){
 function renderView(v){
  if(v==='community'){ sub('Сообщество', communityShell()); wireCommunity(); return; }
  if(v==='favorites'){ var ff=favItemsHtml(); sub('Избранное', ff||'<div class="empty"><div class="em">★</div>Отмечай ★ на карточках — собирай нужное в одном месте.</div>'); if(ff) bindCards(); }
- else if(v==='about') sub('Об авторе и принципах', '<div class="head"><div class="h1">Честно о решениях</div></div><div class="prose">'+'<p>Это база знаний о том, как люди принимают решения, собранная для продакт-менеджеров. Не сборник лайфхаков, а связанный граф идей из поведенческой экономики, психологии и UX.</p>'+'<p><strong>Честность устойчивости.</strong> У каждой идеи помечено, насколько она подтверждена: «подтверждено», «неоднозначно» или «спорно». Где идея ещё гипотеза — она в разделе «Ещё не доказано», с полосой уверенности и оговорками. Мы не выдаём догадки за факты.</p>'+'<p><strong>Firewall.</strong> Мы свободно называем и разбираем тёмные паттерны — но никогда не применяем их к собственным читателям. Никаких поддельных лотерей, давления и манипулятивных триггеров здесь.</p>'+'<p>Проект открывается узким кругом по приглашениям.</p></div>');
+ else if(v==='about') sub('Об авторе и принципах',
+   '<div class="head"><div class="h1">Честно о решениях</div></div><div class="prose">'+
+   '<p>Это база знаний о том, как люди принимают решения, собранная для продакт-менеджеров. Не сборник лайфхаков, а связанный граф идей из поведенческой экономики, психологии и UX.</p>'+
+   '<p><strong>Честность устойчивости.</strong> У каждой идеи помечено, насколько она подтверждена: «подтверждено», «неоднозначно» или «спорно». Где идея ещё гипотеза — она в разделе «Ещё не доказано», с полосой уверенности и оговорками. Мы не выдаём догадки за факты.</p>'+
+   '<p><strong>Firewall.</strong> Мы свободно называем и разбираем тёмные паттерны — но никогда не применяем их к собственным читателям. Никаких поддельных лотерей, давления и манипулятивных триггеров здесь.</p>'+
+   '<p>Проект открывается узким кругом по приглашениям.</p></div>');
  else if(v==='mcp'){ sub('Доступ к MCP', mcpShell()); wireMcp(); }
- else if(v==='settings') sub('Настройки', '<div style="margin-top:18px"><div class="toggle"><span class="t" id="sw1l">Тёмная тема</span><div class="sw" id="sw1" role="switch" tabindex="0" aria-checked="false" aria-labelledby="sw1l"><i></i></div></div>'+'<div class="toggle"><span class="t" id="sw2l">Уведомления о новом</span><div class="sw on" id="sw2" role="switch" tabindex="0" aria-checked="true" aria-labelledby="sw2l"><i></i></div></div>'+'<div class="toggle"><span class="t" id="sw3l">Сохранять для офлайна</span><div class="sw" id="sw3" role="switch" tabindex="0" aria-checked="false" aria-labelledby="sw3l"><i></i></div></div></div>'+'<p style="color:var(--meta);font-size:13px;margin-top:16px">Настройки применяются на этом устройстве.</p>'+'<div style="margin-top:26px;border-top:1px solid var(--line);padding-top:20px"><button id="resetProg" style="width:100%;background:#fff;border:1px solid var(--line);color:var(--contested);border-radius:12px;padding:13px;font:inherit;font-weight:600;cursor:pointer">Сбросить прогресс</button>'+'<p style="color:var(--meta);font-size:12.5px;line-height:17px;margin-top:9px">Очистит прочитанные карточки, пройденные квесты, «Продолжить» и онбординг'+(STATE.member?' — на этом устройстве и на сервере (ваша карта знаний)':' на этом устройстве')+'. Избранное и вход не затрагиваются.</p></div>');
+ else if(v==='settings') sub('Настройки',
+   '<div style="margin-top:18px"><div class="toggle"><span class="t" id="sw1l">Тёмная тема</span><div class="sw" id="sw1" role="switch" tabindex="0" aria-checked="false" aria-labelledby="sw1l"><i></i></div></div>'+
+   '<div class="toggle"><span class="t" id="sw2l">Уведомления о новом</span><div class="sw on" id="sw2" role="switch" tabindex="0" aria-checked="true" aria-labelledby="sw2l"><i></i></div></div>'+
+   '<div class="toggle"><span class="t" id="sw3l">Сохранять для офлайна</span><div class="sw" id="sw3" role="switch" tabindex="0" aria-checked="false" aria-labelledby="sw3l"><i></i></div></div></div>'+
+   '<p style="color:var(--meta);font-size:13px;margin-top:16px">Настройки применяются на этом устройстве.</p>'+
+   '<div style="margin-top:26px;border-top:1px solid var(--line);padding-top:20px"><button id="resetProg" style="width:100%;background:#fff;border:1px solid var(--line);color:var(--contested);border-radius:12px;padding:13px;font:inherit;font-weight:600;cursor:pointer">Сбросить прогресс</button>'+
+   '<p style="color:var(--meta);font-size:12.5px;line-height:17px;margin-top:9px">Очистит прочитанные карточки, пройденные квесты, «Продолжить» и онбординг'+(STATE.member?' — на этом устройстве и на сервере (ваша карта знаний)':' на этом устройстве')+'. Избранное и вход не затрагиваются.</p></div>');
  else { renderHub(); return; }
  Array.prototype.forEach.call(document.querySelectorAll('.sw'),function(s){ s.onclick=function(){ s.classList.toggle('on'); s.setAttribute('aria-checked', s.classList.contains('on')?'true':'false'); }; });
  var _rp=document.getElementById('resetProg'); if(_rp) _rp.onclick=mcResetProgress;
 }
+// сброс прогресса: локальные ключи + (для члена) серверные visit-сигналы через reset_my_progress()
 function mcResetProgress(){
  if(!confirm('Сбросить прогресс?\nОчистятся прочитанные карточки, пройденные квесты, «Продолжить» и онбординг. Избранное и вход останутся.')) return;
  var keep={'mc:fav':1}; var progKeys={'mc:visited':1,'mc:quests_done':1,'mc:last':1,'mc:model':1,'mc:onbdone':1,'explore:graph':1,'solvehome:data':1};
@@ -315,13 +360,18 @@ function mcResetProgress(){
  if(STATE.member && window.__SB){ var pr=window.__SB.rpc('reset_my_progress'); if(pr&&pr.then){ pr.then(done, done); } else done(); }
  else done();
 }
+
 if(VIEW) renderView(VIEW); else renderHub();
+
+// keyboard operability: Enter/Space on role-ful clickable rows/switches fires their click handler
 document.addEventListener('keydown',function(e){
  if(e.key!=='Enter'&&e.key!==' '&&e.key!=='Spacebar') return;
  var t=e.target; if(!t||!t.closest) return;
  var el=t.closest('.mrow,.sw'); if(!el) return;
  e.preventDefault(); el.click();
 });
+
+// живой режим
 (function boot(){
  function go(){
   try{
