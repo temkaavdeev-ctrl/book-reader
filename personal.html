@@ -235,4 +235,42 @@ function saveStateCache(){ try{ localStorage.setItem('personal:state', JSON.stri
 var qs=new URLSearchParams(location.search); var VIEW=qs.get('view');
 
 function icon(p){ return '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>'; }
-var IC={book:'<path d="M4 5.
+var IC={book:'<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/>',star:'<path d="M12 3l2.6 6.3L21 10l-4.8 4 .8 6.7L12 17.6 6 20.7l.8-6.7L2 10l6.4-.7z"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',plug:'<path d="M9 7V3M15 7V3M7 7h10v4a5 5 0 0 1-10 0z"/><path d="M12 16v5"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/>',dash:'<path d="M4 14a8 8 0 0 1 16 0"/><path d="M12 14l3.5-3"/>',refresh:'<path d="M21 12a9 9 0 1 1-2.6-6.4M21 3v5h-5"/>',cv:'<path d="M9 6l6 6-6 6"/>',diag:'<path d="M9 11l2.2 2.2L15.5 9"/><rect x="4" y="4" width="16" height="16" rx="4"/>',people:'<circle cx="9" cy="8" r="3.2"/><path d="M3 20a6 6 0 0 1 12 0"/><circle cx="17.5" cy="9" r="2.3"/><path d="M16 14.5A5 5 0 0 1 21 19.5"/>'};
+
+function row(view,ic,t,badge){ return '<div class="mrow" role="button" tabindex="0" data-view="'+view+'">'+icon(ic)+'<span class="t">'+esc(t)+'</span>'+(badge?'<span class="badge">'+esc(badge)+'</span>':'')+'<svg class="cv" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>'; }
+
+function renderHub(){
+ var H='<div class="bar"><div class="bt">Моё</div></div>';
+ // позиция на Пути (mc:path:last пишет плеер) — считаем ДО профиля: решает, что показывать (продолжить vs начать)
+ var _pl=null;
+ try{ _pl=JSON.parse(localStorage.getItem('mc:path:last')||'null');
+  if(!_pl){ var _lq=JSON.parse(localStorage.getItem('mc:quest_last')||'null'); if(_lq&&_lq.key) _pl={title:_lq.title||'',stop:_lq.stop,m:_lq.M}; }
+ }catch(e){}
+ if(STATE.member){
+  var t=STATE.territory||{lit:0,total:0,by_discipline:[],frontier_open:0};
+  var _lit=t.lit||0;
+  // ПРОФИЛЬ = только идентичность (+ арсенал, если есть). Онбординг/прогресс Пути — отдельными карточками ниже.
+  H+='<div class="prof"><div class="prow"><div class="av">'+esc((STATE.name||STATE.email||'?').slice(0,1).toUpperCase())+'</div><div class="pinfo"><div class="nm">'+esc(STATE.name||'Читатель')+'</div><div class="em">'+esc(STATE.email||'')+'</div></div>'+(STATE.member?'<button class="psignout" id="signout" type="button">Выйти</button>':'')+'</div></div>';
+  // Территория-как-мастерство (da11343e): карта — портрет освоенного, не полоса-на-завершение.
+  if(_lit>0){
+   var _by=(t.by_discipline||[]).filter(function(d){return (d.lit||0)>0;});
+   var _max=Math.max.apply(null,_by.map(function(d){return d.lit||0;}).concat([1]));
+   H+='<div class="terr"><div class="terrh"><span class="l">Ваш арсенал</span><span class="v">'+_lit+' '+plural(_lit,'концепт','концепта','концептов')+'</span></div>';
+   if(_by.length){ H+='<div class="discs">'+_by.slice(0,6).map(function(d){ var nm=d.discipline||d.label||''; var k=d.key||LBLK[nm]||'def'; if(!nm) nm=D[k]||k; var dw=Math.round((d.lit/_max)*100); return '<div class="drow"><span class="nm">'+esc(nm)+'</span><span class="mini"><i style="width:'+Math.max(8,dw)+'%;background:var('+(DCOLV[k]||'--def')+')"></i></span><span class="ct">'+d.lit+'</span></div>'; }).join('')+'</div>'; }
+   if(t.frontier_open){ H+='<div class="terrm">Ещё '+t.frontier_open+' '+plural(t.frontier_open,'гипотеза','гипотезы','гипотез')+' ждут на фронтире знания.</div>'; }
+   H+='</div>';
+  }
+  H+='</div>';
+ } else if(STATE.signed_in){
+  H+='<div class="guest"><p>Вы вошли, но доступ участника ещё не открыт. Нужно приглашение — или напишите автору: tg @artavdeev.</p><button class="btn pri" onclick="location.href=\'access.html\'">Как получить доступ</button><div class="sign" style="margin-top:12px"><button id="signout" type="button">Выйти</button></div></div>';
+ } else {
+  H+='<div class="guest"><p>Вы листаете как гость. Честный слой виден, но прогресс, заметки и реакции — после входа.</p><button class="btn pri" onclick="location.href=\'access.html\'">Войти</button></div>';
+ }
+ // ЕДИНЫЙ вход в Путь (устраняет тройной дубль: профиль/resume/таб). Взаимоисключающе:
+ //  • есть позиция → «Мой путь · продолжить»;  • нет и карта пуста → онбординг «Начать Путь». Таб «Путь» = глобальный вход.
+ if(_pl){
+  var _pt=(_pl.title?_pl.title+' · ':'')+'остановка '+_pl.stop+(_pl.m?(' из '+_pl.m):'');
+  if(!_pl.title){ _pt='Продолжить с места, где остановились'; }
+  H+='<a class="resume" href="path.html"><span class="rsm-dot"></span><span class="rsm-b"><span class="rsm-l">Мой путь</span><span class="rsm-s">'+esc(_pt)+'</span></span><svg class="rsm-cv" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a>';
+ } else if(STATE.member){
+  H+='<a class="resume rsm-start" href="path.html"><span class="rsm-dot"></span><span class="rsm-b"><span class="rsm-l">Ваш путь</span><span class="rsm-s">Первая остановка зажжёт первую звезду — 3 минуты</span></span><svg class="rsm-cv" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-li
