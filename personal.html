@@ -19,7 +19,9 @@ body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSys
 .bar{position:sticky;top:0;z-index:20;background:var(--navbg);backdrop-filter:blur(8px);display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--line)}
 .ib{width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;border:0;background:none;color:var(--ink2);border-radius:var(--pill);cursor:pointer}.ib:active{background:var(--line)}
 .bt{font-size:15px;font-weight:700}
+/* профиль */
 .prof{margin-top:18px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:var(--sh)}
+/* «Продолжить» — перенос с Матчасти (v5 п.2 / c4ff6366): последнее открытое */
 .resume{display:flex;align-items:center;gap:13px;margin-top:16px;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:15px 16px;box-shadow:var(--sh)}
 .resume .rsm-dot{width:9px;height:9px;border-radius:50%;background:var(--gold);flex:none}
 .resume .rsm-b{flex:1;min-width:0;display:block}
@@ -62,6 +64,7 @@ body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSys
 .seclbl{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--meta);margin:24px 0 8px;padding-left:4px}
 .sign{margin-top:20px;text-align:center}
 .sign button{background:none;border:0;color:var(--gold);font-size:15px;font-weight:600;cursor:pointer}
+/* подэкраны */
 .head{padding:16px 0 4px}.h1{font-size:28px;line-height:33px;font-weight:800;letter-spacing:-.02em;margin:3px 0 8px}
 .prose{font-size:16px;line-height:25px;color:var(--ink2)}
 .prose p{margin:0 0 14px}.prose strong{color:var(--ink)}
@@ -86,6 +89,7 @@ body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSys
 .mcpbtn.rot{color:var(--gold);border-color:var(--gold);margin-top:14px}
 .mcpguest{margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;text-align:center;color:var(--ink2)}
 .mcpguest a{color:var(--gold);font-weight:700;text-decoration:none}
+/* пер-клиентские карточки подключения MCP (6ac1f4c6) */
 .mcpcli{display:flex;flex-direction:column;gap:10px}
 .mcpc{background:var(--card);border:1px solid var(--line);border-radius:var(--rs);padding:14px 15px}
 .mcpc .ch{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;color:var(--ink)}
@@ -121,7 +125,8 @@ body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSys
 .ni{flex:1;min-height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:none;border:0;color:var(--meta);cursor:pointer}
 .ni svg{width:24px;height:24px}.ni .lb{font-size:11px;font-weight:600}.ni.on{color:var(--gold)}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
-button:active,a:active,[onclick]:active,.ni:active,[data-k]:active,[data-route]:active,[data-slug]:active,[data-cont]:active,[data-q]:active,.row:active,.rt-row:active,.lg-row:active,.fc:active,.stoprow:active,.opt:active,.pill:active,.tab:active,.deeper:active{opacity:.6;transition:opacity .06s}
+/*TAP-FEEDBACK*/button:active,a:active,[onclick]:active,.ni:active,[data-k]:active,[data-route]:active,[data-slug]:active,[data-cont]:active,[data-q]:active,.row:active,.rt-row:active,.lg-row:active,.fc:active,.stoprow:active,.opt:active,.pill:active,.tab:active,.deeper:active{opacity:.6;transition:opacity .06s}
+/*MCUX v1 — единый UX: нативные переходы между страницами, ховеры, тап-фидбек, reduced-motion*/
 @view-transition{navigation:auto}
 .nav{view-transition-name:mcnav}
 button:active,a:active,[onclick]:active,.ni:active,.mrow:active,.row:active,.res:active,.tbtn:active,.fc:active,.opt:active,.pill:active{opacity:.6;transition:opacity .06s}
@@ -134,6 +139,7 @@ a:focus-visible,button:focus-visible,[onclick]:focus-visible,.ni:focus-visible,.
 .mcstate .retry{margin-top:16px;display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:700;color:var(--gold,#97591A);background:none;border:1px solid var(--line,#ECE7DD);border-radius:999px;padding:9px 18px;cursor:pointer}
 .mcsk{background:linear-gradient(90deg,#EFEBE2,#F6F3ED,#EFEBE2);background-size:200% 100%;animation:mcsh 1.2s infinite;border-radius:12px}
 @keyframes mcsh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+/*MCDESK v1 — десктоп (>=960px): нижний таб-бар -> левый сайдбар, контент смещается вправо; мобилка не трогается*/
 @media(min-width:960px){
  body:has(nav.nav){padding-left:236px}
  nav.nav{top:0;bottom:0;right:auto;width:236px;border-top:0;border-right:1px solid var(--line);padding:0}
@@ -146,6 +152,7 @@ a:focus-visible,button:focus-visible,[onclick]:focus-visible,.ni:focus-visible,.
  body:has(nav.nav) .topbar{left:236px}
 }
 @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}
+/* сегмент выбора темы (Настройки → Тема): Авто/Светлая/Тёмная */
 .thseg{display:inline-flex;gap:2px;background:var(--line);border-radius:9px;padding:2px}
 .thseg button{border:0;background:none;font:inherit;font-size:13px;font-weight:600;padding:6px 12px;border-radius:7px;cursor:pointer;color:var(--meta)}
 .thseg button.on{background:var(--card);color:var(--ink)}
@@ -168,7 +175,7 @@ html[data-theme="dark"] .mcsk{background:linear-gradient(90deg,#1b1710,#241f16,#
 .nbrand{display:none}
 @media(min-width:960px){
  .nbrand{display:block;position:absolute;top:26px;left:28px;right:20px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-br);text-decoration:none;line-height:17px}
- nav.nav .navin{padding-top:96px!important;justify-content:flex-start!important}
+ nav.nav .navin{padding-top:96px!important;justify-content:flex-start!important} /* марка сверху, меню под ней — единая высота на всех поверхностях */
 }
 @media(min-width:960px) and (hover:hover){.nbrand:hover{filter:brightness(1.08)}}
 </style>
@@ -193,6 +200,7 @@ function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return
 function plural(n,a,b,c){var m=Math.abs(+n||0)%100,d=m%10;if(m>10&&m<20)return c;if(d>1&&d<5)return b;if(d===1)return a;return c;}
 function cssv(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
 function favGet(){ try{ return JSON.parse(localStorage.getItem('mc:fav')||'[]')||[]; }catch(e){ return []; } }
+// залогин → список из БД (saves_list, все виды); аноним → localStorage (карточки)
 function favItemsHtml(){
  var l = STATE.member ? (STATE.saves||[]) : favGet();
  if(!l.length) return '';
@@ -206,6 +214,7 @@ function bindCards(){
  Array.prototype.forEach.call(document.querySelectorAll('[data-card]'),function(el){ el.onclick=function(){ location.href='card.html?slug='+encodeURIComponent(el.getAttribute('data-card')); }; });
  Array.prototype.forEach.call(document.querySelectorAll('[data-quest]'),function(el){ el.onclick=function(){ location.href='quests.html?quest='+encodeURIComponent(el.getAttribute('data-quest')); }; });
 }
+// merge-on-login: слить localStorage-избранное (карточки) → БД, только отсутствующее, затем очистить локаль
 function mergeFavs(SB, done){
  var local=favGet(); if(!local.length){ if(done)done(); return; }
  SB.rpc('saves_list',{p_kind:'card'}).then(function(r){
@@ -215,7 +224,11 @@ function mergeFavs(SB, done){
    var it=pend[i++]; SB.rpc('save_toggle',{p_slug:it.slug,p_title:it.title||it.slug,p_kind:'card'}).then(nx,nx); })();
  },function(){ if(done)done(); });
 }
+
+// синхронно: если в localStorage лежит токен сессии Supabase — мы почти наверняка залогинены (сессия восстановится),
+// поэтому рисуем участника сразу, без гостевого мелькания. signOut токен удаляет, так что ложных срабатываний почти нет.
 function mcLikelySignedIn(){ try{ for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(k&&k.indexOf('sb-')===0&&k.indexOf('-auth-token')>0){ var v=localStorage.getItem(k); if(v&&v.length>20) return true; } } }catch(e){} return false; }
+// identity ≠ membership: session token is signed-in, whitelist/is_member is member.
 var STATE={signedIn:false, member:false, name:'', email:'', territory:null, mcpOn:false, saves:null};
 try{ var _ps=localStorage.getItem('personal:state'); if(_ps){ var _pd=JSON.parse(_ps); if(_pd){ STATE.email=_pd.email||''; STATE.name=_pd.name||''; STATE.territory=_pd.territory||null; STATE.signedIn=!!_pd.signedIn; } } }catch(e){}
 if(mcLikelySignedIn()) STATE.signedIn=true;
@@ -223,11 +236,15 @@ function stateSig(){ return STATE.signedIn+'|'+STATE.member+'|'+STATE.email+'|'+
 function saveStateCache(){ try{ localStorage.setItem('personal:state', JSON.stringify({signedIn:STATE.signedIn,member:STATE.member,email:STATE.email,name:STATE.name,territory:STATE.territory})); }catch(e){} }
 function accessHref(){ return (STATE.signedIn && !STATE.member) ? 'access.html' : 'access.html?view=login'; }
 var qs=new URLSearchParams(location.search); var VIEW=qs.get('view');
+
 function icon(p){ return '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>'; }
 var IC={book:'<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/>',star:'<path d="M12 3l2.6 6.3L21 10l-4.8 4 .8 6.7L12 17.6 6 20.7l.8-6.7L2 10l6.4-.7z"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',plug:'<path d="M9 7V3M15 7V3M7 7h10v4a5 5 0 0 1-10 0z"/><path d="M12 16v5"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/>',dash:'<path d="M4 14a8 8 0 0 1 16 0"/><path d="M12 14l3.5-3"/>',refresh:'<path d="M21 12a9 9 0 1 1-2.6-6.4M21 3v5h-5"/>',cv:'<path d="M9 6l6 6-6 6"/>',diag:'<path d="M9 11l2.2 2.2L15.5 9"/><rect x="4" y="4" width="16" height="16" rx="4"/>',people:'<circle cx="9" cy="8" r="3.2"/><path d="M3 20a6 6 0 0 1 12 0"/><circle cx="17.5" cy="9" r="2.3"/><path d="M16 14.5A5 5 0 0 1 21 19.5"/>'};
+
 function row(view,ic,t,badge){ return '<div class="mrow" role="button" tabindex="0" data-view="'+view+'">'+icon(ic)+'<span class="t">'+esc(t)+'</span>'+(badge?'<span class="badge">'+esc(badge)+'</span>':'')+'<svg class="cv" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>'; }
+
 function renderHub(){
  var H='<div class="bar"><div class="bt">Моё</div></div>';
+ // позиция на Пути (mc:path:last пишет плеер) — считаем ДО профиля: решает, что показывать (продолжить vs начать)
  var _pl=null;
  try{ _pl=JSON.parse(localStorage.getItem('mc:path:last')||'null');
   if(!_pl){ var _lq=JSON.parse(localStorage.getItem('mc:quest_last')||'null'); if(_lq&&_lq.key) _pl={title:_lq.title||'',stop:_lq.stop,m:_lq.M}; }
@@ -235,7 +252,9 @@ function renderHub(){
  if(STATE.member){
   var t=STATE.territory||{lit:0,total:0,by_discipline:[],frontier_open:0};
   var _lit=t.lit||0;
+  // ПРОФИЛЬ = только идентичность (+ арсенал, если есть). Онбординг/прогресс Пути — отдельными карточками ниже.
   H+='<div class="prof"><div class="prow"><div class="av">'+esc((STATE.name||STATE.email||'?').slice(0,1).toUpperCase())+'</div><div class="pinfo"><div class="nm">'+esc(STATE.name||'Читатель')+'</div><div class="em">'+esc(STATE.email||'')+'</div></div>'+(STATE.member?'<button class="psignout" id="signout" type="button">Выйти</button>':'')+'</div></div>';
+  // Территория-как-мастерство (da11343e): карта — портрет освоенного, не полоса-на-завершение.
   if(_lit>0){
    var _by=(t.by_discipline||[]).filter(function(d){return (d.lit||0)>0;});
    var _max=Math.max.apply(null,_by.map(function(d){return d.lit||0;}).concat([1]));
@@ -250,6 +269,8 @@ function renderHub(){
  } else {
   H+='<div class="guest"><p>Вы листаете как гость. Честный слой виден, но прогресс, заметки и реакции — после входа.</p><button class="btn pri" onclick="location.href=\''+accessHref()+'\'">Войти</button></div>';
  }
+ // ЕДИНЫЙ вход в Путь (устраняет тройной дубль: профиль/resume/таб). Взаимоисключающе:
+ //  • есть позиция → «Мой путь · продолжить»;  • нет и карта пуста → онбординг «Начать Путь». Таб «Путь» = глобальный вход.
  if(_pl){
   var _pt=(_pl.title?_pl.title+' · ':'')+'остановка '+_pl.stop+(_pl.m?(' из '+_pl.m):'');
   if(!_pl.title){ _pt='Продолжить с места, где остановились'; }
@@ -258,6 +279,8 @@ function renderHub(){
   H+='<a class="resume rsm-start" href="path.html"><span class="rsm-dot"></span><span class="rsm-b"><span class="rsm-l">Ваш путь</span><span class="rsm-s">Первая остановка зажжёт первую звезду — 3 минуты</span></span><svg class="rsm-cv" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a>';
  }
  H+='<div class="seclbl">Личное</div><div class="menu">'+row('favorites',IC.star,'Сохранённое')+(STATE.member?row('community',IC.people,'Сообщество'):'')+'</div>';
+ // «Диагностика метода» убрана из прода (реш. Артёма)
+ // MCP — доступ участнику всегда открыт (это не тумблер): убран ложный бейдж «выключено» (6ac1f4c6; MOM E2E: MCP жив, лейбл врал).
  H+='<div class="seclbl">О проекте</div><div class="menu">'+row('about',IC.user,'Об авторе и принципах')+row('mcp',IC.plug,'Доступ к MCP')+row('settings',IC.gear,'Настройки')+
    '<div class="mrow" role="button" tabindex="0" id="appUpd">'+icon(IC.refresh)+'<span class="t">Обновить приложение</span><svg class="cv" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div></div>';
  if(STATE.member && (STATE.email||'').toLowerCase()==='temka.avdeev@gmail.com'){
@@ -267,10 +290,13 @@ function renderHub(){
      '<div class="mrow" role="button" tabindex="0" onclick="location.href=\'index-admin.html#dash\'">'+icon(IC.gear)+'<span class="t">Старая админка · редакторы</span>'+_chev+'</div>'+
      '</div>';
  }
+ // Интерфейс-откат «к старой версии» — ТОЛЬКО админу (1f9546e7 ч.2): всем остальным новый интерфейс по умолчанию, без тумблера отката.
  if(STATE.member && (STATE.email||'').toLowerCase()==='temka.avdeev@gmail.com') H+='<div class="seclbl">Интерфейс</div><div class="menu"><div class="mrow" role="button" tabindex="0" onclick="location.href=\'index.html?v2=1\'">'+icon(IC.gear)+'<span class="t">Вернуться к старой версии</span><svg class="cv" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div></div>';
+ // «Выйти» переехала в карточку профиля (рядом с читателем, реш. Артёма); нижняя дублирующая убрана
  document.getElementById('wrap').innerHTML=H;
  Array.prototype.forEach.call(document.querySelectorAll('[data-view]'),function(el){ el.onclick=function(){ location.href='personal.html?view='+el.getAttribute('data-view'); }; });
  var so=document.getElementById('signout'); if(so) so.onclick=function(){ if(!confirm('Точно выйти из аккаунта?')) return; clearLocalProgress(); if(window.__SB) window.__SB.auth.signOut().then(function(){ location.href='access.html'; }); else location.href='access.html'; };
+ // «Обновить приложение»: снимаем service-worker и весь кеш → гарантированно свежая версия с сервера (бейдж «v5» убран — читался как вечное уведомление)
  var _up=document.getElementById('appUpd');
  if(_up) _up.onclick=function(){ _up.querySelector('.t').textContent='Обновляю…';
   Promise.resolve().then(function(){ if('serviceWorker' in navigator) return navigator.serviceWorker.getRegistrations().then(function(rs){ return Promise.all(rs.map(function(r){return r.unregister();})); }); })
@@ -279,6 +305,7 @@ function renderHub(){
  };
  checkRelease();
 }
+// красная точка на «Пульт флота», когда есть сборка новее, чем в проде (та же логика, что в pult.html)
 function checkRelease(){
  var d=document.getElementById('reldot'); if(!d||!window.__SB) return;
  window.__SB.rpc('deploy_candidates_list').then(function(r){
@@ -289,10 +316,12 @@ function checkRelease(){
   if(pend>0){ d.style.display='inline-block'; d.title=pend+' '+(pend===1?'сборка ждёт':'сборок ждут')+' публикации'; }
  }).catch(function(){});
 }
+
 function sub(title, inner){
  document.getElementById('wrap').innerHTML='<div class="bar"><button class="ib" id="back" aria-label="Назад"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><div class="bt">'+esc(title)+'</div></div>'+inner;
  document.getElementById('back').onclick=function(){ location.href='personal.html'; };
 }
+
 function mcpShell(){
  return '<div class="head"><div class="h1">Честный слой для ИИ</div></div>'+
   '<div class="prose"><p>Подключите базу к своему ИИ — Claude, ChatGPT, Perplexity получают наши разборы с пометкой надёжности и ссылкой на источник, а не догадки.</p></div>'+
@@ -308,6 +337,7 @@ function mcpConfig(tok){
 function copyClip(txt, btn, okLabel){ try{ navigator.clipboard.writeText(txt).then(function(){ var o=btn.textContent; btn.textContent=okLabel||'Скопировано ✓'; setTimeout(function(){ btn.textContent=o; },1500); }); }catch(e){} }
 function fillMcp(tok){
  var el=document.getElementById('mcpBody'); if(!el) return;
+ // Пер-клиентские карточки (6ac1f4c6): Claude — подтверждённо рабочая; Perplexity/DeepSeek — честная заглушка (не публикуем непроверенные шаги).
  var CLIENTS='<div class="seclbl" style="margin-top:22px">Как подключить</div><div class="mcpcli">'+
   '<div class="mcpc"><div class="ch">Claude <span class="cst ok">рабочая</span></div><div class="cb"><b>Claude Desktop:</b> Настройки → Разработчик → Изменить конфиг → вставьте конфиг выше → перезапустите Claude.<br><b>claude.ai:</b> Настройки → Коннекторы → «Добавить свой» → URL и заголовок авторизации из конфига.</div></div>'+
   '<div class="mcpc"><div class="ch">Perplexity <span class="cst">уточняем</span></div><div class="cb">Поддержка удалённых MCP у Perplexity меняется. Если ваш клиент их поддерживает — используйте конфиг выше; точные шаги подтвердим прежде чем публиковать.</div></div>'+
@@ -360,6 +390,7 @@ function wireCommunity(){
    var H='<div class="cstat"><div class="c"><div class="v">'+(d.size||0)+'</div><div class="l">участников</div></div>'+
      '<div class="c"><div class="v">'+((d.invited&&d.invited.length)||0)+'</div><div class="l">вы привели</div></div>'+
      '<div class="c"><div class="v">'+avail+'</div><div class="l">осталось<br>приглашений</div></div></div>';
+   // Прогресс-бар только когда его смысл ясен — «зарабатывание» следующего приглашения (подписан N из M). Когда приглашения есть — без бара.
    if(avail>0){ H+='<div class="cprog"><div class="l">У вас '+avail+' '+plural(avail,'приглашение','приглашения','приглашений')+'</div></div>'; }
    else { H+='<div class="cprog"><div class="l">Ещё '+left+' '+plural(left,'карточка','карточки','карточек')+' до нового приглашения · '+(prog.have||0)+' из '+(prog.need||5)+'</div><div class="pbar"><i style="width:'+Math.max(4,pct)+'%"></i></div>'+
      ((d.invited&&d.invited.length)?'':'<div class="chelp" style="margin-top:8px">Старт — ноль приглашений. Зарабатываете вкладом. Лотерею очков на вас мы не крутим.</div>')+'</div>'; }
@@ -382,6 +413,7 @@ function wireCommunity(){
 function renderView(v){
  if(v==='community'){ sub('Сообщество', communityShell()); wireCommunity(); return; }
  if(v==='favorites'){ var ff=favItemsHtml();
+   // ошибка сети ≠ пустота: не показывать «начните сохранять» тому, у кого saves не загрузились (честность, cold-audit)
    var favEmpty=STATE.savesError?'<div class="mcstate"><div class="ic">⚠</div><div class="msg">Не удалось загрузить избранное.</div><button class="retry" onclick="location.reload()">↻ Повторить</button></div>':'<div class="empty"><div class="em">★</div>Отмечайте ★ на карточках — соберите нужное в одном месте.</div>';
    sub('Сохранённое', ff||favEmpty); if(ff) bindCards(); }
  else if(v==='about') sub('Об авторе и принципах',
@@ -397,9 +429,10 @@ function renderView(v){
    '<div class="toggle"><span class="t" id="sw3l">Сохранять для офлайна</span><div class="sw" id="sw3" role="switch" tabindex="0" aria-checked="false" aria-labelledby="sw3l"><i></i></div></div></div>'+
    '<p style="color:var(--meta);font-size:13px;margin-top:16px">Настройки применяются на этом устройстве.</p>'+
    '<div style="margin-top:26px;border-top:1px solid var(--line);padding-top:20px"><button id="resetProg" style="width:100%;background:var(--card);border:1px solid var(--line);color:var(--contested);border-radius:12px;padding:13px;font:inherit;font-weight:600;cursor:pointer">Сбросить прогресс</button>'+
-   '<p style="color:var(--meta);font-size:12.5px;line-height:17px;margin-top:9px">Очистит прочитанные карточки, пройденные главы, «Продолжить» и онбординг'+(STATE.member?' — на этом устройстве и на сервере (ваша карта знаний)':' на этом устройстве')+'. Сохранённое и вход не затрагиваются.</p></div>');
+   '<p style="color:var(--meta);font-size:12.5px;line-height:17px;margin-top:9px">Очистит прочитанные карточки, пройденные главы, «Продолжить» и онбординг'+(STATE.member?' — на этом устройстве и на сервере (ваша карта знаний)':'на этом устройстве')+'. Сохранённое и вход не затрагиваются.</p></div>');
  else { renderHub(); return; }
  Array.prototype.forEach.call(document.querySelectorAll('.sw'),function(s){ s.onclick=function(){ s.classList.toggle('on'); s.setAttribute('aria-checked', s.classList.contains('on')?'true':'false'); }; });
+ // Тема (1f9546e7 ч.1): реальный 3-state Авто/Светлая/Тёмная — persist mc:theme + applyTheme (data-theme на <html>).
  (function(){ var seg=document.getElementById('thseg'); if(!seg) return;
    var cur; try{ cur=localStorage.getItem('mc:theme')||'auto'; }catch(e){ cur='auto'; }
    function paint(v){ Array.prototype.forEach.call(seg.querySelectorAll('button'),function(b){ var on=b.getAttribute('data-th')===v; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on?'true':'false'); }); }
@@ -408,12 +441,15 @@ function renderView(v){
  })();
  var _rp=document.getElementById('resetProg'); if(_rp) _rp.onclick=mcResetProgress;
 }
+// Общее устройство: при выходе стереть локальный прогресс/избранное, иначе progMerge зальёт его в аккаунт следующего входящего (cold-audit privacy)
 function clearLocalProgress(){ try{ var del=[]; for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(!k) continue;
   if(k==='mc:fav'||k==='mc:qfav'||k==='mc:visited'||k==='mc:last'||k==='mc:quests_done'||k==='mc:quest_last'||k==='personal:state'||k==='explore:graph'||k==='solvehome:data'||k.indexOf('mc:path:')===0||k.indexOf('mc:qpred:')===0||k.indexOf('mc:card:')===0) del.push(k);
  } del.forEach(function(k){ try{localStorage.removeItem(k);}catch(e){} }); }catch(e){} }
+// сброс прогресса: локальные ключи + (для члена) серверные visit-сигналы через reset_my_progress()
 function mcResetProgress(){
  if(!confirm('Сбросить прогресс?\nОчистятся прочитанные карточки, пройденные главы, «Продолжить» и онбординг. Сохранённое и вход останутся.')) return;
  var keep={'mc:fav':1}; var progKeys={'mc:visited':1,'mc:quests_done':1,'mc:quest_last':1,'mc:last':1,'mc:model':1,'mc:onbdone':1,'explore:graph':1,'solvehome:data':1};
+ // Путь — основная модель прогресса: чистим все mc:path:* (s:/last/seen/ts/intro/migrated) и ставки твистов mc:qpred:* (cold-audit)
  try{ var del=[]; for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(!k||keep[k]) continue; if(progKeys[k]||k.indexOf('mc:card:')===0||k.indexOf('mc:visited')===0||k.indexOf('mc:path:')===0||k.indexOf('mc:qpred:')===0) del.push(k); } del.forEach(function(k){ try{localStorage.removeItem(k);}catch(e){} }); }catch(e){}
  try{ var ps=JSON.parse(localStorage.getItem('personal:state')||'null'); if(ps){ ps.territory=null; localStorage.setItem('personal:state', JSON.stringify(ps)); } }catch(e){}
  var b=document.getElementById('resetProg'); if(b){ b.disabled=true; b.textContent='Сбрасываем…'; }
@@ -421,13 +457,18 @@ function mcResetProgress(){
  if(STATE.member && window.__SB){ var pr=window.__SB.rpc('reset_my_progress'); if(pr&&pr.then){ pr.then(done, done); } else done(); }
  else done();
 }
+
 if(VIEW) renderView(VIEW); else renderHub();
+
+// keyboard operability: Enter/Space on role-ful clickable rows/switches fires their click handler
 document.addEventListener('keydown',function(e){
  if(e.key!=='Enter'&&e.key!==' '&&e.key!=='Spacebar') return;
  var t=e.target; if(!t||!t.closest) return;
  var el=t.closest('.mrow,.sw'); if(!el) return;
  e.preventDefault(); el.click();
 });
+
+// живой режим
 (function boot(){
  function go(){
   try{
@@ -458,6 +499,7 @@ document.addEventListener('keydown',function(e){
  }
  function load(src,cb){ var sc=document.createElement('script'); sc.src=src; sc.onload=cb; sc.onerror=cb; document.head.appendChild(sc); }
  function loadCfg(done){ var ps=['./config.js','../config.js','/book-reader/config.js']; var i=0; (function nx(){ if(window.SUPABASE_URL||i>=ps.length) return done(); var sc=document.createElement('script'); sc.src=ps[i++]; sc.onload=function(){ setTimeout(function(){ window.SUPABASE_URL?done():nx(); },0); }; sc.onerror=nx; document.head.appendChild(sc); })(); }
+  // config/vendor не догрузились → пометить, перерисовать: секции MCP/Сообщество/Избранное покажут ошибку с ретраем, не вечную «загрузку» (cold-audit)
   function cfgFail(){ window.__CFGFAIL=true; try{ if(VIEW) renderView(VIEW); }catch(e){} }
   loadCfg(function(){ if(!window.SUPABASE_URL){ cfgFail(); return; } load('vendor/supabase.min.js', function(){ if(!(window.supabase&&window.supabase.createClient)){ cfgFail(); return; } go(); }); });
 })();
