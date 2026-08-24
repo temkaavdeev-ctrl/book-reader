@@ -224,7 +224,7 @@ main{position:relative;z-index:1;background:var(--sky0)}
       ctx.fillStyle=i===hover?'#F4EEE2':'rgba(244,238,226,.55)';
       var tw=ctx.measureText(n.t).width;
       var lx=p.x+10;
-      if(lx+tw>w-12) lx=p.x-10-tw;
+      if(lx+tw>w-12) lx=p.x-10-tw; // не резать подпись правым краем
       if(lx<8) lx=8;
       ctx.fillText(n.t, lx, p.y+4);
     });
