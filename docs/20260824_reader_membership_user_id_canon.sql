@@ -1,0 +1,3 @@
+-- Applied to Bookz (wsnqmjzmtjpezkzlzhra) as migration reader_membership_user_id_canon.
+-- See docs/READER-ACCESS-SCHEMA.md and product_docs key reader-access-schema.
+-- Creates public.memberships, my_access(), ensure_my_membership(); updates is_member + invite_redeem.
