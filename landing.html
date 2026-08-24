@@ -13,3 +13,244 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sky0:#0E0C0A; --sky1:#15110C; --ink:#F4EEE2; --read:#D8D0C3; --meta:#897F70;
+  --gold:#C98A3A; --gold-br:#E7C07A; --line:#2A241C; --paper:#FBFAF7; --ink-on-paper:#17150F;
+  --font-ui:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;
+  --font-read:'Spectral',Georgia,"PT Serif","Times New Roman",serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--sky0);color:var(--ink);font-family:var(--font-ui)}
+html{background:var(--sky0)}
+body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:inherit}
+.skip{position:absolute;left:-999px;top:8px;background:var(--gold);color:#1A1407;padding:10px 14px;z-index:20}
+.skip:focus{left:8px}
+.sky{
+  position:relative;min-height:100svh;
+  display:grid;grid-template-columns:1fr;
+  overflow:hidden;
+  background:radial-gradient(90% 70% at 80% 20%,#241C14 0%,#15110C 42%,#0E0C0A 78%);
+}
+#field{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0}
+.open{
+  position:relative;z-index:1;
+  padding:clamp(28px,6vh,64px) clamp(20px,4vw,56px) 40px;
+  max-width:720px;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  min-height:100svh;
+}
+.brand{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-br)}
+h1{
+  font-family:var(--font-read);font-weight:500;letter-spacing:-.03em;
+  font-size:clamp(40px,7.4vw,78px);line-height:.96;
+  margin:18px 0 0;text-wrap:balance;
+}
+.dek{
+  font-family:var(--font-read);font-size:clamp(18px,2.2vw,22px);line-height:1.45;
+  color:var(--read);max-width:34em;margin:22px 0 0;text-wrap:pretty;
+}
+.acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:32px}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:48px;padding:12px 20px;border-radius:12px;
+  font:700 15px/1.2 var(--font-ui);text-decoration:none;border:1px solid transparent;
+}
+.btn.pri{background:var(--gold);color:#1A1407}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn:focus-visible{outline:2px solid var(--gold-br);outline-offset:3px}
+.aside{margin-top:16px;font-size:13px;line-height:1.45;color:var(--meta);max-width:36em}
+.scroll{
+  position:absolute;right:clamp(16px,4vw,40px);bottom:22px;z-index:1;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--meta);
+}
+main{position:relative;z-index:1;background:var(--sky0)}
+.band{padding:72px clamp(20px,5vw,80px) 24px}
+.col{max-width:38rem}
+.k{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+.essay{
+  font-family:var(--font-read);font-size:clamp(20px,2.3vw,24px);line-height:1.5;
+  color:var(--ink);margin:14px 0 0;text-wrap:pretty;
+}
+.essay em{font-style:italic;color:var(--gold-br)}
+.paper{
+  margin:56px clamp(20px,5vw,80px) 0;
+  background:var(--paper);color:var(--ink-on-paper);
+  border-radius:20px;padding:28px 24px 26px;
+  max-width:40rem;
+}
+.chip{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700;color:#56504A;letter-spacing:.04em;text-transform:uppercase}
+.chip i{width:8px;height:8px;border-radius:50%;background:#B8801F}
+.paper h2{font-family:var(--font-read);font-size:28px;line-height:1.15;font-weight:500;margin:10px 0 12px;letter-spacing:-.02em}
+.paper p{margin:0;font-size:16px;line-height:1.55;color:#3A342C}
+.honest{margin-top:18px;background:#211C16;color:#EFE6D7;border-radius:12px;padding:14px 16px}
+.honest .l{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-br);margin-bottom:6px}
+.honest .b{font-size:15px;line-height:1.5}
+.more{display:inline-block;margin-top:16px;font-size:14px;font-weight:700;color:#97591A;text-decoration:none}
+.close{
+  padding:72px clamp(20px,5vw,80px) calc(64px + env(safe-area-inset-bottom));
+  max-width:40rem;
+}
+.close h2{font-family:var(--font-read);font-size:clamp(28px,4vw,40px);font-weight:500;letter-spacing:-.025em;margin:10px 0 12px;line-height:1.15}
+.close p{color:var(--read);font-size:16px;line-height:1.55;margin:0 0 22px}
+.tip{margin-top:18px;font-size:13px;color:var(--meta)}
+.tip a{color:var(--gold-br);text-decoration:none;font-weight:600}
+@media(min-width:980px){
+  .sky{grid-template-columns:minmax(420px,1fr) minmax(380px,1fr)}
+  #field{position:relative;grid-column:2;grid-row:1}
+  .open{grid-column:1;grid-row:1;justify-content:center;padding-right:24px}
+  .scroll{display:none}
+  .paper{margin-left:clamp(20px,5vw,80px)}
+}
+@media(prefers-reduced-motion:reduce){
+  #field{opacity:.55}
+}
+@media(max-width:979px){
+  #field{opacity:.42}
+  .open{background:linear-gradient(180deg,transparent 20%,rgba(14,12,10,.55) 62%,var(--sky0) 100%)}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#read">К тексту</a>
+<section class="sky" aria-label="Начало">
+  <canvas id="field" width="800" height="900" aria-hidden="true"></canvas>
+  <div class="open">
+    <div class="brand">Управляя поведением</div>
+    <h1>Ценность не двигает людей сама</h1>
+    <p class="dek">Можно сделать правильный продукт и всё равно получить тишину. Здесь разбирают, почему — по исследованиям, и где привычный метод врёт.</p>
+    <div class="acts">
+      <a class="btn pri" id="goFund" href="path.html?ch=m1-osnovy">Открыть фундамент</a>
+      <a class="btn ghost" id="goIn" href="access.html?view=login">Войти</a>
+    </div>
+    <p class="aside">Первая глава открыта без аккаунта. Специализации — по приглашению. Тёмные паттерны называем, на вас не применяем.</p>
+  </div>
+  <div class="scroll">ниже — как это устроено</div>
+</section>
+<main id="read">
+  <section class="band">
+    <div class="col">
+      <div class="k">Не крючок. Разбор</div>
+      <p class="essay">Команда закрывает запросы. Клиенты довольны. Метрики растут. Через два года продукт — список всего, что когда-либо просили, и больше не делает ту работу, ради которой его наняли. Так выглядит <em>build trap</em>. Это не мораль из презентации. Это то, что книга разбирает на ходах, которые продакт узнаёт в своём спринте.</p>
+    </div>
+  </section>
+  <article class="paper">
+    <div class="chip"><i></i> Есть нюансы</div>
+    <h2>Модель крючка</h2>
+    <p>Знаменитый рецепт удержания: триггер, действие, переменная награда, вложение. Тот же механизм строит и привычку, и зависимость. Вопрос не «как зацепить», а кому служит петля.</p>
+    <div class="honest">
+      <div class="l">Честный край</div>
+      <div class="b">Эйал сам ввёл «матрицу манипуляции» и позже написал Indistractable — ответ на то, как индустрия взяла Hook ради удержания вопреки человеку.</div>
+    </div>
+    <a class="more" id="goCard" href="card.html?slug=hook-model">Карточка целиком</a>
+  </article>
+  <section class="close">
+    <div class="k">Что можно сейчас</div>
+    <h2>Фундамент — ваш. Остальное просят.</h2>
+    <p>Гость читает первую ось пути и публичные карточки. Сохранить небо, реакции и специализации — после входа. Приглашение выдаёт участник, не лендинг.</p>
+    <div class="acts">
+      <a class="btn pri" id="goFund2" href="path.html?ch=m1-osnovy">Начать главу</a>
+      <a class="btn ghost" id="goBook" href="solve-home.html">Справочник</a>
+    </div>
+    <p class="tip">Уже есть доступ — <a id="goIn2" href="access.html?view=login">войдите тем же входом</a>. Приглашение выдаёт участник, не эта страница. Автор: <a href="https://t.me/artavdeev" target="_blank" rel="noopener">@artavdeev</a>.</p>
+  </section>
+</main>
+<script>
+(function(){
+  function hasSess(){
+    try{
+      for(var i=0;i<localStorage.length;i++){
+        var k=localStorage.key(i);
+        if(k && k.indexOf('sb-')===0 && k.indexOf('-auth-token')>0){
+          var v=localStorage.getItem(k);
+          if(v && v.length>20) return true;
+        }
+      }
+    }catch(e){}
+    return false;
+  }
+  if(hasSess()){ location.replace('path.html'); return; }
+
+  function mark(){ try{ sessionStorage.setItem('mc:from-landing','1'); }catch(e){} }
+  ['goFund','goFund2','goIn','goIn2','goBook','goCard'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.addEventListener('click', mark);
+  });
+
+  var c=document.getElementById('field'); if(!c) return;
+  var ctx=c.getContext('2d');
+  var nodes=[
+    {s:'hook-model',t:'Крючок',x:.70,y:.28},
+    {s:'loss-aversion',t:'Неприятие потерь',x:.84,y:.48},
+    {s:'cognitive-load-theory',t:'Нагрузка',x:.58,y:.58},
+    {s:'anchoring',t:'Якорь',x:.88,y:.22},
+    {s:'reference-point',t:'Опора',x:.62,y:.20},
+    {s:'prospect-theory',t:'Перспектива',x:.78,y:.68},
+    {s:'decoy-effect',t:'Приманка',x:.52,y:.38},
+    {s:'payment-pain',t:'Боль платежа',x:.90,y:.62}
+  ];
+  var edges=[[0,1],[0,2],[1,5],[3,4],[3,1],[2,6],[5,7],[0,3]];
+  var reduce=false;
+  try{ reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
+  var t0=performance.now(), hover=-1, dpr=1;
+
+  function fit(){
+    var r=c.getBoundingClientRect();
+    dpr=Math.min(window.devicePixelRatio||1, 2);
+    c.width=Math.max(1, r.width*dpr);
+    c.height=Math.max(1, r.height*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  function pos(n,w,h){
+    var ph=reduce?0:Math.sin((performance.now()-t0)/1800 + n.x*8)*6;
+    return {x:n.x*w, y:n.y*h + ph};
+  }
+  function draw(){
+    var w=c.clientWidth, h=c.clientHeight;
+    ctx.clearRect(0,0,w,h);
+    ctx.lineWidth=1;
+    edges.forEach(function(e){
+      var a=pos(nodes[e[0]],w,h), b=pos(nodes[e[1]],w,h);
+      ctx.strokeStyle='rgba(201,138,58,.22)';
+      ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+    });
+    nodes.forEach(function(n,i){
+      var p=pos(n,w,h);
+      ctx.beginPath();
+      ctx.fillStyle=i===hover?'#F6E3B8':'#E7C07A';
+      ctx.arc(p.x,p.y, i===hover?4.2:2.6, 0, Math.PI*2);
+      ctx.fill();
+      ctx.font='600 12px '+getComputedStyle(document.body).fontFamily;
+      ctx.fillStyle=i===hover?'#F4EEE2':'rgba(244,238,226,.55)';
+      var tw=ctx.measureText(n.t).width;
+      var lx=p.x+10;
+      if(lx+tw>w-12) lx=p.x-10-tw;
+      if(lx<8) lx=8;
+      ctx.fillText(n.t, lx, p.y+4);
+    });
+    if(!reduce) requestAnimationFrame(draw);
+  }
+  function hit(ev){
+    var r=c.getBoundingClientRect();
+    var x=(ev.clientX-r.left), y=(ev.clientY-r.top);
+    var w=c.clientWidth, h=c.clientHeight;
+    for(var i=0;i<nodes.length;i++){
+      var p=pos(nodes[i],w,h);
+      if(Math.hypot(x-p.x,y-p.y)<28) return i;
+    }
+    return -1;
+  }
+  c.addEventListener('pointermove', function(ev){
+    var i=hit(ev); hover=i; c.style.cursor=i>=0?'pointer':'default';
+    if(reduce) draw();
+  });
+  c.addEventListener('click', function(ev){
+    var i=hit(ev); if(i<0) return;
+    mark(); location.href='card.html?slug='+encodeURIComponent(nodes[i].s);
+  });
+  window.addEventListener('resize', function(){ fit(); if(reduce) draw(); });
+  fit(); draw();
+})();
+</script>
+</body>
+</html>
