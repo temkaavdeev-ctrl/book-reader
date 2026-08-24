@@ -1,0 +1,77 @@
+}
+function copyClip(txt, btn, okLabel){ try{ navigator.clipboard.writeText(txt).then(function(){ var o=btn.textContent; btn.textContent=okLabel||'Скопировано ✓'; setTimeout(function(){ btn.textContent=o; },1500); }); }catch(e){} }
+function fillMcp(tok){
+ var el=document.getElementById('mcpBody'); if(!el) return;
+ // Пер-клиентские карточки (6ac1f4c6): Claude — подтверждённо рабочая; Perplexity/DeepSeek — честная заглушка (не публикуем непроверенные шаги).
+ var CLIENTS='<div class="seclbl" style="margin-top:22px">Как подключить</div><div class="mcpcli">'+
+  '<div class="mcpc"><div class="ch">Claude <span class="cst ok">рабочая</span></div><div class="cb"><b>Claude Desktop:</b> Настройки → Разработчик → Изменить конфиг → вставьте конфиг выше → перезапустите Claude.<br><b>claude.ai:</b> Настройки → Коннекторы → «Добавить свой» → URL и заголовок авторизации из конфига.</div></div>'+
+  '<div class="mcpc"><div class="ch">Perplexity <span class="cst">уточняем</span></div><div class="cb">Поддержка удалённых MCP у Perplexity меняется. Если ваш клиент их поддерживает — используйте конфиг выше; точные шаги подтвердим прежде чем публиковать.</div></div>'+
+  '<div class="mcpc"><div class="ch">DeepSeek <span class="cst">уточняем</span></div><div class="cb">Нативная MCP-поддержка уточняется; вероятный путь — MCP-совместимый клиент поверх DeepSeek API. Подтвердим перед публикацией шагов.</div></div>'+
+  '</div>';
+ el.innerHTML='<div class="tokbox"><div class="l">Ваш MCP-токен</div><code id="mTok">'+esc(tok)+'</code><button class="mcpbtn" id="mCopyTok">Скопировать токен</button></div>'+
+  '<div class="cfgbox"><div class="l">Конфиг — вставьте в настройки MCP-клиента</div><pre id="mCfg">'+esc(mcpConfig(tok))+'</pre><button class="mcpbtn" id="mCopyCfg">Скопировать конфиг</button></div>'+
+  CLIENTS+
+  '<button class="mcpbtn rot" id="mRot">Перевыпустить токен</button>';
+ document.getElementById('mCopyTok').onclick=function(){ copyClip(tok,this); };
+ document.getElementById('mCopyCfg').onclick=function(){ copyClip(mcpConfig(tok),this,'Конфиг скопирован ✓'); };
+ document.getElementById('mRot').onclick=function(){ if(!confirm('Перевыпустить токен? Старый перестанет работать.')) return; if(!window.__SB) return; this.disabled=true; window.__SB.rpc('mcp_my_token_rotate').then(function(r){ var t=(r&&!r.error&&r.data&&r.data[0])||null; if(t&&t.token) fillMcp(t.token); }).catch(function(){}); };
+}
+function wireMcp(){
+ var el=document.getElementById('mcpBody'); if(!el) return;
+ if(!STATE.member){ el.innerHTML='<div class="mcpguest">Подключение MCP — для участников. <a href="access.html">Войти</a></div>'; return; }
+ if(!window.__SB){ el.innerHTML=window.__CFGFAIL?'<div class="mcstate"><div class="ic">⚠</div><div class="msg">Не удалось подключиться.</div><button class="retry" onclick="location.reload()">↻ Повторить</button></div>':'<div style="color:var(--meta);font-size:13px;padding:8px 0">Подключаем…</div>'; return; }
+ window.__SB.rpc('mcp_my_token').then(function(r){ var t=(r&&!r.error&&r.data&&r.data[0])||null; if(t&&t.token) fillMcp(t.token); else el.innerHTML='<div class="mcpguest">Не удалось получить токен — <a href="access.html">Войдите</a> как участник.</div>'; }).catch(function(){ el.innerHTML='<div class="mcstate"><div class="ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4L2.8 19.5h18.4z"/><path d="M12 10v4M12 17h.01"/></svg></div><div class="msg">Не удалось загрузить.</div><button class="retry" onclick="wireMcp()">↻ Повторить</button></div>'; });
+}
+function communityShell(){
+ return '<div class="head"><div class="h1">Сообщество</div></div>'+
+  '<div class="prose"><p>Доступ — только по приглашению, узким кругом. Приведите того, кому это правда нужно.</p></div>'+
+  '<div id="commBody"><div style="color:var(--meta);font-size:13px;padding:8px 0">…</div></div>';
+}
+function inviteGraphSvg(edges, meId){
+ if(!edges||!edges.length){ return '<svg viewBox="0 0 320 56"><text x="160" y="32" text-anchor="middle" fill="#B3A893" font-size="13">Граф появится с первым приглашением</text></svg>'; }
+ var nodes={}, adj={}, indeg={};
+ edges.forEach(function(e){ if(!e.from||!e.to) return; nodes[e.from]=1; nodes[e.to]=1; (adj[e.from]=adj[e.from]||[]).push(e.to); indeg[e.to]=(indeg[e.to]||0)+1; });
+ var ids=Object.keys(nodes); if(!ids.length) return '';
+ var depth={}, roots=ids.filter(function(id){ return !indeg[id]; }); var q=roots.slice(); roots.forEach(function(r){depth[r]=0;});
+ while(q.length){ var u=q.shift(); (adj[u]||[]).forEach(function(v){ if(depth[v]==null){ depth[v]=(depth[u]||0)+1; q.push(v); } }); }
+ ids.forEach(function(id){ if(depth[id]==null) depth[id]=0; });
+ var byD={}; ids.forEach(function(id){ (byD[depth[id]]=byD[depth[id]]||[]).push(id); });
+ var maxD=0; ids.forEach(function(id){ if(depth[id]>maxD) maxD=depth[id]; });
+ var W=320, rowH=56, padY=24, pos={};
+ for(var d=0; d<=maxD; d++){ var row=byD[d]||[]; row.forEach(function(id,i){ pos[id]={ x: W*(i+1)/(row.length+1), y: padY + d*rowH }; }); }
+ var Hh = padY*2 + maxD*rowH;
+ var E=edges.map(function(e){ var a=pos[e.from], b=pos[e.to]; if(!a||!b) return ''; return '<line x1="'+a.x.toFixed(1)+'" y1="'+a.y.toFixed(1)+'" x2="'+b.x.toFixed(1)+'" y2="'+b.y.toFixed(1)+'" stroke="#3a3329" stroke-width="1.2"/>'; }).join('');
+ var N=ids.map(function(id){ var p=pos[id]; var me=(meId&&id===meId); return '<circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="'+(me?7:5)+'" fill="'+(me?'#E7C07A':'#6E665A')+'"'+(me?' stroke="#fff" stroke-width="1.5"':'')+'/>'; }).join('');
+ return '<svg viewBox="0 0 '+W+' '+Hh+'">'+E+N+'</svg>';
+}
+function wireCommunity(){
+ var el=document.getElementById('commBody'); if(!el) return;
+ if(!STATE.member){ el.innerHTML='<div class="mcpguest">Сообщество — для участников. <a href="access.html">Войти</a></div>'; return; }
+ if(!window.__SB){ el.innerHTML=window.__CFGFAIL?'<div class="mcstate"><div class="ic">⚠</div><div class="msg">Не удалось подключиться.</div><button class="retry" onclick="location.reload()">↻ Повторить</button></div>':'<div style="color:var(--meta);font-size:13px;padding:8px 0">Загружаем…</div>'; return; }
+ window.__SB.rpc('invite_community').then(function(r){ var d=(r&&!r.error&&r.data)||null;
+   if(!d){ el.innerHTML='<div class="mcstate"><div class="ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4L2.8 19.5h18.4z"/><path d="M12 10v4M12 17h.01"/></svg></div><div class="msg">Не удалось загрузить.</div><button class="retry" onclick="wireCommunity()">↻ Повторить</button></div>'; return; }
+   var avail=d.available||0, meId=STATE.uid||null, prog=d.next_invite_progress||{have:0,need:5};
+   var left=Math.max(0,(prog.need||5)-(prog.have||0)), pct=Math.round((prog.have||0)/(prog.need||5)*100);
+   var H='<div class="cstat"><div class="c"><div class="v">'+(d.size||0)+'</div><div class="l">участников</div></div>'+
+     '<div class="c"><div class="v">'+((d.invited&&d.invited.length)||0)+'</div><div class="l">вы привели</div></div>'+
+     '<div class="c"><div class="v">'+avail+'</div><div class="l">осталось<br>приглашений</div></div></div>';
+   // Прогресс-бар только когда его смысл ясен — «зарабатывание» следующего приглашения (подписан N из M). Когда приглашения есть — без бара.
+   if(avail>0){ H+='<div class="cprog"><div class="l">У вас '+avail+' '+plural(avail,'приглашение','приглашения','приглашений')+'</div></div>'; }
+   else { H+='<div class="cprog"><div class="l">Ещё '+left+' '+plural(left,'карточка','карточки','карточек')+' до нового приглашения · '+(prog.have||0)+' из '+(prog.need||5)+'</div><div class="pbar"><i style="width:'+Math.max(4,pct)+'%"></i></div>'+
+     ((d.invited&&d.invited.length)?'':'<div class="chelp" style="margin-top:8px">Старт — ноль приглашений. Зарабатываете вкладом. Лотерею очков на вас мы не крутим.</div>')+'</div>'; }
+   H+='<button class="mcpbtn pri" id="cGen"'+(avail<=0?' disabled':'')+'>'+(avail>0?'Создать приглашение':'Приглашения закончились')+'</button>';
+   if(avail>0) H+='<div class="chelp">Создайте ссылку и отправьте её лично тому, кому это нужно. Ссылка действует 37 часов.</div>';
+   H+='<div id="cCode"></div>';
+   H+='<div class="cgraph"><div class="gl">Граф приглашений</div>'+inviteGraphSvg(d.edges||[], meId)+'<div class="gh">Точка — участник, линия — кто кого привёл. Золотая — вы. Анонимно.</div></div>';
+   if(d.invited&&d.invited.length){ H+='<div class="cinv"><div class="gl">Вы привели</div>'+d.invited.map(function(x){ var dt=x.at?new Date(Date.parse(x.at)):null; var ag=(dt&&!isNaN(dt.getTime()))?(dt.getDate()+'.'+(dt.getMonth()+1)):''; return '<div class="invrow"><span class="d"></span><span>участник</span><span class="ag">'+ag+'</span></div>'; }).join('')+'</div>'; }
+   el.innerHTML=H;
+   var gen=document.getElementById('cGen');
+   if(gen&&avail>0) gen.onclick=function(){ if(!window.__SB) return; gen.disabled=true; gen.textContent='Создаём…';
+     window.__SB.rpc('invite_generate').then(function(r2){ var c=(r2&&!r2.error&&r2.data&&r2.data[0])||null;
+       if(c&&c.code){ var link=location.origin+location.pathname.replace(/[^/]*$/,'')+'access.html?invite='+c.code;
+         document.getElementById('cCode').innerHTML='<div class="codebox"><code>'+esc(link)+'</code><button class="mcpbtn" id="cCopy" style="margin:0">Копировать</button></div><div class="gh" style="color:var(--meta);margin-top:8px">Ссылка одноразовая'+(c.expires_at?(' · до '+new Date(Date.parse(c.expires_at)).toLocaleDateString()):'')+'</div>';
+         document.getElementById('cCopy').onclick=function(){ copyClip(link,this); }; gen.style.display='none';
+       } else { gen.disabled=false; gen.textContent='Создать приглашение'; }
+     }).catch(function(){ gen.disabled=false; gen.textContent='Создать приглашение'; }); };
+ }).catch(function(){ el.innerHTML='<div class="mcstate"><div class="ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4L2.8 19.5h18.4z"/><path d="M12 10v4M12 17h.01"/></svg></div><div class="msg">Не удалось загрузить.</div><button class="retry" onclick="wireCommunity()">↻ Повторить</button></div>'; });
+}
