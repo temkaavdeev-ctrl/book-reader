@@ -1,0 +1,29 @@
+ null;})
+      ]).then(function(res){ var tr=res[0], sv=res[1];
+       if(tr&&!tr.error&&tr.data) STATE.territory=tr.data;
+       if(sv&&!sv.error&&sv.data) STATE.saves=sv.data; else STATE.savesError=true;
+       finish();
+      }); }); }
+    else { STATE.territory=null; STATE.saves=null; finish(); }
+   }
+   // Canon: my_access() = signed_in / member (session ≠ member). ensure_my_membership runs inside.
+   SB.rpc('my_access').then(function(r){
+    if(r&&!r.error&&r.data){ applyAccess(r.data); return; }
+    SB.auth.getSession().then(function(s){ var sess=s&&s.data&&s.data.session;
+     applyAccess({signed_in:!!sess, member:false, email:(sess&&sess.user&&sess.user.email)||'', uid:(sess&&sess.user&&sess.user.id)||null,
+      name:(sess&&sess.user&&sess.user.user_metadata&&(sess.user.user_metadata.name||sess.user.user_metadata.full_name))||''});
+    }).catch(function(){ applyAccess({signed_in:false, member:false}); });
+   }).catch(function(){ applyAccess({signed_in:false, member:false}); });
+  }catch(_){}
+ }
+ function load(src,cb){ var sc=document.createElement('script'); sc.src=src; sc.onload=cb; sc.onerror=cb; document.head.appendChild(sc); }
+ function loadCfg(done){ var ps=['./config.js','../config.js','/book-reader/config.js']; var i=0; (function nx(){ if(window.SUPABASE_URL||i>=ps.length) return done(); var sc=document.createElement('script'); sc.src=ps[i++]; sc.onload=function(){ setTimeout(function(){ window.SUPABASE_URL?done():nx(); },0); }; sc.onerror=nx; document.head.appendChild(sc); })(); }
+  // config/vendor не догрузились → пометить, перерисовать: секции MCP/Сообщество/Избранное покажут ошибку с ретраем, не вечную «загрузку» (cold-audit)
+  function cfgFail(){ window.__CFGFAIL=true; try{ if(VIEW) renderView(VIEW); }catch(e){} }
+  loadCfg(function(){ if(!window.SUPABASE_URL){ cfgFail(); return; } load('vendor/supabase.min.js', function(){ if(!(window.supabase&&window.supabase.createClient)){ cfgFail(); return; } go(); }); });
+})();
+</script>
+<script>(function(){if(!('serviceWorker' in navigator))return;var reg=null,shown=false;function anim(){var st=document.createElement('style');st.textContent='@keyframes __spin{to{transform:rotate(360deg)}}';document.head.appendChild(st);var o=document.createElement('div');o.id='__updanim';o.style.cssText='position:fixed;inset:0;z-index:100000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:rgba(20,17,12,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;transition:opacity .3s';o.innerHTML='<div style="width:44px;height:44px;border-radius:50%;border:3px solid rgba(255,255,255,.25);border-top-color:#C98A3A;animation:__spin .8s linear infinite"></div><div style="color:#F4EEE2;font:600 15px/1.3 -apple-system,system-ui,sans-serif">Обновляем…</div>';(document.body||document.documentElement).appendChild(o);requestAnimationFrame(function(){o.style.opacity='1';});}function doUpdate(){var bb=document.getElementById('__updbar');if(bb)bb.style.opacity='0';anim();try{if(reg&&reg.waiting)reg.waiting.postMessage({type:'SKIP_WAITING'});}catch(e){}var done=false,fin=function(){if(done)return;done=true;location.reload();};try{navigator.serviceWorker.addEventListener('controllerchange',fin);}catch(e){}setTimeout(fin,1600);}function showUpd(){if(shown)return;shown=true;try{if(sessionStorage.getItem('mc:updshown'))return;sessionStorage.setItem('mc:updshown','1');}catch(e){}var b=document.createElement('div');b.id='__updbar';b.style.cssText='position:fixed;left:50%;transform:translateX(-50%) translateY(8px);bottom:calc(16px + env(safe-area-inset-bottom));z-index:99999;display:flex;align-items:center;gap:12px;background:#17150F;color:#F4EEE2;font:600 14px/1.3 -apple-system,BlinkMacSystemFont,system-ui,sans-serif;padding:10px 12px 10px 16px;border-radius:14px;box-shadow:0 10px 34px rgba(0,0,0,.34);max-width:calc(100vw - 26px);opacity:0;transition:opacity .25s,transform .25s';var s=document.createElement('span');s.textContent='Доступна новая версия';var btn=document.createElement('button');btn.textContent='Обновить';btn.style.cssText='border:0;background:#C98A3A;color:#fff;font:inherit;font-weight:700;padding:8px 15px;border-radius:10px;cursor:pointer;flex:none';btn.onclick=doUpdate;b.appendChild(s);b.appendChild(btn);(document.body||document.documentElement).appendChild(b);requestAnimationFrame(function(){b.style.opacity='1';b.style.transform='translateX(-50%) translateY(0)';});}try{navigator.serviceWorker.register('sw.js').then(function(r){reg=r;}).catch(function(){});}catch(e){}try{navigator.serviceWorker.addEventListener('message',function(e){if(e.data&&e.data.type==='NEW_VERSION')showUpd();});}catch(e){}try{navigator.serviceWorker.ready.then(function(r){reg=r;if(r.waiting)showUpd();r.addEventListener('updatefound',function(){var nw=r.installing;if(nw)nw.addEventListener('statechange',function(){if(nw.state==='installed'&&navigator.serviceWorker.controller)showUpd();});});});}catch(e){}})();</script>
+<script>try{document.addEventListener("touchstart",function(){},{passive:true});}catch(e){}</script>
+</body>
+</html>
