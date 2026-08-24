@@ -94,6 +94,11 @@ html[data-theme="dark"] .mcsk{background:linear-gradient(90deg,#1b1710,#241f16,#
  html:not([data-theme]){--bg:#100D0A;--ink:#F2ECE0;--ink2:#C6BDAF;--meta:#948B7D;--line:#2B2620;--card:#191510;--on:#fff;--gold:#D69A4C;--gold-br:#E0A24E;--sh:0 2px 12px rgba(0,0,0,.4),0 1px 2px rgba(0,0,0,.34);background:#100D0A!important}
  html:not([data-theme]) .mcsk{background:linear-gradient(90deg,#1b1710,#241f16,#1b1710);background-size:200% 100%}
 }
+
+.legacy{margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+.legacy summary{cursor:pointer;color:var(--ink2);font-size:14px;font-weight:600;list-style:none}
+.legacy summary::-webkit-details-marker{display:none}
+.legacy summary:after{content:" ▾";color:var(--meta)}
 </style>
 </head>
 <body>
@@ -106,10 +111,71 @@ html[data-theme="dark"] .mcsk{background:linear-gradient(90deg,#1b1710,#241f16,#
 <script>
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
 var CODE=(window.McAuth&&McAuth.parseInviteCode)?McAuth.parseInviteCode():null;
+var WANT_LOGIN=(function(){try{return new URLSearchParams(location.search).get('view')==='login';}catch(e){return false;}})();
+var HOME='path.html';
+var OIDC_PROVIDER='custom:authelia';
 function ruErr(m){ return (window.McAuth&&McAuth.authErr)?McAuth.authErr(m):String(m||''); }
 
-// Access v3 (screen-access v3, bb487471): ветвление ПО СОСТОЯНИЮ ИНВАЙТА. Копия — Каллиопа.
-// «вкус» — один честный разбор (NPS «Спорно»), не витрина.
+function stashInvite(code, name){
+ try{
+  if(code) sessionStorage.setItem('mc:invite', code);
+  if(name) sessionStorage.setItem('mc:invite-name', name);
+ }catch(e){}
+}
+function takeInvite(){
+ try{
+  var c=sessionStorage.getItem('mc:invite')||'';
+  var n=sessionStorage.getItem('mc:invite-name')||'';
+  sessionStorage.removeItem('mc:invite');
+  sessionStorage.removeItem('mc:invite-name');
+  return {code:c, name:n};
+ }catch(e){ return {code:'', name:''}; }
+}
+function goHome(){ location.replace(HOME); }
+function startOidc(){
+ var err=document.getElementById('err');
+ if(!window.__SB){ if(err) err.textContent='Нет соединения с базой — попробуйте онлайн.'; return; }
+ var btn=document.getElementById('doOidc'); if(btn){ btn.disabled=true; btn.textContent='Открываем вход…'; }
+ var redirectTo=location.origin+'/access.html'+(CODE?('?invite='+encodeURIComponent(CODE)):(WANT_LOGIN?'?view=login':''));
+ window.__SB.auth.signInWithOAuth({
+  provider: OIDC_PROVIDER,
+  options: { redirectTo: redirectTo }
+ }).then(function(r){
+  if(r&&r.error){ if(btn){ btn.disabled=false; btn.textContent='Войти через ar1adna'; } if(err) err.textContent=ruErr(r.error.message); }
+ }).catch(function(){ if(btn){ btn.disabled=false; btn.textContent='Войти через ar1adna'; } if(err) err.textContent='Не удалось начать вход через ar1adna.'; });
+}
+function afterSession(SB, sess){
+ var pending=takeInvite();
+ var name=pending.name || (sess&&sess.user&&sess.user.user_metadata&&(sess.user.user_metadata.name||sess.user.user_metadata.full_name)) || '';
+ var code=pending.code || CODE || '';
+ var args={};
+ if(code) args.p_code=code;
+ if(name) args.p_name=name;
+ function go(){ goHome(); }
+ if(!SB||!sess){ go(); return; }
+ SB.rpc('membership_after_auth', args).then(function(){ go(); }, function(){
+  if(window.McAuth&&McAuth.finishAuth){
+   McAuth.finishAuth(SB,sess,{ inviteCode:code||null, inviteName:name }).then(function(){ go(); }, function(){
+    if(pending.code) stashInvite(pending.code, pending.name);
+    go();
+   });
+  } else {
+   if(pending.code) stashInvite(pending.code, pending.name);
+   go();
+  }
+ });
+}
+function mailFields(mode){
+ return '<details class="legacy"><summary>'+(mode==='join'?'Почта книги — запасной путь':'Почта, если аккаунт уже заведён в книге')+'</summary>'+
+  '<div class="fld" style="margin-top:12px"><label for="email">Email</label><input id="email" type="email" autocomplete="email" placeholder="you@example.com"></div>'+
+  (mode==='join'?'<div class="fld"><label for="pass">Пароль</label><input id="pass" type="password" autocomplete="new-password" placeholder="Пароль, от 6 символов"></div>':
+   '<div class="fld"><label for="pass">Пароль</label><input id="pass" type="password" autocomplete="current-password" placeholder="••••••••"></div>')+
+  '<div class="err" id="errMail" role="alert"></div>'+
+  '<button class="btn ghost" id="doMail" style="width:100%;margin-top:6px">'+(mode==='join'?'Создать по почте':'Войти по почте')+'</button>'+
+  (mode==='login'?'<button class="link" id="forgot">Забыли пароль?</button>':'')+
+  '</details>';
+}
+
 function tasteCard(lbl){
  return '<div class="example"><div class="lbl">'+esc(lbl||'Например, NPS — и почему его надёжность под вопросом:')+'</div>'+
   '<div class="card"><div class="chip"><span class="d"></span>Спорно</div><h2>NPS (Net Promoter Score)</h2>'+
@@ -118,7 +184,6 @@ function tasteCard(lbl){
 }
 function loadingState(){ document.getElementById('back').style.display='none'; document.getElementById('wrap').innerHTML='<div class="hero"><div class="hsub" style="text-align:center;padding:48px 0">Секунду…</div></div>'; }
 
-// СОСТОЯНИЕ A — валидный инвайт (дефолт инвайт-онли): кто пригласил + принять → регистрация.
 function stateA(info, code){
  document.getElementById('back').style.display='none';
  var who=(info&&(info.inviter_name||info.inviter||info.name))||'';
@@ -127,27 +192,29 @@ function stateA(info, code){
   '<h1 class="httl inv">'+head+'</h1>'+
   '<div class="hsub">База о том, как люди принимают решения — и как проектировать для них. У каждой идеи помечено, насколько она подтверждена. Для тех, кто делает продукты.</div></div>'+
   tasteCard('Загляните — например, NPS, и почему его надёжность под вопросом:')+
-  '<div class="panel"><div class="fld"><label for="name">Имя</label><input id="name" placeholder="Как вас зовут"></div>'+
-  '<div class="fld"><label for="email">Email</label><input id="email" type="email" autocomplete="email" placeholder="Ваш email"></div>'+
-  '<div class="fld"><label for="pass">Пароль</label><input id="pass" type="password" autocomplete="new-password" placeholder="Пароль, от 6 символов"></div>'+
+  '<div class="panel"><div class="ps">Примите приглашение тем же входом, что на ar1adna.com. Членство откроется после входа.</div>'+
+  '<div class="fld"><label for="name">Имя <span style="color:var(--meta);font-weight:500">(если ещё не в профиле)</span></label><input id="name" placeholder="Как к вам обращаться" autocomplete="name"></div>'+
   '<div class="err" id="err" role="alert"></div>'+
-  '<button class="btn pri" id="doJoin" style="width:100%;margin-top:6px">Принять приглашение</button>'+
+  '<button class="btn pri" id="doOidc" style="width:100%;margin-top:6px">Принять приглашение</button>'+
+  mailFields('join')+
   '<button class="link" id="toLogin">Уже есть аккаунт? Войти</button></div>';
- document.getElementById('doJoin').onclick=function(){ doAuth('join',code); };
+ document.getElementById('doOidc').onclick=function(){
+  var nm=(document.getElementById('name')||{}).value;
+  stashInvite(code, nm);
+  startOidc();
+ };
+ wireMail('join', code);
  document.getElementById('toLogin').onclick=login;
 }
-// Тупик — инвайт истёк/погашен.
 function deadEnd(info){
  document.getElementById('back').style.display='none';
- // Имя не склоняем («у Артём» ломало падеж) — форма без имени (bus 180fe5e8 п.3)
  var ask='Попросите новое у того, кто вас пригласил, или напишите автору';
  document.getElementById('wrap').innerHTML='<div class="hero"><div class="brand">Честно о поведении</div><h1 class="httl">Приглашение больше не действует</h1>'+
   '<div class="hsub">'+ask+': <a class="wcta" style="display:inline-block;padding:12px 8px;margin:-12px -8px" href="https://t.me/artavdeev" target="_blank" rel="noopener">tg @artavdeev</a>.</div>'+
   '<button class="link" id="toLogin" style="margin-top:16px">Уже есть аккаунт? Войти</button></div>';
  document.getElementById('toLogin').onclick=login;
 }
-// СОСТОЯНИЕ B — холодный гость (нет/невалидный инвайт): тон снижен, без 4 продающих секций.
-function stateB(badCode){ // badCode=true: пришли с битым/неопознанным инвайтом — объясняем, а не молчим (п.10 4fde418b)
+function stateB(badCode){
  document.getElementById('back').style.display='none';
  document.getElementById('wrap').innerHTML=(badCode?'<div class="panel"><div class="ps" style="margin:0">Ссылка-приглашение не распознана или истекла. Попросите новую у того, кто вас пригласил.</div></div>':'')+'<div class="hero"><div class="brand">Честно о поведении</div>'+
   '<div class="hsub" style="margin-top:14px">База о том, как люди принимают решения — и как проектировать для них. У каждой идеи помечено, насколько она подтверждена.</div></div>'+
@@ -156,121 +223,84 @@ function stateB(badCode){ // badCode=true: пришли с битым/неопо
   '<button class="link" id="toLogin" style="margin-top:4px">Уже есть аккаунт? Войти</button></div>';
  document.getElementById('toLogin').onclick=login;
 }
-// Вошли, но whitelist пуст — сессия есть, доступа к books нет.
-function stateNomember(email){
- document.getElementById('back').style.display='none';
- document.getElementById('wrap').innerHTML='<div class="hero"><div class="brand">Честно о поведении</div><h1 class="httl">Нет доступа</h1>'+
-  '<div class="hsub">Вы вошли как <strong>'+esc(email||'аккаунт')+'</strong>, но этот email ещё не в списке участников. Нужно действующее приглашение — попросите новую ссылку у того, кто вас звал, или напишите автору: <a class="wcta" href="https://t.me/artavdeev" target="_blank" rel="noopener">tg @artavdeev</a>.</div></div>'+
-  '<div class="panel"><button class="btn ghost" id="doOut" style="width:100%">Выйти и войти другим аккаунтом</button></div>';
- document.getElementById('doOut').onclick=function(){ if(window.__SB) window.__SB.auth.signOut().then(function(){ location.href='access.html'; }); else location.href='access.html'; };
-}
 
 function login(){
  document.getElementById('back').style.display='';
- var oidc='https://wsnqmjzmtjpezkzlzhra.supabase.co/auth/v1/authorize?provider=custom:authelia&redirect_to='+encodeURIComponent(location.origin+'/path.html');
- document.getElementById('wrap').innerHTML='<div class="panel"><h2>Вход</h2><div class="ps">Тот же вход, что на ar1adna.com.</div>'+
-  '<a class="btn pri" id="doOidc" style="width:100%;margin:8px 0 16px;text-decoration:none" href="'+oidc+'">Войти через ar1adna</a>'+
-  '<div class="ps">Или почта, если аккаунт уже заведён в книге.</div>'+
-  '<div class="fld"><label for="email">Email</label><input id="email" type="email" autocomplete="email" placeholder="you@example.com"></div>'+
-  '<div class="fld"><label for="pass">Пароль</label><input id="pass" type="password" autocomplete="current-password" placeholder="••••••••"></div>'+
+ document.getElementById('wrap').innerHTML='<div class="panel"><h2>Вход</h2><div class="ps">Тот же вход, что на ar1adna.com. Членство книги — по приглашению, не этим экраном.</div>'+
   '<div class="err" id="err" role="alert"></div>'+
-  '<button class="btn ghost" id="doLogin" style="width:100%;margin-top:6px">Войти по почте</button>'+
-  '<button class="link" id="forgot">Забыли пароль?</button></div>';
+  '<button class="btn pri" id="doOidc" style="width:100%;margin:8px 0 8px">Войти через ar1adna</button>'+
+  mailFields('login')+'</div>';
  document.getElementById('back').onclick=route;
- document.getElementById('doLogin').onclick=function(){ doAuth('login'); };
- document.getElementById('forgot').onclick=function(){ var em=(document.getElementById('email')||{}).value; var e=document.getElementById('err'); if(!em){ e.textContent='Введите email выше — пришлём ссылку для сброса.'; return; } if(!window.__SB){ e.textContent='Нет соединения — попробуйте онлайн.'; return; } window.__SB.auth.resetPasswordForEmail(em).then(function(r){ if(r&&r.error){ e.textContent=ruErr(r.error.message); return; } e.style.color='var(--gold-br)'; e.textContent='Ссылка для сброса отправлена на '+em+'.'; }).catch(function(){ e.textContent='Не удалось отправить. Попробуйте позже.'; }); };
+ document.getElementById('doOidc').onclick=function(){ if(CODE) stashInvite(CODE, ''); startOidc(); };
+ wireMail('login');
+}
+function wireMail(mode, code){
+ var mail=document.getElementById('doMail');
+ if(mail) mail.onclick=function(){ doAuth(mode, code); };
+ var forgot=document.getElementById('forgot');
+ if(forgot) forgot.onclick=function(){
+  var em=(document.getElementById('email')||{}).value; var e=document.getElementById('errMail')||document.getElementById('err');
+  if(!e) return;
+  if(!em){ e.textContent='Введите email выше — пришлём ссылку для сброса.'; return; }
+  if(!window.__SB){ e.textContent='Нет соединения — попробуйте онлайн.'; return; }
+  window.__SB.auth.resetPasswordForEmail(em).then(function(r){ if(r&&r.error){ e.textContent=ruErr(r.error.message); return; } e.style.color='var(--gold-br)'; e.textContent='Ссылка для сброса отправлена на '+em+'.'; }).catch(function(){ e.textContent='Не удалось отправить. Попробуйте позже.'; });
+ };
 }
 
-function afterAuthDone(res,errEl){
- if(!res||!res.ok){
-  if(res&&res.redeemFailed&&errEl) errEl.textContent=ruErr(res.error);
-  else if(res&&res.user) stateNomember(res.user.email);
-  else if(errEl) errEl.textContent=ruErr((res&&res.error)||'Нет доступа к books.');
-  return;
- }
- location.href=res.redirect||'solve-home.html';
-}
 function doAuth(mode,code){
- var err=document.getElementById('err'); if(err) err.textContent='';
+ var err=document.getElementById('errMail')||document.getElementById('err'); if(err) err.textContent='';
  var email=((document.getElementById('email')||{}).value||'').trim();
  var pass=(document.getElementById('pass')||{}).value;
  var name=((document.getElementById('name')||{}).value||'').trim();
- var invite=code||CODE||null;
  if(!email||!pass){ if(err) err.textContent='Введите email и пароль.'; return; }
  if(mode==='join' && !name){ if(err) err.textContent='Укажите имя.'; return; }
  if(!window.__SB){ if(err) err.textContent='Нет соединения с базой — попробуйте онлайн.'; return; }
- var btn=document.getElementById(mode==='join'?'doJoin':'doLogin'); if(btn) btn.disabled=true;
- function done(res){ if(btn) btn.disabled=false; afterAuthDone(res,err); }
- function finish(sess,isSignup){ if(!sess){ if(err) err.textContent='Сессия не установилась — попробуйте ещё раз.'; if(btn) btn.disabled=false; return; }
-  McAuth.finishAuth(window.__SB,sess,{ inviteCode:invite, inviteName:name, isSignup:!!isSignup }).then(done); }
  if(mode==='login'){
-  window.__SB.auth.signInWithPassword({email:email,password:pass}).then(function(r){
-   if(r.error){ if(btn) btn.disabled=false; if(err) err.textContent=ruErr(r.error.message); return; }
-   finish(r.data&&r.data.session,false);
-  }).catch(function(){ if(btn) btn.disabled=false; if(err) err.textContent='Не удалось войти.'; });
-  return;
+  if(CODE) stashInvite(CODE, name||'');
+  window.__SB.auth.signInWithPassword({email:email,password:pass}).then(function(r){ if(r.error){ if(err) err.textContent=ruErr(r.error.message); } else { afterSession(window.__SB, r.data&&r.data.session); } }).catch(function(){ if(err) err.textContent='Не удалось войти.'; });
+ } else {
+  stashInvite(code, name);
+  window.__SB.auth.signUp({email:email,password:pass,options:{data:{name:name}}}).then(function(r){ if(r.error){ if(err) err.textContent=ruErr(r.error.message); return; }
+   if(!(r.data&&r.data.session)){ if(err) err.textContent='Аккаунт создан. Подтвердите почту, затем войдите.'; return; }
+   afterSession(window.__SB, r.data.session);
+  }).catch(function(){ if(err) err.textContent='Не удалось создать аккаунт.'; });
  }
- window.__SB.auth.signUp({email:email,password:pass}).then(function(r){
-  if(r.error){
-   if(/already registered/i.test(r.error.message||'')){
-    return window.__SB.auth.signInWithPassword({email:email,password:pass}).then(function(r2){
-     if(r2.error){ if(btn) btn.disabled=false; if(err) err.textContent=ruErr(r2.error.message); return; }
-     finish(r2.data&&r2.data.session,false);
-    });
-   }
-   if(btn) btn.disabled=false; if(err) err.textContent=ruErr(r.error.message); return;
-  }
-  if(!(r.data&&r.data.session)){
-   if(btn) btn.disabled=false;
-   if(err) err.textContent='Аккаунт создан. Вход требует подтверждения email — напишите администратору.';
-   return;
-  }
-  finish(r.data.session,true);
- }).catch(function(){ if(btn) btn.disabled=false; if(err) err.textContent='Не удалось создать аккаунт.'; });
 }
 
-// маршрут: оптимистично пропускаем гостевой экран, если похоже на сессию (финал — в boot)
-function mcLikelyMember(){ return (window.McAuth&&McAuth.mcLikelySession)?McAuth.mcLikelySession():false; }
-// Ветвление по инвайту (invite_info — async, финализируется в boot после SB).
+function mcLikelySignedIn(){ return (window.McAuth&&McAuth.mcLikelySession)?McAuth.mcLikelySession():false; }
 function branchInvite(SB){ SB.rpc('invite_info',{p_code:CODE}).then(function(r){ var info=(r&&!r.error&&r.data)||null;
   if(info&&info.valid){ stateA(info,CODE); }
   else if(info&&(info.reason==='expired'||info.reason==='redeemed'||info.expired||info.redeemed)){ deadEnd(info); }
-  else { stateB(true); } // notfound/невалид → холодный гость + объяснение (не молча)
+  else { stateB(true); }
  }).catch(function(){ stateB(!!CODE); }); }
 function route(){
- if(!CODE && mcLikelyMember()){ location.replace('solve-home.html'); return; }
- if(CODE){ loadingState(); return; } // финал по invite_info в boot
+ if(CODE){ loadingState(); return; }
+ if(WANT_LOGIN){ login(); return; }
+ if(mcLikelySignedIn()){ loadingState(); return; }
  stateB();
 }
 route();
 
-// живой режим: уже залогинен → в приложение; иначе готовим клиент для форм
 (function boot(){
  function go(){
   try{
    if(!(window.SUPABASE_URL && window.SUPABASE_ANON_KEY && window.supabase && window.supabase.createClient)) return;
    var SB=window.supabase.createClient(String(window.SUPABASE_URL).trim(),String(window.SUPABASE_ANON_KEY).trim()); window.__SB=SB;
    SB.auth.getSession().then(function(s){ var sess=s&&s.data&&s.data.session;
-     if(sess){
-      McAuth.finishAuth(SB,sess,{ inviteCode:CODE||null }).then(function(res){
-       if(res&&res.ok){ location.href=res.redirect||'solve-home.html'; return; }
-       if(CODE){ branchInvite(SB); return; }
-       if(res&&res.user) stateNomember(res.user.email); else stateB();
-      });
-      return;
-     }
+     if(sess){ afterSession(SB, sess); return; }
      if(CODE){ branchInvite(SB); }
-   }).catch(function(){ if(CODE) branchInvite(SB); });
+     else if(WANT_LOGIN){ login(); }
+   }).catch(function(){ if(CODE) branchInvite(SB); else if(WANT_LOGIN) login(); });
   }catch(_){}
  }
  function load(src,cb){ var sc=document.createElement('script'); sc.src=src; sc.onload=cb; sc.onerror=cb; document.head.appendChild(sc); }
  function loadCfg(done){ var ps=['./config.js','../config.js','/book-reader/config.js']; var i=0; (function nx(){ if(window.SUPABASE_URL||i>=ps.length) return done(); var sc=document.createElement('script'); sc.src=ps[i++]; sc.onload=function(){ setTimeout(function(){ window.SUPABASE_URL?done():nx(); },0); }; sc.onerror=nx; document.head.appendChild(sc); })(); }
- // входная дверь нового юзера: config/vendor не догрузились → не вечное «Секунду…», а честная ошибка с ретраем (cold-audit)
  function cfgFail(){ try{ var b=document.getElementById('back'); if(b) b.style.display='none'; }catch(e){}
   document.getElementById('wrap').innerHTML='<div class="mcstate"><div class="ic">⚠</div><div class="msg">Не удалось подключиться. Если не загружается — отключите VPN.</div><button class="retry" onclick="location.reload()">↻ Повторить</button></div>'; }
-  loadCfg(function(){ if(!window.SUPABASE_URL){ if(CODE) cfgFail(); return; }
-   load('vendor/supabase.min.js', function(){ if(!(window.supabase&&window.supabase.createClient)){ if(CODE) cfgFail(); return; } go(); }); });
+  loadCfg(function(){ if(!window.SUPABASE_URL){ if(CODE||WANT_LOGIN) cfgFail(); return; }
+   load('vendor/supabase.min.js', function(){ if(!(window.supabase&&window.supabase.createClient)){ if(CODE||WANT_LOGIN) cfgFail(); return; } go(); }); });
 })();
+</script>
 </script>
 <script>(function(){if(!('serviceWorker' in navigator))return;var reg=null,shown=false;function anim(){var st=document.createElement('style');st.textContent='@keyframes __spin{to{transform:rotate(360deg)}}';document.head.appendChild(st);var o=document.createElement('div');o.id='__updanim';o.style.cssText='position:fixed;inset:0;z-index:100000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:rgba(20,17,12,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;transition:opacity .3s';o.innerHTML='<div style="width:44px;height:44px;border-radius:50%;border:3px solid rgba(255,255,255,.25);border-top-color:#C98A3A;animation:__spin .8s linear infinite"></div><div style="color:#F4EEE2;font:600 15px/1.3 -apple-system,system-ui,sans-serif">Обновляем…</div>';(document.body||document.documentElement).appendChild(o);requestAnimationFrame(function(){o.style.opacity='1';});}function doUpdate(){var bb=document.getElementById('__updbar');if(bb)bb.style.opacity='0';anim();try{if(reg&&reg.waiting)reg.waiting.postMessage({type:'SKIP_WAITING'});}catch(e){}var done=false,fin=function(){if(done)return;done=true;location.reload();};try{navigator.serviceWorker.addEventListener('controllerchange',fin);}catch(e){}setTimeout(fin,1600);}function showUpd(){if(shown)return;shown=true;try{if(sessionStorage.getItem('mc:updshown'))return;sessionStorage.setItem('mc:updshown','1');}catch(e){}var b=document.createElement('div');b.id='__updbar';b.style.cssText='position:fixed;left:50%;transform:translateX(-50%) translateY(8px);bottom:calc(16px + env(safe-area-inset-bottom));z-index:99999;display:flex;align-items:center;gap:12px;background:#17150F;color:#F4EEE2;font:600 14px/1.3 -apple-system,BlinkMacSystemFont,system-ui,sans-serif;padding:10px 12px 10px 16px;border-radius:14px;box-shadow:0 10px 34px rgba(0,0,0,.34);max-width:calc(100vw - 26px);opacity:0;transition:opacity .25s,transform .25s';var s=document.createElement('span');s.textContent='Доступна новая версия';var btn=document.createElement('button');btn.textContent='Обновить';btn.style.cssText='border:0;background:#C98A3A;color:#1A1407;font:inherit;font-weight:700;padding:8px 15px;border-radius:10px;cursor:pointer;flex:none';btn.onclick=doUpdate;b.appendChild(s);b.appendChild(btn);(document.body||document.documentElement).appendChild(b);requestAnimationFrame(function(){b.style.opacity='1';b.style.transform='translateX(-50%) translateY(0)';});}try{navigator.serviceWorker.register('sw.js').then(function(r){reg=r;}).catch(function(){});}catch(e){}try{navigator.serviceWorker.addEventListener('message',function(e){if(e.data&&e.data.type==='NEW_VERSION')showUpd();});}catch(e){}try{navigator.serviceWorker.ready.then(function(r){reg=r;if(r.waiting)showUpd();r.addEventListener('updatefound',function(){var nw=r.installing;if(nw)nw.addEventListener('statechange',function(){if(nw.state==='installed'&&navigator.serviceWorker.controller)showUpd();});});});}catch(e){}})();</script>
 <script>try{document.addEventListener("touchstart",function(){},{passive:true});}catch(e){}</script>
