@@ -1,0 +1,10 @@
+{
+  "name": "book-reader",
+  "private": true,
+  "scripts": {
+    "test": "node tests/access-scheme.test.js && node tests/e2e_access_scheme.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.62.1"
+  }
+}
