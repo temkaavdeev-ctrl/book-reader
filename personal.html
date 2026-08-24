@@ -1,1 +1,519 @@
-@/agent/repos/book-reader/personal.html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Моё — ProductPlace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --bg: #0f0f12;
+      --surface: #1a1a1f;
+      --surface-hover: #222228;
+      --border: #2a2a32;
+      --text: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --accent: #6366f1;
+      --accent-hover: #818cf8;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+    .container { max-width: 960px; margin: 0 auto; padding: 24px 20px 80px; }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .logo { font-size: 1.25rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    nav { display: flex; gap: 8px; flex-wrap: wrap; }
+    nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.15s, background 0.15s;
+    }
+    nav a:hover { color: var(--text); background: var(--surface); }
+    nav a.active { color: var(--accent); background: rgba(99, 102, 241, 0.12); }
+    h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 8px; }
+    .subtitle { color: var(--text-muted); font-size: 0.9375rem; margin-bottom: 28px; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin-bottom: 16px;
+    }
+    .card h2 { font-size: 1rem; font-weight: 600; margin-bottom: 12px; }
+    .card p { color: var(--text-muted); font-size: 0.875rem; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .badge-guest { background: rgba(161, 161, 170, 0.15); color: var(--text-muted); }
+    .badge-signed { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+    .badge-member { background: rgba(34, 197, 94, 0.15); color: var(--success); }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary { background: var(--accent); color: white; }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-secondary {
+      background: var(--surface-hover);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { background: var(--border); }
+    .btn-ghost { background: transparent; color: var(--text-muted); }
+    .btn-ghost:hover { color: var(--text); background: var(--surface); }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+    .hidden { display: none !important; }
+    .loading { text-align: center; padding: 48px 20px; color: var(--text-muted); }
+    .spinner {
+      width: 32px; height: 32px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .grid { display: grid; gap: 12px; }
+    @media (min-width: 640px) { .grid-2 { grid-template-columns: repeat(2, 1fr); } }
+    .stat { text-align: center; padding: 16px; }
+    .stat-value { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+    .stat-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+    .book-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .book-row:last-child { border-bottom: none; }
+    .book-cover {
+      width: 48px; height: 64px;
+      background: var(--surface-hover);
+      border-radius: 6px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+    .book-info { flex: 1; min-width: 0; }
+    .book-title { font-weight: 600; font-size: 0.9375rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .book-meta { font-size: 0.8125rem; color: var(--text-muted); }
+    .progress-bar {
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+    .progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s; }
+    .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
+    .empty-state .icon { font-size: 2.5rem; margin-bottom: 12px; }
+    .auth-form { max-width: 360px; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 0.8125rem; font-weight: 500; margin-bottom: 6px; color: var(--text-muted); }
+    .form-group input {
+      width: 100%;
+      padding: 10px 14px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 0.9375rem;
+      font-family: inherit;
+    }
+    .form-group input:focus { outline: none; border-color: var(--accent); }
+    .error-msg { color: #ef4444; font-size: 0.8125rem; margin-top: 8px; }
+    .success-msg { color: var(--success); font-size: 0.8125rem; margin-top: 8px; }
+    footer {
+      text-align: center;
+      padding: 24px;
+      color: var(--text-muted);
+      font-size: 0.8125rem;
+      border-top: 1px solid var(--border);
+      margin-top: 40px;
+    }
+    .tier-pill {
+      font-size: 0.6875rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: rgba(99, 102, 241, 0.2);
+      color: var(--accent-hover);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <a href="/" class="logo">Product<span>Place</span></a>
+      <nav>
+        <a href="/">Каталог</a>
+        <a href="/personal.html" class="active">Моё</a>
+      </nav>
+    </header>
+
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <p>Загрузка…</p>
+    </div>
+
+    <!-- Guest: no session -->
+    <div id="view-guest" class="hidden">
+      <h1>Моё</h1>
+      <p class="subtitle">Войдите, чтобы видеть прогресс и доступные книги</p>
+      <div class="card auth-form">
+        <h2>Вход</h2>
+        <form id="login-form">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" required autocomplete="email" placeholder="you@example.com">
+          </div>
+          <div class="form-group">
+            <label for="password">Пароль</label>
+            <input type="password" id="password" required autocomplete="current-password">
+          </div>
+          <div id="login-error" class="error-msg hidden"></div>
+          <div class="actions">
+            <button type="submit" class="btn btn-primary">Войти</button>
+            <button type="button" id="btn-show-register" class="btn btn-ghost">Регистрация</button>
+          </div>
+        </form>
+        <form id="register-form" class="hidden">
+          <div class="form-group">
+            <label for="reg-email">Email</label>
+            <input type="email" id="reg-email" required autocomplete="email">
+          </div>
+          <div class="form-group">
+            <label for="reg-password">Пароль</label>
+            <input type="password" id="reg-password" required minlength="6" autocomplete="new-password">
+          </div>
+          <div id="register-error" class="error-msg hidden"></div>
+          <div id="register-success" class="success-msg hidden"></div>
+          <div class="actions">
+            <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+            <button type="button" id="btn-show-login" class="btn btn-ghost">Уже есть аккаунт</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Signed in but not member -->
+    <div id="view-signed-in" class="hidden">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap;">
+        <h1>Моё</h1>
+        <span class="badge badge-signed">Аккаунт без подписки</span>
+      </div>
+      <p class="subtitle" id="signed-email"></p>
+      <div class="card">
+        <h2>Оформите доступ</h2>
+        <p>Вы вошли в аккаунт, но у вас пока нет активной подписки на библиотеку. Оформите доступ, чтобы читать книги и сохранять прогресс.</p>
+        <div class="actions">
+          <a href="/subscribe.html" class="btn btn-primary">Оформить подписку</a>
+          <button type="button" id="btn-signout-signed" class="btn btn-secondary">Выйти</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Member: full access -->
+    <div id="view-member" class="hidden">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap;">
+        <h1>Моё</h1>
+        <span class="badge badge-member">Подписчик</span>
+        <span id="tier-pill" class="tier-pill hidden"></span>
+      </div>
+      <p class="subtitle" id="member-email"></p>
+
+      <div class="grid grid-2" style="margin-bottom:24px;">
+        <div class="card stat">
+          <div class="stat-value" id="stat-books">—</div>
+          <div class="stat-label">Книг в доступе</div>
+        </div>
+        <div class="card stat">
+          <div class="stat-value" id="stat-progress">—</div>
+          <div class="stat-label">В процессе</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Продолжить чтение</h2>
+        <div id="continue-list"></div>
+        <div id="continue-empty" class="empty-state hidden">
+          <div class="icon">📖</div>
+          <p>Вы ещё не начали ни одной книги</p>
+          <div class="actions" style="justify-content:center;margin-top:16px;">
+            <a href="/" class="btn btn-primary">Перейти в каталог</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Мои книги</h2>
+        <div id="library-list"></div>
+        <div id="library-empty" class="empty-state hidden">
+          <div class="icon">📚</div>
+          <p>Нет доступных книг</p>
+        </div>
+      </div>
+
+      <div class="actions" style="margin-top:24px;">
+        <button type="button" id="btn-signout-member" class="btn btn-secondary">Выйти</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>ProductPlace · Библиотека поведенческой экономики</p>
+  </footer>
+
+  <script>
+  (function() {
+    const SB_URL = 'https://wsnqmjzmtjpezkzlzhra.supabase.co';
+    const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndzbnFtanptdGpwZXpremx6aHJhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY5MDI4NzQsImV4cCI6MjA1MjQ3ODg3NH0.8KxvL8vHqJqJqJqJqJqJqJqJqJqJqJqJqJqJqJqJq';
+    const SB = window.supabase.createClient(SB_URL, SB_KEY);
+
+    const $ = (sel) => document.querySelector(sel);
+    const show = (el) => el.classList.remove('hidden');
+    const hide = (el) => el.classList.add('hidden');
+
+    let accessState = null; // { status: 'guest'|'signed_in'|'member', email?, tier?, books? }
+
+    async function resolveAccess() {
+      const { data: { session } } = await SB.auth.getSession();
+      if (!session) {
+        return { status: 'guest' };
+      }
+      const email = session.user?.email || '';
+      const { data, error } = await SB.rpc('my_access');
+      if (error) {
+        console.error('my_access error:', error);
+        return { status: 'signed_in', email };
+      }
+      const row = Array.isArray(data) ? data[0] : data;
+      if (!row || !row.is_member) {
+        return { status: 'signed_in', email };
+      }
+      return {
+        status: 'member',
+        email,
+        tier: row.tier || null,
+        tier_label: row.tier_label || null,
+        expires_at: row.expires_at || null,
+        book_ids: row.book_ids || []
+      };
+    }
+
+    function renderGuest() {
+      hide($('#loading'));
+      hide($('#view-signed-in'));
+      hide($('#view-member'));
+      show($('#view-guest'));
+    }
+
+    function renderSignedIn(email) {
+      hide($('#loading'));
+      hide($('#view-guest'));
+      hide($('#view-member'));
+      show($('#view-signed-in'));
+      $('#signed-email').textContent = email;
+    }
+
+    async function loadMemberData(access) {
+      const bookIds = access.book_ids || [];
+      let books = [];
+      let progress = [];
+
+      if (bookIds.length > 0) {
+        const { data: booksData } = await SB
+          .from('books')
+          .select('id, title, slug, cover_emoji, author')
+          .in('id', bookIds);
+        books = booksData || [];
+
+        const { data: progData } = await SB
+          .from('reading_progress')
+          .select('book_id, percent, updated_at')
+          .in('book_id', bookIds)
+          .order('updated_at', { ascending: false });
+        progress = progData || [];
+      }
+
+      return { books, progress };
+    }
+
+    function bookRowHtml(book, percent) {
+      const pct = percent != null ? Math.round(percent) : 0;
+      const href = book.slug ? `/reader.html?book=${encodeURIComponent(book.slug)}` : '#';
+      return `
+        <div class="book-row">
+          <div class="book-cover">${book.cover_emoji || '📕'}</div>
+          <div class="book-info">
+            <div class="book-title"><a href="${href}" style="color:inherit;text-decoration:none;">${escapeHtml(book.title)}</a></div>
+            <div class="book-meta">${escapeHtml(book.author || '')}</div>
+            ${percent != null ? `<div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>` : ''}
+          </div>
+        </div>`;
+    }
+
+    function escapeHtml(s) {
+      const d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    async function renderMember(access) {
+      hide($('#loading'));
+      hide($('#view-guest'));
+      hide($('#view-signed-in'));
+      show($('#view-member'));
+      $('#member-email').textContent = access.email;
+
+      if (access.tier_label) {
+        const pill = $('#tier-pill');
+        pill.textContent = access.tier_label;
+        show(pill);
+      }
+
+      const { books, progress } = await loadMemberData(access);
+      const progMap = {};
+      progress.forEach(p => { progMap[p.book_id] = p.percent; });
+
+      $('#stat-books').textContent = books.length;
+      const inProgress = progress.filter(p => p.percent > 0 && p.percent < 100).length;
+      $('#stat-progress').textContent = inProgress;
+
+      const continueList = $('#continue-list');
+      const continueEmpty = $('#continue-empty');
+      const recent = progress.filter(p => p.percent > 0).slice(0, 5);
+      if (recent.length === 0) {
+        continueList.innerHTML = '';
+        show(continueEmpty);
+      } else {
+        hide(continueEmpty);
+        const bookMap = {};
+        books.forEach(b => { bookMap[b.id] = b; });
+        continueList.innerHTML = recent
+          .map(p => bookMap[p.book_id] ? bookRowHtml(bookMap[p.book_id], p.percent) : '')
+          .join('');
+      }
+
+      const libraryList = $('#library-list');
+      const libraryEmpty = $('#library-empty');
+      if (books.length === 0) {
+        libraryList.innerHTML = '';
+        show(libraryEmpty);
+      } else {
+        hide(libraryEmpty);
+        libraryList.innerHTML = books.map(b => bookRowHtml(b, progMap[b.id])).join('');
+      }
+    }
+
+    async function boot() {
+      accessState = await resolveAccess();
+      if (accessState.status === 'guest') {
+        renderGuest();
+      } else if (accessState.status === 'signed_in') {
+        renderSignedIn(accessState.email);
+      } else {
+        await renderMember(accessState);
+      }
+    }
+
+    // Auth handlers
+    $('#login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = $('#email').value.trim();
+      const password = $('#password').value;
+      const errEl = $('#login-error');
+      hide(errEl);
+      const { error } = await SB.auth.signInWithPassword({ email, password });
+      if (error) {
+        errEl.textContent = error.message;
+        show(errEl);
+        return;
+      }
+      await boot();
+    });
+
+    $('#register-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = $('#reg-email').value.trim();
+      const password = $('#reg-password').value;
+      const errEl = $('#register-error');
+      const okEl = $('#register-success');
+      hide(errEl); hide(okEl);
+      const { error } = await SB.auth.signUp({ email, password });
+      if (error) {
+        errEl.textContent = error.message;
+        show(errEl);
+        return;
+      }
+      okEl.textContent = 'Проверьте почту для подтверждения';
+      show(okEl);
+    });
+
+    $('#btn-show-register').addEventListener('click', () => {
+      hide($('#login-form'));
+      show($('#register-form'));
+    });
+    $('#btn-show-login').addEventListener('click', () => {
+      hide($('#register-form'));
+      show($('#login-form'));
+    });
+
+    async function signOut() {
+      await SB.auth.signOut();
+      await boot();
+    }
+    $('#btn-signout-signed')?.addEventListener('click', signOut);
+    $('#btn-signout-member')?.addEventListener('click', signOut);
+
+    SB.auth.onAuthStateChange(() => boot());
+    boot();
+  })();
+  </script>
+</body>
+</html>
