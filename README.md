@@ -8,12 +8,18 @@
 
 | Файл | Назначение |
 |------|------------|
+| `landing.html` | публичный рот (фундамент без аккаунта) |
+| `access.html` | одна дверь входа / приглашения (Authelia PKCE) |
+| `personal.html` | Моё: гость / вошёл / член |
 | `index.html` | основное приложение (читалка, комментарии, админ‑панель) |
 | `solve-home.html`, `explore.html`, `quests.html`, … | отдельные экраны |
 | `config.js` | ключи Supabase (`SUPABASE_URL`, `SUPABASE_ANON_KEY`) |
 | `sw.js` | service worker (офлайн‑режим) |
 | `manifest.json` | манифест PWA |
 | `icon-*`, `apple-touch-icon.png` | иконки |
+
+Access scheme (identity ≠ membership, Authelia PKCE, one door): `docs/ACCESS-SCHEME.md`.
+Contract test: `node tests/access-scheme.test.js`.
 
 ## Бэкенд (Supabase)
 
