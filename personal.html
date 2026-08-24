@@ -188,4 +188,51 @@ html[data-theme="dark"] .mcsk{background:linear-gradient(90deg,#1b1710,#241f16,#
 <nav class="nav"><a class="nbrand" href="path.html">Управляя поведением</a><div class="navin">
  <button class="ni" onclick="location.href='path.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="18" r="2.2"/><path d="M8.3 15.7C11 13 13 11 15.7 8.3"/><path d="M17.5 3l1.1 2.4L21 6.5l-2.4 1.1L17.5 10l-1.1-2.4L14 6.5l2.4-1.1z"/></svg><span class="lb">Путь</span></button>
  <button class="ni" onclick="location.href='solve-home.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5A2.5 2.5 0 0 0 6.5 8H20"/></svg><span class="lb">Справочник</span></button>
- <button class="ni" onclick="loc
+ <button class="ni" onclick="location.href='explore.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 1.5L13 16l-1.5-4.5z"/></svg><span class="lb">Карта</span></button>
+ <button class="ni on" onclick="location.href='personal.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span class="lb">Моё</span></button>
+</div></nav>
+
+<script>
+var D={be:"Поведенческая экономика",cog:"Когнитивная психология",soc:"Социальная психология",prod:"Продуктовые практики",mot:"Мотивация/идентичность",ux:"UX / HCI",org:"Орг-системы",neu:"Нейронаука/тело"};
+var DCOLV={be:"--be",cog:"--cog",soc:"--soc",prod:"--prod",mot:"--mot",ux:"--ux",org:"--org",neu:"--neu",def:"--def"};
+var LBLK={"Поведенческая экономика":"be","Когнитивная психология":"cog","Социальная психология":"soc","Продуктовые практики":"prod","Мотивация/идентичность":"mot","UX / HCI":"ux","Организационные системы":"org","Нейронаука/тело":"neu","Лингвистика интерфейса":"def","Эволюция/этология":"def"};
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function plural(n,a,b,c){var m=Math.abs(+n||0)%100,d=m%10;if(m>10&&m<20)return c;if(d>1&&d<5)return b;if(d===1)return a;return c;}
+function cssv(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
+function favGet(){ try{ return JSON.parse(localStorage.getItem('mc:fav')||'[]')||[]; }catch(e){ return []; } }
+// залогин → список из БД (saves_list, все виды); аноним → localStorage (карточки)
+function favItemsHtml(){
+ var l = STATE.member ? (STATE.saves||[]) : favGet();
+ if(!l.length) return '';
+ return '<div class="menu" style="margin-top:18px">'+l.map(function(x){
+  var kind=x.kind||'card';
+  var attr=(kind==='quest')?('data-quest="'+esc(x.slug)+'"'):('data-card="'+esc(x.slug)+'"');
+  return '<div class="mrow" role="button" tabindex="0" '+attr+'><span class="t">'+esc(x.title||x.slug)+'</span><svg class="cv" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>';
+ }).join('')+'</div>';
+}
+function bindCards(){
+ Array.prototype.forEach.call(document.querySelectorAll('[data-card]'),function(el){ el.onclick=function(){ location.href='card.html?slug='+encodeURIComponent(el.getAttribute('data-card')); }; });
+ Array.prototype.forEach.call(document.querySelectorAll('[data-quest]'),function(el){ el.onclick=function(){ location.href='quests.html?quest='+encodeURIComponent(el.getAttribute('data-quest')); }; });
+}
+// merge-on-login: слить localStorage-избранное (карточки) → БД, только отсутствующее, затем очистить локаль
+function mergeFavs(SB, done){
+ var local=favGet(); if(!local.length){ if(done)done(); return; }
+ SB.rpc('saves_list',{p_kind:'card'}).then(function(r){
+  var have={}; ((r&&!r.error&&r.data)||[]).forEach(function(x){ have[x.slug]=1; });
+  var pend=local.filter(function(x){ return x&&x.slug&&!have[x.slug]; });
+  var i=0; (function nx(){ if(i>=pend.length){ try{localStorage.removeItem('mc:fav');}catch(e){} if(done)done(); return; }
+   var it=pend[i++]; SB.rpc('save_toggle',{p_slug:it.slug,p_title:it.title||it.slug,p_kind:'card'}).then(nx,nx); })();
+ },function(){ if(done)done(); });
+}
+
+// session token ≠ membership. Token only hints signed_in; member comes from my_access()/cache.
+function mcLikelySignedIn(){ try{ for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(k&&k.indexOf('sb-')===0&&k.indexOf('-auth-token')>0){ var v=localStorage.getItem(k); if(v&&v.length>20) return true; } } }catch(e){} return false; }
+var STATE={member:false, signed_in:false, name:'', email:'', territory:null, mcpOn:false, saves:null};
+try{ var _ps=localStorage.getItem('personal:state'); if(_ps){ var _pd=JSON.parse(_ps); if(_pd){ STATE.member=!!_pd.member; STATE.signed_in=!!(_pd.signed_in||_pd.member); STATE.email=_pd.email||''; STATE.name=_pd.name||''; STATE.territory=_pd.territory||null; } } }catch(e){}
+if(!STATE.signed_in && mcLikelySignedIn()) STATE.signed_in=true;
+function stateSig(){ return STATE.member+'|'+STATE.signed_in+'|'+STATE.email+'|'+(STATE.territory?(STATE.territory.lit+'/'+STATE.territory.total+'/'+((STATE.territory.by_discipline||[]).length)):'none'); }
+function saveStateCache(){ try{ localStorage.setItem('personal:state', JSON.stringify({member:STATE.member,signed_in:STATE.signed_in,email:STATE.email,name:STATE.name,territory:STATE.territory})); }catch(e){} }
+var qs=new URLSearchParams(location.search); var VIEW=qs.get('view');
+
+function icon(p){ return '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>'; }
+var IC={book:'<path d="M4 5.
