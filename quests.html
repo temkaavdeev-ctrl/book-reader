@@ -1,28 +1,42 @@
 <!doctype html>
 <html lang="ru">
-<head><meta charset="utf-8"><title>Квесты</title></head>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Квесты — Расти</title>
+<style>
+:root{--bg:#FBFAF7;--ink:#17150F;--ink2:#56504A;--meta:#8B847B;--line:#ECE7DD;--gold:#B06A1F;--gold-br:#C98A3A;--solid:#2F7D4F;--mixed:#B8801F;--tw:#C2546A;--pill:999px;--r:20px;--rs:14px;--sh:0 2px 12px rgba(20,17,12,.05)}
+*{box-sizing:border-box}html,body{margin:0}body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:16px;line-height:24px}
+.wrap{max-width:680px;margin:0 auto;min-height:100vh;padding:0 20px calc(80px + env(safe-area-inset-bottom))}
+.feat{margin-top:18px;border-radius:var(--r);padding:24px;background:linear-gradient(150deg,#241E18,#15110C);color:#F4EEE2;cursor:pointer}
+.feat .ti{font-size:24px;font-weight:800;margin:4px 0 8px}
+.rc{display:flex;gap:15px;background:#fff;border:1px solid var(--line);border-radius:var(--rs);padding:16px;margin-top:11px;cursor:pointer}
+.nav{position:fixed;left:0;right:0;bottom:0;background:rgba(251,250,247,.94);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.navin{max-width:720px;margin:0 auto;display:flex}
+.ni{flex:1;min-height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:none;border:0;color:var(--meta);cursor:pointer}
+.ni.on{color:var(--gold)}
+.cold{position:fixed;inset:0;background:#15110C;color:#F4EEE2;display:flex;flex-direction:column;justify-content:center;padding:32px 26px}
+.stopcard{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:22px;margin-top:8px}
+</style>
+</head>
 <body>
-<div id="wrap"></div>
+<div class="wrap" id="wrap"></div>
+<div id="overlay"></div>
+<nav class="nav" id="nav"><div class="navin">
+<button class="ni" onclick="location.href='explore.html'"><span class="lb">Исследовать</span></button>
+<button class="ni" onclick="location.href='solve-home.html'"><span class="lb">Решить</span></button>
+<button class="ni on"><span class="lb">Расти</span></button>
+<button class="ni"><span class="lb">Меню</span></button>
+</div></nav>
+<script src="quests-app.js"></script>
 <script>
-var QUESTS=[{key:"m1",icon:"🧭",rec:true,title:"Основы",promise:"Promise",desc:"Desc",n:1,slugs:["jtbd"]}];
-var QKEY=null,STOP=null;
-function quest(k){return QUESTS.filter(function(q){return q.key===k;})[0];}
-function renderHub(){document.getElementById('wrap').innerHTML='<h1>Квесты</h1>';}
-renderHub();
 function wireLive(SB,member){
- window.__MEMBER=!!member;
- window.__livecard=function(slug,paint){SB.rpc(member?'kb_node_bundle':'kb_public_bundle',{p_slug:slug}).then(function(r){if(r&&!r.error&&r.data){var b=r.data,bs=b.body||b.body_struct||{};paint(b.title||slug,bs['суть']||'',bs['применение']||'');}}).catch(function(){});};
- SB.from('quests').select('key,ord,title,icon,promise,description,slugs,recommended,status').eq('status','active').order('ord').then(function(r){if(r&&!r.error&&r.data&&r.data.length){QUESTS=r.data.map(function(q){return{key:q.key,icon:q.icon||'✦',rec:!!q.recommended,title:q.title,promise:q.promise||'',desc:q.description||'',n:(q.slugs||[]).length,slugs:q.slugs||[]};});renderHub();}}).catch(function(){});
+ window.__MEMBER=!!member;window.__SB=SB;
+ window.__livecard=function(slug,paint){SB.rpc(member?'kb_node_bundle':'kb_public_bundle',{p_slug:slug}).then(function(r){if(r&&!r.error&&r.data){var b=r.data,bs=b.body||b.body_struct||{};paint(b.title||titleOf(slug),bs['суть']||'',bs['применение']||'');}}).catch(function(){});};
+ SB.from('quests').select('key,ord,title,icon,promise,description,slugs,recommended,status').eq('status','active').order('ord').then(function(r){if(r&&!r.error&&r.data&&r.data.length){QUESTS=r.data.map(function(q){return{key:q.key,icon:q.icon||'✦',rec:!!q.recommended,title:q.title,promise:q.promise||'',desc:q.description||'',n:(q.slugs||[]).length,slugs:q.slugs||[]};});if(QKEY&&quest(QKEY)){if(STOP!==null)renderPlayer(quest(QKEY),STOP);else renderDetail(quest(QKEY));}else renderHub();}}).catch(function(){});
 }
 (function boot(){
- function go(){
-  try{
-   if(!(window.SUPABASE_URL&&window.SUPABASE_ANON_KEY&&window.supabase&&window.supabase.createClient))return;
-   var SB=window.supabase.createClient(String(window.SUPABASE_URL).trim(),String(window.SUPABASE_ANON_KEY).trim());
-   window.__SB=SB;
-   McAuth.boot(SB,function(acc){wireLive(SB,acc.member);});
-  }catch(_){}
- }
+ function go(){try{if(!(window.SUPABASE_URL&&window.SUPABASE_ANON_KEY&&window.supabase&&window.supabase.createClient))return;var SB=window.supabase.createClient(String(window.SUPABASE_URL).trim(),String(window.SUPABASE_ANON_KEY).trim());window.__SB=SB;McAuth.boot(SB,function(acc){wireLive(SB,acc.member);});}catch(_){}}
  function load(src,cb){var s=document.createElement('script');s.src=src;s.onload=cb;s.onerror=cb;document.head.appendChild(s);}
  function loadCfg(done){var ps=['../config.js','./config.js','config.js','/book-reader/config.js'];var i=0;(function nx(){if(window.SUPABASE_URL||i>=ps.length)return done();var sc=document.createElement('script');sc.src=ps[i++];sc.onload=function(){setTimeout(function(){window.SUPABASE_URL?done():nx();},0);};sc.onerror=nx;document.head.appendChild(sc);})();}
  loadCfg(function(){load('vendor/supabase.min.js',function(){load('mc-auth.js',go);});});
