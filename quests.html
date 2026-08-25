@@ -1,1 +1,32 @@
-PLACEHOLDER_QUESTS
+<!doctype html>
+<html lang="ru">
+<head><meta charset="utf-8"><title>Квесты</title></head>
+<body>
+<div id="wrap"></div>
+<script>
+var QUESTS=[{key:"m1",icon:"🧭",rec:true,title:"Основы",promise:"Promise",desc:"Desc",n:1,slugs:["jtbd"]}];
+var QKEY=null,STOP=null;
+function quest(k){return QUESTS.filter(function(q){return q.key===k;})[0];}
+function renderHub(){document.getElementById('wrap').innerHTML='<h1>Квесты</h1>';}
+renderHub();
+function wireLive(SB,member){
+ window.__MEMBER=!!member;
+ window.__livecard=function(slug,paint){SB.rpc(member?'kb_node_bundle':'kb_public_bundle',{p_slug:slug}).then(function(r){if(r&&!r.error&&r.data){var b=r.data,bs=b.body||b.body_struct||{};paint(b.title||slug,bs['суть']||'',bs['применение']||'');}}).catch(function(){});};
+ SB.from('quests').select('key,ord,title,icon,promise,description,slugs,recommended,status').eq('status','active').order('ord').then(function(r){if(r&&!r.error&&r.data&&r.data.length){QUESTS=r.data.map(function(q){return{key:q.key,icon:q.icon||'✦',rec:!!q.recommended,title:q.title,promise:q.promise||'',desc:q.description||'',n:(q.slugs||[]).length,slugs:q.slugs||[]};});renderHub();}}).catch(function(){});
+}
+(function boot(){
+ function go(){
+  try{
+   if(!(window.SUPABASE_URL&&window.SUPABASE_ANON_KEY&&window.supabase&&window.supabase.createClient))return;
+   var SB=window.supabase.createClient(String(window.SUPABASE_URL).trim(),String(window.SUPABASE_ANON_KEY).trim());
+   window.__SB=SB;
+   McAuth.boot(SB,function(acc){wireLive(SB,acc.member);});
+  }catch(_){}
+ }
+ function load(src,cb){var s=document.createElement('script');s.src=src;s.onload=cb;s.onerror=cb;document.head.appendChild(s);}
+ function loadCfg(done){var ps=['../config.js','./config.js','config.js','/book-reader/config.js'];var i=0;(function nx(){if(window.SUPABASE_URL||i>=ps.length)return done();var sc=document.createElement('script');sc.src=ps[i++];sc.onload=function(){setTimeout(function(){window.SUPABASE_URL?done():nx();},0);};sc.onerror=nx;document.head.appendChild(sc);})();}
+ loadCfg(function(){load('vendor/supabase.min.js',function(){load('mc-auth.js',go);});});
+})();
+</script>
+</body>
+</html>
