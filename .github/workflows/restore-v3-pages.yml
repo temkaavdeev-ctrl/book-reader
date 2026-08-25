@@ -3,7 +3,6 @@ on:
   workflow_dispatch:
   push:
     branches: [cursor/restore-v3-pages-5da7]
-    paths: [restore-trigger.txt]
 permissions:
   contents: write
 jobs:
@@ -25,7 +24,8 @@ t=p.read_text(encoding='utf-8')
 t=t.replace('   SB.auth.getSession().then(function(s){ window.__MEMBER=!!(s&&s.data&&s.data.session); }).catch(function(){});\n   SB.rpc(\'solve_home\').then(function(r){ if(r&&!r.error&&r.data){ try{ render(r.data); }catch(_){} } }).catch(function(){});','   McAuth.boot(SB, function(acc){\n    window.__MEMBER=!!acc.member;\n    SB.rpc(\'solve_home\').then(function(r){ if(r&&!r.error&&r.data){ try{ render(r.data); }catch(_){} } }).catch(function(){});\n   });')
 t=t.replace('loadCfg(function(){ load(\'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.108.2\', go); });','loadCfg(function(){ load(\'vendor/supabase.min.js\', function(){ load(\'mc-auth.js\', go); }); });')
 p.write_text(t,encoding='utf-8')
-print(len(t), 'McAuth.boot' in t, 'hook-model' in t)
+assert len(t)>10000 and 'McAuth.boot' in t and 'hook-model' in t
+print('solve-home',len(t))
 "
       - name: Fetch and patch quests.html
         run: |
@@ -38,11 +38,12 @@ t=p.read_text(encoding='utf-8')
 wire='function wireLive(SB, member){\n window.__MEMBER=!!member;\n window.__SB=SB;\n window.__livecard=function(slug,paint){SB.rpc(member?\'kb_node_bundle\':\'kb_public_bundle\',{p_slug:slug}).then(function(r){if(r&&!r.error&&r.data){var b=r.data;var bs=b.body||b.body_struct||{};paint(b.title||titleOf(slug),bs[\'суть\']||\'\',bs[\'применение\']||\'\');}}).catch(function(){});};\n SB.from(\'quests\').select(\'key,ord,title,icon,promise,description,slugs,recommended,status\').eq(\'status\',\'active\').order(\'ord\').then(function(r){if(r&&!r.error&&r.data&&r.data.length){QUESTS=r.data.map(function(q){return{key:q.key,icon:q.icon||\'✦\',rec:!!q.recommended,title:q.title,promise:q.promise||\'\',desc:q.description||\'\',n:(q.slugs||[]).length,slugs:q.slugs||[]};});if(QKEY&&quest(QKEY)){if(STOP!==null)renderPlayer(quest(QKEY),STOP);else renderDetail(quest(QKEY));}else renderHub();}}).catch(function(){});\n if(QKEY&&quest(QKEY)&&STOP!==null&&STOP>0){var qq=quest(QKEY);if(STOP<=qq.slugs.length){var sl=qq.slugs[STOP-1];if(!SEEDCARD[sl]&&!isTwist(sl)){setTimeout(function(){if(window.__livecard&&document.getElementById(\'stopwrap\')){window.__livecard(sl,function(t,l,a){var sw=document.getElementById(\'stopwrap\');if(sw&&sw.style.display!==\'none\'){renderPlayer(qq,STOP);}});}},50);}}}\n}\n(function boot(){\n function go(){\n  try{\n   if(!(window.SUPABASE_URL&&window.SUPABASE_ANON_KEY&&window.supabase&&window.supabase.createClient))return;\n   var SB=window.supabase.createClient(String(window.SUPABASE_URL).trim(),String(window.SUPABASE_ANON_KEY).trim());\n   window.__SB=SB;\n   McAuth.boot(SB,function(acc){wireLive(SB,acc.member);});\n  }catch(_){}\n }\n function load(src,cb){var s=document.createElement(\'script\');s.src=src;s.onload=cb;s.onerror=cb;document.head.appendChild(s);}\n function loadCfg(done){var ps=[\'../config.js\',\'./config.js\',\'config.js\',\'/book-reader/config.js\'];var i=0;(function nx(){if(window.SUPABASE_URL||i>=ps.length)return done();var sc=document.createElement(\'script\');sc.src=ps[i++];sc.onload=function(){setTimeout(function(){window.SUPABASE_URL?done():nx();},0);};sc.onerror=nx;document.head.appendChild(sc);})();}\n loadCfg(function(){load(\'vendor/supabase.min.js\',function(){load(\'mc-auth.js\',go);});});\n})();\n'
 t=re.sub(r'// живой режим: квесты из БД \+ карточки остановок\n\(function boot\(\)\{[\s\S]*?\}\)\(\);\n','// живой режим: квесты из БД + карточки остановок\n'+wire+'\n',t,count=1)
 p.write_text(t,encoding='utf-8')
-print(len(t), 'McAuth.boot' in t, 'm1-osnovy' in t)
+assert len(t)>10000 and 'McAuth.boot' in t and 'm1-osnovy' in t
+print('quests',len(t))
 "
       - name: Commit restored files
         run: |
-          rm -f restore-trigger.txt RESTORE_TEST.txt PATCH_MARKER.txt
+          rm -f restore-trigger.txt RESTORE_TEST.txt PATCH_MARKER.txt solve-home-body.js
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add solve-home.html quests.html
