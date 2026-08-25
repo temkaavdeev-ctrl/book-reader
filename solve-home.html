@@ -1,1 +1,51 @@
-<!doctype html><html><head><title>test</title></head><body><div class="hero">hero</div><script>var SEED={hero:{slug:"hook-model"}};McAuth.boot;vendor/supabase.min.js;mc-auth.js;function render(){}</script></body></html>
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Матчасть — Решить (боевой)</title>
+<style>
+:root{
+ --bg:#FBFAF7; --ink:#17150F; --ink2:#56504A; --meta:#8B847B; --line:#ECE7DD; --card:#fff;
+ --gold:#B06A1F; --gold-br:#C98A3A; --on:#fff;
+ --solid:#2F7D4F; --mixed:#B8801F; --contested:#C2452F; --info:#6B5CA5; --tension:#C2546A;
+ --econ:#C98A3A; --cog:#CDA92F; --ux:#C2546A; --soc:#6B5CA5; --org:#2F8E8E; --mot:#B0452F; --prod:#3E8E8E; --neu:#8A5CC2; --evo:#4E9A6B; --def:#8B847B;
+ --r:20px; --rs:14px; --pill:999px;
+ --sh:0 2px 12px rgba(20,17,12,.05),0 1px 2px rgba(20,17,12,.04);
+ --shh:0 18px 46px rgba(20,17,12,.24);
+ --nav:64px;
+}
+*{box-sizing:border-box} html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;font-size:16px;line-height:24px;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+.app{max-width:720px;margin:0 auto;min-height:100vh;padding:0 20px calc(var(--nav) + env(safe-area-inset-bottom) + 16px)}
+.top{padding:20px 0 4px}
+.kick{font-size:13px;font-weight:600;color:var(--gold);letter-spacing:.02em}
+.h1{font-size:34px;line-height:39px;font-weight:800;letter-spacing:-.025em;margin:3px 0 5px}
+.subt{font-size:15px;line-height:21px;color:var(--ink2)}
+.hero{position:relative;overflow:hidden;border-radius:var(--r);padding:22px;cursor:pointer;background:linear-gradient(152deg,#241E18,#15110C);color:#F4EEE2;box-shadow:var(--shh)}
+.loading{padding:40px 0;text-align:center;color:var(--meta);font-size:14px}
+</style>
+</head>
+<body>
+<div class="app" id="app"><div class="loading">Загружаю…</div></div>
+<script src="solve-home-body.js"></script>
+<script>
+(function boot(){
+ function go(){
+  try{
+   if(!(window.SUPABASE_URL && window.SUPABASE_ANON_KEY && window.supabase && window.supabase.createClient)) return;
+   var SB=window.supabase.createClient(String(window.SUPABASE_URL).trim(), String(window.SUPABASE_ANON_KEY).trim());
+   window.__SB=SB;
+   McAuth.boot(SB, function(acc){
+    window.__MEMBER=!!acc.member;
+    SB.rpc('solve_home').then(function(r){ if(r&&!r.error&&r.data){ try{ render(r.data); }catch(_){} } }).catch(function(){});
+   });
+  }catch(_){}
+ }
+ function load(src,cb){ var s=document.createElement('script'); s.src=src; s.onload=cb; s.onerror=cb; document.head.appendChild(s); }
+ function loadCfg(done){ var ps=['../config.js','./config.js','config.js','/book-reader/config.js']; var i=0; (function nx(){ if(window.SUPABASE_URL||i>=ps.length) return done(); var sc=document.createElement('script'); sc.src=ps[i++]; sc.onload=function(){ setTimeout(function(){ window.SUPABASE_URL?done():nx(); },0); }; sc.onerror=nx; document.head.appendChild(sc); })(); }
+ loadCfg(function(){ load('vendor/supabase.min.js', function(){ load('mc-auth.js', go); }); });
+})();
+</script>
+</body>
+</html>
