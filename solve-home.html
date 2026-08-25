@@ -5,47 +5,49 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Матчасть — Решить (боевой)</title>
 <style>
-:root{
- --bg:#FBFAF7; --ink:#17150F; --ink2:#56504A; --meta:#8B847B; --line:#ECE7DD; --card:#fff;
- --gold:#B06A1F; --gold-br:#C98A3A; --on:#fff;
- --solid:#2F7D4F; --mixed:#B8801F; --contested:#C2452F; --info:#6B5CA5; --tension:#C2546A;
- --econ:#C98A3A; --cog:#CDA92F; --ux:#C2546A; --soc:#6B5CA5; --org:#2F8E8E; --mot:#B0452F; --prod:#3E8E8E; --neu:#8A5CC2; --evo:#4E9A6B; --def:#8B847B;
- --r:20px; --rs:14px; --pill:999px;
- --sh:0 2px 12px rgba(20,17,12,.05),0 1px 2px rgba(20,17,12,.04);
- --shh:0 18px 46px rgba(20,17,12,.24);
- --nav:64px;
-}
-*{box-sizing:border-box} html,body{margin:0}
-body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;font-size:16px;line-height:24px;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+:root{--bg:#FBFAF7;--ink:#17150F;--ink2:#56504A;--meta:#8B847B;--line:#ECE7DD;--gold:#B06A1F;--gold-br:#C98A3A;--solid:#2F7D4F;--mixed:#B8801F;--contested:#C2452F;--info:#6B5CA5;--tension:#C2546A;--econ:#C98A3A;--org:#2F8E8E;--r:20px;--rs:14px;--pill:999px;--sh:0 2px 12px rgba(20,17,12,.05);--shh:0 18px 46px rgba(20,17,12,.24);--nav:64px}
+*{box-sizing:border-box}html,body{margin:0}body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:16px;line-height:24px}
 .app{max-width:720px;margin:0 auto;min-height:100vh;padding:0 20px calc(var(--nav) + env(safe-area-inset-bottom) + 16px)}
-.top{padding:20px 0 4px}
-.kick{font-size:13px;font-weight:600;color:var(--gold);letter-spacing:.02em}
-.h1{font-size:34px;line-height:39px;font-weight:800;letter-spacing:-.025em;margin:3px 0 5px}
-.subt{font-size:15px;line-height:21px;color:var(--ink2)}
+.top{padding:20px 0 4px}.kick{font-size:13px;font-weight:600;color:var(--gold)}.h1{font-size:34px;font-weight:800;margin:3px 0 5px}.subt{font-size:15px;color:var(--ink2)}
 .hero{position:relative;overflow:hidden;border-radius:var(--r);padding:22px;cursor:pointer;background:linear-gradient(152deg,#241E18,#15110C);color:#F4EEE2;box-shadow:var(--shh)}
-.loading{padding:40px 0;text-align:center;color:var(--meta);font-size:14px}
+.hk{font-size:13px;font-weight:700;color:var(--gold-br);text-transform:uppercase}.ht{font-size:24px;font-weight:800;margin:9px 0 8px}.hb{font-size:15px;color:#D8D0C3}.hf{margin-top:16px}.tag{font-size:12px;font-weight:700;padding:5px 11px;border-radius:var(--pill);background:rgba(194,69,47,.18);color:#F0A593}.hgo{font-size:14px;font-weight:700;color:var(--gold-br)}
+.feat{display:grid;gap:14px}.fc{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--sh);cursor:pointer}.fcn{font-size:13px;font-weight:700;color:var(--gold)}.fct{font-size:21px;font-weight:700;margin:4px 0 6px}.fcd{font-size:15px;color:var(--ink2)}
+.chip{display:inline-flex;gap:7px;margin-top:14px;font-size:13px;font-weight:600;padding:5px 11px;border:1px solid var(--line);border-radius:var(--pill)}.chip.solid .d{background:var(--solid)}.chip.mixed .d{background:var(--mixed)}.chip .d{width:8px;height:8px;border-radius:50%}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:14px}.tl{background:#fff;border:1px solid var(--line);border-left:4px solid var(--econ);border-radius:var(--r);padding:18px;cursor:pointer}.tln{font-size:17px;font-weight:700}.tlc{font-size:13px;color:var(--meta)}
+.finds{display:grid;gap:14px}.fd{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px;cursor:pointer}.fdt{font-size:17px;font-weight:700}.fdd{font-size:14px;color:var(--ink2)}
+.nav{position:fixed;left:0;right:0;bottom:0;background:rgba(251,250,247,.94);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}.navin{max-width:720px;margin:0 auto;display:flex}.ni{flex:1;min-height:var(--nav);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:none;border:0;color:var(--meta);cursor:pointer}.ni.on{color:var(--gold)}
+.scrim{position:fixed;inset:0;background:rgba(14,11,8,.45);opacity:0;pointer-events:none}.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;max-width:720px;margin:0 auto;max-height:93vh;overflow:auto;background:var(--bg);border-radius:22px 22px 0 0;transform:translateY(101%);transition:transform .28s}.sheet.on{transform:translateY(0)}
+.cb{padding:18px 22px 60px}.ct{font-size:30px;font-weight:800;margin:6px 0 12px}.clead{font-size:17px;line-height:26px}.cap{margin-top:20px;background:#fff;border:1px solid var(--line);border-radius:var(--rs);padding:16px}.honest{margin-top:16px;background:#211C16;color:#EFE6D7;border-radius:var(--rs);padding:16px}
+.loading{padding:40px 0;text-align:center;color:var(--meta)}
 </style>
 </head>
 <body>
 <div class="app" id="app"><div class="loading">Загружаю…</div></div>
-<script src="solve-home-body.js"></script>
+<nav class="nav"><div class="navin">
+<button class="ni"><span class="lb">Исследовать</span></button>
+<button class="ni on"><span class="lb">Решить</span></button>
+<button class="ni"><span class="lb">Расти</span></button>
+<button class="ni"><span class="lb">Меню</span></button>
+</div></nav>
+<div class="scrim" id="scrim" onclick="closeCard()"></div>
+<div class="sheet" id="sheet"><div class="cb" id="cb"></div></div>
 <script>
-(function boot(){
- function go(){
-  try{
-   if(!(window.SUPABASE_URL && window.SUPABASE_ANON_KEY && window.supabase && window.supabase.createClient)) return;
-   var SB=window.supabase.createClient(String(window.SUPABASE_URL).trim(), String(window.SUPABASE_ANON_KEY).trim());
-   window.__SB=SB;
-   McAuth.boot(SB, function(acc){
-    window.__MEMBER=!!acc.member;
-    SB.rpc('solve_home').then(function(r){ if(r&&!r.error&&r.data){ try{ render(r.data); }catch(_){} } }).catch(function(){});
-   });
-  }catch(_){}
- }
- function load(src,cb){ var s=document.createElement('script'); s.src=src; s.onload=cb; s.onerror=cb; document.head.appendChild(s); }
- function loadCfg(done){ var ps=['../config.js','./config.js','config.js','/book-reader/config.js']; var i=0; (function nx(){ if(window.SUPABASE_URL||i>=ps.length) return done(); var sc=document.createElement('script'); sc.src=ps[i++]; sc.onload=function(){ setTimeout(function(){ window.SUPABASE_URL?done():nx(); },0); }; sc.onerror=nx; document.head.appendChild(sc); })(); }
- loadCfg(function(){ load('vendor/supabase.min.js', function(){ load('mc-auth.js', go); }); });
-})();
+var SEED={territory:null,all28:17,hero:{slug:"hook-model",title:"Модель крючка (Hook Model, Eyal)",rob:"mixed",teaser:"Знаменитый рецепт удержания: проведи пользователя по петле — получишь лояльного. Но тот же механизм строит и вредную зависимость. Разбираем, где граница.",card:{lead:"Привычка к продукту формируется петлёй из четырёх стадий: триггер → действие → ПЕРЕМЕННОЕ вознаграждение → вложение.",apply:"Картируйте 4 стадии: какой ВНУТРЕННИЙ триггер закрываете, как упростить действие, где уместна переменная награда, что пользователь вкладывает.",mech:"Внутренний триггер запускает простейшее действие ради непредсказуемой награды, затем вложение повышает ценность возврата.",counter:"Тот же механизм строит и вредную зависимость. Вопрос не «как зацепить», а «служит ли петля пользователю или эксплуатирует его»."}},featured:[{slug:"cognitive-load-theory",title:"Теория когнитивной нагрузки",rob:"solid",byline:"Рабочая память — бутылочное горлышко мышления: ~4 чанка.",card:{lead:"Рабочая память вмещает ~4 независимых чанка — архитектурное ограничение мозга.",apply:"Близость связанных элементов; прогрессивное раскрытие; чанкинг; пошаговый онбординг.",mech:"Нагрузка складывается из внутренней, посторонней и релевантной.",ex:"Checkout с промокодом между адресом и картой снижает конверсию."}},{slug:"loss-aversion",title:"Неприятие потерь",rob:"mixed",byline:"Потери психологически тяжелее равных выигрышей.",card:{lead:"Потери переживаются острее равных по величине выигрышей.",apply:"Триал формирует норму владения; зачёркнутая цена = сохранённые деньги.",mech:"Функция ценности в зоне потерь круче, чем в зоне выигрышей.",ex:"Эксперимент с кружками (Kahneman et al. 1990)."}}],situations:[{slug:"scenario-recovery",title:"Восстановление после сбоя",teaser:"Продукт подвёл — как вернуть доверие.",forces:0,tools:0,stage:null}],themes:[{discipline:"Поведенческая экономика",cnt:25,samples:["Неприятие потерь","Смещение к настоящему","Якорение"]},{discipline:"Социальная психология",cnt:10,samples:["Социальное доказательство","Социальная идентичность"]},{discipline:"UX / HCI",cnt:7,samples:["Когнитивная нагрузка","Сетевые эффекты"]},{discipline:"Продуктовые практики",cnt:5,samples:["JTBD","Метрика Полярной звезды"]},{discipline:"Мотивация/идентичность",cnt:4,samples:["Петля привычки","Модель Фогга"]},{discipline:"Когнитивная психология",cnt:4,samples:["Система 1 и 2","Когнитивная нагрузка"]}],findings:[{type:"gap",title:"Где «видно, как пользуются другие» перестаёт помогать",teaser:"Граница теории диффузии.",conf:12},{type:"bridge",title:"«Обоснование усилий» — частный случай диссонанса?",teaser:"Гипотеза о скрытом общем корне.",conf:10}]};
+var DCOL={"Поведенческая экономика":"--econ","Когнитивная психология":"--cog","UX / HCI":"--ux","Социальная психология":"--soc","Мотивация/идентичность":"--mot","Продуктовые практики":"--prod"};
+var ROB={solid:{c:"solid",t:"Подтверждено"},mixed:{c:"mixed",t:"Неоднозначно"},contested:{c:"contested",t:"Спорно"}};
+var FTYPE={gap:"Граница",bridge:"Мост",contradiction:"Спор"};
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function robInfo(r){return ROB[r]||{c:"mixed",t:"Неоднозначно"};}
+var CUR=SEED;
+function render(d){CUR=d;var H='<div class="top"><div class="kick">База знаний</div><div class="h1">Матчасть</div><div class="subt">Как люди принимают решения — и как это применить в продукте</div></div>';if(d.hero){var hr=robInfo(d.hero.rob);H+='<section style="margin-top:22px"><div class="hero" data-k="hero"><div class="hk">Честный разбор</div><div class="ht">'+esc(d.hero.title)+'</div><div class="hb">'+esc(d.hero.teaser)+'</div><div class="hf"><span class="tag'+(d.hero.rob==="mixed"?" mix":"")+'">'+esc(hr.t)+'</span><span class="hgo">Открыть разбор →</span></div></div></section>';}if(d.featured&&d.featured.length){H+='<section><div class="sh"><div class="st">С чего начать</div></div><div class="feat">';d.featured.forEach(function(f,i){var r=robInfo(f.rob);H+='<div class="fc" data-k="f'+i+'"><div class="fcn">0'+(i+1)+'</div><div class="fct">'+esc(f.title)+'</div><div class="fcd">'+esc(f.byline)+'</div><span class="chip '+r.c+'"><span class="d"></span>'+esc(r.t)+'</span></div>';});H+='</div></section>';}if(d.themes&&d.themes.length){H+='<section><div class="st">Области знания</div><div class="tiles">';d.themes.forEach(function(t,i){H+='<div class="tl" data-k="t'+i+'"><div class="tln">'+esc(t.discipline)+'</div><div class="tlc">'+t.cnt+' идей</div><div>'+(t.samples||[]).map(esc).join(' · ')+'</div></div>';});H+='</div></section>';}if(d.findings&&d.findings.length){H+='<section><div class="st">Ещё не доказано</div><div class="finds">';d.findings.forEach(function(f,i){H+='<div class="fd" data-k="fd'+i+'"><div class="fdt">'+esc(f.title)+'</div><div class="fdd">'+esc(f.teaser)+'</div></div>';});H+='</div></section>';}document.getElementById('app').innerHTML=H;}
+function cardHtml(title,rob,c){var r=robInfo(rob);var h='<div class="ct">'+esc(title)+'</div><div class="chip '+r.c+'"><span class="d"></span>'+esc(r.t)+'</div>';if(c.lead)h+='<div class="clead">'+esc(c.lead)+'</div>';if(c.apply)h+='<div class="cap"><div class="lb">Как применить</div><div class="bd">'+esc(c.apply)+'</div></div>';if(c.counter)h+='<div class="honest"><div class="lb">А как на самом деле</div><div class="bd">'+esc(c.counter)+'</div></div>';return h;}
+function openSeedCard(title,rob,c){document.getElementById('cb').innerHTML=cardHtml(title,rob,c);document.getElementById('scrim').classList.add('on');document.getElementById('sheet').classList.add('on');}
+function closeCard(){document.getElementById('scrim').classList.remove('on');document.getElementById('sheet').classList.remove('on');}
+document.addEventListener('click',function(e){var el=e.target.closest('[data-k]');if(!el)return;var k=el.getAttribute('data-k');if(k==='hero'&&CUR.hero){openSeedCard(CUR.hero.title,CUR.hero.rob,CUR.hero.card);return;}if(k[0]==='f'&&k[1]!=='d'){var fi=+k.slice(1);var f=CUR.featured&&CUR.featured[fi];if(f)openSeedCard(f.title,f.rob,f.card);return;}});
+function liveCard(slugOrTitle){if(!window.__SB){openSeedCard(slugOrTitle,'mixed',{lead:'Полная карточка подгружается из базы при наличии сети.'});return;}var guest=!window.__MEMBER;window.__SB.rpc(guest?'kb_public_bundle':'kb_node_bundle',{p_slug:slugOrTitle}).then(function(r){var b=r&&r.data;if(!b){openSeedCard(slugOrTitle,'mixed',{lead:'Карточка не найдена.'});return;}var bs=b.body_struct||b;openSeedCard(b.title||slugOrTitle,b.robustness||'mixed',{lead:bs['суть'],apply:bs['применение'],mech:bs['механизм'],ex:bs['пример'],counter:bs['как-на-самом-деле']});}).catch(function(){});}
+render(SEED);
+(function boot(){function go(){try{if(!(window.SUPABASE_URL&&window.SUPABASE_ANON_KEY&&window.supabase&&window.supabase.createClient))return;var SB=window.supabase.createClient(String(window.SUPABASE_URL).trim(),String(window.SUPABASE_ANON_KEY).trim());window.__SB=SB;McAuth.boot(SB,function(acc){window.__MEMBER=!!acc.member;SB.rpc('solve_home').then(function(r){if(r&&!r.error&&r.data){try{render(r.data);}catch(_){}}}).catch(function(){});});}catch(_){}}function load(src,cb){var s=document.createElement('script');s.src=src;s.onload=cb;s.onerror=cb;document.head.appendChild(s);}function loadCfg(done){var ps=['../config.js','./config.js','config.js','/book-reader/config.js'];var i=0;(function nx(){if(window.SUPABASE_URL||i>=ps.length)return done();var sc=document.createElement('script');sc.src=ps[i++];sc.onload=function(){setTimeout(function(){window.SUPABASE_URL?done():nx();},0);};sc.onerror=nx;document.head.appendChild(sc);})();}loadCfg(function(){load('vendor/supabase.min.js',function(){load('mc-auth.js',go);});});})();
 </script>
 </body>
 </html>
