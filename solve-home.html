@@ -1,1 +1,15 @@
-PLACEHOLDER_SOLVE
+<!doctype html>
+<html lang="ru">
+<head><meta charset="utf-8"><title>test</title></head>
+<body><script>
+(function boot(){
+ function go(){
+  var SB=window.supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);
+  window.__SB=SB;
+  McAuth.boot(SB,function(acc){window.__MEMBER=!!acc.member;SB.rpc('solve_home').then(function(r){});});
+ }
+ function load(src,cb){var s=document.createElement('script');s.src=src;s.onload=cb;document.head.appendChild(s);}
+ function loadCfg(done){done();}
+ loadCfg(function(){load('vendor/supabase.min.js',function(){load('mc-auth.js',go);});});
+})();
+</script></body></html>
