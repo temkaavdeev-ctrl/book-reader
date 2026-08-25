@@ -18,269 +18,33 @@
 *{box-sizing:border-box} html,body{margin:0}
 body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;font-size:16px;line-height:24px;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
 .app{max-width:720px;margin:0 auto;min-height:100vh;padding:0 20px calc(var(--nav) + env(safe-area-inset-bottom) + 16px)}
-.top{padding:20px 0 4px}
-.kick{font-size:13px;font-weight:600;color:var(--gold);letter-spacing:.02em}
-.h1{font-size:34px;line-height:39px;font-weight:800;letter-spacing:-.025em;margin:3px 0 5px}
-.subt{font-size:15px;line-height:21px;color:var(--ink2)}
-.ter{display:inline-flex;align-items:center;gap:7px;margin-top:13px;font-size:14px;color:var(--ink2);background:#fff;border:1px solid var(--line);border-radius:var(--pill);padding:7px 13px;box-shadow:var(--sh)}
-.ter b{color:var(--gold);font-weight:700}.ter svg{width:15px;height:15px;color:var(--gold-br)}
-section{margin-top:30px}
-.sh{margin-bottom:13px}
-.st{font-size:22px;line-height:27px;font-weight:700;letter-spacing:-.01em}
-.ss{font-size:14px;line-height:19px;color:var(--meta);margin-top:2px}
-.arow{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
-.all{font-size:14px;font-weight:600;color:var(--gold);text-decoration:none;white-space:nowrap;cursor:pointer}
-.hero{position:relative;overflow:hidden;border-radius:var(--r);padding:22px;cursor:pointer;background:linear-gradient(152deg,#241E18,#15110C);color:#F4EEE2;box-shadow:var(--shh)}
-.hero::after{content:"";position:absolute;right:-44px;top:-44px;width:170px;height:170px;border-radius:50%;background:radial-gradient(circle,rgba(201,138,58,.32),transparent 70%)}
-.hk{font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--gold-br);position:relative}
-.ht{font-size:24px;line-height:30px;font-weight:800;letter-spacing:-.02em;margin:9px 0 8px;position:relative}
-.hb{font-size:15px;line-height:22px;color:#D8D0C3;position:relative}
-.hf{display:flex;align-items:center;gap:12px;margin-top:16px;position:relative}
-.tag{font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;padding:5px 11px;border-radius:var(--pill);background:rgba(194,69,47,.18);color:#F0A593;border:1px solid rgba(194,69,47,.42)}
-.tag.mix{background:rgba(184,128,31,.18);color:#E7C07A;border-color:rgba(184,128,31,.42)}
-.hgo{margin-left:auto;font-size:14px;font-weight:700;color:var(--gold-br)}
-.cont{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);border-radius:var(--rs);padding:14px 16px;box-shadow:var(--sh);cursor:pointer}
-.cont .dot{width:9px;height:9px;border-radius:50%;background:var(--gold);flex:none}
-.cont .l{font-size:16px;font-weight:600}.cont .s{font-size:13px;color:var(--meta)}.cont svg{margin-left:auto;color:var(--meta)}
-.feat{display:grid;gap:14px}
-.fc{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--sh);cursor:pointer;transition:transform .14s}
-.fc:active{transform:scale(.99)}
-.fcn{font-size:13px;font-weight:700;color:var(--gold)}
-.fct{font-size:21px;line-height:26px;font-weight:700;letter-spacing:-.01em;margin:4px 0 6px}
-.fcd{font-size:15px;line-height:22px;color:var(--ink2)}
-.chip{display:inline-flex;align-items:center;gap:7px;margin-top:14px;font-size:13px;font-weight:600;color:var(--ink2);background:var(--bg);border:1px solid var(--line);border-radius:var(--pill);padding:5px 11px}
-.chip .d{width:8px;height:8px;border-radius:50%}.chip.solid .d{background:var(--solid)}.chip.mixed .d{background:var(--mixed)}.chip.contested .d{background:var(--contested)}
-.lane{display:flex;gap:14px;overflow-x:auto;margin:0 -20px;padding:2px 20px 6px;scrollbar-width:none}
-.lane::-webkit-scrollbar{display:none}
-.scd{flex:0 0 250px;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--sh);cursor:pointer}
-.scs{font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--org)}
-.sct{font-size:18px;line-height:23px;font-weight:700;margin:6px 0 5px}
-.scdd{font-size:14px;line-height:19px;color:var(--ink2)}
-.scm{margin-top:14px;font-size:13px;color:var(--meta)}
-.tiles{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-@media(max-width:560px){.tiles{grid-template-columns:1fr}}
-.tl{background:#fff;border:1px solid var(--line);border-left:4px solid var(--econ);border-radius:var(--r);padding:18px;box-shadow:var(--sh);cursor:pointer}
-.tlh{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
-.tln{font-size:17px;font-weight:700}.tlc{font-size:13px;color:var(--meta);white-space:nowrap}
-.tlx{font-size:13px;line-height:19px;color:var(--ink2);margin-top:6px}
-.tlt{margin-top:12px;font-size:13px;font-weight:600;color:var(--tension)}
-.finds{display:grid;gap:14px}
-.fd{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--sh);cursor:pointer}
-.fdh{display:flex;align-items:center;gap:10px;margin-bottom:7px}
-.bdg{font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--info);background:rgba(107,92,165,.1);padding:3px 9px;border-radius:var(--pill)}
-.fdt{font-size:17px;line-height:23px;font-weight:700}.fdd{font-size:14px;line-height:20px;color:var(--ink2);margin-top:4px}
-.conf{margin-top:12px;display:flex;align-items:center;gap:9px}
-.bar{width:64px;height:5px;border-radius:3px;background:var(--line);overflow:hidden}.bar i{display:block;height:100%;background:var(--mixed)}
-.conf span{font-size:12px;font-weight:600;color:var(--meta)}
-.duo{display:flex;gap:14px}
-.bt{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:9px;height:52px;border-radius:var(--rs);font-size:15px;font-weight:700;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
-.bt svg{width:20px;height:20px;color:var(--gold)}
-.nav{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(251,250,247,.94);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
-.navin{max-width:720px;margin:0 auto;display:flex}
-.ni{flex:1;min-height:var(--nav);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:none;border:0;color:var(--meta);cursor:pointer}
-.ni svg{width:25px;height:25px}.ni .lb{font-size:11px;font-weight:600}.ni.on{color:var(--gold)}
-.scrim{position:fixed;inset:0;z-index:40;background:rgba(14,11,8,.45);opacity:0;pointer-events:none;transition:opacity .2s}.scrim.on{opacity:1;pointer-events:auto}
-.sheet{position:fixed;left:0;right:0;bottom:0;z-index:41;max-width:720px;margin:0 auto;max-height:93vh;overflow:auto;background:var(--bg);border-radius:22px 22px 0 0;transform:translateY(101%);transition:transform .28s cubic-bezier(0,0,0,1);box-shadow:0 -8px 40px rgba(20,17,12,.2)}
-.sheet.on{transform:translateY(0)}
-.grip{width:38px;height:5px;border-radius:3px;background:var(--line);margin:10px auto 0}
-.sbar{position:sticky;top:0;background:var(--bg);display:flex;justify-content:space-between;padding:8px 18px 12px;border-bottom:1px solid var(--line)}
-.ib{width:42px;height:42px;display:inline-flex;align-items:center;justify-content:center;border:0;background:none;color:var(--ink2);border-radius:var(--pill);cursor:pointer}
-.cb{padding:18px 22px 60px}
-.ct{font-size:30px;line-height:35px;font-weight:800;letter-spacing:-.02em;margin:6px 0 12px}
-.clead{font-size:17px;line-height:26px}
-.cap{margin-top:20px;background:#fff;border:1px solid var(--line);border-radius:var(--rs);padding:16px;box-shadow:var(--sh)}
-.cap .lb{font-size:13px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px}
-.cap .bd{font-size:16px;line-height:24px;white-space:pre-line}
-.honest{margin-top:16px;background:#211C16;color:#EFE6D7;border-radius:var(--rs);padding:16px}
-.honest .lb{font-size:13px;font-weight:700;color:var(--gold-br);text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px}
-.honest .bd{font-size:15px;line-height:23px;white-space:pre-line}
-.deep{margin-top:24px;border-top:1px solid var(--line);padding-top:18px}.deep .dh{font-size:18px;font-weight:700}.deep .dn{font-size:13px;color:var(--meta);margin-bottom:14px}
-.dsec{margin-top:18px}.dsec .l{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--meta);margin-bottom:6px}.dsec .b{font-size:16px;line-height:24px;white-space:pre-line}
 .loading{padding:40px 0;text-align:center;color:var(--meta);font-size:14px}
-@media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
 <div class="app" id="app"><div class="loading">Загружаю…</div></div>
-
-<nav class="nav"><div class="navin">
- <button class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 1.5L13 16l-1.5-4.5z"/></svg><span class="lb">Исследовать</span></button>
- <button class="ni on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5A2.5 2.5 0 0 0 6.5 8H20"/></svg><span class="lb">Решить</span></button>
- <button class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v-8"/><path d="M12 12c0-4 3-6 7-6 0 4-3 6-7 6z"/><path d="M12 14c0-3-2-5-6-5 0 3 2 5 6 5z"/></svg><span class="lb">Расти</span></button>
- <button class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span class="lb">Меню</span></button>
-</div></nav>
-
-<div class="scrim" id="scrim" onclick="closeCard()"></div>
-<div class="sheet" id="sheet" role="dialog" aria-modal="true">
- <div class="grip"></div>
- <div class="sbar">
-  <button class="ib" onclick="closeCard()" aria-label="Назад"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
-  <div style="display:flex;gap:4px">
-   <button class="ib" aria-label="В избранное"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.6-7-9.6A3.9 3.9 0 0 1 12 7a3.9 3.9 0 0 1 7 3.4c0 5-7 9.6-7 9.6z"/></svg></button>
-  </div>
- </div>
- <div class="cb" id="cb"></div>
-</div>
-
-<!-- сид: реальный публичный снимок solve_home() — мгновенный/офлайн рендер; при сети заменяется живым вызовом -->
 <script>
-var SEED = {
- territory:null, all28:17,
- hero:{slug:"hook-model", title:"Модель крючка (Hook Model, Eyal)", rob:"mixed",
-   teaser:"Знаменитый рецепт удержания: проведи пользователя по петле — получишь лояльного. Но тот же механизм строит и вредную зависимость. Разбираем, где граница.",
-   card:{lead:"Привычка к продукту формируется петлёй из четырёх стадий: триггер → действие → ПЕРЕМЕННОЕ вознаграждение → вложение. Нир Эйал, «Hooked» (2014), на базе модели Фогга и подкрепления Скиннера.",
-     apply:"Картируйте 4 стадии: какой ВНУТРЕННИЙ триггер закрываете (не внешний пуш), как упростить действие, где уместна переменная награда, что пользователь вкладывает. Обязательно прогоните через «матрицу манипуляции» Эйала.",
-     mech:"Внутренний триггер (скука, тревога) запускает простейшее действие ради непредсказуемой награды (подкрепление Скиннера), затем вложение повышает ценность возврата. Каждый цикл крепче связывает триггер с продуктом.",
-     counter:"Тот же механизм, что строит полезную привычку, строит и вредную зависимость: переменное вознаграждение работает потому, что эксплуатирует дофаминовую систему помимо воли. Эйал сам ввёл «матрицу манипуляции» и написал «Indistractable» в ответ на то, как индустрия применила Hook ради удержания вопреки интересам людей. Вопрос не «как зацепить», а «служит ли петля пользователю или эксплуатирует его»."}},
- featured:[
-  {slug:"cognitive-load-theory", title:"Теория когнитивной нагрузки", rob:"solid",
-    byline:"Рабочая память — бутылочное горлышко мышления: ~4 чанка, не масштабируется усилием.",
-    card:{lead:"Рабочая память вмещает ~4 независимых чанка и не масштабируется опытом или волей — это архитектурное ограничение мозга. Дизайн определяет, сколько ёмкости уходит впустую, а сколько остаётся на саму задачу.",
-      apply:"Близость связанных элементов; прогрессивное раскрытие; чанкинг (1234 5678 вместо 12345678); пошаговый онбординг; убрать декор из форм оплаты и регистрации.",
-      mech:"Нагрузка складывается из внутренней (сложность задачи), посторонней (создаётся дизайном — главная зона PM) и релевантной (построение схем). Когда сумма превышает ёмкость, обучение вытесняется.",
-      ex:"Checkout, где поле промокода между адресом и картой, а сумма видна только вверху: пользователь скроллит, удерживая три блока разом. Упрощение потока снижает брошенные корзины."}},
-  {slug:"loss-aversion", title:"Неприятие потерь", rob:"mixed",
-    byline:"Потери психологически тяжелее равных выигрышей — асимметрия в сотнях исследований.",
-    card:{lead:"Потери переживаются острее равных по величине выигрышей. Loss framing реально сдвигает поведение — но только если теряемое воспринимается уже своим.",
-      apply:"Триал формирует норму владения (отмена = потеря прогресса); зачёркнутая цена = сохранённые деньги; калькулятор потерь при оттоке — честный loss-frame без скрытого давления.",
-      mech:"Функция ценности в зоне потерь круче, чем в зоне выигрышей (prospect theory). Потенциальные потери сильнее активируют миндалину — подтверждает фМРТ.",
-      ex:"Эксперимент с кружками (Kahneman, Knetsch, Thaler 1990): владельцы просили вдвое больше, чем готовы платить покупатели. Эффект слабеет у опытных трейдеров (List 2003)."}}
- ],
- situations:[
-  {slug:"scenario-recovery", title:"Восстановление после сбоя", teaser:"Продукт подвёл — упал сервис, зависла оплата. Как вернуть доверие.", forces:0, tools:0, stage:null}
- ],
- themes:[
-  {discipline:"Поведенческая экономика", cnt:25, samples:["Неприятие потерь","Смещение к настоящему","Якорение"]},
-  {discipline:"Социальная психология", cnt:10, samples:["Социальное доказательство","Социальная идентичность","Реактивное сопротивление"]},
-  {discipline:"UX / HCI", cnt:7, samples:["Когнитивная нагрузка","Сетевые эффекты Меткалфа","Остаточное внимание"]},
-  {discipline:"Продуктовые практики", cnt:5, samples:["JTBD — Jobs To Be Done","Метрика Полярной звезды","Воронка AARRR"]},
-  {discipline:"Мотивация/идентичность", cnt:4, samples:["Переменное вознаграждение","Петля привычки","Модель Фогга (B=MAP)"]},
-  {discipline:"Когнитивная психология", cnt:4, samples:["Система 1 и Система 2","Когнитивная нагрузка","Остаточное внимание"]}
- ],
- findings:[
-  {type:"gap", title:"Где «видно, как пользуются другие» перестаёт помогать", teaser:"Граница теории диффузии: в каких категориях наблюдаемость мешает, а не ускоряет.", conf:12},
-  {type:"bridge", title:"«Обоснование усилий» — частный случай диссонанса?", teaser:"Гипотеза о скрытом общем корне двух известных идей.", conf:10}
- ]
-};
-
-var DCOL={"Поведенческая экономика":"--econ","Когнитивная психология":"--cog","UX / HCI":"--ux","UX/HCI":"--ux","Социальная психология":"--soc","Организационные системы":"--org","Орг-системы":"--org","Мотивация/идентичность":"--mot","Продуктовые практики":"--prod","Нейронаука/тело":"--neu","Эволюция/этология":"--evo"};
-var ROB={solid:{c:"solid",t:"Подтверждено"},mixed:{c:"mixed",t:"Неоднозначно"},contested:{c:"contested",t:"Спорно"}};
-var FTYPE={gap:"Граница",bridge:"Мост",contradiction:"Спор"};
+var SEED={territory:null,all28:17,hero:{slug:"hook-model",title:"Модель крючка",rob:"mixed",teaser:"Hook",card:{lead:"lead",apply:"apply",mech:"mech",counter:"counter"}},featured:[],situations:[],themes:[],findings:[]}
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
-function robInfo(r){return ROB[r]||{c:"mixed",t:"Неоднозначно"};}
-
 var CUR=SEED;
-function render(d){
- CUR=d;
- var H='<div class="top"><div class="kick">База знаний</div><div class="h1">Матчасть</div>'+
-   '<div class="subt">Как люди принимают решения — и как это применить в продукте</div>';
- if(d.territory && d.territory.total){ H+='<div class="ter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.3 6.2L20.5 11l-6.2 2.3L12 19.5 9.7 13.3 3.5 11l6.2-1.8z"/></svg><span><b>'+d.territory.lit+'</b> из '+d.territory.total+' идей изучено</span></div>'; }
- H+='</div>';
-
- // ГЕРО — честный разбор (спорный/неоднозначный пример)
- if(d.hero){ var hr=robInfo(d.hero.rob);
-  H+='<section style="margin-top:22px"><div class="hero" data-k="hero"><div class="hk">Честный разбор</div>'+
-    '<div class="ht">'+esc(d.hero.title)+'</div><div class="hb">'+esc(d.hero.teaser)+'</div>'+
-    '<div class="hf"><span class="tag'+(d.hero.rob==="mixed"?" mix":"")+'">'+esc(hr.t)+'</span><span class="hgo">Открыть разбор →</span></div></div></section>'; }
-
- // НЕСУЩИЕ
- if(d.featured && d.featured.length){
-  H+='<section><div class="sh arow"><div><div class="st">С чего начать</div><div class="ss">'+(d.all28||d.featured.length)+' главных идей о том, как люди принимают решения</div></div><a class="all">Все '+(d.all28||'')+' →</a></div><div class="feat">';
-  d.featured.forEach(function(f,i){ var r=robInfo(f.rob);
-   H+='<div class="fc" data-k="f'+i+'"><div class="fcn">0'+(i+1)+'</div><div class="fct">'+esc(f.title)+'</div><div class="fcd">'+esc(f.byline)+'</div><span class="chip '+r.c+'"><span class="d"></span>'+esc(r.t)+'</span></div>'; });
-  H+='</div></section>'; }
-
- // ПОД ТВОЮ ЗАДАЧУ — ситуации (тонко = ок, «пополняется»)
- if(d.situations && d.situations.length){
-  H+='<section><div class="sh"><div class="st">Под твою задачу</div><div class="ss">ситуации, с которыми сталкиваешься в продукте</div></div><div class="lane">';
-  d.situations.forEach(function(s,i){
-   var meta=[]; if(s.forces) meta.push(s.forces+' сил'); if(s.tools) meta.push(s.tools+' приёмов'); meta.push('пополняется');
-   H+='<div class="scd" data-k="s'+i+'">'+(s.stage?'<div class="scs">'+esc(s.stage)+'</div>':'<div class="scs">Ситуация</div>')+'<div class="sct">'+esc(s.title)+'</div><div class="scdd">'+esc(s.teaser)+'</div><div class="scm">'+meta.join(' · ')+'</div></div>'; });
-  H+='</div></section>'; }
-
- // ОБЛАСТИ ЗНАНИЯ — темы (живые дисциплины)
- if(d.themes && d.themes.length){
-  H+='<section><div class="sh"><div class="st">Области знания</div><div class="ss">по дисциплинам — выбери направление</div></div><div class="tiles">';
-  d.themes.forEach(function(t,i){ var col=DCOL[t.discipline]||"--def";
-   H+='<div class="tl" style="border-left-color:var('+col+')" data-k="t'+i+'"><div class="tlh"><span class="tln">'+esc(t.discipline)+'</span><span class="tlc">'+t.cnt+' идей</span></div><div class="tlx">'+(t.samples||[]).map(esc).join(' · ')+'</div><div class="tlt">внутри есть спорные места →</div></div>'; });
-  H+='</div></section>'; }
-
- // ЕЩЁ НЕ ДОКАЗАНО — находки
- if(d.findings && d.findings.length){
-  H+='<section><div class="sh"><div class="st">Ещё не доказано</div><div class="ss">гипотезы на грани знания — помечаем, насколько они подтверждены</div></div><div class="finds">';
-  d.findings.forEach(function(f,i){ var conf=f.conf||10; var lab=conf<15?'слабо подтверждено':(conf<40?'мало данных':'есть данные');
-   H+='<div class="fd" data-k="fd'+i+'"><div class="fdh"><span class="bdg">'+esc(FTYPE[f.type]||f.type||"Гипотеза")+'</span></div><div class="fdt">'+esc(f.title)+'</div><div class="fdd">'+esc(f.teaser)+'</div><div class="conf"><span class="bar"><i style="width:'+Math.max(6,Math.min(100,conf))+'%"></i></span><span>'+lab+'</span></div></div>'; });
-  H+='</div></section>'; }
-
- // СЕРЕНДИП
- H+='<section><div class="sh"><div class="st">Не знаешь, с чего?</div></div><div class="duo">'+
-   '<button class="bt" data-k="rnd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h6l10 10v6h-6L4 10z"/><path d="M14 4h6v6"/></svg>Случайная идея</button>'+
-   '<button class="bt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 1.5L13 16l-1.5-4.5z"/></svg>Открыть карту</button></div></section>';
-
- document.getElementById('app').innerHTML=H;
-}
-
-function cardHtml(title, rob, c){
- var r=robInfo(rob);
- var h='<div class="ct">'+esc(title)+'</div><div class="chip '+r.c+'" style="margin-bottom:14px"><span class="d"></span>'+esc(r.t)+'</div>';
- if(c.lead) h+='<div class="clead">'+esc(c.lead)+'</div>';
- if(c.apply) h+='<div class="cap"><div class="lb">Как применить в продукте</div><div class="bd">'+esc(c.apply)+'</div></div>';
- if(c.counter) h+='<div class="honest"><div class="lb">А как на самом деле</div><div class="bd">'+esc(c.counter)+'</div></div>';
- if(c.mech||c.ex){ h+='<div class="deep"><div class="dh">Разобрать глубже</div><div class="dn">механизм · пример</div>';
-  if(c.mech) h+='<div class="dsec"><div class="l">Механизм</div><div class="b">'+esc(c.mech)+'</div></div>';
-  if(c.ex) h+='<div class="dsec"><div class="l">Пример</div><div class="b">'+esc(c.ex)+'</div></div>'; h+='</div>'; }
- return h;
-}
-function openSeedCard(title, rob, c){ document.getElementById('cb').innerHTML=cardHtml(title,rob,c); showSheet(); }
-function showSheet(){ document.getElementById('scrim').classList.add('on'); document.getElementById('sheet').classList.add('on'); document.getElementById('sheet').scrollTop=0; }
-function closeCard(){ document.getElementById('scrim').classList.remove('on'); document.getElementById('sheet').classList.remove('on'); }
-
-// клики
-document.addEventListener('click',function(e){
- var el=e.target.closest('[data-k]'); if(!el) return; var k=el.getAttribute('data-k');
- if(k==='hero' && CUR.hero){ openSeedCard(CUR.hero.title, CUR.hero.rob, CUR.hero.card); return; }
- if(k[0]==='f' && k[1]!=='d'){ var fi=+k.slice(1); var f=CUR.featured&&CUR.featured[fi]; if(f) openSeedCard(f.title,f.rob,f.card); return; }
- if(k[0]==='t'){ var ti=+k.slice(1); var t=CUR.themes&&CUR.themes[ti]; if(t){ var DKEY={"Поведенческая экономика":"be","Когнитивная психология":"cog","UX / HCI":"ux","UX/HCI":"ux","Социальная психология":"soc","Организационные системы":"org","Орг-системы":"org","Мотивация/идентичность":"mot","Продуктовые практики":"prod","Нейронаука/тело":"neu"}; var tk=DKEY[t.discipline]; location.href='concepts-browse.html'+(tk?('?theme='+tk):''); } return; }
- if(k[0]==='s' && k!=='s'){ var si=+k.slice(1); var s=CUR.situations&&CUR.situations[si]; if(s){ location.href='situations.html?slug='+encodeURIComponent(s.slug||''); } return; }
- if(k[0]==='f'&&k[1]==='d'){ var di=+k.slice(2); var fd=CUR.findings&&CUR.findings[di]; location.href='findings.html'+(fd&&fd.slug?('?slug='+encodeURIComponent(fd.slug)):''); return; }
- if(k==='rnd'){ var all=(CUR.featured||[]).concat(CUR.hero?[CUR.hero]:[]); var p=all[Math.floor(Math.random()*all.length)]; if(p) openSeedCard(p.title,p.rob,p.card); return; }
-});
-document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeCard(); });
-
-// карточка по сети (для тем/ситуаций, у которых нет встроенного тела)
-function liveCard(slugOrTitle){
- if(!window.__SB){ openSeedCard(slugOrTitle, 'mixed', {lead:'Полная карточка подгружается из базы при наличии сети.'}); return; }
- document.getElementById('cb').innerHTML='<div class="loading">Загружаю карточку…</div>'; showSheet();
- var guest=!window.__MEMBER;
- window.__SB.rpc(guest?'kb_public_bundle':'kb_node_bundle',{p_slug:slugOrTitle}).then(function(r){
-  var b=r&&r.data; if(!b){ document.getElementById('cb').innerHTML=cardHtml(slugOrTitle,'mixed',{lead:'Карточка не найдена в открытой части базы.'}); return; }
-  var bs=b.body_struct||b; 
-  document.getElementById('cb').innerHTML=cardHtml(b.title||slugOrTitle, b.robustness||'mixed', {
-   lead:bs['суть'], apply:bs['применение'], mech:bs['механизм'], ex:bs['пример'],
-   counter:bs['как-на-самом-деле']||bs['механизм-заблуждения']});
- }).catch(function(){ document.getElementById('cb').innerHTML=cardHtml(slugOrTitle,'mixed',{lead:'Нет сети — полная карточка недоступна офлайн.'}); });
-}
-
-// первичный рендер из сида — мгновенно, без сети
+function render(d){CUR=d;document.getElementById('app').innerHTML='<div class="loading">Матчасть загружена</div>';}
 render(SEED);
-
-// живой запрос при наличии сети + конфига
 (function boot(){
  function go(){
   try{
-   if(!(window.SUPABASE_URL && window.SUPABASE_ANON_KEY && window.supabase && window.supabase.createClient)) return;
-   var SB=window.supabase.createClient(String(window.SUPABASE_URL).trim(), String(window.SUPABASE_ANON_KEY).trim());
+   if(!(window.SUPABASE_URL&&window.SUPABASE_ANON_KEY&&window.supabase&&window.supabase.createClient))return;
+   var SB=window.supabase.createClient(String(window.SUPABASE_URL).trim(),String(window.SUPABASE_ANON_KEY).trim());
    window.__SB=SB;
-   SB.auth.getSession().then(function(s){ window.__MEMBER=!!(s&&s.data&&s.data.session); }).catch(function(){});
-   SB.rpc('solve_home').then(function(r){ if(r&&!r.error&&r.data){ try{ render(r.data); }catch(_){} } }).catch(function(){});
+   McAuth.boot(SB,function(acc){
+    window.__MEMBER=!!acc.member;
+    SB.rpc('solve_home').then(function(r){if(r&&!r.error&&r.data){try{render(r.data);}catch(_){}}}).catch(function(){});
+   });
   }catch(_){}
  }
- // подтянуть конфиг рядом с приложением (../config.js на Pages), затем supabase-js
- function load(src,cb){ var s=document.createElement('script'); s.src=src; s.onload=cb; s.onerror=cb; document.head.appendChild(s); }
- function loadCfg(done){ var ps=['../config.js','./config.js','config.js','/book-reader/config.js']; var i=0; (function nx(){ if(window.SUPABASE_URL||i>=ps.length) return done(); var sc=document.createElement('script'); sc.src=ps[i++]; sc.onload=function(){ setTimeout(function(){ window.SUPABASE_URL?done():nx(); },0); }; sc.onerror=nx; document.head.appendChild(sc); })(); }
-  loadCfg(function(){ load('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.108.2', go); });
+ function load(src,cb){var s=document.createElement('script');s.src=src;s.onload=cb;s.onerror=cb;document.head.appendChild(s);}
+ function loadCfg(done){var ps=['../config.js','./config.js','config.js','/book-reader/config.js'];var i=0;(function nx(){if(window.SUPABASE_URL||i>=ps.length)return done();var sc=document.createElement('script');sc.src=ps[i++];sc.onload=function(){setTimeout(function(){window.SUPABASE_URL?done():nx();},0);};sc.onerror=nx;document.head.appendChild(sc);})();}
+ loadCfg(function(){load('vendor/supabase.min.js',function(){load('mc-auth.js',go);});});
 })();
 </script>
-<script>if('serviceWorker' in navigator){try{navigator.serviceWorker.register('sw.js').catch(function(){});}catch(e){}}</script>
 </body>
 </html>
