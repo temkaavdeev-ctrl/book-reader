@@ -3,6 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [cursor/restore-v3-pages-5da7]
+    paths: [restore-trigger.txt, RUN_RESTORE.txt]
 permissions:
   contents: write
 jobs:
@@ -43,7 +44,7 @@ print('quests',len(t))
 "
       - name: Commit restored files
         run: |
-          rm -f restore-trigger.txt RESTORE_TEST.txt PATCH_MARKER.txt solve-home-body.js
+          rm -f restore-trigger.txt RESTORE_TEST.txt PATCH_MARKER.txt RUN_RESTORE.txt solve-home-body.js
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add solve-home.html quests.html
