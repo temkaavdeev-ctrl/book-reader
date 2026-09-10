@@ -4616,7 +4616,7 @@ body.guest-only #tabbar{ display:none !important; }
       document.getElementById('authGate').style.display='none'; updateAuthUI(); return;
     }
     if(authInFlight===USER.id) return;                    // загрузка уже идёт
-    isAdmin = (USER.email||'').toLowerCase()===ADMIN;
+    isAdmin = isAdminEmail(USER.email);
     try{ if(!(typeof window!=='undefined'&&window.__HARNESS)){ var _onAdmin=/index-admin\.html/.test(location.pathname); if(isAdmin && !_onAdmin){ location.replace('index-admin.html'+(location.hash||'')); return; } if(!isAdmin && _onAdmin){ location.replace('index.html'+(location.hash||'')); return; } } }catch(_e){}
     document.getElementById('btnAdmin').style.display = isAdmin? '':'none';
     isMember = isAdmin || await checkMember();
@@ -10479,7 +10479,7 @@ body.guest-only #tabbar{ display:none !important; }
       jn.className='wl-joined'+(has?' yes':''); jn.textContent=has?'зашёл':'ждёт'; jn.title=has?'создал аккаунт':'ещё не заходил';
       var del=document.createElement('a'); del.textContent='удалить'; del.className='wl-del';
       del.onclick=function(){
-        if((w.email||'').toLowerCase()===ADMIN){ toast('Админа удалять нельзя'); return; }
+        if(isAdminEmail(w.email)){ toast('Админа удалять нельзя'); return; }
         armDelete(del, async function(){ var d=await SB.from('whitelist').delete().eq('email', w.email); if(d.error) toast('Ошибка: '+d.error.message); else refreshWhitelist(); });
       };
       row.appendChild(em); row.appendChild(sel); row.appendChild(jn); row.appendChild(del); box.appendChild(row);
@@ -10650,6 +10650,7 @@ body.guest-only #tabbar{ display:none !important; }
 //#ADMIN-END
 
   // ---------- data ----------
+  function isAdminEmail(e){ return ['temka.avdeev@gmail.com','artem@ar1adna.com'].indexOf(String(e||'').toLowerCase())>=0; }
   var ADMIN = 'temka.avdeev@gmail.com';
   var BOOK = [], BYID = {}, DIAGS = {};
   var isAdmin = false, isMember = false;

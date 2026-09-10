@@ -126,7 +126,7 @@ var ROBT={solid:"Подтверждено",mixed:"Неоднозначно",cont
 function cssv(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
 function hash(s){var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return ((h>>>0)%100000)/100000;}
 
-var W=1000,H=1000, VISITED={}, MEMBER=false, TOTAL=517;
+var W=1000,H=1000, VISITED={}, MEMBER=false, ADMIN=false, TOTAL=517;
 var NODES=[], EDGES=[], POS={};
 
 // ===== route-on-sky (путь квеста на небе) =====
@@ -168,7 +168,8 @@ function draw(){
  if(RS){ var pts=ROUTE.slugs.map(function(s){return POS[s];}).filter(Boolean);
   for(var ri=0;ri<pts.length-1;ri++){ var pl=document.createElementNS(ns,'line'); pl.setAttribute('x1',pts[ri][0]);pl.setAttribute('y1',pts[ri][1]);pl.setAttribute('x2',pts[ri+1][0]);pl.setAttribute('y2',pts[ri+1][1]); pl.setAttribute('stroke',cssv('--gold-br')); pl.setAttribute('stroke-width','2.4'); pl.setAttribute('stroke-opacity','0.85'); pl.setAttribute('stroke-linecap','round'); pl.setAttribute('stroke-dasharray','1 7'); frag.appendChild(pl); } }
  // узлы
- NODES.forEach(function(n,i){ var p=POS[n.s]; if(!p) return; var lit=MEMBER?!!VISITED[n.s]:false;
+ NODES.forEach(function(n,i){ var p=POS[n.s]; if(!p) return; var opened=MEMBER?!!VISITED[n.s]:false;
+  var fog=MEMBER && !ADMIN && !opened;
   var col=cssv(DCOLVAR[n.d]||'--def'); var r=nodeR(n.g);
   var g=document.createElementNS(ns,'g'); g.setAttribute('class','node-hit'); g.setAttribute('data-slug',n.s); g.style.opacity='0';
   g.style.animation='none'; setTimeout((function(gg){return function(){gg.style.transition='opacity .5s';gg.style.opacity='1';};})(g),Math.min(900,i*8));
@@ -180,10 +181,10 @@ function draw(){
    } else { var cd=document.createElementNS(ns,'circle'); cd.setAttribute('cx',p[0]);cd.setAttribute('cy',p[1]);cd.setAttribute('r',r); cd.setAttribute('fill',col); cd.setAttribute('opacity','0.14'); g.appendChild(cd); }
    frag.appendChild(g); return;
   }
-  if(lit){ var hl=document.createElementNS(ns,'circle'); hl.setAttribute('cx',p[0]);hl.setAttribute('cy',p[1]);hl.setAttribute('r',r+7);hl.setAttribute('fill',cssv('--gold'));hl.setAttribute('opacity','0.18'); g.appendChild(hl); }
+  if(opened){ var hl=document.createElementNS(ns,'circle'); hl.setAttribute('cx',p[0]);hl.setAttribute('cy',p[1]);hl.setAttribute('r',r+7);hl.setAttribute('fill',cssv('--gold'));hl.setAttribute('opacity','0.18'); g.appendChild(hl); }
   var c=document.createElementNS(ns,'circle'); c.setAttribute('cx',p[0]);c.setAttribute('cy',p[1]);c.setAttribute('r',r);
-  if(MEMBER && !lit){ c.setAttribute('fill','#2A241C'); c.setAttribute('stroke',col); c.setAttribute('stroke-opacity','0.5'); c.setAttribute('stroke-width','1.4'); c.setAttribute('opacity','0.5'); }
-  else { c.setAttribute('fill',col); c.setAttribute('opacity', lit?1:(n.r==='solid'?0.92:(n.r==='inbox'?0.5:0.74))); if(lit){c.setAttribute('stroke',cssv('--gold-br'));c.setAttribute('stroke-width','1.5');} }
+  if(fog){ c.setAttribute('fill','#2A241C'); c.setAttribute('stroke',col); c.setAttribute('stroke-opacity','0.5'); c.setAttribute('stroke-width','1.4'); c.setAttribute('opacity','0.5'); }
+  else { c.setAttribute('fill',col); c.setAttribute('opacity', opened?1:(n.r==='solid'?0.92:(n.r==='inbox'?0.5:0.74))); if(opened){c.setAttribute('stroke',cssv('--gold-br'));c.setAttribute('stroke-width','1.5');} }
   g.appendChild(c);
   // подпись только для крупных (несущие), чтобы не было каши
   if(LBL[n.s]){ var t=document.createElementNS(ns,'text'); t.setAttribute('x',p[0]);t.setAttribute('y',p[1]+r+13);t.setAttribute('class','lbl');t.textContent=n.t.length>22?n.t.slice(0,21)+'…':n.t; g.appendChild(t); }
@@ -204,14 +205,14 @@ function updateTerr(){
  var lit=Object.keys(VISITED).filter(function(s){return VISITED[s];}).length;
  var el=document.getElementById('terr');
  if(ROUTE){ document.getElementById('terrTxt').innerHTML='✕&nbsp; Маршрут: '+ROUTE.title; el.style.cursor='pointer'; el.onclick=exitRoute; }
- else { document.getElementById('terrTxt').innerHTML = MEMBER ? ('зажёг <b>'+lit+'</b> из '+TOTAL) : (TOTAL+' идей · '+Object.keys(groupDisc()).length+' областей'); el.onclick=null; el.style.cursor=''; }
+ else { document.getElementById('terrTxt').innerHTML = (MEMBER && !ADMIN) ? ('зажёг <b>'+lit+'</b> из '+TOTAL) : (TOTAL+' идей · '+Object.keys(groupDisc()).length+' областей'); el.onclick=null; el.style.cursor=''; }
 }
 function groupDisc(){ var g={}; NODES.forEach(function(n){g[n.d]=1;}); return g; }
 function updateHint(){
  var h=document.getElementById('hint');
  if(ROUTE){ var k=ROUTE.slugs.length; h.textContent='Путь квеста: '+k+' остановок по порядку. Нажмите звезду, чтобы открыть.'; h.classList.add('on'); setTimeout(function(){h.classList.remove('on');},2800); return; }
  var lit=Object.keys(VISITED).filter(function(s){return VISITED[s];}).length;
- if(MEMBER && lit===0){ h.textContent='Карта пока в тумане. Откройте любую идею — звезда зажжётся.'; h.classList.add('on'); }
+ if(MEMBER && !ADMIN && lit===0){ h.textContent='Карта пока в тумане. Откройте любую идею — звезда зажжётся.'; h.classList.add('on'); }
  else if(!MEMBER){ h.textContent=''; h.classList.remove('on'); }
  else h.classList.remove('on');
 }
@@ -219,12 +220,12 @@ function updateHint(){
 // node-preview
 function openPreview(slug){
  var n=NODES.filter(function(x){return x.s===slug;})[0]; if(!n) return;
- var lit=MEMBER&&!!VISITED[slug];
+ var opened=MEMBER&&!!VISITED[slug];
  var claim=n.c||'';
  var html='<div class="np-type"><span class="badge">'+(D[n.d]||'Концепт')+'</span><span class="rob '+n.r+'"><span class="d"></span>'+(ROBT[n.r]||'')+'</span></div>'+
   '<div class="np-title">'+n.t+'</div>'+
   (claim?'<div class="np-claim">'+claim+'</div>':'')+
-  '<div class="np-lit '+(lit?'on':'off')+'"><span class="s"></span>'+(lit?'Зажжено — вы это изучили':(MEMBER?'Ещё не открыто':'Откройте, чтобы изучить'))+'</div>'+
+  '<div class="np-lit '+(opened?'on':'off')+'"><span class="s"></span>'+(opened?'Зажжено — вы это изучили':(MEMBER&&!ADMIN?'Ещё не открыто':'Откройте, чтобы изучить'))+'</div>'+
   '<button class="np-open" id="npOpen">Открыть →</button>';
  document.getElementById('npBody').innerHTML=html;
  document.getElementById('npOpen').onclick=function(){ location.href='card.html?slug='+encodeURIComponent(slug); };
@@ -273,7 +274,8 @@ else if(QKEY && SEED_QUEST[QKEY]){ setRoute(SEED_QUEST[QKEY].title, SEED_QUEST[Q
   try{
    if(!(window.SUPABASE_URL && window.SUPABASE_ANON_KEY && window.supabase && window.supabase.createClient)) return;
    var SB=window.supabase.createClient(String(window.SUPABASE_URL).trim(),String(window.SUPABASE_ANON_KEY).trim());
-   SB.auth.getSession().then(function(s){ MEMBER=!!(s&&s.data&&s.data.session);
+   SB.auth.getSession().then(function(s){ var user=s&&s.data&&s.data.session&&s.data.session.user; MEMBER=!!user;
+    ADMIN=!!(user && ((window.McAuth&&McAuth.isAdmin(user)) || ['temka.avdeev@gmail.com','artem@ar1adna.com'].indexOf(String(user.email||'').toLowerCase())>=0));
     if(MEMBER){ SB.rpc('my_visited_slugs').then(function(r){ if(r&&!r.error&&Array.isArray(r.data)){ VISITED={}; r.data.forEach(function(sl){VISITED[sl]=1;}); render(); } }).catch(function(){}); }
     SB.rpc('kb_public_graph').then(function(r){ if(r&&!r.error&&r.data&&r.data.nodes){
       var dmap={"disc-behavioral-econ":"be","disc-cognitive":"cog","disc-social":"soc","disc-product":"prod","disc-ux-hci":"ux","disc-org":"org","disc-motivation":"mot","disc-neuro":"neu"};
@@ -291,7 +293,7 @@ else if(QKEY && SEED_QUEST[QKEY]){ setRoute(SEED_QUEST[QKEY].title, SEED_QUEST[Q
  }
  function load(src,cb){ var s=document.createElement('script'); s.src=src; s.onload=cb; s.onerror=cb; document.head.appendChild(s); }
  function loadCfg(done){ var ps=['../config.js','./config.js','config.js','/book-reader/config.js']; var i=0; (function nx(){ if(window.SUPABASE_URL||i>=ps.length) return done(); var sc=document.createElement('script'); sc.src=ps[i++]; sc.onload=function(){ setTimeout(function(){ window.SUPABASE_URL?done():nx(); },0); }; sc.onerror=nx; document.head.appendChild(sc); })(); }
-  loadCfg(function(){ load('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.108.2', go); });
+  loadCfg(function(){ load('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.108.2', function(){ load('mc-auth.js', go); }); });
 })();
 </script>
 <script>if('serviceWorker' in navigator){try{navigator.serviceWorker.register('sw.js').catch(function(){});}catch(e){}}</script>

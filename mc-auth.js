@@ -4,7 +4,8 @@
  * 3) инвайт: access.html?invite=CODE → Authelia PKCE → membership_after_auth.
  */
 (function(global){
-  var ADMIN='temka.avdeev@gmail.com';
+  var ADMINS=['temka.avdeev@gmail.com','artem@ar1adna.com'];
+  var ADMIN=ADMINS[0];
 
   function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
   function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
@@ -62,7 +63,10 @@
     return false;
   }
 
-  function isAdmin(user){ return !!user && (user.email||'').toLowerCase()===ADMIN; }
+  function isAdminEmail(email){
+    return ADMINS.indexOf(String(email||'').toLowerCase())>=0;
+  }
+  function isAdmin(user){ return !!user && isAdminEmail(user.email); }
   function memberCacheKey(uid){ return 'bp_member:'+uid; }
   function roleCacheKey(uid){ return 'bp_role:'+uid; }
 
@@ -128,8 +132,9 @@
     if(!SB){
       global.__MEMBER=false;
       global.__SIGNED_IN=false;
+      global.__ADMIN=false;
       global.__BOOKS_ROLE='reader';
-      cb({ session:null, user:null, signed_in:false, member:false, role:'reader' });
+      cb({ session:null, user:null, signed_in:false, member:false, role:'reader', admin:false });
       return Promise.resolve();
     }
     return SB.auth.getSession().then(function(s){
@@ -138,26 +143,31 @@
       if(!user){
         global.__MEMBER=false;
         global.__SIGNED_IN=false;
+        global.__ADMIN=false;
         global.__BOOKS_ROLE='reader';
-        cb({ session:null, user:null, signed_in:false, member:false, role:'reader' });
+        cb({ session:null, user:null, signed_in:false, member:false, role:'reader', admin:false });
         return null;
       }
       global.__SIGNED_IN=true;
       return checkBooksAccess(SB,user).then(function(acc){
         global.__MEMBER=acc.member;
         global.__BOOKS_ROLE=acc.role;
+        global.__ADMIN=!!acc.admin;
         cb({ session:sess, user:user, signed_in:true, member:acc.member, role:acc.role, admin:acc.admin });
       });
     }).catch(function(){
       global.__MEMBER=false;
       global.__SIGNED_IN=mcLikelySession();
+      global.__ADMIN=false;
       global.__BOOKS_ROLE='reader';
-      cb({ session:null, user:null, signed_in:!!global.__SIGNED_IN, member:false, role:'reader' });
+      cb({ session:null, user:null, signed_in:!!global.__SIGNED_IN, member:false, role:'reader', admin:false });
     });
   }
 
   var McAuth={
     ADMIN:ADMIN,
+    ADMINS:ADMINS,
+    isAdminEmail:isAdminEmail,
     parseInviteCode:parseInviteCode,
     inviteUrl:inviteUrl,
     redirectLegacyJoin:redirectLegacyJoin,
