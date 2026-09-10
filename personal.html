@@ -187,6 +187,10 @@ if(mcLikelySignedIn()) STATE.signedIn=true;
 if(!STATE.signedIn) STATE.member=false;
 function stateSig(){ return STATE.signedIn+'|'+STATE.member+'|'+STATE.email+'|'+(STATE.territory?(STATE.territory.lit+'/'+STATE.territory.total+'/'+((STATE.territory.by_discipline||[]).length)):'none'); }
 function saveStateCache(){ try{ localStorage.setItem('personal:state', JSON.stringify({signedIn:STATE.signedIn,member:STATE.member,email:STATE.email,name:STATE.name,territory:STATE.territory})); }catch(e){} }
+function isBooksAdmin(){
+ if(window.McAuth&&McAuth.isAdminEmail) return McAuth.isAdminEmail(STATE.email);
+ return ['temka.avdeev@gmail.com','artem@ar1adna.com'].indexOf((STATE.email||'').toLowerCase())>=0;
+}
 function accessHref(){ return (STATE.signedIn && !STATE.member) ? 'access.html' : 'access.html?view=login'; }
 var qs=new URLSearchParams(location.search); var VIEW=qs.get('view');
 
@@ -211,7 +215,7 @@ function renderHub(){
    if(t.frontier_open){ H+='<div class="terrm">Ещё '+t.frontier_open+' '+plural(t.frontier_open,'гипотеза','гипотезы','гипотез')+' ждут на фронтире знания.</div>'; }
    H+='</div>';
   } else {
-   H+='<div class="terr"><div class="terrm">Карта пока в тумане. Откройте первую идею — она ляжет на вашу карту.</div></div>';
+   H+='<div class="terr"><div class="terrm">'+(isBooksAdmin()?'Всё созвездие видно. Открытые идеи зажигаются на вашей карте.':'Карта пока в тумане. Откройте первую идею — она ляжет на вашу карту.')+'</div></div>';
   }
   H+='</div>';
  } else if(STATE.signedIn){
@@ -221,7 +225,7 @@ function renderHub(){
  }
  H+='<div class="seclbl">Личное</div><div class="menu">'+row('favorites',IC.star,'Избранное')+(STATE.member?row('community',IC.people,'Сообщество'):'')+'</div>';
  H+='<div class="seclbl">О проекте</div><div class="menu">'+row('about',IC.user,'Об авторе и принципах')+row('mcp',IC.plug,'Доступ к MCP', STATE.mcpOn?'включено':'выключено')+row('settings',IC.gear,'Настройки')+'</div>';
- if(STATE.member && (STATE.email||'').toLowerCase()==='temka.avdeev@gmail.com'){
+ if(STATE.member && isBooksAdmin()){
   var _chev='<svg class="cv" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
   H+='<div class="seclbl">Админ</div><div class="menu">'+
      '<div class="mrow" role="button" tabindex="0" onclick="location.href=\'pult.html\'">'+icon(IC.dash)+'<span class="t">Пульт флота</span><span class="reldot" id="reldot" style="display:none"></span>'+_chev+'</div>'+
@@ -381,6 +385,7 @@ document.addEventListener('keydown',function(e){
     var oldSig=stateSig();
     STATE.signedIn=!!(acc.signed_in || acc.user);
     STATE.member=!!acc.member;
+    STATE.admin=!!acc.admin;
     if(acc.user){ STATE.email=acc.user.email||''; STATE.uid=acc.user.id||null; STATE.name=(acc.user.user_metadata&&(acc.user.user_metadata.name||acc.user.user_metadata.full_name))||''; }
     if(!STATE.signedIn){ STATE.member=false; STATE.email=''; }
     function finish(){ saveStateCache(); if(VIEW){ renderView(VIEW); } else if(stateSig()!==oldSig){ renderHub(); } }

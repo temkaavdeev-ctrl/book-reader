@@ -3730,7 +3730,7 @@ function svgToSrc(svg){ return 'data:image/svg+xml;charset=utf-8,'+encodeURIComp
       document.getElementById('authGate').style.display='none'; updateAuthUI(); return;
     }
     if(authInFlight===USER.id) return;                    // загрузка уже идёт
-    isAdmin = (USER.email||'').toLowerCase()===ADMIN;
+    isAdmin = isAdminEmail(USER.email);
     try{ if(!(typeof window!=='undefined'&&window.__HARNESS)){ var _onAdmin=/index-admin\.html/.test(location.pathname); if(isAdmin && !_onAdmin){ location.replace('index-admin.html'+(location.hash||'')); return; } if(!isAdmin && _onAdmin){ location.replace('index.html'+(location.hash||'')); return; } } }catch(_e){}
     document.getElementById('btnAdmin').style.display = isAdmin? '':'none';
     isMember = isAdmin || await checkMember();
@@ -9555,6 +9555,7 @@ function svgToSrc(svg){ return 'data:image/svg+xml;charset=utf-8,'+encodeURIComp
     }).catch(function(){});
   }
 // ---------- data ----------
+  function isAdminEmail(e){ return ['temka.avdeev@gmail.com','artem@ar1adna.com'].indexOf(String(e||'').toLowerCase())>=0; }
   var ADMIN = 'temka.avdeev@gmail.com';
   var BOOK = [], BYID = {}, DIAGS = {};
   var isAdmin = false, isMember = false;
