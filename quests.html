@@ -794,8 +794,8 @@ function mergeQfavs(SB, done){
  SB.rpc('saves_list',{p_kind:'quest'}).then(function(r){
   var have={}; ((r&&!r.error&&r.data)||[]).forEach(function(x){ have[x.slug]=1; });
   var pend=local.filter(function(x){ return x&&x.slug&&!have[x.slug]; });
-  var i=0; (function nx(){ if(i>=pend.length){ try{localStorage.removeItem('mc:qfav');}catch(e){} if(done)done(); return; }
-   var it=pend[i++]; SB.rpc('save_toggle',{p_slug:it.slug,p_title:it.title||it.slug,p_kind:'quest'}).then(nx,nx); })();
+  var i=0,fail=[]; (function nx(){ if(i>=pend.length){ try{ if(fail.length) localStorage.setItem('mc:qfav',JSON.stringify(fail)); else localStorage.removeItem('mc:qfav'); }catch(e){} if(done)done(); return; }
+   var it=pend[i++]; SB.rpc('save_toggle',{p_slug:it.slug,p_title:it.title||it.slug,p_kind:'quest'}).then(nx,function(){ fail.push(it); nx(); }); })();
  },function(){ if(done)done(); });
 }
 function renderDetail(q){
@@ -816,7 +816,9 @@ function renderDetail(q){
  document.getElementById('wrap').insertAdjacentHTML('beforeend','');
  document.getElementById('overlay').innerHTML='<div class="start"><div class="start-in"><button id="startBtn">Начать квест →</button></div></div>';
  document.getElementById('back').onclick=function(){ location.href='quests.html'; };
- document.getElementById('startBtn').onclick=function(){ location.href='quests.html?quest='+q.key+'&stop=0'; };
+ var startBtn=document.getElementById('startBtn');
+ if(BITS[q.key]) startBtn.onclick=function(){ location.href='quests.html?quest='+q.key+'&stop=0'; };
+ else { startBtn.disabled=true; startBtn.textContent='Квест скоро откроется'; }
  var qfav=document.getElementById('qfav');
  if(qfav){ questSavedState(q.key).then(function(saved){ qfav.classList.toggle('on', !!saved); });
   qfav.onclick=function(){ questSaveToggle(q.key,q.title).then(function(on){ qfav.classList.toggle('on', on); toastQ(on?'Квест сохранён':'Убрано из сохранённого'); }).catch(function(err){ toastQ((err&&err.message)||'Не удалось сохранить'); }); }; }

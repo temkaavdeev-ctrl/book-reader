@@ -150,6 +150,7 @@ a:focus-visible,button:focus-visible,[onclick]:focus-visible,.ni:focus-visible,.
 function hashf(s){var h=2166136261;for(var i=0;i<(s||'').length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return((h>>>0)%100000)/100000;}
 function plural(n,a,b,c){var m=Math.abs(+n||0)%100,d=m%10;if(m>10&&m<20)return c;if(d>1&&d<5)return b;if(d===1)return a;return c;}
 function getCSS(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
 
 var D={be:"Поведенческая экономика",cog:"Когнитивная психология",soc:"Социальная психология",prod:"Продуктовые практики",mot:"Мотивация/идентичность",ux:"UX / HCI",org:"Организационные системы",neu:"Нейронаука/тело",def:"Другое"};
 var ROBT={solid:"Подтверждено",mixed:"Неоднозначно",contested:"Спорно",inbox:"В проработке"};
@@ -444,7 +445,7 @@ document.getElementById('legendBtn').onclick=function(){openSheet('legend');};
 
 function openPreview(slug){var n=BYID[slug];if(!n)return;var opened=!!VISITED[slug];var lit=MEMBER&&opened;var fog=MEMBER && !ADMIN && !opened;var claim=n.c||'';
  var html='<div class="np-type"><span class="badge">'+(D[n.d]||'Концепт')+'</span><span class="rob '+(n.r||'mixed')+'"><span class="d"></span>'+(ROBT[n.r]||'')+'</span></div>'+
-  '<div class="np-title">'+n.t+'</div>'+(claim?'<div class="np-claim">'+claim+'</div>':'')+
+  '<div class="np-title">'+esc(n.t)+'</div>'+(claim?'<div class="np-claim">'+esc(claim)+'</div>':'')+
   '<div class="np-lit '+(lit?'on':'off')+'"><span class="s"></span>'+(lit?'Зажжено — вы это изучили':(fog?'Ещё не открыто':'Откройте, чтобы изучить'))+'</div>'+
   '<button class="np-open" id="npOpen">Открыть →</button>';
  document.getElementById('npBody').innerHTML=html;
