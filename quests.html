@@ -795,7 +795,7 @@ function mergeQfavs(SB, done){
   var have={}; ((r&&!r.error&&r.data)||[]).forEach(function(x){ have[x.slug]=1; });
   var pend=local.filter(function(x){ return x&&x.slug&&!have[x.slug]; });
   var i=0,fail=[]; (function nx(){ if(i>=pend.length){ try{ if(fail.length) localStorage.setItem('mc:qfav',JSON.stringify(fail)); else localStorage.removeItem('mc:qfav'); }catch(e){} if(done)done(); return; }
-   var it=pend[i++]; SB.rpc('save_toggle',{p_slug:it.slug,p_title:it.title||it.slug,p_kind:'quest'}).then(nx,function(){ fail.push(it); nx(); }); })();
+   var it=pend[i++]; SB.rpc('save_toggle',{p_slug:it.slug,p_title:it.title||it.slug,p_kind:'quest'}).then(function(r){ if(r&&r.error) fail.push(it); nx(); },function(){ fail.push(it); nx(); }); })();
  },function(){ if(done)done(); });
 }
 function renderDetail(q){
@@ -827,6 +827,7 @@ function renderDetail(q){
 function renderPlayer(q,stop){
  document.getElementById('nav').style.display='none';
  document.getElementById('overlay').innerHTML='';
+ if(!BITS[q.key]){ location.href='quests.html?quest='+q.key; return; }
  var bits=BITS[q.key];
  var M=bits?bits.length:q.slugs.length;
  if(stop===1) track('quest_start',{key:q.key});

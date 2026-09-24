@@ -191,7 +191,7 @@ function doSearch(q){
 var t=null;
 inp.addEventListener('input',function(){ clr.classList.toggle('on', !!inp.value); clearTimeout(t); var v=inp.value; t=setTimeout(function(){ doSearch(v); },200); });
 inp.addEventListener('keydown',function(e){ if(e.key==='Enter'){ clearTimeout(t); doSearch(inp.value); inp.blur(); } });
-clr.onclick=function(){ seq++; inp.value=''; clr.classList.remove('on'); inp.focus(); renderEmpty(); };
+clr.onclick=function(){ clearTimeout(t); seq++; inp.value=''; clr.classList.remove('on'); inp.focus(); renderEmpty(); };
 document.getElementById('back').onclick=function(){ if(history.length>1) history.back(); else location.href='solve-home.html'; };
 
 // первичный экран + автофокус + сид из ?q=
