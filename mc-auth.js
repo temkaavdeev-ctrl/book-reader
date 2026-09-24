@@ -127,14 +127,103 @@
     });
   }
 
+
+  /* Identity organ: Authelia is who you are. Books only attaches its session.
+     /api/me is the same probe Productos already has. No cookie → stay guest. */
+  var OIDC_PROVIDER='custom:authelia';
+  function rememberReturn(){
+    try{
+      var p=location.pathname||'/';
+      if(/access\.html/.test(p)) return;
+      sessionStorage.setItem('mc:after', p+(location.search||'')+(location.hash||''));
+    }catch(e){}
+  }
+  function takeReturn(){
+    try{
+      var n=sessionStorage.getItem('mc:after')||'';
+      sessionStorage.removeItem('mc:after');
+      if(n && n.charAt(0)==='/') return n;
+    }catch(e){}
+    return '';
+  }
+  function hopMarked(){
+    try{ return sessionStorage.getItem('mc:sso-hop')==='1'; }catch(e){ return false; }
+  }
+  function markHop(){
+    try{ sessionStorage.setItem('mc:sso-hop','1'); }catch(e){}
+  }
+  function oauthInFlight(){
+    try{
+      var q=new URLSearchParams(location.search);
+      if(q.get('error')||q.get('code')||q.get('access_token')) return true;
+    }catch(e){}
+    try{
+      var h=location.hash||'';
+      if(/access_token=|refresh_token=/.test(h)) return true;
+    }catch(e){}
+    return false;
+  }
+  function probeIdentity(){
+    var ctrl=typeof AbortController!=='undefined'?new AbortController():null;
+    var timer=ctrl?setTimeout(function(){ try{ctrl.abort();}catch(e){} },2000):null;
+    return fetch('/api/me',{credentials:'same-origin', redirect:'manual', cache:'no-store', signal:ctrl?ctrl.signal:undefined})
+      .then(function(r){
+        if(timer) clearTimeout(timer);
+        if(r.type==='opaqueredirect') return null;
+        if(r.status>=301 && r.status<=308) return null;
+        if(r.status!==200) return null;
+        return r.json().then(function(d){
+          if(d && (d.user||d.email)) return d;
+          return null;
+        });
+      })
+      .catch(function(){ if(timer) clearTimeout(timer); return null; });
+  }
+  function attachSession(SB){
+    if(!SB||!SB.auth||!SB.auth.setSession) return Promise.resolve(false);
+    return fetch('/api/session',{method:'POST', credentials:'same-origin', cache:'no-store', redirect:'manual'})
+      .then(function(r){
+        if(r.type==='opaqueredirect'||r.status===401||r.status===403||!r.ok) return false;
+        return r.json().then(function(d){
+          if(!d||!d.access_token||!d.refresh_token) return false;
+          return SB.auth.setSession({access_token:d.access_token, refresh_token:d.refresh_token}).then(function(x){
+            return !!(x&&x.data&&x.data.session);
+          });
+        });
+      }).catch(function(){ return false; });
+  }
+  function startOidc(SB, opts){
+    opts=opts||{};
+    if(!SB||!SB.auth||!SB.auth.signInWithOAuth) return Promise.reject(new Error('no_sb'));
+    var invite='';
+    try{ invite=new URLSearchParams(location.search).get('invite')||''; }catch(e){}
+    if(!invite && opts.invite) invite=opts.invite;
+    var redirectTo=location.origin+'/access.html'+(invite?('?invite='+encodeURIComponent(invite)):'');
+    rememberReturn();
+    markHop();
+    return SB.auth.signInWithOAuth({
+      provider: OIDC_PROVIDER,
+      options:{ redirectTo: redirectTo }
+    });
+  }
+  function maybeHop(SB){
+    if(!SB||oauthInFlight()||hopMarked()) return Promise.resolve(false);
+    return probeIdentity().then(function(id){
+      if(!id) return false;
+      return attachSession(SB).then(function(ok){
+        if(ok){ markHop(); rememberReturn(); location.reload(); return true; }
+        return startOidc(SB).then(function(r){ if(!(r&&r.error)) markHop(); return !(r&&r.error); });
+      });
+    }).catch(function(){ return false; });
+  }
+
   function boot(SB,cb){
     cb=cb||function(){};
     if(!SB){
       global.__MEMBER=false;
       global.__SIGNED_IN=false;
-      global.__ADMIN=false;
       global.__BOOKS_ROLE='reader';
-      cb({ session:null, user:null, signed_in:false, member:false, role:'reader', admin:false });
+      cb({ session:null, user:null, signed_in:false, member:false, role:'reader' });
       return Promise.resolve();
     }
     return SB.auth.getSession().then(function(s){
@@ -143,24 +232,22 @@
       if(!user){
         global.__MEMBER=false;
         global.__SIGNED_IN=false;
-        global.__ADMIN=false;
         global.__BOOKS_ROLE='reader';
-        cb({ session:null, user:null, signed_in:false, member:false, role:'reader', admin:false });
+        cb({ session:null, user:null, signed_in:false, member:false, role:'reader' });
+        maybeHop(SB);
         return null;
       }
       global.__SIGNED_IN=true;
       return checkBooksAccess(SB,user).then(function(acc){
         global.__MEMBER=acc.member;
         global.__BOOKS_ROLE=acc.role;
-        global.__ADMIN=!!acc.admin;
         cb({ session:sess, user:user, signed_in:true, member:acc.member, role:acc.role, admin:acc.admin });
       });
     }).catch(function(){
       global.__MEMBER=false;
       global.__SIGNED_IN=mcLikelySession();
-      global.__ADMIN=false;
       global.__BOOKS_ROLE='reader';
-      cb({ session:null, user:null, signed_in:!!global.__SIGNED_IN, member:false, role:'reader', admin:false });
+      cb({ session:null, user:null, signed_in:!!global.__SIGNED_IN, member:false, role:'reader' });
     });
   }
 
@@ -177,7 +264,13 @@
     checkBooksAccess:checkBooksAccess,
     redeemInvite:redeemInvite,
     finishAuth:finishAuth,
-    boot:boot
+    boot:boot,
+    probeIdentity:probeIdentity,
+    attachSession:attachSession,
+    startOidc:startOidc,
+    maybeHop:maybeHop,
+    takeReturn:takeReturn,
+    rememberReturn:rememberReturn
   };
 
   global.McAuth=McAuth;

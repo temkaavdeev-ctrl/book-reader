@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#0E0C0A">
-<title>Управляя поведением</title>
-<meta name="description" content="Книга и карта для продактов: почему поведение не следует из ценности продукта. Фундамент открыт без аккаунта.">
+<title>Матчасть</title>
+<meta name="description" content="Знания о поведении людей. От эволюции и биологии до продуктовых фреймворков.">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="manifest" href="manifest.json">
@@ -16,7 +16,8 @@
 <style>
 :root{
   --sky0:#0E0C0A; --sky1:#15110C; --ink:#F4EEE2; --read:#D8D0C3; --meta:#897F70;
-  --gold:#C98A3A; --gold-br:#E7C07A; --line:#2A241C; --paper:#FBFAF7; --ink-on-paper:#17150F;
+  --gold:#C98A3A; --gold-br:#E7C07A; --gold-press:#B87A30;
+  --line:#2A241C; --line-btn:#7A6E5E; --paper:#FBFAF7; --ink-on-paper:#17150F;
   --font-ui:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;
   --font-read:'Spectral',Georgia,"PT Serif","Times New Roman",serif;
 }
@@ -31,42 +32,74 @@ a{color:inherit}
   position:relative;min-height:100svh;
   display:grid;grid-template-columns:1fr;
   overflow:hidden;
-  background:radial-gradient(90% 70% at 80% 20%,#241C14 0%,#15110C 42%,#0E0C0A 78%);
+  background:
+    radial-gradient(55% 45% at 78% 26%,rgba(201,138,58,.16) 0%,transparent 58%),
+    radial-gradient(90% 70% at 80% 20%,#241C14 0%,#15110C 42%,#0E0C0A 78%);
 }
-#field{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0}
+#field{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0;pointer-events:none}
 .open{
   position:relative;z-index:1;
-  padding:clamp(28px,6vh,64px) clamp(20px,4vw,56px) 40px;
+  padding:clamp(56px,10vh,96px) clamp(20px,4vw,56px) 40px;
   max-width:720px;
-  display:flex;flex-direction:column;justify-content:flex-end;
+  display:flex;flex-direction:column;justify-content:flex-start;
   min-height:100svh;
 }
+.topline{display:flex;align-items:center;justify-content:flex-start;flex-wrap:wrap;gap:12px 16px;max-width:34em}
 .brand{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-br)}
+.lang{display:inline-flex;padding:2px;border-radius:999px;background:#1C1814;border:1px solid #6E6254;box-shadow:0 1px 0 rgba(255,255,255,.07) inset}
+.lang-btn{appearance:none;margin:0;border:0;background:transparent;color:var(--meta);font:700 11px/1 var(--font-ui);letter-spacing:.1em;min-height:28px;min-width:38px;padding:0 10px;border-radius:999px;cursor:pointer}
+.lang-btn[aria-pressed="true"]{background:var(--gold);color:#1A1407}
+.lang-btn:focus-visible{outline:2px solid var(--gold-br);outline-offset:2px}
 h1{
   font-family:var(--font-read);font-weight:500;letter-spacing:-.03em;
-  font-size:clamp(40px,7.4vw,78px);line-height:.96;
+  font-size:clamp(46px,7.8vw,78px);line-height:1.04;
   margin:18px 0 0;text-wrap:balance;
 }
 .dek{
   font-family:var(--font-read);font-size:clamp(18px,2.2vw,22px);line-height:1.45;
   color:var(--read);max-width:34em;margin:22px 0 0;text-wrap:pretty;
 }
-.acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:32px}
+.sub{
+  font-family:var(--font-read);font-size:clamp(16px,2vw,19px);line-height:1.45;
+  color:var(--read);max-width:36em;margin:12px 0 0;text-wrap:pretty;
+}
+.acts{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-top:32px}
 .btn{
   display:inline-flex;align-items:center;justify-content:center;
-  min-height:48px;padding:12px 20px;border-radius:12px;
+  min-height:54px;min-width:8.2rem;padding:15px 24px;border-radius:16px;
   font:700 15px/1.2 var(--font-ui);text-decoration:none;border:1px solid transparent;
+  transition:background-color .15s ease,border-color .15s ease,box-shadow .15s ease,transform .1s ease;
 }
-.btn.pri{background:var(--gold);color:#1A1407}
-.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.pri{
+  background:var(--gold);color:#1A1407;
+  box-shadow:0 1px 0 rgba(255,244,220,.38) inset, 0 10px 28px rgba(201,138,58,.3);
+}
+.btn.pri:hover{
+  background:var(--gold-br);
+  box-shadow:0 1px 0 rgba(255,244,220,.5) inset, 0 12px 32px rgba(231,192,122,.36);
+}
+.btn.pri:active{
+  background:var(--gold-press);transform:translateY(1px);
+  box-shadow:0 1px 0 rgba(0,0,0,.22) inset, 0 4px 12px rgba(201,138,58,.18);
+}
+.btn.ghost{
+  background:#1C1814;color:var(--ink);border-color:#6E6254;
+  box-shadow:0 1px 0 rgba(255,255,255,.08) inset, 0 8px 22px rgba(0,0,0,.48);
+}
+.btn.ghost:hover{
+  background:#262019;border-color:#8A7C6A;
+  box-shadow:0 1px 0 rgba(255,255,255,.12) inset, 0 10px 26px rgba(0,0,0,.52);
+}
+.btn.ghost:active{
+  background:#161310;transform:translateY(1px);
+  box-shadow:0 2px 0 rgba(0,0,0,.38) inset;
+}
 .btn:focus-visible{outline:2px solid var(--gold-br);outline-offset:3px}
-.aside{margin-top:16px;font-size:13px;line-height:1.45;color:var(--meta);max-width:36em}
-.scroll{
-  position:absolute;right:clamp(16px,4vw,40px);bottom:22px;z-index:1;
-  font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--meta);
-}
+.btn[aria-disabled="true"]{opacity:.45;pointer-events:none}
+.aside{margin-top:16px;font-size:14px;line-height:1.5;color:#EDE6D8;max-width:36em}
+
 main{position:relative;z-index:1;background:var(--sky0)}
-.band{padding:72px clamp(20px,5vw,80px) 24px}
+.band{padding:48px clamp(20px,5vw,80px) 8px}
 .col{max-width:38rem}
 .k{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
 .essay{
@@ -75,7 +108,7 @@ main{position:relative;z-index:1;background:var(--sky0)}
 }
 .essay em{font-style:italic;color:var(--gold-br)}
 .paper{
-  margin:56px clamp(20px,5vw,80px) 0;
+  margin:28px clamp(20px,5vw,80px) calc(64px + env(safe-area-inset-bottom));
   background:var(--paper);color:var(--ink-on-paper);
   border-radius:20px;padding:28px 24px 26px;
   max-width:40rem;
@@ -88,6 +121,8 @@ main{position:relative;z-index:1;background:var(--sky0)}
 .honest .l{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-br);margin-bottom:6px}
 .honest .b{font-size:15px;line-height:1.5}
 .more{display:inline-block;margin-top:16px;font-size:14px;font-weight:700;color:#97591A;text-decoration:none}
+.more:hover{color:#6E3E10}
+.more:focus-visible{outline:2px solid #97591A;outline-offset:3px}
 .close{
   padding:72px clamp(20px,5vw,80px) calc(64px + env(safe-area-inset-bottom));
   max-width:40rem;
@@ -96,6 +131,8 @@ main{position:relative;z-index:1;background:var(--sky0)}
 .close p{color:var(--read);font-size:16px;line-height:1.55;margin:0 0 22px}
 .tip{margin-top:18px;font-size:13px;color:var(--meta)}
 .tip a{color:var(--gold-br);text-decoration:none;font-weight:600}
+.tip a:hover{color:var(--ink)}
+.tip a:focus-visible{outline:2px solid var(--gold-br);outline-offset:3px}
 @media(min-width:980px){
   .sky{grid-template-columns:minmax(420px,1fr) minmax(380px,1fr)}
   #field{position:relative;grid-column:2;grid-row:1}
@@ -105,57 +142,50 @@ main{position:relative;z-index:1;background:var(--sky0)}
 }
 @media(prefers-reduced-motion:reduce){
   #field{opacity:.55}
+  .btn{transition:none}
+  .btn.pri:active,.btn.ghost:active{transform:none}
 }
 @media(max-width:979px){
-  #field{opacity:.42}
-  .open{background:linear-gradient(180deg,transparent 20%,rgba(14,12,10,.55) 62%,var(--sky0) 100%)}
+  #field{
+    inset:auto 0 auto auto; top:8px; right:0; left:auto; bottom:auto;
+    width:min(46vw,200px); height:min(28vh,210px);
+    opacity:.4; pointer-events:none;
+  }
+  .open{background:linear-gradient(180deg,rgba(14,12,10,.2) 0%,rgba(14,12,10,.72) 38%,var(--sky0) 78%)}
 }
 </style>
+<script>
+(function(){
+  try{
+    for(var i=0;i<localStorage.length;i++){
+      var k=localStorage.key(i);
+      if(k && k.indexOf('sb-')===0 && k.indexOf('-auth-token')>0){
+        var v=localStorage.getItem(k);
+        if(v && v.length>20){ location.replace('path.html'); return; }
+      }
+    }
+  }catch(e){}
+})();
+</script>
 </head>
 <body>
-<a class="skip" href="#read">К тексту</a>
+<a class="skip" href="#goRead">К кнопкам</a>
 <section class="sky" aria-label="Начало">
   <canvas id="field" width="800" height="900" aria-hidden="true"></canvas>
   <div class="open">
-    <div class="brand">Управляя поведением</div>
-    <h1>Ценность не двигает людей сама</h1>
-    <p class="dek">Можно сделать правильный продукт и всё равно получить тишину. Здесь разбирают, почему — по исследованиям, и где привычный метод врёт.</p>
+    <div class="topline">
+      <div class="brand">Матчасть</div>
+    </div>
+    <h1>Знания о поведении людей.</h1>
+    <p class="dek">От эволюции и биологии до продуктовых фреймворков.</p>
+    <p class="sub">Для тех, кто создаёт и развивает продукты.</p>
     <div class="acts">
-      <a class="btn pri" id="goFund" href="path.html?ch=m1-osnovy">Открыть фундамент</a>
+      <a class="btn pri" id="goRead" href="solve-home.html">Читать материалы</a>
       <a class="btn ghost" id="goIn" href="access.html?view=login">Войти</a>
     </div>
-    <p class="aside">Первая глава открыта без аккаунта. Специализации — по приглашению. Тёмные паттерны называем, на вас не применяем.</p>
+    <p class="aside">Приглашение можно получить у участника.</p>
   </div>
-  <div class="scroll">ниже — как это устроено</div>
 </section>
-<main id="read">
-  <section class="band">
-    <div class="col">
-      <div class="k">Не крючок. Разбор</div>
-      <p class="essay">Команда закрывает запросы. Клиенты довольны. Метрики растут. Через два года продукт — список всего, что когда-либо просили, и больше не делает ту работу, ради которой его наняли. Так выглядит <em>build trap</em>. Это не мораль из презентации. Это то, что книга разбирает на ходах, которые продакт узнаёт в своём спринте.</p>
-    </div>
-  </section>
-  <article class="paper">
-    <div class="chip"><i></i> Есть нюансы</div>
-    <h2>Модель крючка</h2>
-    <p>Знаменитый рецепт удержания: триггер, действие, переменная награда, вложение. Тот же механизм строит и привычку, и зависимость. Вопрос не «как зацепить», а кому служит петля.</p>
-    <div class="honest">
-      <div class="l">Честный край</div>
-      <div class="b">Эйал сам ввёл «матрицу манипуляции» и позже написал Indistractable — ответ на то, как индустрия взяла Hook ради удержания вопреки человеку.</div>
-    </div>
-    <a class="more" id="goCard" href="card.html?slug=hook-model">Карточка целиком</a>
-  </article>
-  <section class="close">
-    <div class="k">Что можно сейчас</div>
-    <h2>Фундамент — ваш. Остальное просят.</h2>
-    <p>Гость читает первую ось пути и публичные карточки. Сохранить небо, реакции и специализации — после входа. Приглашение выдаёт участник, не лендинг.</p>
-    <div class="acts">
-      <a class="btn pri" id="goFund2" href="path.html?ch=m1-osnovy">Начать главу</a>
-      <a class="btn ghost" id="goBook" href="solve-home.html">Справочник</a>
-    </div>
-    <p class="tip">Уже есть доступ — <a id="goIn2" href="access.html?view=login">войдите тем же входом</a>. Приглашение выдаёт участник, не эта страница. Автор: <a href="https://t.me/artavdeev" target="_blank" rel="noopener">@artavdeev</a>.</p>
-  </section>
-</main>
 <script>
 (function(){
   function hasSess(){
@@ -173,23 +203,56 @@ main{position:relative;z-index:1;background:var(--sky0)}
   if(hasSess()){ location.replace('path.html'); return; }
 
   function mark(){ try{ sessionStorage.setItem('mc:from-landing','1'); }catch(e){} }
-  ['goFund','goFund2','goIn','goIn2','goBook','goCard'].forEach(function(id){
+  ['goRead','goIn'].forEach(function(id){
     var el=document.getElementById(id); if(el) el.addEventListener('click', mark);
   });
 
-  var c=document.getElementById('field'); if(!c) return;
+
+  var lang="ru";
+
+    var c=document.getElementById('field'); if(!c) return;
   var ctx=c.getContext('2d');
   var nodes=[
-    {s:'hook-model',t:'Крючок',x:.70,y:.28},
-    {s:'loss-aversion',t:'Неприятие потерь',x:.84,y:.48},
-    {s:'cognitive-load-theory',t:'Нагрузка',x:.58,y:.58},
-    {s:'anchoring',t:'Якорь',x:.88,y:.22},
-    {s:'reference-point',t:'Опора',x:.62,y:.20},
-    {s:'prospect-theory',t:'Перспектива',x:.78,y:.68},
-    {s:'decoy-effect',t:'Приманка',x:.52,y:.38},
-    {s:'payment-pain',t:'Боль платежа',x:.90,y:.62}
+    {s:'hook-model',t:'Крючок / Hook',x:.70,y:.28,k:2},
+    {s:'loss-aversion',t:'Неприятие потерь / Loss aversion',x:.84,y:.48,k:2},
+    {s:'cognitive-load-theory',t:'Нагрузка / Load',x:.58,y:.58,k:1},
+    {s:'anchoring',t:'Якорь / Anchor',x:.88,y:.22,k:2},
+    {s:'reference-point',t:'Опора / Reference',x:.62,y:.20,k:1},
+    {s:'prospect-theory',t:'Перспектива / Prospect',x:.78,y:.68,k:2},
+    {s:'decoy-effect',t:'Приманка / Decoy',x:.52,y:.38,k:1},
+    {s:'payment-pain',t:'Боль платежа / Payment pain',x:.90,y:.62,k:1},
+    {s:'',t:'',x:.66,y:.42,k:0},
+    {s:'',t:'',x:.74,y:.16,k:0},
+    {s:'',t:'',x:.92,y:.36,k:0},
+    {s:'',t:'',x:.56,y:.26,k:0},
+    {s:'',t:'',x:.48,y:.52,k:0},
+    {s:'',t:'',x:.64,y:.72,k:0},
+    {s:'',t:'',x:.82,y:.58,k:0},
+    {s:'',t:'',x:.94,y:.74,k:0},
+    {s:'',t:'',x:.72,y:.82,k:0},
+    {s:'',t:'',x:.54,y:.12,k:0},
+    {s:'',t:'',x:.96,y:.12,k:0},
+    {s:'',t:'',x:.44,y:.34,k:0},
+    {s:'',t:'',x:.86,y:.86,k:0},
+    {s:'',t:'',x:.60,y:.86,k:0},
+    {s:'',t:'',x:.50,y:.22,k:0},
+    {s:'',t:'',x:.76,y:.36,k:0},
+    {s:'',t:'',x:.68,y:.54,k:0},
+    {s:'',t:'',x:.92,y:.52,k:0},
+    {s:'',t:'',x:.80,y:.12,k:0},
+    {s:'',t:'',x:.46,y:.68,k:0},
+    {s:'',t:'',x:.58,y:.78,k:0},
+    {s:'',t:'',x:.98,y:.28,k:0}
   ];
-  var edges=[[0,1],[0,2],[1,5],[3,4],[3,1],[2,6],[5,7],[0,3]];
+  var edges=[[0,1],[0,2],[0,3],[0,6],[0,8],[0,23],[1,5],[1,7],[1,10],[1,14],[1,25],[2,6],[2,12],[2,13],[2,24],[3,4],[3,9],[3,18],[3,26],[4,11],[4,17],[4,22],[5,7],[5,15],[5,16],[5,20],[6,19],[6,12],[7,10],[7,20],[7,15],[8,14],[8,24],[12,19],[13,21],[13,28],[9,18],[9,26],[22,11],[23,14],[24,2],[25,1],[27,5],[27,13],[28,16],[29,3],[29,10]];
+  var dust=[];
+  (function(){
+    var seed=17;
+    function rnd(){ seed=(seed*1103515245+12345)&0x7fffffff; return (seed%1000)/1000; }
+    for(var i=0;i<92;i++){
+      dust.push({x:.38+rnd()*.60, y:.03+rnd()*.94, r:.4+rnd()*1.6, a:.05+rnd()*.22});
+    }
+  })();
   var reduce=false;
   try{ reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
   var t0=performance.now(), hover=-1, dpr=1;
@@ -207,26 +270,32 @@ main{position:relative;z-index:1;background:var(--sky0)}
   }
   function draw(){
     var w=c.clientWidth, h=c.clientHeight;
+    var compact=w<420;
     ctx.clearRect(0,0,w,h);
-    ctx.lineWidth=1;
+    dust.forEach(function(d){
+      ctx.beginPath();
+      ctx.fillStyle='rgba(231,192,122,'+(compact?d.a*.55:d.a)+')';
+      ctx.arc(d.x*w, d.y*h, compact?d.r*.7:d.r, 0, Math.PI*2);
+      ctx.fill();
+    });
     edges.forEach(function(e){
-      var a=pos(nodes[e[0]],w,h), b=pos(nodes[e[1]],w,h);
-      ctx.strokeStyle='rgba(201,138,58,.22)';
+      var na=nodes[e[0]], nb=nodes[e[1]];
+      var a=pos(na,w,h), b=pos(nb,w,h);
+      var hub=(na.k||0)+(nb.k||0);
+      ctx.lineWidth=hub>=3?1.15:.7;
+      ctx.strokeStyle=hub>=3?'rgba(201,138,58,.42)':'rgba(201,138,58,'+(compact?.16:.22)+')';
       ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
     });
     nodes.forEach(function(n,i){
       var p=pos(n,w,h);
+      var k=n.k||0;
+      var rad=compact?(k?2.2:1.2):(k===2?4.2:k===1?3.1:2);
+      if(i===hover && n.s) rad+=1.4;
       ctx.beginPath();
-      ctx.fillStyle=i===hover?'#F6E3B8':'#E7C07A';
-      ctx.arc(p.x,p.y, i===hover?4.2:2.6, 0, Math.PI*2);
+      ctx.fillStyle=i===hover&&n.s?'#F6E3B8':(k===2?'#E7C07A':k===1?'rgba(201,138,58,.9)':'rgba(201,138,58,.45)');
+      ctx.arc(p.x,p.y, rad, 0, Math.PI*2);
       ctx.fill();
-      ctx.font='600 12px '+getComputedStyle(document.body).fontFamily;
-      ctx.fillStyle=i===hover?'#F4EEE2':'rgba(244,238,226,.55)';
-      var tw=ctx.measureText(n.t).width;
-      var lx=p.x+10;
-      if(lx+tw>w-12) lx=p.x-10-tw; // не резать подпись правым краем
-      if(lx<8) lx=8;
-      ctx.fillText(n.t, lx, p.y+4);
+
     });
     if(!reduce) requestAnimationFrame(draw);
   }
@@ -235,18 +304,15 @@ main{position:relative;z-index:1;background:var(--sky0)}
     var x=(ev.clientX-r.left), y=(ev.clientY-r.top);
     var w=c.clientWidth, h=c.clientHeight;
     for(var i=0;i<nodes.length;i++){
+      if(!nodes[i].s) continue;
       var p=pos(nodes[i],w,h);
-      if(Math.hypot(x-p.x,y-p.y)<28) return i;
+      if(Math.hypot(x-p.x,y-p.y)<26) return i;
     }
     return -1;
   }
   c.addEventListener('pointermove', function(ev){
-    var i=hit(ev); hover=i; c.style.cursor=i>=0?'pointer':'default';
+    var i=hit(ev); hover=i; c.style.cursor='default';
     if(reduce) draw();
-  });
-  c.addEventListener('click', function(ev){
-    var i=hit(ev); if(i<0) return;
-    mark(); location.href='card.html?slug='+encodeURIComponent(nodes[i].s);
   });
   window.addEventListener('resize', function(){ fit(); if(reduce) draw(); });
   fit(); draw();

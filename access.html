@@ -112,6 +112,7 @@ html[data-theme="dark"] .mcsk{background:linear-gradient(90deg,#1b1710,#241f16,#
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
 var CODE=(window.McAuth&&McAuth.parseInviteCode)?McAuth.parseInviteCode():null;
 var WANT_LOGIN=(function(){try{return new URLSearchParams(location.search).get('view')==='login';}catch(e){return false;}})();
+var HAS_OAUTH_ERR=(function(){try{return !!new URLSearchParams(location.search).get('error');}catch(e){return false;}})();
 var HOME='path.html';
 var OIDC_PROVIDER='custom:authelia';
 function ruErr(m){ return (window.McAuth&&McAuth.authErr)?McAuth.authErr(m):String(m||''); }
@@ -131,16 +132,15 @@ function takeInvite(){
   return {code:c, name:n};
  }catch(e){ return {code:'', name:''}; }
 }
-function goHome(){ location.replace(HOME); }
+function goHome(){ var n=(window.McAuth&&McAuth.takeReturn)?McAuth.takeReturn():''; location.replace(n||HOME); }
 function startOidc(){
  var err=document.getElementById('err');
  if(!window.__SB){ if(err) err.textContent='Нет соединения с базой — попробуйте онлайн.'; return; }
  var btn=document.getElementById('doOidc'); if(btn){ btn.disabled=true; btn.textContent='Открываем вход…'; }
- var redirectTo=location.origin+'/access.html'+(CODE?('?invite='+encodeURIComponent(CODE)):(WANT_LOGIN?'?view=login':''));
- window.__SB.auth.signInWithOAuth({
-  provider: OIDC_PROVIDER,
-  options: { redirectTo: redirectTo }
- }).then(function(r){
+ var go=(window.McAuth&&McAuth.startOidc)
+  ? McAuth.startOidc(window.__SB,{invite:CODE||''})
+  : window.__SB.auth.signInWithOAuth({ provider: OIDC_PROVIDER, options:{ redirectTo: location.origin+'/access.html'+(CODE?('?invite='+encodeURIComponent(CODE)):'') } });
+ go.then(function(r){
   if(r&&r.error){ if(btn){ btn.disabled=false; btn.textContent='Войти через ar1adna'; } if(err) err.textContent=ruErr(r.error.message); }
  }).catch(function(){ if(btn){ btn.disabled=false; btn.textContent='Войти через ar1adna'; } if(err) err.textContent='Не удалось начать вход через ar1adna.'; });
 }
@@ -151,7 +151,8 @@ function afterSession(SB, sess){
  var args={};
  if(code) args.p_code=code;
  if(name) args.p_name=name;
- function go(){ goHome(); }
+ var gone=false; function go(){ if(gone) return; gone=true; goHome(); }
+ setTimeout(go, 4000);
  if(!SB||!sess){ go(); return; }
  SB.rpc('membership_after_auth', args).then(function(){ go(); }, function(){
   if(window.McAuth&&McAuth.finishAuth){
@@ -233,7 +234,13 @@ function login(){
  document.getElementById('back').onclick=route;
  document.getElementById('doOidc').onclick=function(){ if(CODE) stashInvite(CODE, ''); startOidc(); };
  wireMail('login');
+ try{
+  var q=new URLSearchParams(location.search);
+  var ed=q.get('error_description')||q.get('error');
+  if(ed){ var e=document.getElementById('err'); if(e) e.textContent=decodeURIComponent(ed.replace(/\+/g,' ')); }
+ }catch(_){ }
 }
+
 function wireMail(mode, code){
  var mail=document.getElementById('doMail');
  if(mail) mail.onclick=function(){ doAuth(mode, code); };
@@ -273,10 +280,17 @@ function branchInvite(SB){ SB.rpc('invite_info',{p_code:CODE}).then(function(r){
   else if(info&&(info.reason==='expired'||info.reason==='redeemed'||info.expired||info.redeemed)){ deadEnd(info); }
   else { stateB(true); }
  }).catch(function(){ stateB(!!CODE); }); }
+function returningFromOauth(){
+ try{
+  var q=new URLSearchParams(location.search);
+  if(q.get('code')||q.get('access_token')) return true;
+  var h=location.hash||'';
+  return /access_token=|refresh_token=/.test(h);
+ }catch(e){ return false; }
+}
 function route(){
- if(CODE){ loadingState(); return; }
- if(WANT_LOGIN){ login(); return; }
- if(mcLikelySignedIn()){ loadingState(); return; }
+ if(HAS_OAUTH_ERR){ login(); return; }
+ if(returningFromOauth()||CODE||WANT_LOGIN){ loadingState(); return; }
  stateB();
 }
 route();
@@ -285,12 +299,24 @@ route();
  function go(){
   try{
    if(!(window.SUPABASE_URL && window.SUPABASE_ANON_KEY && window.supabase && window.supabase.createClient)) return;
-   var SB=window.supabase.createClient(String(window.SUPABASE_URL).trim(),String(window.SUPABASE_ANON_KEY).trim()); window.__SB=SB;
+   var SB=window.supabase.createClient(String(window.SUPABASE_URL).trim(),String(window.SUPABASE_ANON_KEY).trim(),{auth:{flowType:"pkce"}}); window.__SB=SB;
+   var settled=false;
+   function take(sess){ if(settled||!sess) return; settled=true; afterSession(SB, sess); }
+   SB.auth.onAuthStateChange(function(ev, sess){ if(sess) take(sess); });
    SB.auth.getSession().then(function(s){ var sess=s&&s.data&&s.data.session;
-     if(sess){ afterSession(SB, sess); return; }
-     if(CODE){ branchInvite(SB); }
-     else if(WANT_LOGIN){ login(); }
-   }).catch(function(){ if(CODE) branchInvite(SB); else if(WANT_LOGIN) login(); });
+     if(sess){ take(sess); return; }
+     if(returningFromOauth()){ setTimeout(function(){ SB.auth.getSession().then(function(s2){ var sess2=s2&&s2.data&&s2.data.session; if(sess2) take(sess2); else if(WANT_LOGIN) login(); }); }, 800); return; }
+     if(HAS_OAUTH_ERR){ login(); }
+     else if(CODE){ branchInvite(SB); }
+     else if(WANT_LOGIN){ loadingState(); startOidc(); }
+     else if(window.McAuth&&McAuth.maybeHop){ McAuth.maybeHop(SB); }
+     else { /* invite already painted */ }
+   }).catch(function(){
+     if(HAS_OAUTH_ERR) login();
+     else if(CODE) branchInvite(SB);
+     else if(WANT_LOGIN) login();
+     else stateB();
+   });
   }catch(_){}
  }
  function load(src,cb){ var sc=document.createElement('script'); sc.src=src; sc.onload=cb; sc.onerror=cb; document.head.appendChild(sc); }
