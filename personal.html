@@ -187,11 +187,11 @@ if(mcLikelySignedIn()) STATE.signedIn=true;
 if(!STATE.signedIn) STATE.member=false;
 function stateSig(){ return STATE.signedIn+'|'+STATE.member+'|'+STATE.email+'|'+(STATE.territory?(STATE.territory.lit+'/'+STATE.territory.total+'/'+((STATE.territory.by_discipline||[]).length)):'none'); }
 function saveStateCache(){ try{ localStorage.setItem('personal:state', JSON.stringify({signedIn:STATE.signedIn,member:STATE.member,email:STATE.email,name:STATE.name,territory:STATE.territory})); }catch(e){} }
+function accessHref(){ return (STATE.signedIn && !STATE.member) ? 'access.html' : 'access.html?view=login'; }
 function isBooksAdmin(){
  if(window.McAuth&&McAuth.isAdminEmail) return McAuth.isAdminEmail(STATE.email);
  return ['temka.avdeev@gmail.com','artem@ar1adna.com'].indexOf((STATE.email||'').toLowerCase())>=0;
 }
-function accessHref(){ return (STATE.signedIn && !STATE.member) ? 'access.html' : 'access.html?view=login'; }
 var qs=new URLSearchParams(location.search); var VIEW=qs.get('view');
 
 function icon(p){ return '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>'; }
@@ -232,7 +232,7 @@ function renderHub(){
      '<div class="mrow" role="button" tabindex="0" onclick="location.href=\'index-admin.html#dash\'">'+icon(IC.gear)+'<span class="t">Старая админка · редакторы</span>'+_chev+'</div>'+
      '</div>';
  }
- H+='<div class="seclbl">Интерфейс</div><div class="menu"><div class="mrow" role="button" tabindex="0" onclick="location.href=\'index.html?v2=1\'">'+icon(IC.gear)+'<span class="t">Вернуться к старой версии</span><svg class="cv" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div></div>';
+
  if(STATE.member) H+='<div class="sign"><button id="signout">Выйти</button></div>';
  document.getElementById('wrap').innerHTML=H;
  Array.prototype.forEach.call(document.querySelectorAll('[data-view]'),function(el){ el.onclick=function(){ location.href='personal.html?view='+el.getAttribute('data-view'); }; });
@@ -380,12 +380,11 @@ document.addEventListener('keydown',function(e){
  function go(){
   try{
    if(!(window.SUPABASE_URL && window.SUPABASE_ANON_KEY && window.supabase && window.supabase.createClient)) return;
-   var SB=window.supabase.createClient(String(window.SUPABASE_URL).trim(),String(window.SUPABASE_ANON_KEY).trim()); window.__SB=SB;
+   var SB=window.supabase.createClient(String(window.SUPABASE_URL).trim(),String(window.SUPABASE_ANON_KEY).trim(),{auth:{flowType:"pkce"}}); window.__SB=SB;
    McAuth.boot(SB,function(acc){
     var oldSig=stateSig();
     STATE.signedIn=!!(acc.signed_in || acc.user);
     STATE.member=!!acc.member;
-    STATE.admin=!!acc.admin;
     if(acc.user){ STATE.email=acc.user.email||''; STATE.uid=acc.user.id||null; STATE.name=(acc.user.user_metadata&&(acc.user.user_metadata.name||acc.user.user_metadata.full_name))||''; }
     if(!STATE.signedIn){ STATE.member=false; STATE.email=''; }
     function finish(){ saveStateCache(); if(VIEW){ renderView(VIEW); } else if(stateSig()!==oldSig){ renderHub(); } }
